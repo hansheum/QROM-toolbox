@@ -1,0 +1,224 @@
+\newif\ifdark
+  \darkfalse
+  %\darktrue % triggers dark coloured pdf for late night work
+
+\newif\iffullversion
+  % \fullversionfalse % use for camera-ready and author version only
+  \fullversiontrue % ERROR: triggers strange compilation errors (amsthm.sty: "\openbox already defined")
+
+\newif\ifauthversion
+  \authversiontrue % triggers copyright footnote for non-full eprint author version
+  % \authversionfalse % triggers submission version for full version (anonymous, suppl material)
+
+\newif\ifdraftversion
+  % To flag stuff unlikely to make it by deadline
+  % \draftversionfalse
+  \draftversiontrue
+
+%
+% BEGINNING OF DO NOT EDIT ZONE
+%
+
+\newif\ifsubmission % best not to manually change this flag
+  \iffullversion
+    \ifauthversion
+      \submissionfalse
+    \else
+      \submissiontrue
+    \fi
+  \else
+    \submissionfalse
+\fi
+
+\newif\ifeprintfull % best not to manually change this flag
+  \iffullversion
+    \ifauthversion
+      \eprintfulltrue
+    \else
+      \eprintfullfalse
+    \fi
+  \else
+    \eprintfullfalse
+  \fi
+
+\iffullversion \ifdraftversion \documentclass[runningheads,twoside]{llncs}
+               \else           \documentclass[runningheads,twoside      ]{llncs} \fi
+\else          \ifdraftversion \documentclass[runningheads,            ]{llncs}
+               \else           \documentclass[runningheads,                  ]{llncs} \fi\fi
+
+% HH: Added to make table-of-contents work
+%% see: https://tex.stackexchange.com/questions/272200/table-of-contents-showing-the-title-as-only-entry-latex
+  \setcounter{tocdepth}{2}
+  \makeatletter
+  \renewcommand*\l@author[2]{}
+  \renewcommand*\l@title[2]{}
+  \makeatletter
+%%
+
+\usepackage{cite}
+
+\ifeprintfull
+  \ifdraftversion
+    \usepackage[reset,a4paper]{geometry}
+    \geometry{textwidth=12.2cm, textheight=19.3cm}
+  \else
+    \usepackage[a4paper,margin=1.0in]{geometry}
+  \fi
+
+  \usepackage[section]{placeins} %Gets overwritten by ! tag in float
+  %  \setcounter{tocdepth}{3}
+\fi
+
+\ifsubmission
+  \usepackage[reset]{geometry}
+  \geometry{textwidth=12.2cm, textheight=19.3cm}
+  \pagestyle{plain}
+\else
+  \pagestyle{headings}
+\fi
+
+\usepackage{apxproof} % MSM temporarily loaded to allow easy migration to appendix...
+
+\usepackage[svgnames,table]{xcolor}
+\ifdraftversion
+  \usepackage{changes} % also loads todonotes
+\else
+  \usepackage[final,todonotes=disable]{changes}
+\fi
+
+% Things Hans has added
+  \usepackage{slashed}
+  \usepackage[normalem]{ulem}
+  \usepackage{booktabs}
+  \usepackage{nicefrac}
+
+\input{./cryptocodeh}
+\input{./cryptocrakz}
+\graphicspath{{../figures/}}
+
+\usepackage{orcidlink}
+
+\usepackage{array}
+\newcolumntype{C}{>{$}c<{$}}
+
+% Dark mode: Colour scheme like a moonlit night or something.
+\ifdark
+	 \pagecolor[rgb]{0.05,0.16,0.21}
+	 \color[rgb]{0.53,0.58,0.59}
+\fi
+
+\newcommand{\crakzfig}[2]{
+  \begin{figure}[t!]
+    \centering
+    \includegraphics[keepaspectratio=true]{./crakz/#1}
+    \caption{#2}
+    {\label{fig:#1}}
+  \end{figure}
+}
+
+\newcommand{\crakzfigcode}[2]{
+  \begin{figure}[t!]
+    \centering
+    \input{./crakz/#1}
+    \caption{#2}
+    {\label{fig:#1}}
+  \end{figure}
+}
+
+\input{qrotb-latex}
+
+% \hyphenation{
+%   in-dis-tin-guish-able
+%   in-dis-tin-guisha-bil-i-ty
+% }
+
+
+% [WIP] autoref fix for correct appendix sectioning
+% https://tex.stackexchange.com/questions/149807/autoref-subsections-in-appendix
+
+% \newcommand{\defer}[1]{Appendix~\ref{#1}}   %full version
+\newcommand{\defer}[1]{\ref{#1}}              %submission
+% \newcommand{\defer}[1]{the full version}      %camera ready
+
+% Commenting
+%-------------------------------------------------------------------------------%
+
+\definechangesauthor[name={Tjerand}, color=purple]{TS}
+\definechangesauthor[name={Hans}, color=darkgreen]{HH}
+
+\newcommand{\hhnote}[2][]{\todo[inline,color=Linen]{\textbf{Hans:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
+\newcommand{\tsnote}[2][]{\todo[inline,color=AliceBlue]{\textbf{Tjerand:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
+\newcommand{\revnote}[1]{\todo[inline]{\textbf{Reviewer:} #1}\xspace}
+
+\newcommand\todoenum[2][]{\todo[inline,color=Cornsilk,caption={2do}]{
+  \begin{minipage}{\textwidth-4pt}\textbf{#1}\begin{enumerate}#2\end{enumerate}\end{minipage}}}
+\newcommand\doneenum[2][]{\todo[color=FloralWhite,caption={2do}]{
+  \begin{minipage}{\textwidth-4pt}\textbf{#1}\begin{enumerate}#2\end{enumerate}\end{minipage}}}
+\newcommand\oldtodoenum[2][]{\todo[inline,color=FloralWhite,caption={2do}]{
+  \begin{minipage}{\textwidth-4pt}\textbf{#1}\begin{enumerate}#2\end{enumerate}\end{minipage}}}
+
+%------------------------------------------------------------------------------%
+
+\newcommand{\pagehack}{\ifsubmission\clearpage\fi}
+
+% Autoref names, to redefine: renewcommand with the format: \<env>autorefname
+%\renewcommand{\sectionautorefname}{Section}
+\renewcommand{\sectionautorefname}{Sect.}
+\renewcommand{\subsectionautorefname}{\sectionautorefname}
+\renewcommand{\subsubsectionautorefname}{\sectionautorefname}
+\renewcommand{\figureautorefname}{Fig.}
+\renewcommand{\theoremautorefname}{Thm.}
+\newcommand{\definitionautorefname}{Def.}
+\newcommand{\corollaryautorefname}{Cor.}
+\newcommand{\openproblemautorefname}{Open Problem}
+\providecommand{\appendixautorefname}{Appendix}
+% Autoref fix for appendix and multi-references
+\newcommand{\aref}[1]{\hyperref[#1]{App.~\ref*{#1}}}
+\newcommand{\multiref}[2]{\autoref{#1}--\ref{#2}} 
+
+\begin{document}
+\pcfixhyperref % As per cryptocode documentation, "8.3 Hyperref"
+
+  \input{qrotb-header}  % maketitle and abstract
+
+  % \ifsubmission\setcounter{page}{1}\fi
+
+  %\input{linext-introduction}
+
+  %\clearpage
+
+  %\input{linext-prelim}
+
+  %\clearpage
+
+  \ifeprintfull
+    % \clearpage
+    \addcontentsline{toc}{section}{References}
+  \fi
+
+  % Main body
+    %\input{to2h-theorem}
+      %\newpage
+
+	\bibliographystyle{alpha}
+  	%\bibliographystyle{splncs04}
+  	% \bibliographystyle{plain}
+  	\bibliography{./cryptobib/abbrev3,./cryptobib/crypto}
+
+  \ifsubmission
+    \clearpage
+    \newgeometry{margin=1.0in}
+    \appendix
+    \renewcommand{\thesection}{Supplementary Material \arabic{section}}
+  \else
+    \appendix
+  \fi
+
+  \ifsubmission
+    \clearpage
+  \fi
+
+  % Appendices input below
+    % \input{linext-appendix}
+
+\end{document}

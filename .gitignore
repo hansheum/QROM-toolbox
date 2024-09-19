@@ -1,0 +1,15 @@
+.DS_Store
+*.swp
+*.swo
+*.aux
+*.log
+main-linext.pdf
+*.blg
+*.toc
+*.axp
+*.out
+*.bbl
+*.loc
+*.soc
+main-linext.synctex.gz
+main-linext.fls
