@@ -43,7 +43,8 @@
       \newcommandx*{\advantage}[3][3=(\adv)]{\ensuremath{\mathsf{Adv}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}#3}}
 
       \newcommand{\sdash}{\mbox{-}}
-      \newcommandx*{\experiment}[3][3=(\adv)]{\ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}#3}}
+      \newcommandx*{\experiment}[3][3=\adv]{\ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}(#3)}}
+        %% Example usage: \experiment{\indcpa}{\pkescheme}[\bdv]
       \newcommandx*{\distexperiment}[4][1=b, 4=(\adv)]{\ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{{#2}\sdash{#1}}}_{\pcadvantagesubstyle{#3}}#4}}
 
       % H: More flexible commands from the SOA project, as set up by Carlo
@@ -148,6 +149,8 @@
       \newcommand{\krkpa}{\pcnotionstyle{KR\pcmathhyphen{}KPA}}
       \newcommand{\krcpa}{\pcnotionstyle{KR\pcmathhyphen{}CPA}}
       \newcommand{\krcca}{\pcnotionstyle{KR\pcmathhyphen{}CCA}}
+
+      \newcommand{\ku}{\pcnotionstyle{KU}} % Key *Unrecoverability*
 
       \newcommand{\kpa}{\pcnotionstyle{KPA}}
       \newcommand{\cpa}{\pcnotionstyle{CPA}}
@@ -387,6 +390,8 @@
 
     \newcommand{\Perm}[1]{\pcfunctionstyle{Perm}(#1)}
     \newcommand{\Func}[1]{\pcfunctionstyle{Func}(#1)}
+
+    \newcommand{\keyspace}{\Kspace}
 
   %%
   %%  2.12 Redux: Crypto Algorithms and Oracles

@@ -1,0 +1,95 @@
+\section{Introduction}
+  \hhnote{
+    Idea: Take the basic examples from ``Random Oracles Are
+    Practical''~\cite{CCS:BelRog93} as
+    motivating examples running through the paper.
+  }
+  
+  In the following and throughout, $\ro$ is a random oracle.
+
+  \subsection{Recording ROs (or, Random Oracles are Good PRFs)}
+    We start with the simplest ROM proof imaginable: showing that random
+      oracles are good pseudorandom functions. Specifically, we will show that
+      $\prf_k(x) = \ro(k || x)$ is indistinguishable from a random function, provided the
+      key $k$ is hard to guess.
+      
+    We will do this by showing that if an adversary $\adv$ can
+      distinguish the output of $\prf_k$ from random, then a reduction $\bdv$
+      can recover the key $k$. Crucially, the reduction does this by
+      \emph{recording} the queries of the adversary $\adv$ to the random oracle
+      $\ro$.
+
+
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}
+        \procedure{Experiment $\experiment{\prfind}{\prf}$}{
+          \prfkey \sample \keyspace \\
+          \chalbit \sample \bin \\
+          \advbit \sample \adv^{\ro, \Oenc} \\
+          \pcreturn \chalbit = \advbit
+        }
+
+        \pchspace
+
+        \procedure{Oracle $\Oenc(x)$}{
+          \pcif \chalbit = 0 \pcthen \\
+            \t y \gets \ro(\prfkey ||x) \\
+          \pcelse \pcthen \\
+            \t y \gets \randfunc(x) \\
+          \pcreturn y
+        }
+      \end{pchstack}
+      \caption{
+        The pseudorandomness indistinguishability game.
+      }
+    \label{fig:prf-ind}
+    \end{figure}
+
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}
+        \procedure{Experiment $\experiment{\ku}{\prf}[\bdv]$}{
+          \prfkey \sample \keyspace \\
+          \advkey \sample \bdv^{\ro, \Oenc} \\
+          \pcreturn \prfkey = \advkey
+        }
+
+        \pchspace
+
+        \procedure{Oracle $\Oenc(x)$}{
+          y \gets \ro(\prfkey ||x) \\
+          \pcreturn y
+        }
+      \end{pchstack}
+      \caption{
+        The pseudorandomness key recovery game.
+      }
+    \label{fig:prf-ku}
+    \end{figure}
+
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}
+        \procedure{Reduction $\bdv^\ro$}{
+          \chalbit \sample \bin \\
+          \advbit \sample \adv^{\ro, \Oenc} \\
+          \pcreturn \advkey
+        }
+
+        \pchspace
+
+        \procedure{If $\adv$ calls $\Oenc(x)$}{
+          y \gets \ro(\prfkey ||x) \\
+          \pcreturn y
+        }
+      \end{pchstack}
+      \caption{
+        The pseudorandomness key recovery game.
+      }
+    \label{fig:prf-ku}
+    \end{figure}
+
+  \subsection{Reprogramming ROs (or, Random Oracles yield Simple PKEs)}
+
+  \subsection{Rewinding ROs (or, Random Oracles yield Efficient Signatures)}
