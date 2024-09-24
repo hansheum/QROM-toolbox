@@ -3,7 +3,7 @@
 *.swo
 *.aux
 *.log
-main-linext.pdf
+main-qrotb.pdf
 *.blg
 *.toc
 *.axp
@@ -11,5 +11,5 @@ main-linext.pdf
 *.bbl
 *.loc
 *.soc
-main-linext.synctex.gz
-main-linext.fls
+main-qrotb.synctex.gz
+main-qrotb.fls
