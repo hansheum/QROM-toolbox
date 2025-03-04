@@ -235,15 +235,15 @@
       $\sum_{\forall i \in [2^n]} \abs{\alpha_i}^2 = 1$.
 
     When expanding a general quantum state in terms of the computational basis
-      states in the manner above, we will typically exclude terms for
+      states in the manner above, we will typically implicitly exclude terms for
       which $\alpha_i = 0$, writing instead 
 
     \[
-      \ket{\psi} = \sum_i \alpha_{i} \ket{x_i} \coloneqq \sum_{i \in \Ispace} \alpha_{i} \ket{x_i}\, , 
+      \ket{\psi} = \sum_i \alpha_{i} \ket{x_i} \coloneqq \sum_{\forall i \in \Ispace} \alpha_{i} \ket{x_i}\, , 
     \]
     
     \noindent
-    where $\Ispace$ indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
+    where $\Ispace \subset \NN$ indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
       \braket{\psi|x} \neq 0\}$.
       %is the set of bitstrings such that the amplitude $\alpha_i$ of the
       %corresponding basis state $\ket{x_i}$ is non-zero.
