@@ -196,7 +196,7 @@
       say that the qubit is in a \emph{superposition} over the values ``$0$'' and
       ``$1$''. If we then \emph{observe} the qubit, the probability that the
       observed outcome $X$ is either $0$ or $1$ is then given by $\prob{X=b} =
-      \abs{\alpha_b}^2$, and after observation, the superposition will have
+      \abs{\alpha_b}^2 = \abs{\braket{\psi |b}}^2$, and after observation, the superposition will have
       ``collapsed'' to the basis state corresponding to the observed value,
       $\ket{b}$.\footnote{
         The discernible effect of observations on quantum states has led to a
@@ -239,12 +239,14 @@
       which $\alpha_i = 0$, writing instead 
 
     \[
-      \ket{\psi} = \sum_{i \in [2^{n}]} \alpha_{i} \ket{x_i}\, , 
+      \ket{\psi} = \sum_i \alpha_{i} \ket{x_i} \coloneqq \sum_{i \in \Ispace} \alpha_{i} \ket{x_i}\, , 
     \]
     
     \noindent
-    where $\{x_i\}_{i}$ is the set of bitstrings such that the amplitude of the
-      corresponding basis state $\ket{x_i}$ is non-zero.
+    where $\Ispace$ indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
+      \braket{\psi|x} \neq 0\}$.
+      %is the set of bitstrings such that the amplitude $\alpha_i$ of the
+      %corresponding basis state $\ket{x_i}$ is non-zero.
 
     \hhnote{Give inner product as Euclidean distance over amplitudes.}
   
