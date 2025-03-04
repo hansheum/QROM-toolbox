@@ -4,7 +4,7 @@
 
 \newif\iffullversion
   % \fullversionfalse % use for camera-ready and author version only
-  \fullversiontrue % ERROR: triggers strange compilation errors (amsthm.sty: "\openbox already defined")
+  \fullversiontrue 
 
 \newif\ifauthversion
   \authversiontrue % triggers copyright footnote for non-full eprint author version
@@ -59,8 +59,10 @@
 
 \ifeprintfull
   \ifdraftversion
-    \usepackage[reset,a4paper]{geometry}
-    \geometry{textwidth=12.2cm, textheight=19.3cm}
+    %% Changed, HH 12025-03-04
+    %\usepackage[reset,a4paper]{geometry}
+    %\geometry{textwidth=12.2cm, textheight=19.3cm}
+    \usepackage[a4paper,margin=1.0in]{geometry}
   \else
     \usepackage[a4paper,margin=1.0in]{geometry}
   \fi
@@ -91,6 +93,7 @@
   \usepackage[normalem]{ulem}
   \usepackage{booktabs}
   \usepackage{nicefrac}
+  \usepackage{braket}
 
 \input{./cryptocodeh}
 \input{./cryptocrakz}
@@ -198,9 +201,9 @@
 
   % Main body
     \input{qrot-introduction}
+    \input{qrot-preliminaries}
+    \input{qrot-definitions}
     \input{qrot-reprogramming}
-    \input{qrot-recording}
-    \input{qrot-rewinding}
     \newpage
 
 	\bibliographystyle{alpha}

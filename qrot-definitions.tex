@@ -1,0 +1,47 @@
+\section{Defining Quantum Random Oracles}
+  A classical oracle $\Oracle_f$ is a black-box procedure that, given input
+    $x$, returns $f(x)$ in such a way that no information about $f$
+    other than that which can be inferred from its output is provided. A
+    classical random oracle,
+    then, is simply a classical oracle where the function $f$ was chosen
+    uniformly at random from the space of all functions from $\bin^m$ to
+    $\bin^m$.\footnote{
+      Typically, random oracles follow hash functions in
+      being defined from the space of all finite-length bit strings $\bin^*$ to
+      the space of $n$-length bitstrings $\bin^n$; technically, this simply means
+      that $f$ is a collection of random functions: one per input length. Since
+      quantum random oracles must operate by unitary means, we will
+      explicitly restrict the domain of the random function to $\bin^m$.
+    }
+
+  However, the above operation is not unitary, as required for evolutions of quantum
+    states (which is what we mean by ``quantum algorithms''). Therefore,
+    any quantum algorithm must instead be given access to
+    \emph{quantum-accessible} oracles, which on input the computational basis state $\ket{x, y}$,
+    returns the unitary evolution of the state $\ket{x, y \xor f(x)}$. In
+    general (letting $n$ and $m$ be the length of the $x$ and $y$
+    registers, respectively), on input a quantum state $\ket{\psi} = \sum_{i
+    \in [2^{n+m}]} \alpha_i \ket{x, y}$, we get:
+    \[ 
+      \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i} 
+        \apply{O_f} \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i \xor f(x_i)}\, .
+    \]
+    %\[ 
+    %  \sum_{i \in [2^{n}]} \sum_{j \in [2^{m}]} \alpha_i \beta_j \ket{i, j} 
+    %    \apply{O_f} \sum_{i \in [2^{n}]} \sum_{j \in [2^{m}]} \alpha_i \beta_j \ket{i, j \xor f(i)}\, .
+    %\]
+
+  \noindent
+  To see that this operation is unitary, it is enough to observe that it is
+    \emph{reversible}: Inputing the same state a second time yields the original state: 
+    \[ 
+      \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i \xor f(x_i)}
+        \apply{\Oracle_f} \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i \xor
+        f(x_i) \xor f(x_i)} = \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i}\, .
+    \]
+
+  \noindent
+  Sometimes it we will want to provide a quantum algorithm with access to a
+    classical oracle.
+  
+  \hhnote{Next.}
