@@ -202,9 +202,13 @@
   % Main body
     \input{qrot-introduction}
     \input{qrot-preliminaries}
-    \input{qrot-definitions}
-    \input{qrot-reprogramming}
-    \newpage
+
+    % WIP
+    \ifdraftversion
+      \input{qrot-definitions}
+      \input{qrot-reprogramming}
+      \newpage
+    \fi
 
 	\bibliographystyle{alpha}
   	%\bibliographystyle{splncs04}
@@ -225,6 +229,6 @@
   \fi
 
   % Appendices input below
-    % \input{qrot-appendix}
+    \input{qrot-solutions}
 
 \end{document}

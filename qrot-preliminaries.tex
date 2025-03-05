@@ -8,6 +8,9 @@
       of all functions from the set of $m$-length bitsrings $\bin^m$ to the
       set of $n$-length $\bin^n$ bitstrings is denoted $\funcspace{m}{n}$.
 
+    We use $\idmatrix[n]$ to denote the $n$-by-$n$ identity matrix, dropping
+      the subscript whenever the dimension is clear from the context.
+
 \subsection{A Brief Quantum Primer}
   Quantum theory arose as a branch of physics, and so much of the
     standard notational conventions are hand-wavy, and often inconsistently
@@ -81,7 +84,8 @@
       
   \paragraph{Combined quantum states.}
     In general, two quantum systems (i.e.\ states describing 
-      distinct physical systems) may be combined via the tensor product: 
+      distinct physical systems) may be combined via the tensor product (also
+      known as the \emph{outer} product): 
       \[
         \ket{\psi} \otimes \ket{\varphi} \coloneqq \ket{\psi \varphi}\, .
       \]
@@ -104,12 +108,12 @@
     \noindent
     Since each qubit is a two-dimensional quantum state, we see that the
       resulting combined state will have dimension $N \coloneqq 2^n$. The resulting Hilbert
-      space will be characterized by the computational basis states\footnote{
+      space will be characterized by the computational\footnote{
         As with any vector space, Hilbert spaces permit an infinitude of basis
         choices; the ``computational'' basis is simply the name of the choice
         wherein basis states are labelled by classical bits (or, in general,
         bitstrings).
-      }
+      } basis states
     \[
       \{\ket{i}\}_{\forall i \in [N]} = \{ \ket{b_0 b_1 \ldots b_{n-1}}
         \}_{\forall b_0, \ldots, b_{n-1} \in \bin}\, .
@@ -234,21 +238,110 @@
     where the \emph{amplitudes} $\alpha_i$ again satisfy
       $\sum_{\forall i \in [2^n]} \abs{\alpha_i}^2 = 1$.
 
-    When expanding a general quantum state in terms of the computational basis
-      states in the manner above, we will typically implicitly exclude terms for
-      which $\alpha_i = 0$, writing instead 
+    When expanded over the basis states, the inner product of two quantum
+      states $\ket{\psi} = \sum_{\forall i \in [N]} \alpha_i \ket{i}$ and $\ket{\varphi} =
+      \sum_{\forall j \in [N]} \beta_j \ket{j}$ may be written
+
+    \[
+      \braket{\psi|\varphi} = \sum_{\forall i, j \in [N]} \alpha^*_i \beta_j \braket{i|j} =
+      \sum_{\forall i, j \in [N]} \alpha^*_i \beta_j \delta_{ij} = \sum_{\forall i \in [N]} \alpha^*_i \beta_i\, .
+    \]
+
+    \noindent
+    We see that we have recovered the inner product of complex-valued vectors, which
+      is just the usual inner product of real-valued vectors with an extra complex
+      conjugation.\footnote{
+        This is because inner products on any vector space must satisfy
+        conjugate symmetry, $\langle x, y \rangle = \langle y, x \rangle^*$;
+        see \url{https://en.wikipedia.org/wiki/Inner_product_space}.
+      }
+      Thus we may apply the usual operational interpretation of the inner
+      product, in which vectors are ``perpendicular'' when their inner product is $0$,
+      and ``parallel'' when it is $1$. Together with the requirement that
+      quantum states have unit norm, this means that an inner product of $1$ implies
+      that the two quantum states are actually identical,
+      (up to the aforementioned unobservable phase factor).
+      %This allows for an
+      %operational interpretation of the inner product as \dots
+      %$\sqrt{\abs{\braket{\psi|\varphi}}} =\sqrt{\abs{\sum_i \alpha^*_i \beta_i}}$.
+
+    When expanding quantum states in terms of basis states in the manner above,
+      we will sometimes implicitly exclude terms for which $\alpha_i = 0$,
+      writing instead 
 
     \[
       \ket{\psi} = \sum_i \alpha_{i} \ket{x_i} \coloneqq \sum_{\forall i \in \Ispace} \alpha_{i} \ket{x_i}\, , 
     \]
     
     \noindent
-    where $\Ispace \subset \NN$ indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
-      \braket{\psi|x} \neq 0\}$.
+    where $\Ispace = [\ell]$ indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
+      \braket{\psi|x} \neq 0\}$ for some $\ell \in \NN$.
       %is the set of bitstrings such that the amplitude $\alpha_i$ of the
       %corresponding basis state $\ket{x_i}$ is non-zero.
 
-    \hhnote{Give inner product as Euclidean distance over amplitudes.}
-  
   \paragraph{Unitary operations.}
-    \hhnote{Next.}
+    Since we are working over finite-dimensional Hilbert spaces, quantum
+      operations, i.e.\ evolutions of quantum states, may be represented as $N
+      \times N$-dimensional matrices. What properties should they have?
+    
+    Clearly, any operation that we perform on a quantum state (\emph{except}
+      observing them!) should yield another valid quantum state
+      as a result. Since quantum states must be unit-norm, this means
+      that any operation we perform on them must preserve the norm. 
+      This fact turns out to be sufficient\footnote{
+        Here is a short proof of this fact:       } to restrict the space of allowed operations to the unitary matrices,
+      i.e.\ invertible square matrices $U$ satisfying $U^{-1} = U^\dagger$.
+
+    \begin{exercise}\label{ex:unitarity}
+      Prove that requiring operations to be norm-preserving is equivalent to
+      restricting the set of legal operations to the set of unitary matrices.
+    \end{exercise}
+
+    \noindent
+    We will use capital roman letters to refer to quantum operations, in
+      reference to their matrix representation. Whenever the qubit(s) that the
+      operation is being applied to is not clear from context, we will provide
+      the index of the qubit(s) in the
+      subscript, e.g.\ $U_i$ for single-qubit operations, and $U_{i,j}$ for
+      two-qubit operations, where $i,j \in [N]$ and $i \neq j$ (or more
+      generally, the \emph{registers} on which the operations are applied).
+
+    It is often useful to refer to operations in terms of the effect they have
+      on the starting state, and so we define $\ket{\psi} \apply{U}
+      \ket{\varphi}$ to mean that we perform the operation $\ket{\psi}
+      \longrightarrow U \ket{\psi} = \ket{\varphi}$.
+
+    Some elementary unitary transformations, known as quantum \emph{gates}, include
+      \[
+        \Xgate = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\, , \quad
+        \Zgate = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, , \quad
+        \Hgate = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}\, , \quad
+        \CXgate = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}\, .
+      \]
+
+    \begin{exercise}\label{ex:truthtable}
+      Write down ``truth tables'' for each of the above gates by writing down
+      their effect on the (single-qubit resp.\ two-qubit) computational basis states.
+      (E.g., $\ket{0} \apply{\Xgate} \ket{1}$.)
+    \end{exercise}
+
+    \noindent
+    The ``$C$'' in $\CXgate$ is short for ``controlled'', where the value of
+      the first qubit \emph{controls} the operation on the second qubit. Any single-qubit
+      operation $U$ defines a two-qubit controlled version of the same
+      operation, which we will refer to as $CU$.
+
+    \begin{exercise}
+      Starting with the two-qubit state $\ket{\psi} = \ket{00}$, apply the operations $\Hgate_0$ and
+      $\CXgate_{0, 1}$. What are the possible outcomes of observing the resulting
+      state, and what are their probabilities? Compare with the result of
+      applying the single-qubit gates $\Hgate_0$ and $\Hgate_1$ instead.
+    \end{exercise}
+
+    \begin{exercise}
+      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
+      terms of the alternative basis states $\ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}$, 
+      $\ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}$ instead. Compare
+      with the truth table from \autoref{ex:truthtable}. What has changed?
+    \end{exercise}
+

@@ -1,0 +1,18 @@
+\section{Select Exercise Solutions}
+
+  \paragraph{\autoref{ex:unitarity}.}
+    Let $U$ be such that, for all
+      states $\ket{\psi}$, $\norm{U\ket{\psi}} = \norm{\ket{\psi}}$. Using
+      the definition of the norm, this gives us that $\abs{(U\ket{\psi})^\dagger
+      U\ket{\psi}} = \abs{\bra{\psi} U^\dagger U \ket{\psi}} =
+      \abs{\braket{\psi|\psi}}$. Since this
+      should hold for any $\ket{\psi}$, we must have that $U^\dagger U =
+      \idmatrix = U U^\dagger$; the latter equality follows from the fact that,
+      for all $\ket{\varphi}$ and $\ket{\xi}$, 
+      $\abs{\braket{\varphi|\xi}} = \abs{\braket{\xi|\varphi}}$.
+      Thus, $U$ satisfies the definition of an invertible matrix, with the
+      inverse $U^\dagger$. Further, it is easy to see that the opposite also
+      holds: any unitary matrix must be norm-preserving. Therefore, the
+      set of norm-preserving operations on an $N$-dimensional Hilbert space
+      equal to the set of $N\times N$ unitary matrices.
+
