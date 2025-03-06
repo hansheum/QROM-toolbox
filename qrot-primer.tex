@@ -1,0 +1,370 @@
+\section{A Brief Quantum Primer}
+  Quantum theory arose as a branch of physics, and so much of the
+    standard notational conventions are hand-wavy, and often inconsistently
+    implemented across the literature. For the sake of clarity and
+    self-containedness, we specify all our
+    conventions below, providing a brief summary of the
+    building blocks that make up quantum computing theory along the way;
+    for more details, see the celebrated introductory text by Nielsen and
+    Chuang~\cite{NieChu10}.
+
+  \todoenum[Provide explanations of:]{
+    \item Bare-bones background on quantum states and Dirac notation; states
+      vs.\ labels.
+    \item $N = 2^n$; the set $[n]$; $n$-length registers are described by
+      vectors in an $N$-sized Hilbert space.
+    \item Greek letters: When and why I use them.
+    \item Precise notational conventions regarding registers.
+    \item Precise conventions regarding fonts.
+    \item Notation for unitary evolutions: $\apply{U}$.
+    \item Stick to pure states, and
+      only mention the generalization to density matrices.
+    \item Basic background on game hopping and advantages.
+    \item Maybe write something about asymptotic vs.\ concrete security.
+  }
+  
+  \paragraph{Dirac notation.}
+    In general, quantum states are complex-valued vectors in a Hilbert space (a
+      vector space defined over functions),
+      which may or may not be finite-dimensional.\footnote{
+        For example, consider the state $\ket{p(x)}$
+        describing the position $x \in [0,1]$ of particle $p$; this will live
+        in an infinite-dimensional Hilbert space characterized by the basis vectors
+        $\{\ket{p(x)}\}_{x\in[0,1]}$.
+      }
+    %
+    Quantum states are represented using the Dirac notation, in which a quantum state
+      carrying the \emph{label} $\psi$ is written $\ket{\psi}$, its conjugate
+      transpose is written $\bra{\psi} \coloneqq \ket{\psi}^\dagger \coloneqq
+      (\ket{\psi}^*)^T$, and its
+      inner product with itself is written $\braket{\psi|\psi} \coloneqq
+      \abs{\ket{\psi}}^2$. Quantum states are unit-norm, and so we have that
+      $\braket{\psi|\psi} = 1$. For two not necessarily equal quantum states
+      $\ket{\psi}$ and $\ket{\varphi}$, their inner product
+      $\braket{\psi|\varphi}$ is a real number between zero and one, where
+      ``zero'' means the states are orthogonal, and ``one'' means the states are
+      identical (modulo an unobservable global phase factor $e^{i\theta}$).
+
+    This calculus is fine, but one may wonder, what \emph{is} a quantum
+      state---in the sense, what kind of mathematical object is it? The answer
+      can be found in the statement that they live in $N$-dimensional \emph{Hilbert
+      space:} Hilbert spaces are vector spaces defined over \emph{functions} in
+      place of vectors, where the inner product between two functions $f$ and
+      $g$ on the interval $[a,b]$ is defined to be $\int_{-\infty}^{\infty}
+      f(x)^* g(x) dx$. This inner product defines a norm, and a notion of
+      orthogonality, from which a vector space may be constructed.
+      Quantum states, then, are the functions that arise as solutions to a
+      differential equation describing the dynamics of the system, i.e.
+      the Schrödinger equation in the non-relativistic, non-spin case; the
+      Pauli equation in the case with spin (such as electrons), and the Dirac
+      equation in the relativistic case (excluding gravity). They take some
+      input variable corresponding to an observable, such as the position $x$,
+      and returns the \emph{amplitude} corresponding to that position; squaring
+      this then gives the probability that observing the particle will yield
+      $x$ as a result.
+
+    If all of this sounds terribly complicated, then you understand why
+      physicists grew so fond of Dirac's notation, which neatly swept all of
+      these horrible details under the rug of conceptual clarity!
+
+    Thankfully, things become a bit easier in the discrete case: the Hilbert
+      space is now finite, and so it can be expressed in terms of a finite set of basis
+      ``vectors'' (i.e., functions), and the inner
+      product is now a sum rather than an integral. Further, functions now have finite domains,
+      and may thus be written as $N$-length vectors instead, where each element
+      corresponds to an input to the function, enabling us to
+      employ our toolbox from linear algebra to study them. This is the
+      approach taken in the quantum information sciences.
+
+  \paragraph{Qubit basis states.}
+    We are interested in finite-dimensional quantum states, implemented
+      on a collection of $n$ qubits. A \emph{qubit} is a quantum state existing
+      in the two-dimensional Hilbert space characterized by the basis states
+      $\ket{0}$ and $\ket{1}$. In physical implementations, these states may for
+      example be mapped to the spin of an electron (``up''/``down''), or the two lowest energy
+      states of an atom, or in general any two orthogonal quantum states, where
+      two quantum states are orthogonal if and only if there exists a
+      measurement procedure that perfectly distinguishes them.
+
+    It is worth emphasizing that the ``$0$'' and ``$1$'' here are \emph{labels},
+      and do not say anything about the physical system in question other than that
+      it contains (at least) two orthogonal quantum states, which are being
+      identified with the two basis states $\ket{0}$ and $\ket{1}$.
+
+    Since two qubit basis states $\ket{b_1}$ and $\ket{b_2}$, for $b_1, b_2 \in
+      \{0,1\}$, the two states must be either identical (up to the
+      aforementioned phase factor) or orthogonal, we have that
+    \[
+      \braket{b_1|b_2} = \delta_{b_1 b_2}\, ,
+    \]
+    where $\delta_{ij}$ is the Kronecker delta, equal to $1$ if $i = j$, and $0$
+      otherwise.
+      
+  \paragraph{Combined quantum states.}
+    In general, two quantum systems (i.e.\ states describing 
+      distinct physical systems) may be combined via the tensor product (also
+      known as the \emph{outer} product): 
+      \[
+        \ket{\psi} \otimes \ket{\varphi} \coloneqq \ket{\psi \varphi}\, .
+      \]
+  
+    \noindent
+    If $\ket{\psi}$ describes an $N$-dimensional quantum system, and
+      $\ket{\varphi}$ describes an $M$-dimensional quantum system, then the
+      combined state $\ket{\psi \varphi}$ describing the combined system will be
+      $NM$-dimensional. (Note how the dimensions are \emph{multiplied} rather
+      than added, as one might naïvely expect.)
+  
+    Applying this to qubits, given a collection of $n$ qubits $\ket{b_i}$, each initialized to
+      one of the two basis states (so that $b_i \in \bin$), we may construct
+      the combined state 
+      \[
+        \ket{b_0 b_1 \ldots b_{n-1}} \coloneqq \ket{b_0} \otimes \ket{b_1}
+          \otimes \ldots \otimes \ket{b_{n-1}}\, .
+      \]
+
+    \noindent
+    Since each qubit is a two-dimensional quantum state, we see that the
+      resulting combined state will have dimension $N \coloneqq 2^n$. The resulting Hilbert
+      space will be characterized by the computational\footnote{
+        As with any vector space, Hilbert spaces permit an infinitude of basis
+        choices; the ``computational'' basis is simply the name of the choice
+        wherein basis states are labelled by classical bits (or, in general,
+        bitstrings).
+      } basis states
+    \[
+      \{\ket{i}\}_{\forall i \in [N]} = \{ \ket{b_0 b_1 \ldots b_{n-1}}
+        \}_{\forall b_0, \ldots, b_{n-1} \in \bin}\, .
+    \]
+
+    \noindent
+    This exponentiality in the dimension of quantum states as the number of
+      qubits increases sits at the core of
+      the quantum advantage over classical computers. As an illustrative
+      example, the Hilbert space corresponding to a three-qubit quantum system
+      is characterized by the eight computational basis states:
+    \begin{align*}
+      \{ \ket{i} \}_{\forall i \in [2^3]} 
+      &= \{\ket{000},
+        \ket{001},
+        \ket{010},
+        \ket{011},
+        \ket{100},
+        \ket{101},
+        \ket{110},
+        \ket{111}\} \\
+      &= \left\{ \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+        \begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+        \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \end{bmatrix},
+        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \end{bmatrix},
+        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} \right\}\, .
+    \end{align*}
+
+    \noindent
+    As in the single-qubit case, we see that we have orthonormality over the
+      computational basis states:
+    \[ \braket{x|y} = \delta_{xy}\, . \]
+
+  \paragraph{Qubit registers.}
+    Given a collection of $n$ qubits, we will often find it useful to divide it
+      into \emph{registers} of specified sizes, for example to separate
+      distincts elements in an input. We will use subscripts to refer to specific
+      registers, unless the register we are referring to is clear from context.
+
+    As an example, let's say we want the first
+      $n_1$ qubits store the variable $x$---call this ``Register 1''---and that
+      the remaining $n_2$ qubits---``Register 2''---should store the variable
+      $y$. Then the following are all equivalent ways of denoting the combined state:
+
+    \[
+      \ket{x\concat y} = \ket{x}_1 \otimes \ket{y}_2 \coloneqq \ket{x}_1 \ket{y}_2
+        \coloneqq \ket{x, y}\, ,
+    \]
+    \noindent
+    where $\concat$ denotes string concatenation.
+
+  \paragraph{Greek and Roman letters.}
+    We will use the letters $x$, $y$, $z$, \ldots to represent classical binary
+      strings. Thus, a state $\ket{x}$ will always be understood to be a
+      computational basis state. Whenever we are talking specifically about single-qubit
+      computational basis states, we will use $b$ to represent a single bit, 
+      and write $\ket{b}$. 
+
+    General quantum states are traditionally labelled by letters taken from the
+      middle of the greek alphabet, such as $\psi$, $\varphi$, $\xi$, etc.
+      We will follow this tradition, or otherwise use a descriptive label
+      relating to the specific context in which the state is being used. 
+
+    Quantum \emph{amplitudes}, meanwhile, are written using letters taken from the start of the greek
+      alphabet ($\alpha$, $\beta$, \ldots). 
+      
+  \paragraph{General qubit states.}
+    A general single-qubit state may be written in terms of the computational
+      basis states as follows:
+
+    \[
+      \ket{\psi} = \alpha_0 \ket{0} + \alpha_1 \ket{1}\, ,
+    \]
+    where the amplitudes $\alpha_i$ are complex numbers satisfying
+      $\abs{\alpha_0}^2 + \abs{\alpha_1}^2 = 1$, (where the absolute value of
+      a complex number $\alpha$ is defined as $\abs{\alpha} = \sqrt{\alpha^*
+      \alpha}$).
+
+    Whenever a qubit is in a state
+      described by amplitudes $\alpha_0$ and $\alpha_1$ that are both non-zero, we
+      say that the qubit is in a \emph{superposition} over the values ``$0$'' and
+      ``$1$''. If we then \emph{observe} the qubit, the probability that the
+      observed outcome $X$ is either $0$ or $1$ is then given by $\prob{X=b} =
+      \abs{\alpha_b}^2 = \abs{\braket{\psi |b}}^2$, and after observation, the superposition will have
+      ``collapsed'' to the basis state corresponding to the observed value,
+      $\ket{b}$.\footnote{
+        The discernible effect of observations on quantum states has led to a
+        century of heated philosophical debate over how quantum theory should be
+        interpreted: The term ``collapse'' used here is typically associated with the
+        conservative ``Copenhagen interpretation'', championed by Niels Bohr, and commonly
+        characterized as taking a ``shut-up-and-calculate'' attitude towards the problem.
+        Another popular interpretation is the many-worlds interpretation due to Hugh Everett,
+        and favoured by 
+        father of quantum computing theory David Deutsch, among others. Instead
+        of the quantum state ``collapsing'' to become ``classical'',
+        this interpretation would say that both terms are ill-defined, and that
+        the universe should instead be understood to be nothing but one big
+        superposition state over all worlds that might have arisen from
+        the initial conditions of the Big Bang; and that what actually happened
+        when you made your observation, was that the quantum state describing the subsystem you
+        were studying and the quantum
+        state describing the subsystem containing \emph{you} became correlated
+        via the process known as \emph{entanglement}.
+        (In case you're wondering, I place my own bet on the \emph{relational}
+        interpretation due to Carlo Rovelli, which may be described as ``many-worlds
+        without the multiverse''.)
+      }
+
+    Likewise, a general, $n$-qubit quantum state may be written in terms of the computational
+      basis states:
+
+    \[
+      \ket{\psi} = \sum_{\forall i \in [2^n]} \alpha_i \ket{i} = \sum_{i = 0}^{N-1} \alpha_i \ket{i}
+        = \alpha_0 \ket{0 \dots 00} + \alpha_1 \ket{0 \dots 01} + \ldots +
+        \alpha_{N-1} \ket{1 \dots 11}\, ,
+    \]
+    
+    \noindent
+    where the \emph{amplitudes} $\alpha_i$ again satisfy
+      $\sum_{\forall i \in [2^n]} \abs{\alpha_i}^2 = 1$.
+
+    When expanded over the basis states, the inner product of two quantum
+      states $\ket{\psi} = \sum_{\forall i \in [N]} \alpha_i \ket{i}$ and $\ket{\varphi} =
+      \sum_{\forall j \in [N]} \beta_j \ket{j}$ may be written
+
+    \[
+      \braket{\psi|\varphi} = \sum_{\forall i, j \in [N]} \alpha^*_i \beta_j \braket{i|j} =
+      \sum_{\forall i, j \in [N]} \alpha^*_i \beta_j \delta_{ij} = \sum_{\forall i \in [N]} \alpha^*_i \beta_i\, .
+    \]
+
+    \noindent
+    We see that we have recovered the inner product of complex-valued vectors, which
+      is just the usual inner product of real-valued vectors with an extra complex
+      conjugation.\footnote{
+        This is because inner products on any vector space must satisfy
+        conjugate symmetry, $\langle x, y \rangle = \langle y, x \rangle^*$;
+        see \url{https://en.wikipedia.org/wiki/Inner_product_space}.
+      }
+      Thus we may apply the usual operational interpretation of the inner
+      product, in which vectors are ``perpendicular'' when their inner product is $0$,
+      and ``parallel'' when it is $1$. Together with the requirement that
+      quantum states have unit norm, this means that an inner product of $1$ implies
+      that the two quantum states are actually identical,
+      (up to the aforementioned unobservable phase factor).
+      %This allows for an
+      %operational interpretation of the inner product as \dots
+      %$\sqrt{\abs{\braket{\psi|\varphi}}} =\sqrt{\abs{\sum_i \alpha^*_i \beta_i}}$.
+
+    When expanding quantum states in terms of basis states in the manner above,
+      we will sometimes implicitly exclude terms for which $\alpha_i = 0$,
+      writing instead 
+
+    \[
+      \ket{\psi} = \sum_i \alpha_{i} \ket{x_i} \coloneqq \sum_{\forall i \in \Ispace} \alpha_{i} \ket{x_i}\, , 
+    \]
+    
+    \noindent
+    where $\Ispace = [\ell]$ indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
+      \braket{\psi|x} \neq 0\}$ for some $\ell \in \NN$.
+      %is the set of bitstrings such that the amplitude $\alpha_i$ of the
+      %corresponding basis state $\ket{x_i}$ is non-zero.
+
+  \paragraph{Unitary operations.}
+    Since we are working over finite-dimensional Hilbert spaces, quantum
+      operations, i.e.\ evolutions of quantum states, may be represented as $N
+      \times N$-dimensional matrices. What properties should they have?
+    
+    Clearly, any operation that we perform on a quantum state (\emph{except}
+      observing them!) should yield another valid quantum state
+      as a result. Since quantum states must be unit-norm, this means
+      that any operation we perform on them must preserve the norm. 
+      This fact turns out to be sufficient\footnote{
+        Here is a short proof of this fact:       } to restrict the space of allowed operations to the unitary matrices,
+      i.e.\ invertible square matrices $U$ satisfying $U^{-1} = U^\dagger$.
+
+    \begin{exercise}\label{ex:unitarity}
+      Prove that requiring operations to be norm-preserving is equivalent to
+      restricting the set of legal operations to the set of unitary matrices.
+    \end{exercise}
+
+    \noindent
+    We will use capital roman letters to refer to quantum operations, in
+      reference to their matrix representation. Whenever the qubit(s) that the
+      operation is being applied to is not clear from context, we will provide
+      the index of the qubit(s) in the
+      subscript, e.g.\ $U_i$ for single-qubit operations, and $U_{i,j}$ for
+      two-qubit operations, where $i,j \in [N]$ and $i \neq j$ (or more
+      generally, the \emph{registers} on which the operations are applied).
+
+    It is often useful to refer to operations in terms of the effect they have
+      on the starting state, and so we define $\ket{\psi} \apply{U}
+      \ket{\varphi}$ to mean that we perform the operation $\ket{\psi}
+      \longrightarrow U \ket{\psi} = \ket{\varphi}$.
+
+    Some elementary unitary transformations, known as quantum \emph{gates}, include
+      \[
+        \Xgate = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\, , \quad
+        \Zgate = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, , \quad
+        \Hgate = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}\, , \quad
+        \CXgate = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}\, .
+      \]
+
+    \begin{exercise}\label{ex:truthtable}
+      Write down ``truth tables'' for each of the above gates by writing down
+      their effect on the (single-qubit resp.\ two-qubit) computational basis states.
+      (E.g., $\ket{0} \apply{\Xgate} \ket{1}$.)
+    \end{exercise}
+
+    \noindent
+    The ``$C$'' in $\CXgate$ is short for ``controlled'', where the value of
+      the first qubit \emph{controls} the operation on the second qubit. Any single-qubit
+      operation $U$ defines a two-qubit controlled version of the same
+      operation, which we will refer to as $CU$.
+
+    \begin{exercise}
+      Starting with the two-qubit state $\ket{\psi} = \ket{00}$, apply the operations $\Hgate_0$ and
+      $\CXgate_{0, 1}$. What are the possible outcomes of observing the resulting
+      state, and what are their probabilities? Compare with the result of
+      applying the single-qubit gates $\Hgate_0$ and $\Hgate_1$ instead.
+    \end{exercise}
+
+    \begin{exercise}\label{ex:HadamardBasis}
+      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
+      terms of the alternative basis states $\ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}$, 
+      $\ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}$ instead. Compare
+      with the truth table from \autoref{ex:truthtable}. What has changed?
+    \end{exercise}
+
+    \begin{exercise}
+      Give the matrix representation of a unitary operation that acts on the
+      alternative basis from \autoref{ex:HadamardBasis} in the same way that
+      $\CXgate$ acts on the computational basis.
+    \end{exercise}

@@ -12,8 +12,8 @@
 
 \newif\ifdraftversion
   % To flag stuff unlikely to make it by deadline
-  % \draftversionfalse
-  \draftversiontrue
+   \draftversionfalse
+  %\draftversiontrue
 
 %
 % BEGINNING OF DO NOT EDIT ZONE
@@ -186,14 +186,6 @@
 
   % \ifsubmission\setcounter{page}{1}\fi
 
-  %\input{linext-introduction}
-
-  %\clearpage
-
-  %\input{linext-prelim}
-
-  %\clearpage
-
   \ifeprintfull
     % \clearpage
     \addcontentsline{toc}{section}{References}
@@ -202,6 +194,7 @@
   % Main body
     \input{qrot-introduction}
     \input{qrot-preliminaries}
+    \input{qrot-primer}
 
     % WIP
     \ifdraftversion
@@ -213,7 +206,7 @@
 	\bibliographystyle{alpha}
   	%\bibliographystyle{splncs04}
   	% \bibliographystyle{plain}
-  	\bibliography{./cryptobib/abbrev3,./cryptobib/crypto}
+  	\bibliography{./cryptobib/abbrev3,./cryptobib/crypto,./qrot.bib}
 
   \ifsubmission
     \clearpage
