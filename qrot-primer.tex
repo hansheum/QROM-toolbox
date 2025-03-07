@@ -28,9 +28,9 @@
       vector space defined over functions),
       which may or may not be finite-dimensional.\footnote{
         For example, consider the state $\ket{p(x)}$
-        describing the position $x \in [0,1]$ of particle $p$; this will live
-        in an infinite-dimensional Hilbert space characterized by the basis vectors
-        $\{\ket{p(x)}\}_{x\in[0,1]}$.
+        describing the position $x \in [a,b]$ of particle $p$; this will live
+        in an infinite-dimensional Hilbert space characterized by the basis
+        states $\{\ket{p(x)}\}_{x\in[a,b]}$.
       }
     %
     Quantum states are represented using the Dirac notation, in which a quantum state
@@ -41,7 +41,8 @@
       \abs{\ket{\psi}}^2$. Quantum states are unit-norm, and so we have that
       $\braket{\psi|\psi} = 1$. For two not necessarily equal quantum states
       $\ket{\psi}$ and $\ket{\varphi}$, their inner product
-      $\braket{\psi|\varphi}$ is a real number between zero and one, where
+      $\braket{\psi|\varphi}$ is a complex number $\alpha$ with norm
+      $\abs{\alpha}$ between zero and one, where
       ``zero'' means the states are orthogonal, and ``one'' means the states are
       identical (modulo an unobservable global phase factor $e^{i\theta}$).
 
@@ -65,7 +66,7 @@
 
     If all of this sounds terribly complicated, then you understand why
       physicists grew so fond of Dirac's notation, which neatly swept all of
-      these horrible details under the rug of conceptual clarity!
+      these horrible details under a rug of conceptual clarity!
 
     Thankfully, things become a bit easier in the discrete case: the Hilbert
       space is now finite, and so it can be expressed in terms of a finite set of basis
@@ -169,7 +170,7 @@
     \[ \braket{x|y} = \delta_{xy}\, . \]
 
   \paragraph{Qubit registers.}
-    Given a collection of $n$ qubits, we will often find it useful to divide it
+    Given a collection of $n$ qubits, we will find it useful to divide it
       into \emph{registers} of specified sizes, for example to separate
       distincts elements in an input. We will use subscripts to refer to specific
       registers, unless the register we are referring to is clear from context.
@@ -200,7 +201,7 @@
 
     Quantum \emph{amplitudes}, meanwhile, are written using letters taken from the start of the greek
       alphabet ($\alpha$, $\beta$, \ldots). 
-      
+
   \paragraph{General qubit states.}
     A general single-qubit state may be written in terms of the computational
       basis states as follows:
@@ -306,8 +307,8 @@
       observing them!) should yield another valid quantum state
       as a result. Since quantum states must be unit-norm, this means
       that any operation we perform on them must preserve the norm. 
-      This fact turns out to be sufficient\footnote{
-        Here is a short proof of this fact:       } to restrict the space of allowed operations to the unitary matrices,
+      This fact turns out to be sufficient
+      to restrict the space of allowed operations to the unitary matrices,
       i.e.\ invertible square matrices $U$ satisfying $U^{-1} = U^\dagger$.
 
     \begin{exercise}\label{ex:unitarity}
@@ -368,3 +369,116 @@
       alternative basis from \autoref{ex:HadamardBasis} in the same way that
       $\CXgate$ acts on the computational basis.
     \end{exercise}
+
+  \paragraph{Quantum entities, entanglement, and a quantum pseudocode.}
+    So far, we have defined notation for computational basis states ($\ket{x}$,
+      $\ket{y}$), general quantum states ($\ket{\psi}$, $\ket{\varphi}$),
+      unitaries ($\unitary{U}$, $\unitary{V}$, $\unitary{X}$), and we can write
+      the effect of applying a unitary transformation $\unitary{U}$ on a
+      quantum state $\ket{\psi}$ either as $\ket{\varphi} = \unitary
+      \ket{\psi}$, or as $\ket{\psi} \apply{\unitary} \ket{\varphi}$.
+
+    \hhnote{todo: fix this}
+
+    And still this isn't enough. This is because we are going to be talking
+      about communicating parties. Consider the situation that Alice has two
+      quantum bits initalized to the zero state, so that her state is
+      $\ket{\psi} = \ket{0}_0 \ket{0}_1$. Now she wants to send her second
+      qubit register, $\ket{0}_1$, over to Bob, who is going to apply some
+      single-qubit unitary to it, and then send it back. We might write this as
+      $\ket{0}_1 \apply{\unitary_1} \ket{\xi}_1$, where $\ket{\xi}_1$ is some
+      unknown, single-qubit state, and say that Bob returns $\ket{\xi}_1$ to
+      Alice at the end of the protocol.
+
+    But what if Alice had prepared her two qubits in the state
+      $\ket{\varphi} = \frac{\ket{00} + \ket{11}}{\sqrt{2}}$ instead?
+      Then, the two qubits are \emph{non-separable}, meaning that they can no
+      longer be cleanly factored into a tensor product. In the world of quantum
+      physics, this means that the two qubits are \emph{entangled}---a fancy
+      word describing a phenomenon with many deep consequences for physics and
+      philosophy alike---but mathematically speaking it is nothing but the quantum
+      generalization of correlated probabilities.\footnote{
+        In other words, the term ``separable'' here carries exactly the same
+        meaning as the term ``product'' does when talking about classical
+        probability distributions.
+        More precisely, if an arbitrary quantum state is \emph{separable} along
+        some dividing line, such that $\ket{\psi} = \ket{\varphi} \otimes
+        \ket{\xi}$, then the distribution over the observation outcomes will
+        form a product distribution with the
+        same dividing line. This remains true regardless of
+        which basis you choose to make your observation in, implying that
+        entanglement is an observation-independent (and therefore
+        ``objective'') property of the state.
+      } Alice can still send her second qubit to Bob, and Bob can still apply
+      the operation $\unitary$ to it; our problem is just that with the tools
+      presented so far, we have no way of writing this operation without
+      referencing the entire
+      state, like so: $\ket{\varphi} \longrightarrow \ket{\xi} = (\idmatrix_0 \otimes
+      \unitary_1) \ket{\varphi}$.\footnote{
+        For those ahead of the curve: One can reference one half of an
+        entangled state using the generalized notion of a 
+        \emph{mixed state}, by going to the density matrix formalization of
+        quantum mechanics, which generalizes quantum states by combining them
+        with classical probabilities. The reason why we avoid this solution
+        here is that mixed states are not unique, and so there are many
+        different states that could have led to Bob receiving a particular
+        mixed state.
+      } What we want is to be able to write the operations of Alice and Bob without
+      having to reference states belonging to the other, regardless of whether
+      or not they share entanglement between them. In other words, we need a
+      better \emph{pseudocode}.
+
+    Let $\qubit$ be a physical qubit, in the sense of being some kind of
+      particle or quantum system existing in
+      the physical world. Now, guided by our intuition, we will say that Alice,
+      instead of sending a quantum \emph{state} to Bob, actually sends the
+      \emph{physical qubit} $\qubit$.\footnote{
+        In real-world quantum technologies, qubits are
+        typically stored in one kind of system (e.g.\ atoms) and sent using another
+        kind (photons), but due to the non-cloneability of quantum states,
+        together with the universal ability to transfer any quantum state from
+        one qubit to another (known as the SWAP operation), our simplified
+        model is without loss of generality.
+      } Anyone who receives a qubit, also gains the
+      ability to apply any transformation or measurement on it, while those who sent it 
+      loses the ability to do so.
+
+    We will write the \emph{state} of a qubit $\qubit$ as $\ket\qubit$; so, for
+      example, if $\qubit$ is in the state $\ket{0}$, then we write
+      $\ket{\qubit} = \ket0$. Additionally, it will sometimes be useful to
+      reference how the state of $\qubit$ evolved over time. Let's say that at
+      time $t$ the unitary $\unitary$ was applied; this would then be written
+      $\ket{\qubit(t)} \apply{\unitary} \ket{\qubit(t+1)}$. Likewise, if $\qubit$ was
+      initialized to $\ket0$, then $\ket{\qubit(0)} = \ket0$.
+
+    Next, let us define an $n$-qubit quantum computer $\qcomp$ to be a list of
+      qubits: 
+      \[ 
+        \qcomp \coloneqq (\qubit_0, \dots, \qubit_{n-1})\, .
+      \]
+      Then we may reference the $i$'th qubit of $\qcomp$ by retreiving it from
+      the list: $\qcomp[i] = \qubit_i$. What's more, 
+      we may reference any collection of qubits by inputing a
+      list of indices. This allows us to easily define arbitrary registers:
+      \[
+        \register \coloneqq \qcomp[\Ilist] = (\qcomp[\Ilist[0]],
+        \qcomp[\Ilist[1]], \ldots, \qcomp[\Ilist[\ell]])\, ,
+      \]
+      where $\ell = \abs{\Ilist}$ defines the size of the register $\register$.
+
+      In the case where there is no entanglement, we may write the state of a
+        register $\register$ as
+      \[ 
+        \ket\register \coloneqq \bigotimes_{\forall i \in \abs{\register}}
+        \ket{\register[R] [i]}
+        = \ket{\qubit_{\Ilist[0]}} \otimes \ldots \otimes \ket{\qubit_{\Ilist[\ell]}} =
+        \ket{\qubit_{\Ilist[0]} \ldots \qubit_{\Ilist[\ell]}}\, ,
+      \]
+      but of course, the entire point of this exercise was that we cannot write
+        the whole state in terms of the individual qubit states in the general,
+        entangled case, and so need an alternative way to reference its
+        constituents.
+      
+      Next, let Alice and Bob have access to quantum computers $\adv$ and $\bdv$,
+        respectively. Instead of saying that Alice sends a \emph{state}
+        to Bob, we will 

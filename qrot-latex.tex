@@ -16,11 +16,17 @@
 \newcommand{\randfunc}{\ensuremath{\mathcal{R}}}
 \newcommand{\unitary}{\ensuremath{\pcalgostyle{U}}}
 
-%%% Objects
+%%% Quantum objects
+\newcommand{\qubit}{\mathsf{q}}
+\newcommand{\register}[1][R]{\ensuremath{\mathbb{#1}}}
+\newcommand{\qcomp}{\register[Q]}
+
+%%% Classical objects
 \newcommand{\prfkey}{\ensuremath{k}}
 
 %%% Gates
-\newcommand{\Xgate}{\ensuremath{X}}
-\newcommand{\Zgate}{\ensuremath{Z}}
-\newcommand{\Hgate}{\ensuremath{H}}
-\newcommand{\CXgate}{\ensuremath{CX}}
+\renewcommand{\unitary}[1][U]{\mathsf{#1}}
+\newcommand{\Xgate}{\unitary{X}}
+\newcommand{\Zgate}{\unitary{Z}}
+\newcommand{\Hgate}{\unitary{H}}
+\newcommand{\CXgate}{\unitary{CX}}
