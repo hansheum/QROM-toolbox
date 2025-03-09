@@ -341,7 +341,7 @@
     \begin{exercise}\label{ex:truthtable}
       Write down ``truth tables'' for each of the above gates by writing down
       their effect on the (single-qubit resp.\ two-qubit) computational basis states.
-      (E.g., $\ket{0} \apply{\Xgate} \ket{1}$.)
+      (E.g., $\ket{0} \apply{\Xgate} \ket{1}$, etc.)
     \end{exercise}
 
     \noindent
@@ -370,15 +370,102 @@
       $\CXgate$ acts on the computational basis.
     \end{exercise}
 
-  \subsection{Quantum Entities, Entanglement, and Towards a Quantum Pseudocode}
-    So far, we have defined notation for computational basis states ($\ket{x}$,
-      $\ket{y}$), general quantum states ($\ket{\psi}$, $\ket{\varphi}$),
-      unitaries ($\unitary{U}$, $\unitary{V}$, $\unitary{X}$), and we can write
-      the effect of applying a unitary transformation $\unitary{U}$ on a
-      quantum state $\ket{\psi}$ either as $\ket{\varphi} = \unitary
-      \ket{\psi}$, or as $\ket{\psi} \apply{\unitary} \ket{\varphi}$.
+    \noindent
+    Another two-qubit unitary gate that will turn out to be useful is the $\SWAPgate$
+      gate, defined as $\ket{01} \apply{\SWAPgate} \ket{10}$, $\ket{10}
+      \apply{\SWAPgate} \ket{01}$, and acting like the identity on $\ket{00}$
+      and $\ket{11}$. Applying this to general qubit states, we get
 
-    \hhnote{todo: fix this}
+    \begin{align*}
+      &(\alpha_0 \ket{0} + \alpha_1 \ket{1}) \otimes (\beta_0 \ket{0} + \beta_1 \ket{1}) 
+        = \alpha_0 \beta_0 \ket{00} + \alpha_0 \beta_1 \ket{01} +
+        \alpha_1 \beta_0 \ket{10} + \alpha_1 \beta_1 \ket{11} \\
+      &\apply{\SWAPgate} \alpha_0 \beta_0 \ket{00} + \alpha_0 \beta_1 \ket{10} +
+        \alpha_1 \beta_0 \ket{01} + \alpha_1 \beta_1 \ket{11} = 
+        (\beta_0 \ket{0} + \beta_1 \ket{1}) \otimes (\alpha_0 \ket{0} +
+        \alpha_1 \ket{1})\, . 
+    \end{align*}
+
+    \noindent
+    Thus, we see that the $\SWAPgate$ gate has the effect of swapping the states of two
+      qubits with each other.
+
+    \begin{exercise}
+      Give the matrix representation of the $\SWAPgate$ gate in the
+      computational basis.
+    \end{exercise}
+
+    \paragraph{Transformations in space vs.\ time.}
+      You may have noticed that we are working with two different kinds of
+        product when talking about unitary matrices: The matrix product
+        $\unitary_1 \unitary_2$, and the tensor product $\unitary_1 \otimes
+        \unitary_2$. When should each kind of product be used?
+
+      To illustrate, let $\ket{\psi}$ and $\ket{\varphi}$ be two single-qubit
+        states, combined in the two-qubit state $\ket{\psi, \varphi} \coloneqq
+        \ket{\psi} \otimes \ket{\varphi}$. Then, if $\unitary_1$ and
+        $\unitary_2$ are single-qubit transformations (i.e.\ $2 \times 2$ unitary
+        matrices), and you want to apply $\unitary_1$ to $\ket{\psi}$ and
+        $\unitary_2$ to $\ket{\varphi}$, you should write
+
+      \[
+        \unitary_{1,2} \ket{\psi, \varphi} \coloneqq
+        (\unitary_1 \otimes \unitary_2) (\ket{\psi} \otimes \ket{\varphi})\, .
+      \]
+
+      \noindent
+      The matrix $\unitary_{1,2} = \unitary_1 \otimes \unitary_2$ will be a two-qubit
+        transformation (i.e.\ a $4 \times 4$ unitary) that combine the effect
+        of the two single-qubit transformations to apply them in parallel
+        (that is, in the same time step).
+
+      Next, imagine instead that you have two two-qubit unitaries ($4 \times 4$
+        matrices) $\unitary_1$ and $\unitary_2$, and you want to apply
+        $\unitary_1$ first, and then $\unitary_2$. In other words, you want
+        something to the effect of
+        
+      \[
+        \ket{\psi(0), \varphi(0)} \apply{\unitary_1} \ket{\psi(1), \varphi(1)}
+          \apply{\unitary_2} \ket{\psi(2), \varphi(2)} .
+      \]
+
+      \noindent
+      This is then given by
+
+      \[
+        \unitary_2 \unitary_1 \ket{\psi(0), \varphi(0)}
+        = \unitary_2 (\unitary_1 \ket{\psi(0), \varphi(0)})
+        \coloneqq \unitary_2 \ket{\psi(1), \varphi(1)}
+        \coloneqq \ket{\psi(2), \varphi(2)} .
+      \]
+
+      \noindent
+      Note the reversed order of operations! 
+
+      As before, we could define a unitary $\unitary_{1,2} \coloneqq \unitary_1 \unitary_2$. 
+        Thus, even though we want to say that the application of $\unitary_1$ and $\unitary_2$
+        happens in two time steps, we see that the time of application can be ``collapsed'' to a
+        single time-step! Thus, when counting time steps in the analysis of quantum
+        algorithms, the first step is to define some Turing-universal set of
+        elementary quantum gates from which all other unitaries must be
+        constructed, in series and in parallel.
+
+      To summarize, the tensor product is used when applying unitaries in
+        \emph{parallel}, while the matrix product is used when applying unitaries in
+        \emph{series}.
+
+    \begin{exercise}
+      Construct the $\SWAPgate$ gate as a series of $\CXgate$ gates.
+    \end{exercise}
+
+  \subsection{Quantum Entities, Entanglement, and Towards a Quantum Pseudocode}
+    So far, we have defined notation for computational basis states
+      $\ket{x}$, general quantum states $\ket{\psi}$,
+      unitary transformations $\unitary$, and the
+      the result of applying a unitary transformation $\unitary$ on a
+      quantum state $\ket{\psi}$, written $\ket{\psi} \to
+      \ket{\varphi} = \unitary \ket{\psi}$, or equivalently
+      $\ket{\psi} \apply{\unitary} \ket{\varphi}$.
 
     And still this isn't enough. This is because we are going to be talking
       about communicating parties. Consider the situation that Alice has two
