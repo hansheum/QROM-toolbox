@@ -14,19 +14,23 @@
 
 %%% Algorithms
 \newcommand{\randfunc}{\ensuremath{\mathcal{R}}}
-\newcommand{\unitary}{\ensuremath{\pcalgostyle{U}}}
 
 %%% Quantum objects
 \newcommand{\qubit}{\mathsf{q}}
-\newcommand{\register}[1][R]{\ensuremath{\mathbb{#1}}}
+\newcommand{\register}[1][A]{\ensuremath{\mathcal{#1}}}
 \newcommand{\qcomp}{\register[Q]}
 
 %%% Classical objects
 \newcommand{\prfkey}{\ensuremath{k}}
 
 %%% Gates
-\renewcommand{\unitary}[1][U]{\mathsf{#1}}
-\newcommand{\Xgate}{\unitary{X}}
-\newcommand{\Zgate}{\unitary{Z}}
-\newcommand{\Hgate}{\unitary{H}}
-\newcommand{\CXgate}{\unitary{CX}}
+\newcommand{\unitary}[1][U]{\mathsf{#1}}
+\newcommand{\Xgate}{\unitary[X]}
+\newcommand{\Zgate}{\unitary[Z]}
+\newcommand{\Hgate}{\unitary[H]}
+\newcommand{\CXgate}{\unitary[CX]}
+\newcommand{\SWAPgate}{\unitary[SWAP]}
+\newcommand{\SORTgate}{\unitary[SORT]}
+
+%%% Quantum algorithms
+\newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] \to #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
