@@ -634,13 +634,9 @@
       or not their quantum states are entangled. In other words, what we need is a
       better \emph{quantum pseudocode}.
 
-    \hhnote{
-      10/03: Continue from here.
-    }
-
     Let $\qubit$ be a physical qubit, in the sense of being some kind of
       particle or quantum system existing in
-      the physical world. Now, guided by our intuition, we will say that Alice,
+      the physical world. Now, guided by our intuition, we want to say that Alice,
       instead of sending a quantum \emph{state} to Bob, actually sends him the
       \emph{physical qubit} $\qubit$.\footnote{
         In real-world quantum technologies, qubits are
@@ -649,124 +645,129 @@
         together with the universal ability to transfer any quantum state from
         one qubit to another via the $\SWAPgate$ gate, this simplified
         model is without loss of generality.
-      } Anyone who receives a qubit, also gains the
+      } Anyone who receives a qubit, should also gain the
       ability to apply any transformation or measurement on it, while those who sent it 
-      loses the ability to do so.
+      should lose the ability to do so, unless and until the qubit is returned to them.
+      Crucially, we should be able to describe these actions \emph{locally},
+      i.e.\ without reference to any qubits \emph{not} in the possession of the
+      receiving party.
 
-    We will write the \emph{state} of a qubit $\qubit$ as $\ket\qubit$; so, for
-      example, if $\qubit$ is in the state $\ket{0}$, then we write
-      $\ket{\qubit} = \ket0$. Additionally, it will sometimes be useful to
-      reference how the state of $\qubit$ evolved over time. Let's say that at
-      time $t$ the unitary $\unitary$ was applied; this would then be written
-      $\ket{\qubit(t)} \apply{\unitary} \ket{\qubit(t+1)}$. Likewise, if $\qubit$ was
-      initialized to $\ket0$, then $\ket{\qubit(0)} = \ket0$.
-
-    Next, let us define an $n$-qubit quantum computer $\qcomp$ to be a list of
-      qubits: 
-      \[ 
-        \qcomp \coloneqq (\qubit_0, \dots, \qubit_{n-1})\, .
-      \]
-      Then we may reference the $i$'th qubit of $\qcomp$ by retreiving it from
-      the list: $\qcomp[i] = \qubit_i$. What's more, 
-      we may reference any collection of qubits by inputing a
-      list of indices. This allows us to easily define arbitrary registers:
-      \[
-        \register \coloneqq \qcomp[\Ilist] = (\qcomp[\Ilist[0]],
-        \qcomp[\Ilist[1]], \ldots, \qcomp[\Ilist[\ell]])\, ,
-      \]
-      where $\ell = \abs{\Ilist}$ defines the size of the register $\register$.
-
-    In the case where there is no entanglement, we may write the state of a
-      register $\register$ as
-    \[ 
-      \ket\register \coloneqq \bigotimes_{\forall i \in \abs{\register}}
-      \ket{\register[R] [i]}
-      = \ket{\qubit_{\Ilist[0]}} \otimes \ldots \otimes \ket{\qubit_{\Ilist[\ell]}} =
-      \ket{\qubit_{\Ilist[0]} \ldots \qubit_{\Ilist[\ell]}}\, ,
-    \]
-    but of course, the entire point of this exercise was that we cannot write
-      the whole state in terms of the individual qubit states in the general,
-      entangled case, and so need an alternative way to reference its
-      constituents.
-    
-    Next, let Alice and Bob have access to quantum computers $\adv$ and $\bdv$,
-      respectively. Instead of saying that Alice sends a \emph{state}
-      to Bob, we will 
+    So, with that goal in mind, let us introduce a little more formalism.
 
     \begin{definition}[Qubit]\label{def:qubit}
-      A qubit $\qubit$ is a two-dimensional physical system, meaning that it
-      is associated with an \emph{observable} $\hat{\qubit}$ taking one of
-      two values, $0$ or $1$. A qubits are also associated with 
-      an \emph{address} $i \in [n]$ (for some $n \in \NN$).\footnote{
+      A qubit $\qubit$ is a two-dimensional physical system, i.e.\ a physical
+      system associated with an \emph{observable} $\hat{\qubit}$, taking values
+      in $\bin$. Each qubit is additionally associated with 
+      a unique \emph{register address} $i \in \NN$.\footnote{
         In the formalism of quantum Turing machines given by
         Deutsch~\cite{Deutsch85}, the addresses correspond
-        to values of the \emph{address observable} $\hat{x}$,
-        except that we limit ourselves to finite quantum
-        memory by letting the set of possible values be $[n]$
-        rather than $\ZZ$.
-      } We will refer to the qubit with address $i$ as $\qubit_i$.
-      If qubit $\qubit_i$ is in a pure state (i.e.\ not entangled with any
-      other qubit), then its state may be denoted
-      $\ket{\qubit_i}$ (or, equivalently, $\ket{\qubit_i}_i$). If
-      $\ket{\qubit_i} = \ket{\psi}$ for some state $\ket{\psi}$,
-      then this may be denoted $\ket{\psi}_i$.
+        to values of the \emph{address observable} $\hat{x}$
+        (except that we will limit ourselves to finite quantum
+        memory by letting the set of possible addresses be $[n]$
+        rather than $\ZZ$).
+      }     
     \end{definition}
+
+    \noindent
+    Let us refer to the qubit sitting at address $i$ as $\qubit_i$.
+      If qubit $\qubit_i$ is in not entangled with any
+      other qubit (i.e.\ is in a pure state), then its state may be denoted
+      $\ket{\qubit_i}$ (equivalent to $\ket{\qubit_i}_i$). If
+      $\ket{\qubit_i} = \ket{\psi}$ for some particular single-qubit
+      state $\ket{\psi}$, then this may be denoted $\ket{\psi}_i$. Likewise,
+      the state of qubit $i$ at time $t$ may be denoted $\ket{\qubit_i(t)}$.
+      For the sake of illustration, let's say that at
+      time $t$ the unitary $\unitary$ was applied to $\qubit_i$; this would then be written
+      $\ket{\qubit_i(t)} \apply{\unitary_i} \ket{\qubit_i(t+1)}$. Likewise, if $\qubit$ was
+      initialized to $\ket0$, then $\ket{\qubit(0)} = \ket0$.
+
+    Next, let us define our ``universe'', that is, the full, undivided quantum memory 
+      which will act as a stage for all our plays.
 
     \begin{definition}[Quantum memory]\label{def:memory}
       An $n$-qubit quantum memory is an $n$-element list of qubits $\qcomp =
-      (\qubit_1, \cdots, \qubit_n)$ comprising a \emph{closed} quantum
-      system, in the sense that no operation may be performed on the memory such
-      that the system is no longer in a pure state\footnote{
-        Note that this also implies that state preparation must be
-        \emph{deterministic}, or at least \emph{posterior} to any randomness
-        involved in the procedure: Flipping a (classical) coin and saying that you
-        prepare a qubit in the state $\ket{1}$ on heads and $\ket{0}$ on
-        tails would, when conditioning on the result of the coin flip, put $\qcomp$
-        in a mixed state, and must therefore be disallowed. Thankfully, due to
-        Turing-universality, this restriction is without loss of generality.
-      }. In other words, the quantum memory can not \emph{entangle} with any
-      system outside of itself (though it may be \emph{observed}, after which
-      it immediately collapses to the observed basis state).
-      Thus, the $N$-dimensional ``global'' quantum state $\ket{\qcomp}$ will always
-      be well-defined.
+      (\qubit_1, \cdots, \qubit_n)$ comprising a quantum
+      system that is \emph{closed} in the following sense: 
+      There are no operations that may be performed on the qubits $\qubit_i$
+      such that $\qcomp$ can no longer be said to be in a pure state.
     \end{definition}
+
+    \noindent
+    In particular, $\qcomp$ can not get entangled with any
+      system outside of itself---though it may be \emph{observed}, after which
+      it will immediately collapse to the observed basis state.\footnote{
+        Of course, from the Everettian point of view, observing a state is
+        nothing but entangling yourself with it.
+      }         
+
+    The requirement that $\qcomp$ is always in a pure state also
+      implies that state preparation must be
+      \emph{deterministic} (or at least posterior to any randomness
+      involved in the procedure): Flipping a (classical) coin and saying that you
+      prepare a qubit in the state $\ket{1}$ on heads and $\ket{0}$ on
+      tails would, when conditioning on the result of the coin flip, put $\qcomp$
+      in a mixed state, and this must therefore be disallowed. Thankfully, due to
+      Turing-universality, we can make this restriction without loss of generality.
+
+    Thus, our $N$-dimensional ``global'' quantum state $\ket{\qcomp}$ will always
+      be well-defined, giving us a ``smallest'' element $\qubit$ and a
+      ``largest'' element $\qcomp$. This means that it is time to define the in-betweens.
 
     \begin{definition}[Quantum register]\label{def:register}
-      An $m$-qubit quantum register $\register$ is a subsystem of $n$-qubit quantum
-      memory $\qcomp$, that is an ordered sub-list of $\qcomp$, where by
+      An $m$-qubit quantum register $\register$ is a subsystem of the $n$-qubit quantum
+      memory $\qcomp$, that is, an ordered sub-list of $\qcomp$, where by
       \emph{ordered} we mean that if
-      $\register = (\qubit_{i_0}, \qubit_{i_1}, \dots, \qubit_{i_m})$,
-      then the qubit addresses $i_0, \dots, i_m \in [n]$ satisfy $i_0 < i_1 < \dots < i_m$.
-      If the qubits in $\register$ are not entangled with any other subsystem
-      of $\qcomp$, then the system $\register$ is in a pure state, which we may denote
-      $\ket{\register}$. In a slight overload of notation, we let
-      $[\register]$ denote the set $\{i_j\}_{j\in [m]}$ of qubit addresses
-      associated with $\register$; then, if $\ket{\register} = \ket{\psi}$
-      for some specific state $\ket{\psi}$, this may be denoted
-      $\ket{\psi}_{[\register]}$.
+      $\register = (\qubit_{i_0}, \qubit_{i_1}, \dots, \qubit_{i_m})$
+      then $i_0 < i_1 < \dots < i_m$.
     \end{definition}
 
+    \noindent
+    If the qubits in $\register$ are not entangled with any other subsystems
+      of $\qcomp$, then the system $\register$ is in a pure state, and we may
+      write $\ket{\register}$. In a slight overload of notation, let
+      $[\register]$ denote the set $\{i_j\}_{j\in [m]}$ of qubit addresses
+      associated with the qubits in $\register$; then $\ket\register$ is given
+      by
+    \[ 
+      \ket\register 
+      \coloneqq \bigotimes_{\forall i \in [m]} \ket{\register[A][i]}
+      \coloneqq \bigotimes_{\forall i \in [\register]} \ket{\qcomp[i]}
+      = \ket{\qubit_{i_0}, \ldots, \qubit_{i_m}}\, .
+    \]
+
+    \noindent
+    If $\ket{\register} = \ket{\psi}$ for some specific state $\ket{\psi}$,
+      this may be denoted $\ket{\psi}_{[\register]}$,
+      which, having satisfied ourselves that it is
+      well-defined, we will immediately shorthand to $\ket{\psi}_{\register}$.
+
+    But of course, the starting point of this entire exercise was that we
+      \emph{cannot} write
+      the state of a register in terms of its own constituents in the general,
+      entangled case, and so we still need an alternative way to denote 
+      operating on it.
+    
     \begin{definition}[Operating on registers]\label{def:apply}
-      Let $\qcomp$ be an $n$-qubit quantum memory in some $N$-dimensional
-      state $\ket{\qcomp}$, let $\register$ be an $m$-qubit register
-      describing a subsystem of $\qcomp$, and let $\unitary$ be an
+      Let $\qcomp$ be an $n$-qubit quantum memory in quantum state
+      $\ket{\qcomp}$, let the register $\register$ be an $m$-qubit
+      subsystem of $\qcomp$, and let $\unitary$ be an
       $M \times M$ unitary matrix. 
 
-      Let $\unitary_{\register}$ be the $N \times N$ unitary matrix that
+      Next, define $\unitary_{\register}$ to be the $N \times N$ unitary matrix that
       has the effect of applying $\unitary$ on the qubits in $\register$ and the
-      identity on the qubits in $\qcomp \backslash \register$:
+      identity on the qubits in $\qcomp \backslash \register$. Specifically:
       \[
         \unitary_{\register} \coloneqq \SORTgate^\dagger([\register], [\qcomp
         \backslash \register])\ (\unitary \otimes \idmatrix)\
         \SORTgate([\register], [\qcomp \backslash \register])\, ,
       \]
       where $\SORTgate([\register], [\qcomp \backslash \register])$ is the $N
-      \times N$ unitary matrix, composed of a series of $\SWAPgate$ gates, that has the effect of
-      reordering the qubits $\qcomp$ such that the qubits of $\register$
+      \times N$ unitary matrix, composed of a series of $\SWAPgate$ gates, that 
+      reorders the qubits in $\qcomp$ such that the qubits of $\register$
       precede the qubits of $\qcomp \backslash \register$;
       $\SORTgate^\dagger$ reverses the operation of $\SORTgate$; and 
       $\idmatrix$ is the $2^{n-m} \times 2^{n-m}$ identity matrix.
-      %
+
       Then, the application of $\unitary$ to the qubits in register $\register$ is
       captured in the method $\applyU{\unitary}{\register}[\qcomp]$, defined
       as
@@ -774,9 +775,22 @@
         \applyU{\unitary}{\register}[\qcomp] &: \ket{\qcomp} \longrightarrow
           \unitary_{\register} \ket{\qcomp}\, .
       \end{align*}
-      Whenever $\qcomp$ is clear from context, we will drop the subscript and
-      simply write $\applyU{\unitary}{\register}$.
     \end{definition}
+
+    \noindent
+    Whenever $\qcomp$ is clear from context, we will drop the subscript and
+      simply write $\applyU{\unitary}{\register}$. 
+
+    With this definition, it is clear that Alice \emph{may} only be operating on
+      the qubits that are available to her, and yet those very same operations may
+      be affecting distant parts of $\qcomp$ through entanglement, which
+      is now captured in $\applyU{\unitary}{\register}[\qcomp]$ being a
+      well-defined evolution of the global state $\ket\qcomp$.
+
+    \hhnote{
+      10/3: continue from here. Missing piece: Sending and receiving
+      qubits.
+    }
 
     %\noindent
     %As an example of how to construct a unitary $\unitary_{[\register]}$ such as is needed in
@@ -802,7 +816,7 @@
     %  $\idmatrix[2^{n-m}] \otimes \unitary$, and then the reverse SWAP
     %  operations thereafter).
 
-  \subsection{Formalizing Observations}\label{sec:measurements}
+  \subsection{Formalizing ``Observing''}\label{sec:measurements}
     If observations are not quantum operations representable by unitary
       matrices, then what are they?
 
