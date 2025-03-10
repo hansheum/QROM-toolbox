@@ -8,18 +8,19 @@
     self-containedness, we specify all our
     conventions below, providing a brief summary of the
     building blocks that make up quantum computing theory along the way;
-    for more details, see the celebrated introductory text by Nielsen and
+    for more details, see the rightly celebrated introductory text by Nielsen and
     Chuang~\cite{NieChu10}.
 
   This chapter contains many footnotes: these are tangents with additional details
     that may interest the reader, but are inessential to the rest of the text.
     In particular, if a footnote made no sense to you, you should feel free to
     ignore it.\footnote{
-      Or ask me about it---I love explaining this stuff!
+      Or ask me about it! I love explaining this stuff.
     }
 
   The best way to get a feel for the logic of quantum computing, is to play
-    around with it. This chapter provides several exercises towards this purpose, 
+    around with it, and this chapter also provides several exercises towards
+    this purpose,
     inserted at points in the text where you should be able to use them to test
     your understanding of the material presented so far. 
     Solutions for some (but not all) of the exercises are provided in
@@ -711,14 +712,14 @@
 
     Thus, our $N$-dimensional ``global'' quantum state $\ket{\qcomp}$ will always
       be well-defined, giving us a ``smallest'' element $\qubit$ and a
-      ``largest'' element $\qcomp$. This means that it is time to define the in-betweens.
+      ``largest'' element $\qcomp$. That means it is time to define our in-betweens.
 
     \begin{definition}[Quantum register]\label{def:register}
       An $m$-qubit quantum register $\register$ is a subsystem of the $n$-qubit quantum
       memory $\qcomp$, that is, an ordered sub-list of $\qcomp$, where by
       \emph{ordered} we mean that if
-      $\register = (\qubit_{i_0}, \qubit_{i_1}, \dots, \qubit_{i_m})$
-      then $i_0 < i_1 < \dots < i_m$.
+      $\register = (\qubit_{i_0}, \qubit_{i_1}, \dots, \qubit_{i_{m-1}})$
+      then $i_0 < i_1 < \dots < i_{m-1}$.
     \end{definition}
 
     \noindent
@@ -732,7 +733,7 @@
       \ket\register 
       \coloneqq \bigotimes_{\forall i \in [m]} \ket{\register[A][i]}
       \coloneqq \bigotimes_{\forall i \in [\register]} \ket{\qcomp[i]}
-      = \ket{\qubit_{i_0}, \ldots, \qubit_{i_m}}\, .
+      = \ket{\qubit_{i_0}, \ldots, \qubit_{i_{m-1}}}\, .
     \]
 
     \noindent
@@ -864,7 +865,7 @@
       Global quantum state & Dirac ket with quantum memory label & $\ket{\qcomp}$ & $\in \CC^N$ \\
       \midrule
       Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
-      Apply unitary to register & $\pcalgostyle{Apply}$(unitary, register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
+      Apply unitary to register & $\pcalgostyle{Apply}$(unitary $\to$ register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
       \midrule
       Measure register & $\pcalgostyle{Meas}$(register) & $x \sample \meas{\register}$ & Method (see \autoref{def:measurement}) \\ 
       \bottomrule
