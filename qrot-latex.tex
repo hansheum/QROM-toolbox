@@ -32,5 +32,6 @@
 \newcommand{\SWAPgate}{\unitary[SWAP]}
 \newcommand{\SORTgate}{\unitary[SORT]}
 
-%%% Quantum algorithms
+%%% Quantum methods
 \newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] \to #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
+\newcommandx*{\meas}[2][2={}]{\pcalgostyle{Meas}_{#2}(#1)} % Apply Unitary #1 to Register #2 of Global Quantum System #3

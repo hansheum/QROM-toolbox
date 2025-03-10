@@ -15,8 +15,15 @@
     that may interest the reader, but are inessential to the rest of the text.
     In particular, if a footnote made no sense to you, you should feel free to
     ignore it.\footnote{
-      Or to ask me about it---I love explaining this stuff!
+      Or ask me about it---I love explaining this stuff!
     }
+
+  The best way to get a feel for the logic of quantum computing, is to play
+    around with it. This chapter provides several exercises towards this purpose, 
+    inserted at points in the text where you should be able to use them to test
+    your understanding of the material presented so far. 
+    Solutions for some (but not all) of the exercises are provided in
+    \autoref{sec:solutions}.
 
   \todoenum[Provide explanations of:]{
     \item Bare-bones background on quantum states and Dirac notation; states
@@ -306,10 +313,8 @@
       \]
       
       \noindent
-      where $\Ispace = [\ell]$ indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
-        \braket{\psi|x} \neq 0\}$ for some $\ell \in \NN$.
-        %is the set of bitstrings such that the amplitude $\alpha_i$ of the
-        %corresponding basis state $\ket{x_i}$ is non-zero.
+      where $\Ispace = [\ell]$ (for some $\ell \in \NN$) indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
+        \braket{\psi|x} \neq 0\}$.
 
   \subsection{Qubit Registers}
     Given a collection of $n$ qubits, we will find it useful to divide it
@@ -364,45 +369,51 @@
       qubits; we will remedy this situation in \autoref{sec:pseudocode}.
     }
 
-  \subsection{Unitary Operations}
+  \subsection{Unitary Operations}\label{sec:unitaries}
     Since we are working over finite-dimensional Hilbert spaces, quantum
-      operations, i.e.\ evolutions of quantum states, may be represented as $N
-      \times N$-dimensional matrices. What properties should they have?
+      operations, that is, evolutions of quantum states, may be represented as 
+      $N \times N$-dimensional matrices. What properties should they have?
     
     Clearly, any operation that we perform on a quantum state (\emph{except}
-      observing them!) should yield another valid quantum state
+      observing them---we'll get to that!) should yield another valid quantum state
       as a result. Since quantum states must be unit-norm, this means
       that any operation we perform on them must preserve the norm. 
       This fact turns out to be sufficient
       to restrict the space of allowed operations to the unitary matrices,
-      i.e.\ invertible square matrices $U$ satisfying $U^{-1} = U^\dagger$.
+      i.e.\ invertible square matrices $\unitary$ satisfying $\unitary^{-1} =
+      \unitary^\dagger$.
 
     \begin{exercise}\label{ex:unitarity}
       Prove that requiring operations to be norm-preserving is equivalent to
       restricting the set of legal operations to the set of unitary matrices.
+      (Solution is given in \autoref{sec:solutions:unitarity}.)
     \end{exercise}
 
     \noindent
-    We will use capital roman letters to refer to quantum operations, in
-      reference to their matrix representation. Whenever the qubit(s) that the
-      operation is being applied to is not clear from context, we will provide
-      the index of the qubit(s) in the
-      subscript, e.g.\ $U_i$ for single-qubit operations, and $U_{i,j}$ for
-      two-qubit operations, where $i,j \in [N]$ and $i \neq j$ (or more
-      generally, the \emph{registers} on which the operations are applied).
+    We will use (sans-serif) capital roman letters to refer to quantum operations, in
+      reference to their matrix representation (see \autoref{tab:notation} for
+      a summary of our notational conventions). Whenever the qubit(s) that the
+      operation is being applied to is not clear from context, we provide
+      the indices of the qubits in the
+      subscript, so for example $\unitary_i$ for a single-qubit operation
+      applied to qubit $i$, and $\unitary_{i,j}$ for a
+      two-qubit operation applied to qubit $i$ and $j$.
+      (Note that in general, $\unitary_{i,j} \neq \unitary_{j,i}$.)
 
     It is often useful to refer to operations in terms of the effect they have
       on the starting state, and so we define $\ket{\psi} \apply{U}
       \ket{\varphi}$ to mean that we perform the operation $\ket{\psi}
-      \longrightarrow U \ket{\psi} = \ket{\varphi}$.
+      \longrightarrow U \ket{\psi} \coloneqq \ket{\varphi}$.
 
     Some elementary unitary transformations, known as quantum \emph{gates}, include
       \[
         \Xgate = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\, , \quad
         \Zgate = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, , \quad
         \Hgate = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}\, , \quad
-        \CXgate = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}\, .
+        \CXgate = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}\, ,
       \]
+    where the matrices shown are the computational-basis representations of the general
+      unitary transformations.
 
     \begin{exercise}\label{ex:truthtable}
       Write down ``truth tables'' for each of the above gates by writing down
@@ -411,13 +422,15 @@
     \end{exercise}
 
     \noindent
-    The ``$C$'' in $\CXgate$ is short for ``controlled'', where the value of
-      the first qubit \emph{controls} the operation on the second qubit. Any single-qubit
-      operation $U$ defines a two-qubit controlled version of the same
-      operation, which we will refer to as $CU$.
+    The ``$\unitary[C]$'' in $\CXgate$ is short for ``controlled'', where the value of
+      the first qubit \emph{controls} the operation on the second qubit:
+      $\ket{1b} \apply{\CXgate} \ket{1(1-b)}$, but
+      $\ket{0b} \apply{\CXgate} \ket{0b}$.
+      Any single-qubit operation $\unitary$ defines a two-qubit controlled version of the same
+      operation in the manner shown, which we will refer to as $\unitary[CU]$.
 
     \begin{exercise}
-      Starting with the two-qubit state $\ket{\psi} = \ket{00}$, apply the operations $\Hgate_0$ and
+      Starting with the two-qubit state $\ket{\psi}_{0,1} = \ket{0}_0\ket{0}_1$, apply the operations $\Hgate_0$ and
       $\CXgate_{0, 1}$. What are the possible outcomes of observing the resulting
       state, and what are their probabilities? Compare with the result of
       applying the single-qubit gates $\Hgate_0$ and $\Hgate_1$ instead.
@@ -425,18 +438,23 @@
 
     \begin{exercise}\label{ex:HadamardBasis}
       Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
-      terms of the alternative basis states $\ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}$, 
-      $\ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}$ instead. Compare
+      terms of the alternative ``Hadamard'' basis 
+      \[
+        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
+        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}
+      \]
+      instead. Compare
       with the truth table from \autoref{ex:truthtable}. What has changed?
     \end{exercise}
 
     \begin{exercise}
-      Give the matrix representation of a unitary operation that acts on the
-      alternative basis from \autoref{ex:HadamardBasis} in the same way that
-      $\CXgate$ acts on the computational basis.
+      Give the (computational-basis) matrix representation of a unitary operation that acts on the
+      Hadamard basis from \autoref{ex:HadamardBasis} in the same way that
+      $\CXgate$ acts on the computational basis. What would we call this
+      unitary, following the conventions introduced so far?
     \end{exercise}
 
-    \noindent
+    \paragraph{The SWAP gate.}
     Another two-qubit unitary gate that will turn out to be useful is the $\SWAPgate$
       gate, defined as $\ket{01} \apply{\SWAPgate} \ket{10}$, $\ket{10}
       \apply{\SWAPgate} \ket{01}$, and acting like the identity on $\ket{00}$
@@ -473,18 +491,17 @@
         infinite-dimensional Hilbert spaces) usually means that one \emph{can}
         tell whether the particles from which the qubits are constructed were
         physically moved (as for trapped-ion or neutral atom systems), or
-        whether the qubits were made to interact in via a particular mechanism
+        whether the qubits were made to interact via a particular mechanism
         (as for superconducting qubit systems).
       }
 
     \begin{exercise}
-      Give the matrix representation of the $\SWAPgate$ gate in the
-      computational basis.
+      Give the (computational-basis) matrix representation of the $\SWAPgate$ gate.
     \end{exercise}
 
     \paragraph{Transformations in space vs.\ time.}
       You may have noticed that we are working with two different kinds of
-        product when talking about unitary matrices: The matrix product
+        product when dealing with unitary matrices: The matrix product
         $\unitary_1 \unitary_2$, and the tensor product $\unitary_1 \otimes
         \unitary_2$. When should each kind of product be used?
 
@@ -493,15 +510,15 @@
         \ket{\psi} \otimes \ket{\varphi}$. Then, if $\unitary_1$ and
         $\unitary_2$ are single-qubit transformations (i.e.\ $2 \times 2$ unitary
         matrices), and you want to apply $\unitary_1$ to $\ket{\psi}$ and
-        $\unitary_2$ to $\ket{\varphi}$, you should write
+        $\unitary_2$ to $\ket{\varphi}$, you might write
 
       \[
-        \unitary_{1,2} \ket{\psi, \varphi} \coloneqq
-        (\unitary_1 \otimes \unitary_2) (\ket{\psi} \otimes \ket{\varphi})\, .
+        (\unitary_1 \otimes \unitary_2) (\ket{\psi} \otimes \ket{\varphi})
+        \coloneqq \unitary_{1,2} \ket{\psi, \varphi}\, . 
       \]
 
       \noindent
-      The matrix $\unitary_{1,2} = \unitary_1 \otimes \unitary_2$ will be a two-qubit
+      The matrix $\unitary_{1,2} \coloneqq \unitary_1 \otimes \unitary_2$ will be a two-qubit
         transformation (i.e.\ a $4 \times 4$ unitary) that combine the effect
         of the two single-qubit transformations to apply them in parallel
         (that is, in the same time step).
@@ -513,11 +530,12 @@
         
       \[
         \ket{\psi(0), \varphi(0)} \apply{\unitary_1} \ket{\psi(1), \varphi(1)}
-          \apply{\unitary_2} \ket{\psi(2), \varphi(2)} .
+          \apply{\unitary_2} \ket{\psi(2), \varphi(2)} ,
       \]
 
       \noindent
-      This is then given by
+      where $\ket{\psi(t)}$ denotes the evolved state at time step $t \in \NN$, and
+        $\ket{\psi(0)} \coloneqq \ket{\psi}$. This is then given by
 
       \[
         \unitary_2 \unitary_1 \ket{\psi(0), \varphi(0)}
@@ -532,10 +550,11 @@
       As before, we could define a unitary $\unitary_{1,2} \coloneqq \unitary_1 \unitary_2$. 
         Thus, even though we want to say that the application of $\unitary_1$ and $\unitary_2$
         happens in two time steps, we see that the time of application can be ``collapsed'' to a
-        single time-step! Thus, when counting time steps in the analysis of quantum
-        algorithms, the first step is to define some Turing-universal set of
-        elementary quantum gates from which all other unitaries must be
-        constructed, in series and in parallel.
+        single time-step! This means that when counting time steps in the analysis of quantum
+        algorithms, we first have to fix some Turing-universal set of
+        elementary quantum gates that are all said to happen take one time-step
+        to apply, and require that all other unitaries are constructed from
+        this gate set, in series and/or in parallel.
 
       To summarize, the tensor product is used when applying unitaries in
         \emph{parallel}, while the matrix product is used when applying unitaries in
@@ -550,8 +569,7 @@
       $\ket{x}$, general quantum states $\ket{\psi}$,
       unitary transformations $\unitary$, and the
       the result of applying a unitary transformation $\unitary$ on a
-      quantum state $\ket{\psi}$, written $\ket{\psi} \to
-      \ket{\varphi} = \unitary \ket{\psi}$, or equivalently
+      quantum state $\ket{\psi}$, written 
       $\ket{\psi} \apply{\unitary} \ket{\varphi}$.
 
     And still this isn't enough. This is because we are going to be talking
@@ -566,8 +584,9 @@
 
     But what if Alice had prepared her two qubits in the state
       $\ket{\varphi} = \frac{\ket{00} + \ket{11}}{\sqrt{2}}$ instead?
-      Then, the two qubits are \emph{non-separable}, meaning that they can no
-      longer be cleanly factored into a tensor product. In the world of quantum
+      Then, the two-qubit state is \emph{non-separable}, meaning that it can no
+      longer be cleanly factored into a tensor product of two single-qubit
+      states. In the world of quantum
       physics, this means that the two qubits are \emph{entangled}---a fancy
       word describing a phenomenon with many deep consequences for physics and
       philosophy alike---but mathematically speaking it is nothing but the quantum
@@ -577,41 +596,58 @@
         probability distributions.
         More precisely, if an arbitrary quantum state is \emph{separable} along
         some dividing line, such that $\ket{\psi} = \ket{\varphi} \otimes
-        \ket{\xi}$, then the distribution over the observation outcomes will
-        form a product distribution with the
+        \ket{\xi}$, then the probability distribution over the possible
+        outcomes of observing $\ket{\psi}$ will
+        form a product distribution, factorizable along the
         same dividing line. This remains true regardless of
-        which basis you choose to make your observation in, implying that
+        which basis you use to observe the state, implying that
         entanglement is an observation-independent (and therefore
         ``objective'') property of the state.
       } Alice can still send her second qubit to Bob, and Bob can still apply
       the operation $\unitary$ to it; our problem is just that with the tools
-      presented so far, we have no way of writing this operation without
-      referencing the entire
-      state, like so: $\ket{\varphi} \longrightarrow \ket{\xi} = (\idmatrix_0 \otimes
-      \unitary_1) \ket{\varphi}$.\footnote{
-        For those ahead of the curve: One can reference one half of an
+      presented so far, we have no way\footnote{
+        For the readers ahead of the curve: Yes, one may reference one half of an
         entangled state using the generalized notion of a 
         \emph{mixed state}, by going to the density matrix formalization of
         quantum mechanics, which generalizes quantum states by combining them
-        with classical probabilities. The reason why we avoid this solution
-        here is that mixed states are not unique, and so there are many
-        different states that could have led to Bob receiving a particular
-        mixed state.
-      } What we want is to be able to write the operations of Alice and Bob without
-      having to reference states belonging to the other, regardless of whether
-      or not they share entanglement between them. In other words, we need a
-      better \emph{pseudocode}.
+        with classical probabilities. (Informally speaking, a density matrix is
+        nothing but a probability distribution over quantum states.) The reason
+        we avoid this solution is that mixed states are not
+        \emph{unique}, in the sense that there are many (larger) pure
+        states that might have given rise to a particular density matrix, 
+        and so there would be many global states that could have led to Bob
+        receiving a particular mixed state. Therefore, density matrices lack
+        the expressive power to specify how Bob's operations on the qubits
+        available to him may, through entanglement, affect the state of Alice's qubits.
+      } of writing the operation that Bob is
+      performing on $\ket{0}_1$ without referencing the entire
+      state, like so:
+      \[
+        \frac{\ket{00}_{0,1} + \ket{11}_{0,1}}{\sqrt{2}} \longrightarrow \left( 
+        \idmatrix_0 \otimes \unitary_1 \right) 
+        \left( \frac{\ket{00}_{0,1} + \ket{11}_{0,1}}{\sqrt{2}} \right)\, .
+      \] 
+
+    \noindent
+    What we want, is to be able to write the operations of Alice and Bob without
+      having to reference qubits that they don't have access to, regardless of whether
+      or not their quantum states are entangled. In other words, what we need is a
+      better \emph{quantum pseudocode}.
+
+    \hhnote{
+      10/03: Continue from here.
+    }
 
     Let $\qubit$ be a physical qubit, in the sense of being some kind of
       particle or quantum system existing in
       the physical world. Now, guided by our intuition, we will say that Alice,
-      instead of sending a quantum \emph{state} to Bob, actually sends the
+      instead of sending a quantum \emph{state} to Bob, actually sends him the
       \emph{physical qubit} $\qubit$.\footnote{
         In real-world quantum technologies, qubits are
-        typically stored in one kind of system (e.g.\ atoms) and sent using another
-        kind (photons), but due to the non-cloneability of quantum states,
+        typically stored in one kind of system (e.g.\ neutral atoms) and sent using another
+        kind (usually photons), but due to the non-cloneability of quantum states,
         together with the universal ability to transfer any quantum state from
-        one qubit to another (known as the SWAP operation), our simplified
+        one qubit to another via the $\SWAPgate$ gate, this simplified
         model is without loss of generality.
       } Anyone who receives a qubit, also gains the
       ability to apply any transformation or measurement on it, while those who sent it 
@@ -640,162 +676,183 @@
       \]
       where $\ell = \abs{\Ilist}$ defines the size of the register $\register$.
 
-      In the case where there is no entanglement, we may write the state of a
-        register $\register$ as
-      \[ 
-        \ket\register \coloneqq \bigotimes_{\forall i \in \abs{\register}}
-        \ket{\register[R] [i]}
-        = \ket{\qubit_{\Ilist[0]}} \otimes \ldots \otimes \ket{\qubit_{\Ilist[\ell]}} =
-        \ket{\qubit_{\Ilist[0]} \ldots \qubit_{\Ilist[\ell]}}\, ,
-      \]
-      but of course, the entire point of this exercise was that we cannot write
-        the whole state in terms of the individual qubit states in the general,
-        entangled case, and so need an alternative way to reference its
-        constituents.
-      
-      Next, let Alice and Bob have access to quantum computers $\adv$ and $\bdv$,
-        respectively. Instead of saying that Alice sends a \emph{state}
-        to Bob, we will 
-
-      \begin{definition}[Qubit]\label{def:qubit}
-        A qubit $\qubit$ is a two-dimensional physical system, meaning that it
-        is associated with an \emph{observable} $\hat{\qubit}$ taking one of
-        two values, $0$ or $1$. A qubits are also associated with 
-        an \emph{address} $i \in [n]$ (for some $n \in \NN$).\footnote{
-          In the formalism of quantum Turing machines given by
-          Deutsch~\cite{Deutsch85}, the addresses correspond
-          to values of the \emph{address observable} $\hat{x}$,
-          except that we limit ourselves to finite quantum
-          memory by letting the set of possible values be $[n]$
-          rather than $\ZZ$.
-        } We will refer to the qubit with address $i$ as $\qubit_i$.
-        If qubit $\qubit_i$ is in a pure state (i.e.\ not entangled with any
-        other qubit), then its state may be denoted
-        $\ket{\qubit_i}$ (or, equivalently, $\ket{\qubit_i}_i$). If
-        $\ket{\qubit_i} = \ket{\psi}$ for some state $\ket{\psi}$,
-        then this may be denoted $\ket{\psi}_i$.
-      \end{definition}
-
-      \begin{definition}[Quantum memory]\label{def:memory}
-        An $n$-qubit quantum memory is an $n$-element list of qubits $\qcomp =
-        (\qubit_1, \cdots, \qubit_n)$ comprising a \emph{closed} quantum
-        system, in the sense that no operation may be performed on the memory such
-        that the system is no longer in a pure state\footnote{
-          Note that this also implies that state preparation must be
-          \emph{deterministic}, or at least \emph{posterior} to any randomness
-          involved in the procedure: Flipping a (classical) coin and saying that you
-          prepare a qubit in the state $\ket{1}$ on heads and $\ket{0}$ on
-          tails would, when conditioning on the result of the coin flip, put $\qcomp$
-          in a mixed state, and must therefore be disallowed. Thankfully, due to
-          Turing-universality, this restriction is without loss of generality.
-        }. In other words, the quantum memory can not \emph{entangle} with any
-        system outside of itself (though it may be \emph{observed}, after which
-        it immediately collapses to the observed basis state).
-        Thus, the $N$-dimensional ``global'' quantum state $\ket{\qcomp}$ will always
-        be well-defined.
-      \end{definition}
-
-      \begin{definition}[Quantum register]\label{def:register}
-        An $m$-qubit quantum register $\register$ is a subsystem of $n$-qubit quantum
-        memory $\qcomp$, that is an ordered sub-list of $\qcomp$, where by
-        \emph{ordered} we mean that if
-        $\register = (\qubit_{i_0}, \qubit_{i_1}, \dots, \qubit_{i_m})$,
-        then the qubit addresses $i_0, \dots, i_m \in [n]$ satisfy $i_0 < i_1 < \dots < i_m$.
-        If the qubits in $\register$ are not entangled with any other subsystem
-        of $\qcomp$, then the system $\register$ is in a pure state, which we may denote
-        $\ket{\register}$. In a slight overload of notation, we let
-        $[\register]$ denote the set $\{i_j\}_{j\in [m]}$ of qubit addresses
-        associated with $\register$; then, if $\ket{\register} = \ket{\psi}$
-        for some specific state $\ket{\psi}$, this may be denoted
-        $\ket{\psi}_{[\register]}$.
-      \end{definition}
-
-      \begin{definition}[Operating on registers]\label{def:apply}
-        Let $\qcomp$ be an $n$-qubit quantum memory in some $N$-dimensional
-        state $\ket{\qcomp}$, let $\register$ be an $m$-qubit register
-        describing a subsystem of $\qcomp$, and let $\unitary$ be an
-        $M \times M$ unitary matrix. 
-
-        Let $\unitary_{\register}$ be the $N \times N$ unitary matrix that
-        has the effect of applying $\unitary$ on the qubits in $\register$ and the
-        identity on the qubits in $\qcomp \backslash \register$:
-        \[
-          \unitary_{\register} \coloneqq \SORTgate^\dagger([\register], [\qcomp
-          \backslash \register])\ (\unitary \otimes \idmatrix)\
-          \SORTgate([\register], [\qcomp \backslash \register])\, ,
-        \]
-        where $\SORTgate([\register], [\qcomp \backslash \register])$ is the $N
-        \times N$ unitary matrix, composed of a series of $\SWAPgate$ gates, that has the effect of
-        reordering the qubits $\qcomp$ such that the qubits of $\register$
-        precede the qubits of $\qcomp \backslash \register$;
-        $\SORTgate^\dagger$ reverses the operation of $\SORTgate$; and 
-        $\idmatrix$ is the $2^{n-m} \times 2^{n-m}$ identity matrix.
-        %
-        Then, the application of $\unitary$ to the qubits in register $\register$ is
-        captured in the method $\applyU{\unitary}{\register}[\qcomp]$, defined
-        as
-        \begin{align*}
-          \applyU{\unitary}{\register}[\qcomp] &: \ket{\qcomp} \longrightarrow
-            \unitary_{\register} \ket{\qcomp}\, .
-        \end{align*}
-        Whenever $\qcomp$ is clear from context, we will drop the subscript and
-        simply write $\applyU{\unitary}{\register}$.
-      \end{definition}
-
-      %\noindent
-      %As an example of how to construct a unitary $\unitary_{[\register]}$ such as is needed in
-      %  \autoref{def:apply}, let $\unitary$ be the parallel composition of two single-qubit
-      %  gates $\unitary[V]$ and $\unitary[W]$, so that $\unitary = \unitary[V]
-      %  \otimes \unitary[W]$, and let the register $\register$ be given by
-      %  $\register = (\qubit_i, \qubit_j)$. Then,
-      %  \[
-      %    \unitary_{[\register]} \coloneqq \idmatrix \otimes \ldots \otimes
-      %    \idmatrix \otimes \unitary[V] \otimes \idmatrix \otimes \ldots \otimes 
-      %    \idmatrix \otimes \unitary[W] \otimes \idmatrix \ldots \otimes \idmatrix\, ,
-      %  \]
-      %  where $\unitary[V]$, $\unitary[W]$, and $\idmatrix$ are all $2 \times
-      %  2$ matrices, and the tensor product is such that
-      %  $\unitary_{[\register]}$ ends up as
-      %  an $N \times N$ matrix. Many multi-qubit unitaries can not be factored in
-      %  such a manner, however, but a suitable $\unitary_{[\register]}$ can always be
-      %  constructed for an $m$-qubit register $\register$ and $M\times M$
-      %  unitary $\unitary$, by first constructing the $N \times N$ unitary matrix
-      %  $\idmatrix[2^{n-m}] \otimes \unitary$, and then reordering the qubits
-      %  by shifting the rows and columns (or, equivalently, performing a series
-      %  of SWAP operations on $\ket{\qcomp}$ before applying
-      %  $\idmatrix[2^{n-m}] \otimes \unitary$, and then the reverse SWAP
-      %  operations thereafter).
+    In the case where there is no entanglement, we may write the state of a
+      register $\register$ as
+    \[ 
+      \ket\register \coloneqq \bigotimes_{\forall i \in \abs{\register}}
+      \ket{\register[R] [i]}
+      = \ket{\qubit_{\Ilist[0]}} \otimes \ldots \otimes \ket{\qubit_{\Ilist[\ell]}} =
+      \ket{\qubit_{\Ilist[0]} \ldots \qubit_{\Ilist[\ell]}}\, ,
+    \]
+    but of course, the entire point of this exercise was that we cannot write
+      the whole state in terms of the individual qubit states in the general,
+      entangled case, and so need an alternative way to reference its
+      constituents.
     
-    \begin{table}[t]
-      \centering
+    Next, let Alice and Bob have access to quantum computers $\adv$ and $\bdv$,
+      respectively. Instead of saying that Alice sends a \emph{state}
+      to Bob, we will 
+
+    \begin{definition}[Qubit]\label{def:qubit}
+      A qubit $\qubit$ is a two-dimensional physical system, meaning that it
+      is associated with an \emph{observable} $\hat{\qubit}$ taking one of
+      two values, $0$ or $1$. A qubits are also associated with 
+      an \emph{address} $i \in [n]$ (for some $n \in \NN$).\footnote{
+        In the formalism of quantum Turing machines given by
+        Deutsch~\cite{Deutsch85}, the addresses correspond
+        to values of the \emph{address observable} $\hat{x}$,
+        except that we limit ourselves to finite quantum
+        memory by letting the set of possible values be $[n]$
+        rather than $\ZZ$.
+      } We will refer to the qubit with address $i$ as $\qubit_i$.
+      If qubit $\qubit_i$ is in a pure state (i.e.\ not entangled with any
+      other qubit), then its state may be denoted
+      $\ket{\qubit_i}$ (or, equivalently, $\ket{\qubit_i}_i$). If
+      $\ket{\qubit_i} = \ket{\psi}$ for some state $\ket{\psi}$,
+      then this may be denoted $\ket{\psi}_i$.
+    \end{definition}
+
+    \begin{definition}[Quantum memory]\label{def:memory}
+      An $n$-qubit quantum memory is an $n$-element list of qubits $\qcomp =
+      (\qubit_1, \cdots, \qubit_n)$ comprising a \emph{closed} quantum
+      system, in the sense that no operation may be performed on the memory such
+      that the system is no longer in a pure state\footnote{
+        Note that this also implies that state preparation must be
+        \emph{deterministic}, or at least \emph{posterior} to any randomness
+        involved in the procedure: Flipping a (classical) coin and saying that you
+        prepare a qubit in the state $\ket{1}$ on heads and $\ket{0}$ on
+        tails would, when conditioning on the result of the coin flip, put $\qcomp$
+        in a mixed state, and must therefore be disallowed. Thankfully, due to
+        Turing-universality, this restriction is without loss of generality.
+      }. In other words, the quantum memory can not \emph{entangle} with any
+      system outside of itself (though it may be \emph{observed}, after which
+      it immediately collapses to the observed basis state).
+      Thus, the $N$-dimensional ``global'' quantum state $\ket{\qcomp}$ will always
+      be well-defined.
+    \end{definition}
+
+    \begin{definition}[Quantum register]\label{def:register}
+      An $m$-qubit quantum register $\register$ is a subsystem of $n$-qubit quantum
+      memory $\qcomp$, that is an ordered sub-list of $\qcomp$, where by
+      \emph{ordered} we mean that if
+      $\register = (\qubit_{i_0}, \qubit_{i_1}, \dots, \qubit_{i_m})$,
+      then the qubit addresses $i_0, \dots, i_m \in [n]$ satisfy $i_0 < i_1 < \dots < i_m$.
+      If the qubits in $\register$ are not entangled with any other subsystem
+      of $\qcomp$, then the system $\register$ is in a pure state, which we may denote
+      $\ket{\register}$. In a slight overload of notation, we let
+      $[\register]$ denote the set $\{i_j\}_{j\in [m]}$ of qubit addresses
+      associated with $\register$; then, if $\ket{\register} = \ket{\psi}$
+      for some specific state $\ket{\psi}$, this may be denoted
+      $\ket{\psi}_{[\register]}$.
+    \end{definition}
+
+    \begin{definition}[Operating on registers]\label{def:apply}
+      Let $\qcomp$ be an $n$-qubit quantum memory in some $N$-dimensional
+      state $\ket{\qcomp}$, let $\register$ be an $m$-qubit register
+      describing a subsystem of $\qcomp$, and let $\unitary$ be an
+      $M \times M$ unitary matrix. 
+
+      Let $\unitary_{\register}$ be the $N \times N$ unitary matrix that
+      has the effect of applying $\unitary$ on the qubits in $\register$ and the
+      identity on the qubits in $\qcomp \backslash \register$:
+      \[
+        \unitary_{\register} \coloneqq \SORTgate^\dagger([\register], [\qcomp
+        \backslash \register])\ (\unitary \otimes \idmatrix)\
+        \SORTgate([\register], [\qcomp \backslash \register])\, ,
+      \]
+      where $\SORTgate([\register], [\qcomp \backslash \register])$ is the $N
+      \times N$ unitary matrix, composed of a series of $\SWAPgate$ gates, that has the effect of
+      reordering the qubits $\qcomp$ such that the qubits of $\register$
+      precede the qubits of $\qcomp \backslash \register$;
+      $\SORTgate^\dagger$ reverses the operation of $\SORTgate$; and 
+      $\idmatrix$ is the $2^{n-m} \times 2^{n-m}$ identity matrix.
       %
-      \caption{
-        A summary of our notation.
-      }\label{tab:notation}
-      %
-      \rowcolors{2}{}{gray!10}
-      \begin{tabular}{cccc}
-        \toprule
-        Object & Notation & Example & Class/definition \\
-        \midrule
-        Bitstring & Lowercase roman (end of alphabet) & $x$ & $\in \bin^n$ \\
-        General state label & Lowercase greek (middle of alphabet) & $\psi$ & $\in \{\text{\emph{labels}}\}$ \\
-        Qubit count & Lowercase roman (middle of alphabet) & $n$ & $\in \ZZ$ \\
-        Dimensonality & Uppercase roman (middle of alphabet) & $N$ & $\coloneqq 2^n$ \\
-        Amplitude & Lowercase greek (start of alphabet) & $\alpha$ & $\in \CC$ \\
-        \midrule
-        Computational basis state & Dirac ket with bitstring label & $\ket{x}$
-        & $\in \CC^{M},\ n \geq \log M \in \NN$ \\
-        General quantum state & Dirac ket with general state label & $\ket{\psi}$ & $\in \CC^M,\ n \geq \log M \in \NN$ \\
-        \midrule
-        Qubit & Lowercase q (sans serif) & $\qubit$ & Two-dimensional physical system \\
-        Qubit register & Uppercase roman (calligraphic) & $\register$ & List of $m \leq n$ qubits $\qubit_i$\\
-        Quantum memory & Uppercase Q (calligraphic) & $\qcomp$ & List of $n$ qubits $\qubit_i$ \\
-        Global quantum state & Dirac ket with quantum memory as label & $\ket{\qcomp}$ & $\in \CC^N$ \\
-        \midrule
-        Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ n \geq \log M \in \NN$ \\
-        Apply unitary on register & $\pcalgostyle{Apply}$(unitary,
-        register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
-        \bottomrule
-      \end{tabular}
-    \end{table}
+      Then, the application of $\unitary$ to the qubits in register $\register$ is
+      captured in the method $\applyU{\unitary}{\register}[\qcomp]$, defined
+      as
+      \begin{align*}
+        \applyU{\unitary}{\register}[\qcomp] &: \ket{\qcomp} \longrightarrow
+          \unitary_{\register} \ket{\qcomp}\, .
+      \end{align*}
+      Whenever $\qcomp$ is clear from context, we will drop the subscript and
+      simply write $\applyU{\unitary}{\register}$.
+    \end{definition}
+
+    %\noindent
+    %As an example of how to construct a unitary $\unitary_{[\register]}$ such as is needed in
+    %  \autoref{def:apply}, let $\unitary$ be the parallel composition of two single-qubit
+    %  gates $\unitary[V]$ and $\unitary[W]$, so that $\unitary = \unitary[V]
+    %  \otimes \unitary[W]$, and let the register $\register$ be given by
+    %  $\register = (\qubit_i, \qubit_j)$. Then,
+    %  \[
+    %    \unitary_{[\register]} \coloneqq \idmatrix \otimes \ldots \otimes
+    %    \idmatrix \otimes \unitary[V] \otimes \idmatrix \otimes \ldots \otimes 
+    %    \idmatrix \otimes \unitary[W] \otimes \idmatrix \ldots \otimes \idmatrix\, ,
+    %  \]
+    %  where $\unitary[V]$, $\unitary[W]$, and $\idmatrix$ are all $2 \times
+    %  2$ matrices, and the tensor product is such that
+    %  $\unitary_{[\register]}$ ends up as
+    %  an $N \times N$ matrix. Many multi-qubit unitaries can not be factored in
+    %  such a manner, however, but a suitable $\unitary_{[\register]}$ can always be
+    %  constructed for an $m$-qubit register $\register$ and $M\times M$
+    %  unitary $\unitary$, by first constructing the $N \times N$ unitary matrix
+    %  $\idmatrix[2^{n-m}] \otimes \unitary$, and then reordering the qubits
+    %  by shifting the rows and columns (or, equivalently, performing a series
+    %  of SWAP operations on $\ket{\qcomp}$ before applying
+    %  $\idmatrix[2^{n-m}] \otimes \unitary$, and then the reverse SWAP
+    %  operations thereafter).
+
+  \subsection{Formalizing Observations}\label{sec:measurements}
+    If observations are not quantum operations representable by unitary
+      matrices, then what are they?
+
+    \begin{definition}[Measuring a register]\label{def:measurement}
+      \hhnote{to-do}
+      \[
+        x \sample \meas{\register}[\qcomp]
+      \]
+    \end{definition}
+
+    \begin{definition}[The Born rule]\label{def:Born}
+    If $\register$ is a register of $\qcomp$, and
+      $\ket{\register} = \sum_i \alpha_i \ket{x_i}$,
+      then
+      \[
+        \probsample{x \sample \meas{\register}[\qcomp]}{x = x_i} = \abs{\alpha_i}^2\, .
+      \]
+    \end{definition}
+    
+  \begin{table}[t]
+    \centering
+    %
+    \caption{
+      A summary of our notation.
+    }\label{tab:notation}
+    %
+    \rowcolors{2}{}{gray!10}
+    \begin{tabular}{cccc}
+      \toprule
+      Object & Convention & Example & Class/definition \\
+      \midrule
+      Bitstring & Lowercase roman (end of alphabet) & $x$ & $\in \bin^n$ \\
+      General state label & Lowercase greek (middle of alphabet) & $\psi$ & $\in \{\text{\emph{labels}}\}$ \\
+      Qubit count & Lowercase roman (middle of alphabet) & $n$ & $\in \ZZ$ \\
+      Dimensonality & Uppercase roman (middle of alphabet) & $N$ & $\coloneqq 2^n$ \\
+      Amplitude & Lowercase greek (start of alphabet) & $\alpha$ & $\in \CC$ \\
+      \midrule
+      Computational basis state & Dirac ket with bitstring label & $\ket{x}$ & $\in \CC^{M},\ m \leq n$ \\
+      General quantum state & Dirac ket with general state label & $\ket{\psi}$ & $\in \CC^M,\ m \leq n $ \\
+      Evolved state at time step $t$ & Dirac ket with time-dependent label & $\ket{\psi(t)}$ & $\in \CC^M,\ m \leq n,\ t \in \NN$ \\
+      \midrule
+      Qubit & Lowercase $\qubit$ (sans serif) & $\qubit$ & Two-dim.\ physical system \\
+      Qubit register & Uppercase roman (calligraphic) & $\register$ & List of $m \leq n$ qubits $\qubit_i$\\
+      Quantum memory & Uppercase $\qcomp$ (calligraphic) & $\qcomp$ & List of $n$ qubits $\qubit_i$ \\
+      Global quantum state & Dirac ket with quantum memory label & $\ket{\qcomp}$ & $\in \CC^N$ \\
+      \midrule
+      Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
+      Apply unitary to register & $\pcalgostyle{Apply}$(unitary, register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
+      \midrule
+      Measure register & $\pcalgostyle{Meas}$(register) & $x \sample \meas{\register}$ & Method (see \autoref{def:measurement}) \\ 
+      \bottomrule
+    \end{tabular}
+  \end{table}
