@@ -8,6 +8,13 @@
     for more details, see the celebrated introductory text by Nielsen and
     Chuang~\cite{NieChu10}.
 
+  This chapter contains many footnotes: these are tangents with additional details
+    that may interest the reader, but are inessential to the rest of the text.
+    In particular, if a footnote made no sense to you, you should feel free to
+    ignore it.\footnote{
+      Or to ask me about it---I love explaining this stuff!
+    }
+
   \todoenum[Provide explanations of:]{
     \item Bare-bones background on quantum states and Dirac notation; states
       vs.\ labels.
@@ -78,114 +85,116 @@
       approach taken in the quantum information sciences.
 
   \subsection{Qubit Basis States}
-    We are interested in finite-dimensional quantum states, implemented
-      on a collection of $n$ qubits. A \emph{qubit} is a quantum state existing
-      in the two-dimensional Hilbert space characterized by the basis states
-      $\ket{0}$ and $\ket{1}$. In physical implementations, these states may for
-      example be mapped to the spin of an electron (``up''/``down''), or the two lowest energy
-      states of an atom, or in general any two orthogonal quantum states, where
-      two quantum states are orthogonal if and only if there exists a
-      measurement procedure that perfectly distinguishes them.
+    \paragraph{Single-qubit states.}
+      We are interested in finite-dimensional quantum states, implemented
+        on a collection of $n$ qubits. A \emph{qubit} is a quantum state existing
+        in the two-dimensional Hilbert space characterized by the basis states
+        $\ket{0}$ and $\ket{1}$. In physical implementations, these states may for
+        example be mapped to the spin of an electron (``up''/``down''), or the two lowest energy
+        states of an atom, or in general any two orthogonal quantum states, where
+        two quantum states are orthogonal if and only if there exists a
+        measurement procedure that perfectly distinguishes them.
 
-    It is worth emphasizing that the ``$0$'' and ``$1$'' here are \emph{labels},
-      and do not say anything about the physical system in question other than that
-      it contains (at least) two orthogonal quantum states, which are being
-      identified with the two basis states $\ket{0}$ and $\ket{1}$.
+      It is worth emphasizing that the ``$0$'' and ``$1$'' here are \emph{labels},
+        and do not say anything about the physical system in question other than that
+        it contains (at least) two orthogonal quantum states, which are being
+        identified with the two basis states $\ket{0}$ and $\ket{1}$.
 
-    Since two qubit basis states $\ket{b_1}$ and $\ket{b_2}$, for $b_1, b_2 \in
-      \{0,1\}$, the two states must be either identical (up to the
-      aforementioned phase factor) or orthogonal, we have that
-    \[
-      \braket{b_1|b_2} = \delta_{b_1 b_2}\, ,
-    \]
-    where $\delta_{ij}$ is the Kronecker delta, equal to $1$ if $i = j$, and $0$
-      otherwise.
+      Since two qubit basis states $\ket{b_1}$ and $\ket{b_2}$, for $b_1, b_2 \in
+        \{0,1\}$, the two states must be either identical (up to the
+        aforementioned phase factor) or orthogonal, we have that
+      \[
+        \braket{b_1|b_2} = \delta_{b_1 b_2}\, ,
+      \]
+      where $\delta_{ij}$ is the Kronecker delta, equal to $1$ if $i = j$, and $0$
+        otherwise.
       
-  \subsection{Combined Quantum States}
-    In general, two quantum systems (i.e.\ states describing 
-      distinct physical systems) may be combined via the tensor product (also
-      known as the \emph{outer} product): 
-      \[
-        \ket{\psi} \otimes \ket{\varphi} \coloneqq \ket{\psi \varphi}\, .
-      \]
+    \paragraph{Multi-qubit states.}
+      In general, two quantum systems (i.e.\ states describing 
+        distinct physical systems) may be combined via the tensor product:
+        \[
+          \ket{\psi} \otimes \ket{\varphi} \coloneqq \ket{\psi, \varphi}\, .
+        \]
   
-    \noindent
-    If $\ket{\psi}$ describes an $N$-dimensional quantum system, and
-      $\ket{\varphi}$ describes an $M$-dimensional quantum system, then the
-      combined state $\ket{\psi \varphi}$ describing the combined system will be
-      $NM$-dimensional. (Note how the dimensions are \emph{multiplied} rather
-      than added, as one might naïvely expect.)
+      \noindent
+      If $\ket{\psi}$ describes an $N$-dimensional quantum system, and
+        $\ket{\varphi}$ describes an $M$-dimensional quantum system, then the
+        combined state $\ket{\psi, \varphi}$ describing the combined system will be
+        $NM$-dimensional. Note how the dimensions are \emph{multiplied} rather
+        than added, as one might naïvely expect.
   
-    Applying this to qubits, given a collection of $n$ qubits $\ket{b_i}$, each initialized to
-      one of the two basis states (so that $b_i \in \bin$), we may construct
-      the combined state 
+      Applying this to qubits, given a collection of $n$ qubits $\ket{b_i}$, each initialized to
+        one of the two basis states (so that $b_i \in \bin$), we may construct
+        the combined state 
+        \begin{align*}
+          \ket{b_0} \otimes \ket{b_1} \otimes \ldots \otimes \ket{b_{n-1}}
+          &\coloneqq \ket{b_0} \ket{b_1} \ldots \ket{b_{n-1}} \\
+          &\coloneqq \ket{b_0, b_1, \ldots, b_{n-1}} \\
+          &\coloneqq \ket{b_0 b_1 \ldots b_{n-1}}\, .
+        \end{align*}
+
+      \noindent
+      We will use any and all of the above conventions when denoting combined quantum
+        states, choosing whichever one we deem to bring the most clarity and
+        eligibility to the given context. (For example, non-binary labels 
+        will typically be separated by commas, while binary-valued labels will
+        typically not be, in reference to string concatenation $b_0 b_1 \coloneqq
+        b_0 \concat b_1$.)
+
+      Since each qubit is a two-dimensional quantum state, the
+        combined state will have dimension $N \coloneqq 2^n$. The resulting Hilbert
+        space will be characterized by the computational\footnote{
+          As with any vector space, Hilbert spaces permit an infinitude of basis
+          choices; the ``computational'' basis is simply the name of the choice
+          wherein basis states are labelled by classical bits (or more generally,
+          bitstrings).
+        } basis states
       \[
-        \ket{b_0 b_1 \ldots b_{n-1}} \coloneqq \ket{b_0} \otimes \ket{b_1}
-          \otimes \ldots \otimes \ket{b_{n-1}}\, .
+        \{\ket{i}\}_{\forall i \in [N]} = \{ \ket{b_0 b_1 \ldots b_{n-1}}
+          \}_{\forall b_0, \ldots, b_{n-1} \in \bin}\, .
       \]
 
-    \noindent
-    Since each qubit is a two-dimensional quantum state, we see that the
-      resulting combined state will have dimension $N \coloneqq 2^n$. The resulting Hilbert
-      space will be characterized by the computational\footnote{
-        As with any vector space, Hilbert spaces permit an infinitude of basis
-        choices; the ``computational'' basis is simply the name of the choice
-        wherein basis states are labelled by classical bits (or, in general,
-        bitstrings).
-      } basis states
-    \[
-      \{\ket{i}\}_{\forall i \in [N]} = \{ \ket{b_0 b_1 \ldots b_{n-1}}
-        \}_{\forall b_0, \ldots, b_{n-1} \in \bin}\, .
-    \]
+      \noindent
+      This exponentiality in the dimension of quantum states as the number of
+        qubits increases sits at the core of quantum computers' advantage over
+        classical computers. As an illustrative
+        example, the Hilbert space corresponding to a three-qubit quantum system
+        is characterized by the eight computational basis states:
+      \begin{align*}
+        \{ \ket{i} \}_{\forall i \in [2^3]} 
+        &= \{\ket{000},
+          \ket{001},
+          \ket{010},
+          \ket{011},
+          \ket{100},
+          \ket{101},
+          \ket{110},
+          \ket{111}\} \\
+        &= \left\{ \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \end{bmatrix},
+          \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \end{bmatrix},
+          \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} \right\}\, .
+      \end{align*}
 
-    \noindent
-    This exponentiality in the dimension of quantum states as the number of
-      qubits increases sits at the core of
-      the quantum advantage over classical computers. As an illustrative
-      example, the Hilbert space corresponding to a three-qubit quantum system
-      is characterized by the eight computational basis states:
-    \begin{align*}
-      \{ \ket{i} \}_{\forall i \in [2^3]} 
-      &= \{\ket{000},
-        \ket{001},
-        \ket{010},
-        \ket{011},
-        \ket{100},
-        \ket{101},
-        \ket{110},
-        \ket{111}\} \\
-      &= \left\{ \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
-        \begin{bmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
-        \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
-        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
-        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix},
-        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \\ 0 \end{bmatrix},
-        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0 \end{bmatrix},
-        \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \end{bmatrix} \right\}\, .
-    \end{align*}
+      \noindent
+      As in the single-qubit case, we see that we have orthonormality over the
+        computational basis states:
+      \[ 
+        \braket{x|y} = \delta_{xy}\, . 
+      \]
 
-    \noindent
-    As in the single-qubit case, we see that we have orthonormality over the
-      computational basis states:
-    \[ \braket{x|y} = \delta_{xy}\, . \]
+      \noindent
+      We also define notation for the repeated tensor product of identical
+        states, so that e.g.\ initializing a set of $n$ qubits to the $\ket{0}$ state
+        may be written:
 
-  \subsection{Qubit Registers}
-    Given a collection of $n$ qubits, we will find it useful to divide it
-      into \emph{registers} of specified sizes, for example to separate
-      distincts elements in an input. We will use subscripts to refer to specific
-      registers, unless the register we are referring to is clear from context.
-
-    As an example, let's say we want the first
-      $n_1$ qubits store the variable $x$---call this ``Register 1''---and that
-      the remaining $n_2$ qubits---``Register 2''---should store the variable
-      $y$. Then the following are all equivalent ways of denoting the combined state:
-
-    \[
-      \ket{x\concat y} = \ket{x}_1 \otimes \ket{y}_2 \coloneqq \ket{x}_1 \ket{y}_2
-        \coloneqq \ket{x, y}\, ,
-    \]
-    \noindent
-    where $\concat$ denotes string concatenation.
+      \[
+        \ket{0 \ldots 0} = \bigotimes_{i = 0}^{n-1} \ket{0} \coloneqq \ket{0}^{\otimes n}\, .
+      \]
 
   \subsection{General Qubit States}
     \paragraph{Greek vs.\ Roman letters.}
@@ -298,6 +307,59 @@
         %is the set of bitstrings such that the amplitude $\alpha_i$ of the
         %corresponding basis state $\ket{x_i}$ is non-zero.
 
+  \subsection{Qubit Registers}
+    Given a collection of $n$ qubits, we will find it useful to divide it
+      into \emph{registers} of specified sizes, for example to separate
+      distincts elements in an input. We may use subscripts to refer to specific
+      registers, unless the register we are referring to is clear from context.
+
+    As an example, let's say we have $n$ qubits, all initialized to $\ket{0}$,
+      and that we want to put the $i$'th qubit in the state $\ket{\psi}$ the
+      $j$'th qubit in the state state $\ket{\varphi}$. In other words, we want
+      to do the following:
+
+    %\begin{align*}
+    %  &\ket{0 \ldots 0} \coloneqq
+    %  \left( \bigotimes_{k = 0}^{i-1} \ket{0}\right) \otimes \ket{0} \otimes
+    %  \left( \bigotimes_{k = i+1}^{j-i} \ket{0} \right)\otimes \ket{0} \otimes
+    %  \left( \bigotimes_{k = j+1}^{n-1} \ket{0} \right) \\
+    %  &\longrightarrow 
+    %  \left( \bigotimes_{k = 0}^{i-1} \ket{0}\right) \otimes \ket{\psi} \otimes
+    %  \left( \bigotimes_{k = i+1}^{j-i} \ket{0}\right)\otimes \ket{\varphi} \otimes
+    %  \left( \bigotimes_{k = j+1}^{n-1} \ket{0}\right)
+    %  \coloneqq \ket{0 \ldots 0, \psi, 0 \ldots 0, \varphi, 0 \ldots 0}\, .
+    %\end{align*}
+    \begin{align*}
+      \ket{0 \ldots 0} 
+      \longrightarrow \ket{0 \ldots 0, \psi, 0 \ldots 0, \varphi, 0 \ldots 0}\, ,
+    \end{align*}
+
+    \noindent
+    or, more precisely,
+
+    \begin{align*}
+      \ket{0}^{\otimes n} =
+      \ket{0}^{\otimes i} \ket{0} 
+      \ket{0}^{\otimes (j-i)} \ket{0} 
+      \ket{0}^{\otimes (n-j)}
+      &\longrightarrow 
+      \ket{0}^{\otimes i} \ket{\psi} 
+      \ket{0}^{\otimes (j-i)} \ket{\varphi} 
+      \ket{0}^{\otimes (n-j)}\, .
+    \end{align*}
+    
+    \noindent
+    By indexing the qubit states, this may be written more succinctly:
+    \[
+      \ket{0}_i \ket{0}_j \longrightarrow \ket{\psi}_i \ket{\varphi}_j\, ,
+    \]
+    where $i,j \in [n]$, and by convention the state of any qubit not listed is
+    unchanged by the operation.\footnote{
+      In particular, this means that this operation would not
+      be well-defined if qubit $i$ and/or $j$ were entangled with any other
+      qubits; we will remedy this situation in \autoref{sec:pseudocode}.
+    }
+
   \subsection{Unitary Operations}
     Since we are working over finite-dimensional Hilbert spaces, quantum
       operations, i.e.\ evolutions of quantum states, may be represented as $N
@@ -388,7 +450,28 @@
 
     \noindent
     Thus, we see that the $\SWAPgate$ gate has the effect of swapping the states of two
-      qubits with each other.
+      qubits with each other.\footnote{
+        We delibaretly avoided specifying registers in this example, as the
+        question of whether it was the quantum \emph{states} that were swapped, or the
+        physical qubits themselves that switched places in the register, is a
+        metaphysical question without relevance in this model. 
+        This is because by definition, qubits must be physically
+        indistinguishable quantum systems. If they weren't, this
+        distinguishability could be used to
+        construct a larger basis, say, $\{ \ket{0_a}, \ket{1_a}, \ket{0_b},
+        \ket{1_b} \}$. If qubit $a$ could only be in the $a$ basis
+        states, and qubit $b$ could only be in the $b$ basis states, then this
+        would deny any quantum-mechanical interference between the amplitudes
+        of qubit $a$ and those of qubit $b$. 
+
+      Similar observations remain true in real-world systems, although there the
+        continuity of positions and momenta in space (with their corresponding
+        infinite-dimensional Hilbert spaces) usually means that one \emph{can}
+        tell whether the particles from which the qubits are constructed were
+        physically moved (as for trapped-ion or neutral atom systems), or
+        whether the qubits were made to interact in via a particular mechanism
+        (as for superconducting qubit systems).
+      }
 
     \begin{exercise}
       Give the matrix representation of the $\SWAPgate$ gate in the
@@ -458,7 +541,7 @@
       Construct the $\SWAPgate$ gate as a series of $\CXgate$ gates.
     \end{exercise}
 
-  \subsection{Quantum Entities, Entanglement, and Towards a Quantum Pseudocode}
+  \subsection{Quantum Entities, Entanglement, and Towards a Quantum Pseudocode}\label{sec:pseudocode}
     So far, we have defined notation for computational basis states
       $\ket{x}$, general quantum states $\ket{\psi}$,
       unitary transformations $\unitary$, and the
