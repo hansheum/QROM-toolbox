@@ -17,7 +17,7 @@
 
 %%% Quantum objects
 \newcommand{\qubit}{\mathsf{q}}
-\newcommand{\register}[1][A]{\ensuremath{\mathcal{#1}}}
+\newcommand{\register}[1][R]{\ensuremath{\mathcal{#1}}}
 \newcommand{\qcomp}{\register[Q]}
 
 %%% Classical objects
@@ -35,6 +35,16 @@
 \newcommand{\SWAPgate}{\unitary[SWAP]}
 \newcommand{\SORTgate}{\unitary[SORT]}
 
+\newcommand{\isempty}[1]{
+  \ifthenelse{
+    \equal{#1}{}
+  }{
+  }{
+    (#1)
+  }
+}
+
 %%% Quantum methods
 \newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] \to #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
-\newcommandx*{\meas}[2][2={}]{\pcalgostyle{Meas}_{#2}(#1)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
+\newcommandx*{\meas}[3][3={}]{\pcalgostyle{Meas}_{#3}(\ifthenelse{\equal{#1}{}}{}{#1 : }#2)} % Apply measurement #1 to register #2 of Global Quantum System #3
+  % Intended usage: \meas{}{\register}; \meas{\measurement}{\register}; % % \meas{}{\register}[\qcomp] 

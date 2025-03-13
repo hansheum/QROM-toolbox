@@ -97,7 +97,7 @@
       approach taken in the quantum information sciences.
 
   \subsection{Qubit Basis States}
-    \paragraph{Single-qubit states.}
+    \subsubsection{Single-qubit states.}
       We are interested in finite-dimensional quantum states, implemented
         on a collection of $n$ qubits. A \emph{qubit} is a quantum state existing
         in the two-dimensional Hilbert space characterized by the basis states
@@ -128,7 +128,7 @@
       where $\delta_{ij}$ is the Kronecker delta, equal to $1$ if $i = j$, and $0$
         otherwise.
       
-    \paragraph{Multi-qubit states.}
+    \subsubsection{Multi-qubit states.}
       In general, two quantum systems (i.e.\ states describing 
         distinct physical systems) may be combined via the tensor product:
         \[
@@ -230,7 +230,7 @@
         Quantum \emph{amplitudes}, meanwhile, are written using letters taken
         from the start of the greek alphabet ($\alpha$, $\beta$, \ldots). 
 
-    \paragraph{Expanding a state in terms of the basis.} 
+    \subsubsection{Expanding a state in terms of the basis.} 
       A general single-qubit state may be written in terms of the computational
         basis states as follows:
 
@@ -508,7 +508,7 @@
       Give the (computational-basis) matrix representation of the $\SWAPgate$ gate.
     \end{exercise}
 
-    \paragraph{Transformations in space vs.\ time.}
+    \subsubsection{Transformations in space vs.\ time.}
       You may have noticed that we are working with two different kinds of
         product when dealing with unitary matrices: The matrix product
         $\unitary_1 \unitary_2$, and the tensor product $\unitary_1 \otimes
@@ -644,7 +644,7 @@
       or not their quantum states are entangled. In other words, what we need is a
       better \emph{quantum pseudocode}.
 
-    \paragraph{Qubits and registers.}
+    \subsubsection{Qubits and registers.}
       Let $\qubit$ be a physical qubit, in the sense of being some kind of
         particle or quantum system existing in
         the physical world. Now, guided by our intuition, we want to say that Alice,
@@ -752,7 +752,7 @@
         which, having satisfied ourselves that it is
         well-defined, we will immediately shorthand to $\ket{\psi}_{\register}$.
 
-    \paragraph{Applying operations.}
+    \subsubsection{Applying operations.}
       But of course, the starting point of this entire exercise was that we
         \emph{cannot} write
         the state of a register in terms of its own constituents in the general,
@@ -799,7 +799,7 @@
         is now captured in $\applyU{\unitary}{\register}[\qcomp]$ being a
         well-defined evolution of the global state $\ket\qcomp$.
 
-    \paragraph{Interacting entities.}
+    \subsubsection{Interacting entities.}
       With these pieces in place, all that's missing is to define what we mean
         when we say that ``Alice sends a qubit register to Bob''. We will do this
         by letting Alice and Bob each have access to the registers
@@ -839,8 +839,7 @@
               \<\sendmessageright*[\arrowlength]{\register[R]} \\
               \<\< \applyU{\unitary}{\register[R]} \\
               \< \sendmessageleft*[\arrowlength]{\register[R]} \\
-            r \sample \meas{\register[R]} \\
-            \pcreturn r
+            x \sample \meas{}{\register[R]} \\
           }
         }
         \caption{
@@ -854,8 +853,7 @@
         }
       \end{figure}
 
-
-  \subsection{Observing a Register}
+  \subsection{Formalizing Observations}
     \label{sec:measurements}
       Well---not quite. There is still one piece of formalism that needs to be
         dealt with before we can call it a day: Observations. Our goal is to make the $\meas{R}$
@@ -864,7 +862,7 @@
         will need to take a step back: For, if observations are not 
         unitary operations, what \emph{are} they?
      
-    \paragraph{Projectors.} 
+    \subsubsection{Projectors.} 
       The answer may be gleaned from the fact, stated earlier, that \emph{upon
         observing a state, the quantum state collapses to the observed state}.
         This means that if you observe the state twice in a row
@@ -1009,7 +1007,7 @@
         is orthogonal and complete.
       \end{exercise}
 
-    \paragraph{Projective measurements.}
+    \subsubsection{Projective measurements.}
       However, $\projector \ket{\psi}$ will not itself be a quantum
         state, since it will not have unit norm (unless $\projector =
         \idmatrix$, that is). Additionally, we have not yet
@@ -1127,8 +1125,8 @@
           unitary operator that is also Hermitian, meaning that 
           $\unitary^{-1} = \unitary^\dagger = \unitary$. Such unitaries are
           easy to recognize: They are the ones
-          with real values along the diagonal, and conjugate symmetry on the
-          off-diagonals: $\unitary[i,j] = \unitary[j,i]^\dagger$. In addition
+          with real values along the diagonal, and complex-conjugate symmetry along the
+          off-diagonals: $\unitary{[i,j]} = \unitary{[j,i]}^*$. In addition
           to the $\Zgate$ and $\Xgate$ observables given earlier, there is a
           $\Ygate \coloneqq i\Xgate\Zgate$. 
 
@@ -1140,8 +1138,9 @@
         \begin{exercise}
           Show that interpreting the $\Xgate$ (a.k.a. ``NOT'') gate as a
           measurement operator leads to
-          the possible outcomes $\ket{+}$ and $\ket{-}$, as defined in
-          \autoref{ex:HadamardBasis}. What are the values of $m_+$ and $m_-$?
+          the possible outcomes $\ket{+}$ and $\ket{-}$ (where these are as
+          defined in \autoref{ex:HadamardBasis}). 
+          What are the values of $m_+$ and $m_-$?
         \end{exercise}
 
         \begin{exercise}
@@ -1151,11 +1150,13 @@
           eigenvalues and eigenstates.
         \end{exercise}
 
-      \paragraph{Measuring registers.}
+      \subsubsection{Measuring registers.}
         \hhnote{Continue from here.}
         \begin{definition}[Measuring a register]\label{def:measurement}
           \[
-            x \sample \meas{\register}[\qcomp,\measurement]
+            x \sample \meas{\measurement}{\register}[\qcomp], 
+            x \sample \meas{}{\register}[\qcomp],
+            x \sample \meas{}{\register}
           \]
         \end{definition}
 
@@ -1164,7 +1165,7 @@
           $\ket{\register} = \sum_i \alpha_i \ket{x_i}$,
           then
           \[
-            \probsample{x \sample \meas{\register}[\qcomp]}{x = x_i} = \abs{\alpha_i}^2\, .
+            \probsample{x \sample \meas{\register}{}[\qcomp]}{x = x_i} = \abs{\alpha_i}^2\, .
           \]
         \end{definition}
     
@@ -1196,11 +1197,13 @@
       Quantum memory & Uppercase $\qcomp$ (calligraphic) & $\qcomp$ & List of $n$ qubits $\qubit_i$ \\
       Global quantum state & Dirac ket with quantum memory label & $\ket{\qcomp}$ & $\in \CC^N$ \\
       \midrule
-      Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
-      Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
+      %Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
+      %Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
+      Operators & Uppercase roman (sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M},\ m \leq n$ \\
       Apply unitary to register & $\pcalgostyle{Apply}$(unitary $\to$ register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
       %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \autoref{def:}) \\ 
-      Measure register & $\pcalgostyle{Meas}$(register) & $x \sample \meas{\register}$ & Method (see \autoref{def:measurement}) \\ 
+      Measure register & $\pcalgostyle{Meas}$(measurement : register) & $x
+      \sample \meas{\measurement}{\register}$ & Method (see \autoref{def:measurement}) \\ 
       \bottomrule
     \end{tabular}
   \end{table}
