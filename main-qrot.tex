@@ -100,6 +100,7 @@
 \graphicspath{{../figures/}}
 
 \usepackage{orcidlink}
+\renewcommand{\orcidID}[1]{\orcidlink{#1}}
 
 \usepackage{array}
 \newcolumntype{C}{>{$}c<{$}}
@@ -136,21 +137,12 @@
 % }
 
 
-% [WIP] autoref fix for correct appendix sectioning
-% https://tex.stackexchange.com/questions/149807/autoref-subsections-in-appendix
-
-% \newcommand{\defer}[1]{Appendix~\ref{#1}}   %full version
-\newcommand{\defer}[1]{\ref{#1}}              %submission
-% \newcommand{\defer}[1]{the full version}      %camera ready
-
 % Commenting
 %-------------------------------------------------------------------------------%
 
-\definechangesauthor[name={Tjerand}, color=purple]{TS}
 \definechangesauthor[name={Hans}, color=darkgreen]{HH}
 
 \newcommand{\hhnote}[2][]{\todo[inline,color=Linen]{\textbf{Hans:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
-\newcommand{\tsnote}[2][]{\todo[inline,color=AliceBlue]{\textbf{Tjerand:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
 \newcommand{\revnote}[1]{\todo[inline]{\textbf{Reviewer:} #1}\xspace}
 
 \newcommand\todoenum[2][]{\todo[inline,color=Cornsilk,caption={2do}]{
@@ -164,6 +156,7 @@
 
 \newcommand{\pagehack}{\ifsubmission\clearpage\fi}
 
+%% TO-DO: Finalize fix, and move to cryptocodeh
 % Autoref names, to redefine: renewcommand with the format: \<env>autorefname
 %\renewcommand{\sectionautorefname}{Section}
 \renewcommand{\sectionautorefname}{Sect.}
@@ -178,6 +171,14 @@
 % Autoref fix for appendix and multi-references
 \newcommand{\aref}[1]{\hyperref[#1]{App.~\ref*{#1}}}
 \newcommand{\multiref}[2]{\autoref{#1}--\ref{#2}} 
+
+% [WIP] autoref fix for correct appendix sectioning
+% https://tex.stackexchange.com/questions/149807/autoref-subsections-in-appendix
+
+% \newcommand{\defer}[1]{Appendix~\ref{#1}}   %full version
+\newcommand{\defer}[1]{\ref{#1}}              %submission
+% \newcommand{\defer}[1]{the full version}      %camera ready
+
 
 \begin{document}
 \pcfixhyperref % As per cryptocode documentation, "8.3 Hyperref"

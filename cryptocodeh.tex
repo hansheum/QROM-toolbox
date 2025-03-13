@@ -3,6 +3,7 @@
 \usepackage{xspace}
 \usepackage{dsfont} % Use \mathds{} for mathbb-style integers
 
+
   \DeclareMathAlphabet{\mathsc}{OT1}{cmr}{m}{sc}
   \DeclareMathAlphabet{\mathtt}{OT1}{cmtt}{m}{n}
 
@@ -45,7 +46,8 @@
 
       \newcommand{\pcadvantagesuperstyle}[1]{\mathrm{\MakeLowercase{#1}}}
       \newcommand{\pcadvantagesubstyle}[1]{#1}
-      \newcommandx*{\advantage}[3][3=(\adv)]{\ensuremath{\mathsf{Adv}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}#3}}
+      \newcommandx*{\advantage}[3][3=(\adv)]{\ensuremath{\mathsf{Adv}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}(#3)}}
+        %% Example usage: \advantage{\indcpa}{\pkescheme}[\bdv]
 
       \newcommand{\sdash}{\mbox{-}}
       \newcommandx*{\experiment}[3][3=\adv]{\ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}(#3)}}
@@ -74,6 +76,7 @@
           \NewDocumentCommand{\advg}{m D<>{\pkescheme[\secpar]} D(){\Eve{}}}{
             \ensuremath{\mathsf{Adv}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}\cb{#3}}
           }
+          % Example usage: ?? What did you do Carlo
 
           \NewDocumentCommand{\expg}{m D<>{\pkescheme[\secpar]} D(){\Eve{}}}{
             \ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}\cb{#3}}
@@ -114,8 +117,11 @@
       \renewcommand{\pcadvstyle}[1]{\mathbbm{#1}}
       \newcommand{\pcadvsubstyle}[1]{\mathrm{\MakeLowercase{#1}}}
 
+      % To-do: make standard value empty (why bugged? probably need an ifelse)
       \newcommand{\Eve}[1]{\adv_{\pcadvsubstyle{#1}}}
       \newcommand{\Red}[1]{\bdv_{\pcadvsubstyle{#1}}}
+      \newcommand{\Dis}[1]{\ddv_{\pcadvsubstyle{#1}}}
+      \newcommand{\Ext}[1]{\edv_{\pcadvsubstyle{#1}}}
 
 
     %% 2.5 Landau

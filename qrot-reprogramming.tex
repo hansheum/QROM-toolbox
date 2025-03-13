@@ -1,4 +1,38 @@
 \section{Reprogramming QROs: The O2H Lemma and Friends}
+
+  \todoenum[Plan: SoK-style classification of O2H lemmas in two dimensions]{
+    \item : Power of distinguisher+extractor:
+    \begin{enumerate}
+      \item Guessing O2H: $\advantage{}{}[\Dis{}]\leq q_H \sqrt{\advantage{}{}[\Ext{}]}$
+      \begin{itemize}
+        \item For when reprogramming is not independent of $\Dis{}$'s view, 
+            and $\Ext{}$ can not recognize the right value.
+      \end{itemize}
+      \item Resampling O2H: $\advantage{}{}[\Eve{}]\leq \sqrt{q_H\advantage{}{}[\Ext{}]}$
+      \begin{itemize}
+        \item For when reprogramming \emph{is} independent of $\Dis{}$'s view,
+            before \emph{and} after, \emph{and} the reprogramming is uniform
+            (hence ``resampling''), and $\Ext{}$ can not recognize the right value.
+      \end{itemize}
+      \item Checking O2H (conjectured): $\advantage{}{}[\Eve{}]\leq \sqrt{\advantage{}{}[\Ext{}]}$
+      \begin{itemize}
+        \item For when $\Ext{}$ \emph{can} recognize the right value
+          (regardless of independence of view?)
+      \end{itemize}
+    \end{enumerate}
+  \item Adaptivity of reprogramming (actully three dimensions of
+    generality). Incomparable bounds, or simply more general statements,
+    (particularly in light of Joseph's techniques)? Investigate!
+    \begin{enumerate}
+      \item Single point, non-adaptively, statistically hidden
+      \item Multiple points, non-adaptively, statistically hidden
+      \item Multiple points, non-adaptively, computationally hidden
+      \item Single point, adaptively, statistically hidden
+      \item Multiple points, adaptively, statistically hidden
+      \item Multiple points, adaptively, computationally hidden
+    \end{enumerate}
+  }
+
   \subsection{Recording ROs (or, Random Oracles are Good PRFs)}
     \hhnote{
       Copy-pasted from first intro draft. \emph{Maybe} do the following later when we introduce the
