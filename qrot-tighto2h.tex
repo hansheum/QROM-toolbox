@@ -1,0 +1,98 @@
+\section{A Tight O2H Lemma?}
+  The following is my best attempt at an exact analysis of an extractor's
+    advantage given an ideal distinguisher. 
+
+  Some differences to the Semi-Classical O2H: In this version, the 
+    extractor $\extractor$ provides an independent, compressed-oracle
+    simulation of a random oracle, and the adversary has to guess whether it
+    gets the real ``monolithic'' random oracle $\RO$, or the simulated random
+    oracle $\RO[G]$. This means that, unlike SC-O2H, $\RO$ and $\RO[G]$ are
+    completely independent; instead, we will follow in the style of the original
+    O2H lemma and say that the distinguisher $\distinguisher$ gets a set of
+    inputs $(z_1, \ldots, z_n)$, each of which depends arbitrarily on $\RO(x_1),
+    \ldots, \RO(x_n)$, respectively, for some points $x_1$ to $x_n$. The
+    goal of the extractor $\extractor$ will be to output a list that contains
+    at least one element contained in the set $\{x_1, \ldots, x_n\}$ (after
+    which point a reduction can either guess which one to output, or use a PCA
+    oracle or similar to find the right value). 
+
+  \paragraph{Compressed oracles.} 
+    We follow in the style of
+      Zhandry~\cite{C:Zhandry19} and use the compressed oracle technique;
+      specifically, we employ the ``standard compressed oracle'' (the choices
+      being standard/phase/Fourier/Fourier-phase, depending on how we want the
+      interface to be given and how the entries should be stored in the
+      database).
+
+    First, let us give a formalization for the $\perp$ symbol. For this, we expand the
+      $\database_{\register[X]_i}$ registers to $n+1$ qubits, and let $\perp$
+      be any string where the first bit is set to $0$. Technically, $\perp$ is then
+      a set of $2^n$ symbols $\perp_x \coloneqq 0 || x$; and vice versa, any
+      string $1 || x$ is interpreted as $x$. As an immediate consequence, we
+      see that $\perp \xor x = \perp$, while $\perp \xor \perp$ is undefined.
+      (If necessary, one could define $\perp_x \xor \perp_y = x \xor y$).
+      Additionaly we see that the operation $x \to \perp$ is as simple as
+      flipping the first qubit, while $\perp \to x$ will be \ldots ?
+
+    \hhnote{
+      EDIT: My mistake, I don't think the register is being increased and
+      decreased in superposition after all. The trick appears to be to let
+      $\perp = 0||0^n$, and move the registers between three subregisters, each
+      lists with $(1 + n + m)$-length entries: The ``unused'' list of entries
+      $(\perp, 0^m)$; the database itself; and the ``trash'' list of entries
+      $(x, 0^m)$; the ``unused'' register will start out with $q$ list
+      elements, while the two others will be initialized to empty. 
+      No need to define $\perp_x$ then, since it never appears,
+      and, $\perp \to x$ is simply implemented as $CNOT_{1||x}(\perp)$, with
+      the other direction never used. (Although with this, $\perp \xor x$ will
+      remain undefined, though $\perp \cdot x = 0^n$.)
+    }
+
+    To provide a brief summary, let the oracles take inputs in $\bin^n$ and
+      outputs in $\bin^m$. The database $\database$ is a register
+      housing enough qubits to store $q$ queries in the form $(x,\hat{z})$, so
+      $q \cdot (n + m)$ qubits in total, and each entry
+      is initialized to the ``empty'' state $\ket{\perp,
+      0^n}$. We write $\database[x] = \hat{z}$ if there is an entry $(x,\hat{z})$ in
+      $\database$, and $x \not\in \database$ otherwise.
+
+    Then, upon receiving input registers $(\register[X],
+      \register[Y])$, for each computational basis state $\ket{x,y}$ in the
+      support of their superposition states, do the following:
+      \begin{enumerate}
+        \item[0.] Starting state: $\database$ is a (possibly empty) list of entries,
+          each of which is in some superposition over $x \neq \perp$ and
+          $\hat{z}\neq 0^n$, sorted by increasing $x$.
+        \item Move entry from ``unused'' register to the end of database:
+          $\database \to \database || (\perp, 0^n)$.
+        \item Apply the following unitary to the database, as defined on all basis states:
+        \begin{enumerate}
+          \item If $x \in \database$ and $\database[x] = 0^n$,
+            set $(x, 0^n) \to (\perp, 0^n)$.
+          \item If $\database[x] \neq \perp$ and $\database[x] = \hat{z} \neq 0^n$,
+            do nothing.
+          \item If $\database[x] = \perp$, set the first empty element
+            $(\perp, 0^n)$ to $(x, 0^n)$, and use controlled SWAPs to sort the list
+            by increasing $x$.
+        \end{enumerate}
+        \item Set output:
+        \begin{enumerate}
+          \item Move database from the Hadamard domain to the primal domain by
+            applying $\Hgate^{\otimes m}$ to the $\register[Z]$ register:
+            \[ \ket{x,y}\otimes\ket{x,0^n} \to \ket{x,y}\otimes
+            \sum_{\forall i \in [2^m]} \frac{1}{2^m}\ket{i}\, . \]
+          \item Apply unitary $\ket{x,y} \to \ket{x,y \xor \database[x]}$.
+        \end{enumerate}
+      \end{enumerate}
+
+    \begin{remark}
+      In the original formulation of the compressed oracle technique, the size
+        of $\database$ shrunk and grew with each call depending on whether an input
+        had been called to the database before or not. This leads to a
+        superposition over databases where also the \emph{size} of the database
+        is in superposition. We prefer to model the database as a register, and
+        while it is possible to move subregisters around, we do not allow for
+        this action to be performed in superposition. Therefore, we fix the
+        size of $\database$ to be $q$ a priori,
+        and accept that the simulation will fail should the query count ever exceed $q$.
+    \end{remark}

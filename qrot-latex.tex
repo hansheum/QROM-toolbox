@@ -48,3 +48,6 @@
 \newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] \to #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
 \newcommandx*{\meas}[3][3={}]{\pcalgostyle{Meas}_{#3}(\ifthenelse{\equal{#1}{}}{}{#1 : }#2)} % Apply measurement #1 to register #2 of Global Quantum System #3
   % Intended usage: \meas{}{\register}; \meas{\measurement}{\register}; % % \meas{}{\register}[\qcomp] 
+
+%%% Compressed oracles
+  \newcommand{\database}{\register[D]}

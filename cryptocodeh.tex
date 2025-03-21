@@ -117,6 +117,12 @@
       \renewcommand{\pcadvstyle}[1]{\mathbbm{#1}}
       \newcommand{\pcadvsubstyle}[1]{\mathrm{\MakeLowercase{#1}}}
 
+      % H: Some simplistic actors
+      %\newcommand{\adversary}{\adv} % already defined 
+      \newcommand{\reduction}{\bdv}
+      \newcommand{\distinguisher}{\ddv}
+      \newcommand{\extractor}{\edv}
+
       % To-do: make standard value empty (why bugged? probably need an ifelse)
       \newcommand{\Eve}[1]{\adv_{\pcadvsubstyle{#1}}}
       \newcommand{\Red}[1]{\bdv_{\pcadvsubstyle{#1}}}
@@ -221,6 +227,10 @@
       \newcommand{\Orec}{\pcoraclestyle{R}}
       \newcommand{\Otran}{\pcoraclestyle{T}}
       \newcommand{\Ocheck}{\pcoraclestyle{P}}
+
+      % H: Random oracles. Usage: \RO = H, \RO[G] = G, etc.
+      \newcommand{\RO}[1][H]{\mathsf{#1}}
+      
 
       % H: hopping games
       \newcommandx*{\game}[3][2={},3={},usedefault=@]{\ensuremath{\mathrm{G}^{#2}_{#1}\cb{#3}}}
