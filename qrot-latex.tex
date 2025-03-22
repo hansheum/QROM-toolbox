@@ -2,6 +2,8 @@
 
 %%% Arrows
 \newcommand{\apply}[1]{\overset{#1}{\longrightarrow}}
+\newcommand{\applyleft}[1]{\overset{#1}{\longleftarrow}}
+\newcommand{\applyleftright}[1]{\overset{#1}{\longleftrightarrow}}
 
 %%% Sets and spaces
 \newcommand{\funcspace}[2]{\pcsetstyle{F}_{#1 \to #2}}
@@ -34,6 +36,7 @@
 \newcommand{\CXgate}{\unitary[CX]}
 \newcommand{\SWAPgate}{\unitary[SWAP]}
 \newcommand{\SORTgate}{\unitary[SORT]}
+\newcommand{\storeoutput}{\unitary_{\register[Y] \to \database}}
 
 \newcommand{\isempty}[1]{
   \ifthenelse{
@@ -45,9 +48,13 @@
 }
 
 %%% Quantum methods
-\newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] \to #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
+\newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] : #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
 \newcommandx*{\meas}[3][3={}]{\pcalgostyle{Meas}_{#3}(\ifthenelse{\equal{#1}{}}{}{#1 : }#2)} % Apply measurement #1 to register #2 of Global Quantum System #3
   % Intended usage: \meas{}{\register}; \meas{\measurement}{\register}; % % \meas{}{\register}[\qcomp] 
 
 %%% Compressed oracles
   \newcommand{\database}{\register[D]}
+  \newcommand{\databasex}{\database_{\register[X]}}
+  \newcommand{\databasez}{\database_{\register[Z]}}
+  \newcommand{\decomp}{\unitary[Rd]}
+  \newcommand{\decompx}{\decomp_x}
