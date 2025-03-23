@@ -1,435 +1,560 @@
 \section{Lazy-sampling QROs: The Compressed Oracle Technique}
   We will employ the compressed oracle technique, as introduced by
     Zhandry~\cite{C:Zhandry19};
-    specifically, we employ an adapted version of the ``standard Fourier oracle'' (the choices
+    specifically, we employ an adapted version of the ``standard Fourier
+    oracle'', the choices
     being standard/phase and computational/Fourier, depending on what
-    oracle interface we want, and how the mechanism for storing entries should
-    be defined).\footnote{
+    oracle interface we want, and in which domain the database entries should
+    be defined.\footnote{
       The standard Fourier oracle is not the version
-      employed by Zhandry, and was only presented in an appendix to his
-      article~\cite{C:Zhandry19}, but it is the version I find most closely
-      matches the intuition behind compressed oracles.
+      employed by Zhandry in his paper, and it is only defined in an appendix,
+      but it is the version I find most closely
+      matches the intuition behind the compressed oracle technique.
     }
 
-  \paragraph{The empty string.}
-    First, a bit of formalism: Let our oracles have input length $n$ and output
-      length $m$. Let $\emptystring$ be the empty string, which we encode
-      as $1 \concat{}0^n$. We will interpret the string $0 \concat{}x$ as $x$,
-      and strings of the form $1 \concat x$ for $x \neq 0^n$ will never
-      appear, but for the sake of completeness let us refer to them as $\slashed{x}$.
+  \subsection{Setup}
+    Let us begin by specifying our notation. To start with, unless noted otherwise,
+      we will assume that all random oracles have input length $n$ and
+      output length $m$, and that $q$ is an upper bound on the total
+      number of queries made to the oracle.
 
-    We define the $n$-bit controlled-not operation on $\emptystring$ to be
-      $\CXgate(\ket{x}_a \to \ket{\emptystring}_b) = \ket{x}_a\ket{x}_b$.
-      This may be implemented by performing the controlled not-operation as usual,
-      and then flipping the leading bit of register $b$.
-      %Also observe that $x \cdot \emptystring = 0$ for any $x$, where $\cdot$
-      %denotes the bitwise inner product.
+    \paragraph{The empty string.}
+       Let $\emptystring$ to be the empty string, encoded
+        as $1 \concat{}0^n$. We will interpret the string $0 \concat{}x$ as $x$.
+        Strings of the form $1 \concat x$ for $x \neq 0^n$ will never
+        appear, but for the sake of reference let us call them $\slashed{x}$.
 
-  \paragraph{Databases.}
-    We are going to keep a database register $\database$, containing $q$
-      entries in the format $(b \concat x, \hat{y})$, meaning $\database$ is a
-      register containing $q \cdot (1+n+m)$ qubits.
-      The database starts out in the ``empty'' state, with each entry
-      initialized to the pure state $\ket{\emptystring, 0^m}$.
-      After several
-      queries, the database will end up in a superposition over lists $\Dlist$, with
-      each list being split in two parts: An ``active'' part of tupels
-      $(x,\hat{y})$ such that $\hat{y} \neq 0^n$, sorted by increasing $x$, followed by
-      ``fresh'' part of entries set to the initial value $(\emptystring, 0^m)$.
-      More precisely, after $\ell$ queries, $\database$ will be in a
-      superposition over basis states of the form
-    \begin{align*}
-      \ket{\Dlist} &= \ket{(x_1, \hat{y_1}), (x_2, \hat{y}_2) \ldots, (x_k,
-      \hat{y}_k), (\emptystring, 0^m), \ldots, (\emptystring, 0^m)} \\
-      &= \ket{x_1, \hat{y}_1}_1 \ket{x_2, \hat{y}_2}_2 \dots
-      \ket{x_k, \hat{y}_k}_k \ket{\emptystring, 0^m}_{k+1} \dots
-      \ket{\emptystring, 0^m}_q\, ,
-    \end{align*}
-    where we have $x_1 < x_2 < \ldots < x_k$, non-zero output elements
-      $\hat{y}_i$, and $k \leq \ell$.
-      We write $\Dlist[x] = \hat{y}$ if the list contains the element
-      $(x,\hat{y})$, and $\Dlist[x] = \perp$ otherwise. This is well-defined,
-      as we will be guaranteed that the list only houses at most one tuple with
-      the value $x$ at any time.
+      We define the $(1+n)$-bit controlled-not operation on $\emptystring$ to be
+        $\eCXgate(\ket{x}_{\register[A]} \to \ket{\emptystring}_{\register[B]})
+        = \ket{x}_{\register[A]}\ket{x}_{\register[B]}$.
+        This may be implemented by performing the controlled not-operation as usual,
+        and then flipping the leading bit of register $\register[B]$. Repeating the
+        operation yields $\eCXgate(\ket{x}_{\register[A]} \to
+        \ket{x}_{\register[B]}) =
+        \ket{x}_{\register[A]}\ket{\emptystring}_{\register[B]}$ again, making
+        $\eCXgate$ an involution.
+        (Applying $\eCXgate$ to states $\ket{x}\ket{y}$ such that $x \neq y$
+        will lead to the invalid state $\ket{x}\ket{\slashed{z}}$, where $z = x \xor
+        y$, but we will never apply the gate to such cases.)
 
-    The state of the database register will in general be highly entangled
-      with the parties performing the queries; indeed, a list element will be
-      non-empty \emph{only if} it is entangled with the state of a
-      querying party. Note that the number of ``active'' versus ``fresh''
-      entries may differ between branches of the superposition, though
-      their sum will always be $q$.\footnote{
-        In the original formulation of the compressed oracle technique, the size
-        of $\database$ was allowed to grow and shrink with each call.
-        This leads to a superposition over databases where also the
-        \emph{size} of the register is in superposition. In our formalization,
-        registers are classically well-defined lists of qubits, and
-        while it is possible to resize registers by moving qubits around, we do
-        not allow for this to happen in superposition. Therefore, we fix
-        the size of $\database$ to be $q$ a priori,
-        and simply accept that the simulation will fail if the query count
-        ever exceeds $q$.
-      }
+      Finally, observe that $x \cdot \emptystring = 0$ for any $x$, where $\cdot$
+        denotes the bitwise inner product.
 
-    %\hhnote{
-    %  I \emph{think} \ldots but it may be the case (indeed, the \emph{point})
-    %  that all empty elements are pure states, i.e.\ computational basis
-    %  states, in the Hadamard domain. Still, though, it seems like we have no
-    %  choice but to operate element-wise \ldots can you even recognize a
-    %  pure basis state without measuring it? In that sense, the real
-    %  ``empty'' element will be the inputs that remain undefined in
-    %  \emph{all} lists in the database superposition. If the adversary
-    %  forwards a uniform superposition as input, then there will be no such
-    %  state: We will have a uniform superposition over $2^n$ lists, each of which
-    %  contains the single element $(i, 0^n)$ at the point of returning.
-    %  (Still not completely wrapped my head around how the second part gets
-    %  updated away from $0^n$. Something something entanglement\ldots)
-    %}
-
-  \paragraph{The primal and the Hadamard domain.}
-    Hats denote Hadamard-domain values: A computational basis state
-      $\ket{y}$ in the primal domain (left) will be the following uniform
-      superposition in the Hadamard domain (right):
+    \paragraph{Databases.}
+      We are going to keep a database register $\database$, storing $q$
+        list entries of the format $(b_\emptystring \concat x, \hat{y})$, meaning $\database$ is a
+        register containing $q \cdot (1+n+m)$ qubits.
+        The database starts out in the ``empty'' state, with each entry
+        initialized in the pure state $\ket{\emptystring, 0^m}$.
+        After several
+        queries, the database will end up in a superposition over lists $\Dlist$, with
+        each list being split in two parts: An ``active'' part of tupels
+        $(x,\hat{y})$ such that $\hat{y} \neq 0^n$, sorted by increasing $x$, followed by
+        ``fresh'' part of entries set to the initial value $(\emptystring, 0^m)$.
+        More precisely, after $\ell$ queries, $\database$ will be in a
+        superposition over basis states of the form
       \begin{align*}
-        \ket{y}
-        \quad &\applyleftright{H^{\otimes m}} \quad
-        \sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot
-        \hat{y}}}{\sqrt{2^m}} \ket{\hat{y}}\, ,
-      \intertext{
-        and vice versa:
-      }
-        \sum_{\forall y \in [2^m]} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}} \ket{y}
-        \quad &\applyleftright{H^{\otimes m}} \quad
-        \ket{\hat{y}}\, .
-      \intertext{
-        In particular, we have that the all-zero state in the Hadamard domain
-        corresponds to the all-positive-phase uniform superposition in the
-        primal domain:
-      }
-        \sum_{\forall y \in [2^m]} \frac{1}{\sqrt{2^m}} \ket{y}
-        \quad &\applyleftright{H^{\otimes m}} \quad
-        \ket{0^m}\, .
+        \ket{\Dlist} &= \ket{(x_1, \hat{y_1}), (x_2, \hat{y}_2) \ldots, (x_k,
+        \hat{y}_k), (\emptystring, 0^m), \ldots, (\emptystring, 0^m)} \\
+        &= \ket{x_1, \hat{y}_1}_1 \ket{x_2, \hat{y}_2}_2 \dots
+        \ket{x_k, \hat{y}_k}_k \ket{\emptystring, 0^m}_{k+1} \dots
+        \ket{\emptystring, 0^m}_q\, ,
       \end{align*}
+      with unique and increasing input elements $x_1 < x_2 < \ldots < x_k$,
+        non-zero output elementst $\hat{y}_i$, and $k \leq \ell$.
+        We write $\Dlist[x] = \hat{y}$ if the list contains an element
+        $(x,\hat{y})$, and $\Dlist[x] = \perp$ otherwise. 
+        %This is well-defined,
+        %since we are guaranteed that the list only houses at most one tuple with
+        %the value $x$ at any time.
 
-    \noindent
-    As illustrated, one can move between the primal domain and the
-      Hadamard domain by performing the ``Hadamard transformation'',
-      which is just applying the $\Hgate$ gate to each qubit in the
-      register individually.\footnote{
-        In his paper, Zhandry varyingly refers to the Quantum Fourier
-        Transformation and the Hadamard transformation, but as specified in
-        App.\ A he only ever uses the latter. (The Hadamard gate $\Hgate$ is the
-        single-qubit Quantum Fourier Transformation.)
-      } We will only move between domains on the output register,
-      i.e.\ the $\register[Y]$ register forwarded as part of the query.  
-      The input registers $\register[X]$ and
-      $\database_{\register[X]}$ will both be kept in the primal domain,
-      and the subregister $\database_{\register[Y]}$ of the database that
-      stores output values will be kept in the Hadamard domain.
+      The state of the database register will in general be highly entangled
+        with the parties performing the queries; indeed, a list element will be
+        non-empty \emph{only if} the register is entangled with the state of a
+        querying party. Finally, the number of ``active'' versus ``fresh''
+        entries may differ between branches of the superposition of $\database$,
+        though their sum will always be $q$.\footnote{
+          In the original formulation of the compressed oracle technique, the size
+          of $\database$ was allowed to grow and shrink with each call.
+          This leads to a superposition over databases where also the
+          \emph{size} of the register is in superposition. In our formalization,
+          registers are classically well-defined lists storing qubits (which are
+          two-level physical systems), and
+          while it is possible to resize registers by moving qubits around, we do
+          not allow for this to happen in superposition. Therefore, we fix
+          the size of $\database$ to be $q$ a priori,
+          and simply accept that the simulation will fail if the query count
+          ever exceeds $q$.
+        }
 
-  \paragraph{Readying the database.}
-    Let us define a unitary that acts on the combined state of the input
-      register $\register[X]$ and the database $\database$,
-      named $\decomp$ for ``ready''. In essence, it is an operation that
-      reads the input register, and updates the state of the database accordingly.
-      We define it by specifying it on all basis states, verifying along the
-      way that each step is reversible, and therefore
-      unitary. Indeed, $\decomp$ will turn out to be an involution, meaning
-      that applying it twice in a row will return the same state, (or in 
-      other words, $\decomp^2 = \idmatrix$).
+    \paragraph{Database subregisters.}
+      Next, let us define a naming convention for the subregisters of $\database$:
+        Let $\database_\inputreg$ refer to the collection of qubits that
+        store input values in the list (i.e.\ a subregister of size $q\cdot
+        (1+n)$), and let $\database_\outputreg$ refer to the collection of
+        qubits that stores output values (with size $q \cdot m$).
 
-    \begin{definition}[Unitary $\decomp$]
-      For each computational basis state $\ket{x}\ket{\Dlist}$ in the
-        support of the combined state of $\register[X]$ and $\database$:
-      \begin{enumerate}
-        \item Do one of the following, depending on the case: 
-        \begin{enumerate}
-          \item If $\Dlist[x] \neq 0^n$, then $\RO(x)$ has already been
-            set, and its value must furthermore be entangled with the view of a
-            querying party; do nothing.
-          \item If $\Dlist[x] = \perp$, set
-            the first empty element $(\emptystring, 0^n)$ in $\database$ to
-            $(x, 0^n)$ by applying bitwise $\CXgate$
-            gates from the $\register[X]$ register to the subregister
-            $\database_{\register[X],i}$ of $\database$ housing $\emptystring$,
-            and then flipping the leading bit of $\database_{\register[X],i}$.
-          \item If $\database[x] = 0^n$, %then $\RO(x)$ was queried previously
-            %but is now unentangled, meaning
-            %its value is uniformly random from the view of all querying parties. 
-            %implying that the value of
-            %$\RO(x)$ is uniformly random from their view (at least in this
-            %branch of the wavefunction). 
-            ``forget'' the element by applying the bitwise $\CXgate$ from the
-            $\register[X]$ register to the subregister
-            of $\database_{\register[X],i}$ which already housed $x$, and flip the leading bit, 
-            resulting in the entry $(\emptystring, 0^m)$. 
-            %(Notice that this
-            %operation is identical to the above one, but with the inverse outcome.)
-          \item For all other basis states, which is to say for lists $\Dlist$ that 
-            contain no empty entries $(\emptystring, 0^m)$ (which can
-            only happen if the query count exceeds $q$), and for lists that
-            contain invalid values $\slashed{x}$ for some $x \neq 0^n$ (which will
-            never happen), act as the identity.
-        \end{enumerate}
-        \item Use controlled $\SWAPgate$ gates to sort the elements of
-          $\Dlist$ by increasing $x$.
-        %\item Apply unitary $\ket{x,y} \to \ket{x,y \xor \database[x]}$.
-      \end{enumerate}
+      Now, provided $\Dlist[x] \neq \emptystring$,
+        let $\database(x)$ refer to the qubits that store the
+        relevant tuple $(x, \hat{y})$. Note that even in branches where this
+        holds, the exact qubit indices corresponding to
+        $\database(x)$ will in general differ between branches, since the lists in the
+        superposition may contain a varying number of entries that precede $x$,
+        making $\database(x)$ only well-defined when specializing to single
+        branches of $\database_\inputreg$ superposition.
+        When speaking generally, we may use $\database_i$ to refer to the registers
+        that will store the $i$'th tuple of any list.
+
+      Combining, we can then refer to the subregister storing the first element of
+        the tuple $(x,\hat y)$ as $\database_\inputreg(x)$, and the register
+        storing the corresponding value $\hat{y}$ as
+        $\database_\outputreg(x)$, (and likewise for $\database_{\inputreg,i}$,
+        $\database_{\outputreg,i}$).
+
+      %\hhnote{
+      %  I \emph{think} \ldots but it may be the case (indeed, the \emph{point})
+      %  that all empty elements are pure states, i.e.\ computational basis
+      %  states, in the Hadamard domain. Still, though, it seems like we have no
+      %  choice but to operate element-wise \ldots can you even recognize a
+      %  pure basis state without measuring it? In that sense, the real
+      %  ``empty'' element will be the inputs that remain undefined in
+      %  \emph{all} lists in the database superposition. If the adversary
+      %  forwards a uniform superposition as input, then there will be no such
+      %  state: We will have a uniform superposition over $2^n$ lists, each of which
+      %  contains the single element $(i, 0^n)$ at the point of returning.
+      %  (Still not completely wrapped my head around how the second part gets
+      %  updated away from $0^n$. Something something entanglement\ldots)
+      %}
+
+    \paragraph{The primal and the Hadamard domain.}
+      You may have noticed the hats. These denote that the value in question is
+        defined in the Hadamard-domain: A computational basis state
+        $\ket{y}$ in the primal domain (left) will be the following 
+        superposition in the Hadamard domain (right):
+        \begin{align*}
+          \ket{y}
+          \quad &\applyleftright{H^{\otimes m}} \quad
+          \sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot
+          \hat{y}}}{\sqrt{2^m}} \ket{\hat{y}}\, ,
+          \intertext{
+            and vice versa:
+          }
+          \sum_{\forall y \in [2^m]} \frac{(-1)^{\hat{y} \cdot y}}{\sqrt{2^m}} \ket{y}
+          \quad &\applyleftright{H^{\otimes m}} \quad
+          \ket{\hat{y}}\, .
+          \intertext{
+            In particular, we have that the all-zero state in the Hadamard domain
+            corresponds to the uniform superposition in the primal domain:
+          }
+          \sum_{\forall y \in [2^m]} \frac{1}{\sqrt{2^m}} \ket{y}
+          \quad &\applyleftright{H^{\otimes m}} \quad
+          \ket{0^m}\, .
+        \end{align*}
 
       \noindent
-      The If-statements may be implemented as mult-bit controlled
-      operations. Notice that the cases are mutually exclusive, and that they
-      together cover all basis states.
-    \end{definition}
+      As illustrated, one can move between the primal domain and the
+        Hadamard domain by performing the ``Hadamard transformation'',
+        which is just applying the $\Hgate$ gate to each qubit in the
+        register individually.\footnote{
+          In his paper~\cite{C:Zhandry19}, Zhandry varyingly refers to the Quantum Fourier
+          Transformation and the Hadamard transformation, but he clarifies in
+          App.\ A that he only ever uses the latter. (The Hadamard gate $\Hgate$ is the
+          single-qubit Quantum Fourier Transformation.)
+        } We will only move between domains on the output register,
+        i.e.\ the $\outputreg$ register forwarded as part of the query.  
+        The input registers $\inputreg$ and
+        $\database_{\inputreg}$ will both be kept in the primal domain,
+        and the output register $\database_{\outputreg}$ of the database 
+        will be kept in the Hadamard domain.
 
-  \paragraph{Providing an output.}
-    With the readying procedure defined, all that remains is to give
-      the procedure for returning an output. In essence, the
-      idea will be to move the output register $\register[Y]$ to the Hadamard
-      domain, entangle it with the subregister $\database_{\register[Y], x}$,
-      and return it to the primal domain before shipping
-      $\register[X]$ and $\register[Y]$ back to the queryer.
+  \subsection{Defining CROs}
+    \paragraph{Updating the database.}
+      Next, we define a unitary that acts on the combined state of the input
+        register $\inputreg$ and the database $\database$,
+        named $\decomp$ for ``Store/Sort''.\footnote{
+          Zhandry calls this unitary $\unitary[FourDecomp]$, for ``Fourier
+          Decompress''~\cite[App.~C]{C:Zhandry19}.
+        } In essence, it is an operation that
+        reads the input, and updates the database accordingly.
+        We define it by specifying it on all basis states, verifying along the
+        way that each step is reversible, and therefore
+        unitary. Indeed, $\decomp$ will turn out to be an involution, meaning
+        that applying it twice in a row will return the same state, (or in 
+        other words, that $\decomp^2 = \idmatrix$).
 
-    \begin{definition}[Compressed random oracle]
-      Let $\storeoutput$ be the unitary that acts on the basis states
-        $\ket{x}\ket{y}\ket{\Dlist}$ of the registers
-        $\register[X]$, $\register[Y]$ and $\database$
-        in the following way:
+      \begin{definition}[Unitary $\decomp$]
+        For each computational basis state $\ket{x}\ket{\Dlist}$ in the
+          support of the combined state of registers $\inputreg$ and $\database$:
+        \begin{enumerate}
+          \item Do one of the following, depending on the case: 
+          \begin{enumerate}
+            \item If $\Dlist[x] = \hat{y} \neq 0^m$, then $\RO(x)$ has already been
+              set, and $\database(x)$ must furthermore be entangled with a
+              querying party; do nothing.
+            \item If $\Dlist[x] = \perp$, set
+              the first empty element $(\emptystring, 0^m)$ in $\Dlist$ to
+              $(x, 0^m)$ by applying $\eCXgate$ from $\inputreg$ to the
+              corresponding subregister $\database_{\inputreg,i}$.
+            \item If $\Dlist[x] = 0^m$, ``forget'' the element by applying 
+              $\eCXgate$ from $\inputreg$ to the subregister
+              of $\database_{\inputreg}(x)$,
+              resulting in the entry $(\emptystring, 0^m)$. 
+              %(Notice that this
+              %operation is identical to the above one, but with the inverse outcome.)
+            \item For all other basis states, which is to say for lists $\Dlist$ that 
+              contain no empty entries $(\emptystring, 0^m)$ (which can
+              only happen if the query count exceeds $q$), and for lists that
+              contain invalid values $\slashed{x}$ for some $x \neq 0^n$ (which will
+              never happen), act as the identity.
+          \end{enumerate}
+          \item Use controlled $\SWAPgate$ gates to sort $\Dlist$ by increasing $x$.
+        \end{enumerate}
+
+        \noindent
+        The If-statements may be implemented as mult-bit controlled
+        operations. Notice that the cases are mutually exclusive as well as
+        exhaustive, and that they define an involution. Therefore, $\decomp$ is
+        unitary.
+      \end{definition}
+
+    \paragraph{Entangling the query.}
+      With the updating procedure defined, all that remains is to 
+        define how an output is provided. 
+
+      In essence, the idea is to
+        move the output register $\outputreg$ to the Hadamard
+        domain, entangle it with the subregisters $\database_{\outputreg}(x)$
+        for each $x$ in the input superposition,
+        and then return $\outputreg$ to the primal domain, before shipping
+        $\inputreg$ and $\outputreg$ back to the querying party.
+        The entanglement, which is hidden from view of whoever made the query,
+        will make it look like a classical probability distribution has been
+        induced over the possible states of $\outputreg$---just as if $\RO$ had
+        been sampled from the set of all functions.
+
+      Let us define the ``Entangling'' unitary $\entangle$ next.
+
+      \begin{definition}
+        Let $\entangle$ be the unitary that acts on basis states
+          $\ket{x}\ket{y}\ket{\Dlist}$ of registers
+          $\inputreg$, $\outputreg$, $\database$
+          in the following way:
+          \[
+            \ket{x}\ket{\hat y}\ket{\ldots, (x, z), \ldots} \apply{\entangle}
+            \ket{x}\ket{\hat y}\ket{\ldots, (x, \hat y \xor z), \ldots}\, ,
+          \]
+          and as the identity whenever $\Dlist[x] = \perp$.\footnote{
+            We will ensure that this never occurs.
+          } The cases are mutually exclusive and exhaustive, and define
+          an involution. Therefore, $\entangle$ is unitary.
+      \end{definition}
+
+    \paragraph{The oracle procedure.}
+      With $\decomp$ and $\entangle$ defined, we are finally ready to define
+        the action performed by our compressed random oracle upon receiving a query.
+
+      \begin{definition}[Compressed random oracle]
+        \label{def:compressed-ros}
+        Given registers $\inputreg,
+          \outputreg, \database$, the \emph{compressed random oracle} 
+          $\RO: \bin^n \to \bin^m$ performs the following operations:
+        \begin{enumerate}
+          \item $\applyU{\decomp}{\inputreg, \database}$
+          \item $\applyU{\Hgate^{\otimes m}}{\outputreg}$
+          \item $\applyU{\entangle}{\inputreg, \outputreg, \database}$
+          \item $\applyU{\Hgate^{\otimes m}}{\outputreg}$
+          \item $\applyU{\decomp}{\inputreg, \database}$
+        \end{enumerate}
+      \end{definition}
+
+      \noindent
+      Having defined this procedure, Zhandry then proved that it provides a perfect
+        simulation of a quantum-accessible random
+        oracle~\cite[Lemma~4]{C:Zhandry19}.
+
+      \begin{theorem}[Simulation is perfect]\label{thm:perfect}
+        Let $\RO$ be a quantum-accessible random oracle, and let $\RO[G]$ be a
+        compressed random oracle. Then we have for all distinguishers $\distinguisher$,
         \[
-          \ket{x}\ket{y}\ket{\ldots, (x, z), \ldots} \apply{\storeoutput}
-          \ket{x}\ket{y}\ket{\ldots, (x, z \xor y), \ldots}\, ,
+          \prob{1 \sample \distinguisher^{\RO}} = \prob{1 \sample
+          \distinguisher^{\RO[G]}}\, .
         \]
-        and as the identity whenever $\Dlist[x] = \perp$ (which will never
-        happen).
-        %(though we will be guaranteed $\Dlist[x] \neq \perp$).
+      \end{theorem}
 
-      Then, given registers $\register[X],
-        \register[Y], \database$, the \emph{compressed random oracle} 
-        performs the following operations:
+  \subsection{Playing with CROs}
+    What is the effect of the operations listed in \autoref{def:compressed-ros}? Let's explore!
 
-      \begin{enumerate}
-        \item $\applyU{\decomp}{\register[X] \concat \database}$
-        \item $\applyU{\Hgate^{\otimes m}}{\register[Y]}$
-        \item $\applyU{\storeoutput}{\register[X] \concat \register[Y] \concat \database}$
-        \item $\applyU{\Hgate^{\otimes m}}{\register[Y]}$
-        \item $\applyU{\decomp}{\register[X] \concat \database}$
-      \end{enumerate}
-    \end{definition}
+    \paragraph{Classical queries.}
+      For our first sanity check, consider the result of performing the
+        first three steps on a classical query, i.e.\ with $\inputreg$
+        and $\outputreg$ put in a computational basis state
+        $\ket{x}\ket{y}$, to the initially-empty database
+        $\ket{\Dlist_\emptystring}$:
+        \begin{enumerate}
+          \item $\ket{x}\ket{y}\ket{\Dlist_\emptystring} \coloneqq
+            \ket{x}\ket{y}\ket{(\emptystring, 0^m), \ldots, (\emptystring,
+            0^m)}%$ \\ 
+            \quad \apply{\decomp} \quad \ket{x}\ket{y} \ket{(x, 0^m), (\emptystring, 0^m),
+            \ldots, (\emptystring, 0^m)} \coloneqq \ket{x}\ket{y}\ket{\Dlist_x}\, ,$
+          \item $\ket{x}\ket{y}\ket{\Dlist_x}%$ \\
+            \quad \apply{H^{\otimes m}} \quad \ket{x}
+            \left(\sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
+            \ket{\hat{y}}\right) \ket{\Dlist_x}\, ,$
+          \item $\ket{x} \left(\sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y
+            \cdot \hat{y}}}{\sqrt{2^m}} \ket{\hat{y}}\right) 
+            \ket{(x, 0^m), (\emptystring, 0^m), \ldots}$ \\
+            $\apply{\entangle} \quad 
+            \ket{x}\left(\sum_{\forall \hat{y} \in [2^m]}
+              \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}} \ket{\hat{y}} \ket{(x, \hat{y}),
+              (\emptystring, 0^m), \dots} \right)
+            \coloneqq \sum_{\forall \hat{y} \in [2^m]}
+              \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
+              \ket{x}\ket{\hat{y}}\ket{\Dlist_{x,\hat{y}}}\, .$
+        \end{enumerate}
 
-  \paragraph{First sanity check: Classical queries.}
-    What is the effect of these operations? Let us explore.
+      \noindent
+      At this point, $\outputreg$ is maximally entangled with the
+        subregister of $\database$ housing $\Dlist[x]$: 
+        We can see from the above that their combined
+        state now has the form (ignoring amplitudes) 
+        $\ket{\hat{y}_1}\ket{\hat{y}_1} +
+        \ket{\hat{y}_2}\ket{\hat{y}_2} + \ldots +
+        \ket{\hat{y}_{2^m}}\ket{\hat{y}_{2^m}}$. This may be a large superposition,
+        but the outcome of observing the two registers is guaranteed to be
+        equal, which is exactly what it means to be maximally entangled (in
+        general, that observing one register fully determines the state of the other).
+        Performing the Hadamard transformation on $\outputreg$ thereafter does nothing to change
+        this\footnote{
+          This is because entanglement is a \emph{basis-independent} feature of
+          quantum states; in fact, it fulfills the definition of a \emph{quantum resource},
+          i.e.\ something that can be spent to perform tasks~\url{https://arxiv.org/abs/1806.06107}.
+        }, but rather has the effect of moving their combined state from one maximally
+        entangled state to another.%by simply shuffling phases around. 
 
-    For our first sanity check, consider the result of performing the
-      first three steps on a classical query, i.e.\ with $\register[X]$
-      and $\register[Y]$ put in a computational basis state
-      $\ket{x}\ket{y}$, to the initially-empty database
-      $\ket{\Dlist_\emptystring}$:
-      \begin{enumerate}
-        \item $\ket{x}\ket{y}\ket{\Dlist_\emptystring} \coloneqq
-          \ket{x}\ket{y}\ket{(\emptystring, 0^m), \ldots, (\emptystring,
-          0^m)}%$ \\ 
-          \quad \apply{\decomp} \quad \ket{x}\ket{y} \ket{(x, 0^m), (\emptystring, 0^m),
-          \ldots, (\emptystring, 0^m)} \coloneqq \ket{x}\ket{y}\ket{\Dlist_x}\, ,$
-        \item $\ket{x}\ket{y}\ket{\Dlist_x}%$ \\
-          \quad \apply{H^{\otimes m}} \quad \ket{x}
-          \left(\sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
-          \ket{\hat{y}}\right) \ket{\Dlist_x}\, ,$
-        \item $\ket{x} \left(\sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y
-          \cdot \hat{y}}}{\sqrt{2^m}} \ket{\hat{y}}\right) 
-          \ket{(x, 0^m), (\emptystring, 0^m), \ldots}$ \\
-          $\apply{\storeoutput} \quad 
-          \ket{x}\left(\sum_{\forall \hat{y} \in [2^m]}
-            \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}} \ket{\hat{y}} \ket{(x, \hat{y}),
-            (\emptystring, 0^m), \dots} \right)
-          \coloneqq \sum_{\forall \hat{y} \in [2^m]}
-            \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
-            \ket{x}\ket{\hat{y}}\ket{\Dlist_{x,\hat{y}}}\, .$
-      \end{enumerate}
+      Finally, the second application of
+        $\decomp$ does nothing, since the list is already sorted and there is
+        nothing to remove. That is, with one exception: In the single branch of the
+        wavefunction where $\hat{y} = 0^m$, $x$ will be replaced with
+        $\emptystring$, which has the effect of ``implicitly'' defining the
+        value of $\hat{y}$ in this branch. 
 
-    \noindent
-    At this point, $\register[Y]$ is maximally entangled with the
-      subregister of $\database$ housing $\Dlist[x]$: 
-      we can see from the above that their combined
-      state now has the form (ignoring amplitudes) 
-      $\ket{\hat{y}_1}\ket{\hat{y}_1} +
-      \ket{\hat{y}_2}\ket{\hat{y}_2} + \ldots +
-      \ket{\hat{y}_{2^m}}\ket{\hat{y}_{2^m}}$; there may be a large superposition,
-      but the outcome of observing the two registers is guaranteed to be equal.
-      Performing the Hadamard transformation on $\register[Y]$ thereafter does nothing to change
-      this\footnote{
-        This is because entanglement is a \emph{basis-independent} feature of
-        quantum states; in fact, it fulfills the definition of a \emph{quantum resource},
-        i.e.\ something that can be spent to perform tasks~\url{https://arxiv.org/abs/1806.06107}.
-      }, but rather has the effect of moving their combined state from one maximally
-      entangled state to another.%by simply shuffling phases around. 
+      At a glance, this may appear to be a
+        problem, since if the querying party then by chance observes exactly
+        this branch, and then queries the compressed oracle again on the same
+        input, the database would not ``know'' that it was supposed give the same
+        value back, leading to an inconsistency. However, \autoref{thm:perfect}
+        tells us that simulation is perfect, so \emph{something} will have
+        to ensure consistency in this case. The answer will be
+        given in terms of the $m=1$ case in \autoref{sec:extracting}, though I
+        urge you to work it out for yourself and seeing what happens before
+        checking your answer.
 
-    Finally, the second application of
-      $\decomp$ does nothing, since the list is already sorted and there is
-      nothing to remove \ldots with one exception: In the single branch of the
-      wavefunction where $\hat{y} = 0^m$, $x$ will be replaced with
-      $\emptystring$, which has the effect of ``implicitly'' defining the
-      value of $\hat{y}$ in this branch. From the point of view of the
-      querying party, should they observe this value, it will be the same as
-      seeing $\RO(x) = 0^m$; this will still happen with probability $2^{-m}$.
-      However, since $x$ was removed from the database, making the same query
-      again will lead to a completely different result with overwhelming
-      probability.
-
-    \hhnote{
-      But the database won't know this, and querying again on the same point
-      will lead to a different outcome with overwhelming probability. Is this
-      a problem? Sure \emph{seems} like a problem! But $\hat{y} = 0^m$ is a
-      uniform superposition in the primal domain \ldots but this is a
-      maximally entangled state \ldots I am confused. \\
-      I think that the answer is that in this formalization, there is
-      \emph{one} output value which will lead to inconsistent answers upon
-      repeated queries post-measurement, but that its exact value (input and
-      output alike) will be perfectly unpredictable.
-    }
-
-    Now, hiding away entanglement in this manner has the effect of ``mixing''
-      the state of $\register[Y]$: From the point of view of the querying
-      party, hidden entanglement is indistinguishable from a classical probability
-      distribution over quantum states; and maximal entanglement yields
-      maximally mixed states, which corresponds to a uniform probability
-      distribution over basis states.
+      And so, accepting this conundrum for now, we return to our maximally entangled
+        state. The entanglement is hidden from view of the querying party, and
+        hiding away entanglement in this manner has the effect of ``mixing''
+        the state of $\outputreg$: From their point of view, hidden
+        entanglement is indistinguishable from a classical probability
+        distribution over quantum states\footnote{
+          In fact, this is the observation that lead Hugh Everett to
+          develop his many-worlds interpretation of quantum mechanics,
+          since the randomness induced by wavefunction collapse can just
+          as well be explained in terms of you entangling \emph{yourself} with
+          the quantum state you are observing. And why not? After all, you,
+          too, are made of quantum stuff!
+        }; and maximal entanglement yields
+        maximally mixed states, which corresponds to a uniform probability
+        distribution over basis states.
+        
       Thus, the querying party has the experience of having the
-      $\register[Y]$ register placed in a uniformly random computational
-      basis state---exactly as if a random function had been sampled and its
-      output on $x$ had been xor'ed into the register!
+        $\outputreg$ register placed in a uniformly random computational
+        basis state---exactly as if $\RO(x)$ had been sampled at random
+        and xored into the register!
 
-    %\hhnote{
-    %  What is the effect of the $0^m$ part of the superposition being removed
-    %  by $\decomp$? (I think it is not ``removed'' per se, but rather
-    %  implicitly defined, since we don't have to keep track of $x$ for such
-    %  cases. The output register is still \emph{there}, after all.)
-    %}
+      %\hhnote{
+      %  What is the effect of the $0^m$ part of the superposition being removed
+      %  by $\decomp$? (I think it is not ``removed'' per se, but rather
+      %  implicitly defined, since we don't have to keep track of $x$ for such
+      %  cases. The output register is still \emph{there}, after all.)
+      %}
 
-  \paragraph{Second sanity check: Uniform superpositions.}
-    Ok, so far so good. Next, what if $\register[Y]$ is set to be in the
-      uniform superposition, $\sum_y \sqrt{2^{-m}}\ket{y}$? Well, then nothing
-      happens: After the Hadamard
-      transformation, the $\register[Y]$ register will be in the state
-      $\ket{0^m}$, and xor'ing into the database has no effect: The second
-      Hadamard transformation will take it back to the uniform superposition,
-      and return it as-is. Note that this also matches the querying party's
-      expectations: since the xor operation is a permutation, xoring any
-      string into the uniform superposition yields the uniform superposition,
-      regardless of what value $\RO(x)$ is being xored.
-      This means that for a real random oracle, its value on the point $x$
-      would be perfectly hidden from their view, which is matched in the compressed
-      oracle by the second application of $\decomp$ removing the point $x$
-      from the list and replacing it with $\emptystring$.
+    \paragraph{Uniform superpositions.}
+      Next, what if $\outputreg$ is set to be in the
+        uniform superposition, $\sum_y \sqrt{2^{-m}}\ket{y}$ (with the input
+        value still set to the computational basis state $\ket{x}$)? Well, then
+        \emph{nothing} happens: After being moved to the Hadamard
+        domain, the $\outputreg$ register will be in the state
+        $\ket{0^m}$, and xoring into the database has no effect: The second
+        Hadamard transformation will take it back to the uniform superposition,
+        and then return it as-is. Note that this also matches the querying party's
+        expectations: Since the xor of any fixed string defines a permutation, xoring 
+        into the uniform superposition should yield the uniform superposition,
+        regardless of the value $\RO(x)$ that is being xored.
+        This means that, when interacting with a real random oracle, $\RO(x)$
+        will remain perfectly hidden from their view. This is matched in the compressed
+        oracle by the second application of $\decomp$ removing the point $x$
+        from the list and replacing it with $\emptystring$, ensuring no
+        entanglement (which would otherwise have been a noticeable
+        inconsistency, since the output register would no longer be in a
+        uniform superposition, but rather in some mixed state).
 
-    What about other uniform superpositions, such as $\sum_y \nicefrac{(-1)^{y
-      \cdot z}}{\sqrt{2^{-m}}} \ket{y}$ for some $z \in \bin^m$? Well, then the querying party
-      \emph{would} expect to be able to learn something about the output, by
-      observing how the phases shifted around. The database will likewise be
-      updated: In this case, after the Hadamard transformation, $\register[Y]$ will be in the
-      computational basis state $\ket{z}$, which will be stored directly in the
-      database as $(x,z)$. Now we are back to the case of maximal entanglement,
-      since the combined state of $\register[Y]$ and the register storing $z$
-      is $\ket{z}\ket{z}$.
+      What about other superpositions, for example $\sum_y \nicefrac{(-1)^{y
+        \cdot z}}{\sqrt{2^{-m}}} \ket{y}$ for some $z \in \bin^m$? Well, then the querying party
+        \emph{would} expect to be able to learn something about the output, by
+        observing how the phases shift around. The database will likewise be
+        updated in this case: In our example, moving $\outputreg$ to the Hadamard domain
+        will put it in the computational basis state $\ket{z}$, which
+        will $\entangle$ will then store into the database as $(x,z)$. Now we
+        are back to the case of maximal entanglement, as can be seen from the
+        combined state of $\outputreg$ and $\database_\outputreg(x)$ being
+        $\ket{z}\ket{z}$.
 
-    Of course, in between the two extremes of maximal entanglement and 
-      no information lies the world of \emph{some} entanglement, as
-      results from setting $\register[Y]$ to some non-uniform superposition.
-      Additionally,
-      $\register[Y]$ may itself be arbitrarily entangled with other subsystems
-      belonging to the querying party, in which case it will be a mixed state
-      from the point of view of the compressed oracle, and so their combined
-      state will, after entangling, also be a mixed state.
+      Of course, in between the two extremes of no information and maximal
+        entanglement lies the world of \emph{some} entanglement, as
+        results from setting $\outputreg$ to some non-uniform superposition.
+        Additionally, $\outputreg$ may itself be arbitrarily entangled with
+        other subsystems belonging to the querying party, in which case it will
+        be a mixed state from the point of view of the compressed oracle, and
+        so their combined state will, after entangling, also be a mixed state.
 
-  \paragraph{Third sanity check: Superpositions over input values.}
-    Finally, what about superpositions over $x$? The easiest way to think
-      about this is to adopt an Everttian worldview and imagine the
-      superposition state of $\register[X]$
-      describing a superposition over several possible universes. Then, one can
-      consider each universe separately: The branch of the wavefunction where
-      $\register[X]$ is in basis state $\ket{x}$ is the branch of the
-      wavefunction where the querying party (who will in general be entangled
-      with $\register[X]$) decided to query the random oracle on the value $x$. 
-      And since these registers always remain in the primal domain, we don't have
-      to grapple with the metaphysical implications of ``changing the basis'' on a
-      collection of universes.
+    \paragraph{Superpositions over input values.}
+      Finally, what about superpositions over $x$? The easiest way to think
+        about this is to adopt an Everettian worldview, and imagine the
+        superposition state of $\inputreg$
+        describing a superposition over several possible universes. Then, one can
+        consider each universe separately: The branch of the wavefunction where
+        $\inputreg$ is in basis state $\ket{x}$ is the branch of the
+        wavefunction where the querying party (who will in general be entangled
+        with $\inputreg$) decided to query the random oracle on the value $x$. 
+        And since these registers always remain in the primal domain, we don't have
+        to grapple with the metaphysical implications of ``changing the basis'' on a
+        collection of universes.
 
-    Thus, the result of such a query again depends on
-      the state of $\register[Y]$: If $\register[Y]$ is in
-      the all-positive uniform superposition, independently of $\register[X]$,
-      then it is the all-positive uniform superposition in every universe, and
-      nothing is stored and nothing is learned. If
-      $\register[Y]$ is set in a computational basis state, such as
-      $\ket{0^m}$, then the result is the same maximally entangled state,
-      appearing as the classically uniform probability distribution, in
-      all universes. If $\register[X]$ and $\register[Y]$ are maximally
-      entangled in some state $\ket{x_1}\ket{y_1} + \ket{x_2}\ket{y_2} +
-      \ldots$ (for unique values of $x_i$ and $y_i$), then from the point of
-      view of each universe we are performing a purely classical query,
-      and we are back to the situation considered in our first sanity check.
+      Thus, the result of such a query again depends on
+        the state of $\outputreg$: If $\outputreg$ is in
+        the uniform superposition, independently of $\inputreg$,
+        then it is in the uniform superposition in every universe, and
+        nothing is ever stored and nothing is ever learned. If
+        $\outputreg$ is set in a computational basis state, such as
+        $\ket{0^m}$, then the result is a maximally entangled state,
+        appearing as a classically uniform probability distribution over basis
+        states in all universes. Finally, if $\inputreg$ and $\outputreg$ are
+        maximally entangled in some state $\ket{x_1}\ket{y_1} + \ket{x_2}\ket{y_2} +
+        \ldots$, for unique values of $x_i$ and $y_i$, then
+        inside each universe we are performing a purely classical query,
+        and we are back to the situation that we first considered.
 
-  \paragraph{Repeated queries.}
-    Say the oracle started out in the empty state
-      $\ket{\database_\emptystring}$, and was then queried on the classical
-      input state $\ket{x}\ket{y}$.
-      We found in our our first sanity check that the result is the combined
-      state
-    \[
-      \sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
-      \ket{x} \left( \Hgate^{\otimes m} \ket{\hat{y}} \right) \ket{\Dlist_{x,\hat{y}}}\, . 
-    \]
-
-    \noindent
-    Now, what happens if the adversary queries the oracle on the registers $\register[X]$
-      and $\register[Y]$ a second time, without doing anything to affect their
-      state? Well, first, the Hadamard transform, being an involution, cancels
-      out:
-    \[
-      \sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
-      \ket{x} \ket{\hat{y}} \ket{\Dlist_{x,\hat{y}}}\, . 
-    \]
-
-    \noindent
-    Next, for each basis state $\ket{x} \ket{\hat{y}}
-      \ket{\Dlist_{x,\hat{y}}}$, we will have that $\Dlist[x] \neq \perp$, and
-      so $\decomp$ will do nothing. Then, $\storeoutput$ will have the
-      following effect:
+    \paragraph{Repeated queries.}
+      Say the oracle started out in the empty state
+        $\ket{\database_\emptystring}$, and was then queried on the classical
+        input state $\ket{x}\ket{y}$.
+        Then we found that the result is the combined state
       \[
-        \ket{x}\ket{\hat{y}}\ket{(x, \hat{y}), \ldots} \apply{\storeoutput}
-        \ket{x}\ket{y}\ket{(x, \hat{y} \xor \hat{y}), \ldots}
-        = \ket{x}\ket{y}\ket{(x, 0^m), \ldots}\, .
+        \sum_{\forall \hat{y} \in [2^m]\backslash \{0^m\}} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
+        \ket{x} \left( \Hgate^{\otimes m} \ket{\hat{y}} \right) \ket{\Dlist_{x,\hat{y}}}
+        + \frac{1}{\sqrt{2^m}} \ket{x} \left( \Hgate^{\otimes m} \ket{0^m} \right) \ket{\Dlist_\emptystring}\, . 
       \]
 
-    \noindent
-    The output value is $0^m$, and so the second application of $\decomp$
-      will replace $x$ with $\emptystring$. The entanglement has been removed,
-      and the value of $x$ has been forgotten! What's more, since this
-      ``forgetting'' behaviour is shown to hold for any computational basis
-      state, it must hold for \emph{every} quantum state that is forwarded to
-      the oracle twice in a row.
+      \noindent
+      Now, what happens if the adversary queries the oracle on the registers
+        $\inputreg$ and $\outputreg$ a second time, without changing their
+        in any way in the meantime? Well, first, the Hadamard transformation on
+        $\outputreg$, being an involution, cancels out:
+      \[
+        \sum_{\forall \hat{y} \in [2^m]\backslash \{0^m\}} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
+        \ket{x} \ket{\hat{y}} \ket{\Dlist_{x,\hat{y}}}
+        + \frac{1}{\sqrt{2^m}} \ket{x} \ket{0^m} \ket{\Dlist_\emptystring}\, . 
+      \]
 
-    It may seem counter-intuitive, but this ``forgetting'' is in fact exactly
-      what we need to happen (and was indeed a major roadblock to
-      the lazy-sampling of quantum random oracles prior to the development of the
-      compressed oracle technique). To see why, consider the situation for
-      ``monolithic'' random oracles, for which the function $\RO$ was sampled
-      at random at the outset. Upon making a query with a classical state
-      $\ket{x}\ket{y}$, the adversary is returned the state $\ket{x}\ket{y \xor
-      \RO(x)}$. If they then make the same query with the same registers a
-      second time, the result will be $\ket{x}\ket{y \xor \RO(x)\xor \RO(x)} =
-      \ket{x}\ket{y}$. The value has been forgotten!
+      \noindent
+      Next, for each basis state $\ket{x} \ket{\hat{y}}
+        \ket{\Dlist_{x,\hat{y}}}$ such that $\hat y \neq 0^m$, we will have
+        that $\Dlist[x] \neq \perp$, and so $\decomp$ will do nothing,
+        while for $\hat y = 0^m$ it will insert the element $(x, 0^m)$ into
+        $\Dlist$. This gives us the state:
+      \[
+        \sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
+          \ket{x} \ket{\hat{y}} \ket{\Dlist_{x,\hat{y}}}\, .
+      \]
 
-    ``But'', I hear you say, ``what if I store the value of $\RO(x)$ before
-      I make the second query? Surely I won't be forced to automatically
-      `forget' what the value was, simply because I query the oracle a second
-      time!'' And you'd be right---but notice that we are now talking about a
-      different quantum state, namely the state
-      $\ket{x}\ket{y\xor \RO(x)}\ket{\RO(x)}$, where the third register is
-      some internal qubit register local to you. By storing $\RO(x)$ in this
-      register (for instance by first preparing it in the state $\ket{y}$ and
-      then performing bitwise $\CXgate$ gates), you \emph{entangled} the two registers. And so,
-      while the result of a second query to the monolithic oracle will indeed be
-      the state $\ket{x}\ket{y}\ket{\RO(x)}$, the effect on
-      the compressed oracle will also be different from the
-      ``forgetting'' behaviour shown above. This is because the Hadamard
-      transformation, which previously operated on a pure (unentangled) state
-      $\ket{y}$, will now take the $\register[Y]$ register to some other state
-      than before, and the cancellation of the $\hat{y}$ values won't happen.
+      \noindent
+      Then, $\entangle$ will have the following effect on the basis states:
+        \[
+          \ket{x}\ket{\hat{y}}\ket{(x, \hat{y}), \ldots} \apply{\entangle}
+          \ket{x}\ket{y}\ket{(x, \hat{y} \xor \hat{y}), \ldots}
+          = \ket{x}\ket{y}\ket{(x, 0^m), \ldots}\, ,
+        \]
+
+      \noindent
+      and with the second application of $\decomp$ removing all entries with
+        $\hat{y} = 0^m$, we will end up with the unentangled state
+      \[
+        \sum_{\forall \hat{y} \in [2^m]} \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
+          \ket{x} \ket{\hat{y}} \ket{\Dlist_\emptystring}\, .
+      \]
+
+      \noindent
+      Transforming $\outputreg$ back to the primal domain then yields
+      \[
+          \ket{x} \ket{y} \ket{\Dlist_\emptystring}\, ,
+      \]
+      which is exactly where we started before the first query!
+
+      We see that the entanglement has been removed,
+        and the value of $x$ has been completely removed from the oracle's view.
+        What's more, since this ``forgetting'' behaviour is shown to hold for
+        any computational basis state, it must hold for \emph{every} quantum
+        state that is forwarded to the oracle twice in a row, making the
+        compressed oracle \emph{itself} an involution!
+        Worse, not only does the oracle seem to ``forget'' that it was ever
+        queried, but so does the querying party also ``forget'' the value of
+        $\RO(x)$!
+
+      It may seem counter-intuitive, but this ``forgetting'' is in fact exactly
+        what we need to happen (and was indeed a major roadblock towards
+        lazy-sampling quantum random oracles prior to the development of this
+        technique). To see why, consider the situation for
+        ``monolithic'' random oracles, which are also involutions: 
+        Here, the classical query $\ket{x}\ket{y}$ returns the state $\ket{x}\ket{y \xor
+        \RO(x)}$. If the query is then repeated with the same registers
+        without altering their state, the result will be $\ket{x}\ket{y \xor \RO(x)\xor \RO(x)} =
+        \ket{x}\ket{y}$. The value of $\RO(x)$ has been forgotten!
+
+      ``But'', I hear you say, ``what if I store the value of $\RO(x)$ before
+        I make the second query? Surely I won't be forced to automatically
+        `forget' what the value was, simply because I query the oracle a second
+        time!'' And you'd be right---but notice that we are now talking about a
+        different quantum state, namely the state
+        $\ket{x}_\inputreg \ket{y\xor \RO(x)}_\outputreg
+        \ket{\RO(x)}_{\register[A]}$, where the $\register[A]$ register is
+        some storage register local to you. By storing $\RO(x)$ in this
+        register (by first preparing it in the state $\ket{y}$ and
+        then performing the $m$-bit $\CXgate$ gate from $\outputreg$ to
+        $\register[A]$), you \emph{entangled} the two registers. And so,
+        while the result of a second query to the monolithic oracle will indeed be
+        the state $\ket{x}\ket{y}\ket{\RO(x)}$, the effect on
+        the compressed oracle will be completely different to the
+        ``forgetting'' behaviour outlined above. This can be seen from the fact
+        that the Hadamard transformation, which previously operated on the
+        pure, unentangled state $\ket{y}$, will now take the $\outputreg$ register
+        to some other state than the one it was in in during the first query, and the
+        cancellation of the $\hat{y}$ values in the second query won't happen.
+
+    \subsection{Extracting Queries}\label{sec:extracting}
+      From the point of view of the
+        querying party, should they observe this value, it will be the same as
+        seeing $\RO(x) = 0^m$; this will still happen with probability $2^{-m}$.
+        However, since $x$ was removed from the database, making the same query
+        again will lead to a completely different result with overwhelming
+        probability.
+
+      \hhnote{
+        But the database won't know this, and querying again on the same point
+        will lead to a different outcome with overwhelming probability. Is this
+        a problem? Sure \emph{seems} like a problem! But $\hat{y} = 0^m$ is a
+        uniform superposition in the primal domain \ldots but this is a
+        maximally entangled state \ldots I am confused. \\
+        I think that the answer is that in this formalization, there is
+        \emph{one} output value which will lead to inconsistent answers upon
+        repeated queries post-measurement, but that its exact value (input and
+        output alike) will be perfectly unpredictable.
+      }

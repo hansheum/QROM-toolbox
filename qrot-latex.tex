@@ -12,15 +12,18 @@
 \renewcommand{\pcthen}{:}
 
 %%% Oracles
-\newcommand{\ro}{\hash}
+  % See cryptocodeh for \RO
+  \newcommand{\ro}{\hash} % phasing out
 
 %%% Algorithms
 \newcommand{\randfunc}{\ensuremath{\mathcal{R}}}
 
 %%% Quantum objects
 \newcommand{\qubit}{\mathsf{q}}
-\newcommand{\register}[1][R]{\ensuremath{\mathcal{#1}}}
 \newcommand{\qcomp}{\register[Q]}
+
+%%% Registers
+\newcommand{\register}[1][R]{\ensuremath{\mathcal{#1}}}
 
 %%% Classical objects
 \newcommand{\prfkey}{\ensuremath{k}}
@@ -34,9 +37,9 @@
 \newcommand{\Ygate}{\unitary[Y]}
 \newcommand{\Hgate}{\unitary[H]}
 \newcommand{\CXgate}{\unitary[CX]}
+\newcommand{\eCXgate}{\CXgate_\emptystring}
 \newcommand{\SWAPgate}{\unitary[SWAP]}
 \newcommand{\SORTgate}{\unitary[SORT]}
-\newcommand{\storeoutput}{\unitary_{\register[Y] \to \database}}
 
 \newcommand{\isempty}[1]{
   \ifthenelse{
@@ -54,7 +57,8 @@
 
 %%% Compressed oracles
   \newcommand{\database}{\register[D]}
-  \newcommand{\databasex}{\database_{\register[X]}}
-  \newcommand{\databasez}{\database_{\register[Z]}}
-  \newcommand{\decomp}{\unitary[Rd]}
+  \newcommand{\decomp}{\unitary[St]}
+  \newcommand{\entangle}{\unitary[En]}
   \newcommand{\decompx}{\decomp_x}
+  \newcommand{\inputreg}{{\register[X]}}
+  \newcommand{\outputreg}{{\register[Y]}}
