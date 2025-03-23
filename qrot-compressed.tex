@@ -167,7 +167,7 @@
         and the output register $\database_{\outputreg}$ of the database 
         will be kept in the Hadamard domain.
 
-  \subsection{Defining CROs}
+  \subsection{Defining CROs}\label{sec:defining-cros}
     \paragraph{Updating the database.}
       Next, we define a unitary that acts on the combined state of the input
         register $\inputreg$ and the database $\database$,
@@ -344,12 +344,12 @@
         input, the database would not ``know'' that it was supposed give the same
         value back, leading to an inconsistency. However, \autoref{thm:perfect}
         tells us that simulation is perfect, so \emph{something} will have
-        to ensure consistency in this case. The answer will be
-        given in terms of the $m=1$ case in \autoref{sec:extracting}, though I
-        urge you to work it out for yourself and seeing what happens before
-        checking your answer.
+        to ensure consistency in this case. We will return to the question
+        of how at the end of this section, though I urge you to work it out
+        yourself and discover for yourself how it happens.
+        (Hint: Try specializing to the $m=1$ case.)
 
-      And so, accepting this conundrum for now, we return to our maximally entangled
+      And so, accepting the conundrum for now, we return to our maximally entangled
         state. The entanglement is hidden from view of the querying party, and
         hiding away entanglement in this manner has the effect of ``mixing''
         the state of $\outputreg$: From their point of view, hidden
@@ -539,22 +539,238 @@
         to some other state than the one it was in in during the first query, and the
         cancellation of the $\hat{y}$ values in the second query won't happen.
 
-    \subsection{Extracting Queries}\label{sec:extracting}
-      From the point of view of the
-        querying party, should they observe this value, it will be the same as
-        seeing $\RO(x) = 0^m$; this will still happen with probability $2^{-m}$.
-        However, since $x$ was removed from the database, making the same query
-        again will lead to a completely different result with overwhelming
-        probability.
+    \paragraph{How consistency is maintained.}
+      Now, let us return to the conundrum from the start of the section: Is
+        it really true that forgetting $x$ on one of $2^n$ points can never lead
+        to problems? Well---yes and no. We'll start with ``yes'' here, and leave
+        the ``no'' for the next section.
 
-      \hhnote{
-        But the database won't know this, and querying again on the same point
-        will lead to a different outcome with overwhelming probability. Is this
-        a problem? Sure \emph{seems} like a problem! But $\hat{y} = 0^m$ is a
-        uniform superposition in the primal domain \ldots but this is a
-        maximally entangled state \ldots I am confused. \\
-        I think that the answer is that in this formalization, there is
-        \emph{one} output value which will lead to inconsistent answers upon
-        repeated queries post-measurement, but that its exact value (input and
-        output alike) will be perfectly unpredictable.
-      }
+      Consider the following situation: An adversary $\adv$ queries wants to
+        know whether the oracle they have gotten access to is a monolothitic
+        oracle or a compressed oracle. They query it on the state
+        $\ket{x}\ket{y}$, and then measure the $y$ register, writing down the
+        result. Then they query the oracle on the same state again. If the
+        oracle is monolithic, then the second result is guaranteed to be the
+        same as the first, and if the oracle is compressed, then it is
+        easy to see that the result will be consistent as long as the
+        measurement didn't lead the database to collapse to the one out of
+        $2^m$ branches where $\hat{y} = 0^m$. But what if it did?
+
+      For simplicity, let's consider the case that $m=1$, and
+        calculate the exact state after each operation. In
+        \autoref{sec:defining-cros}, we saw that the first three operations
+        of the compressed oracle lead to the following state:
+      \[
+        \sum_{\forall \hat{y} \in [2^m]}
+          \frac{(-1)^{y \cdot \hat{y}}}{\sqrt{2^m}}
+          \ket{x}\ket{\hat{y}}\ket{\Dlist_{x,\hat{y}}}\, ,
+      \]
+      which for $m=1$ we can write as
+      \[
+        \ket{x}\frac{\ket{0}\ket{\Dlist_{x,0}} + (-1)^y \ket{1}\ket{\Dlist_{x,1}}}{\sqrt{2}}
+          \, .
+      \]
+
+      \noindent
+      After applying $\decomp$, we will have
+      \[
+        \ket{x}\frac{\ket{0}\ket{\Dlist_\emptystring} + (-1)^y \ket{1}\ket{\Dlist_{x,1}}}{\sqrt{2}}\, .
+      \]
+      
+      \noindent
+      Next, we move the $\outputreg$ register back to the primal domain,
+        which gives us the state
+      \[
+        \ket{x}\frac{\frac{\ket{0}+\ket{1}}{\sqrt{2}}\ket{\Dlist_\emptystring}
+        + (-1)^y
+        \frac{\ket{0}-\ket{1}}{\sqrt{2}}\ket{\Dlist_{x,1}}}{\sqrt{2}} 
+        = \ket{x}\frac{\ket{0}\ket{\Dlist_\emptystring} + \ket{1}\ket{\Dlist_\emptystring}
+        + (-1)^y \ket{0} \ket{\Dlist_{x,1}} + (-1)^{1-y}\ket{1}
+        \ket{\Dlist_{x,1}} }{2}\, ,
+      \]
+
+      \noindent
+      and send it back to $\adv$. At this point, $\adv$ measures the
+        $\outputreg$ register. Let's say they see the value $0$, which they
+        interpret as $y \xor \RO(x) = 0$, and so conclude that $\RO(x) = y$.
+        Now, to double check, they make the same query again.
+
+      From the point of view of the compressed oracle, the measurement
+        collapsed the entangled state down to the following one, in which the
+        $\register[Y]$ register is guaranteed to be in the $\ket{0}$ state:
+      \[
+        \ket{x} \frac{
+          \ket{0} \ket{\Dlist_\emptystring} 
+          + (-1)^y \ket{0} \ket{\Dlist_{x,1}}
+        }{\sqrt{2}} 
+        = \ket{x} \ket{0} \frac{
+          \ket{\Dlist_\emptystring} 
+          + (-1)^y \ket{\Dlist_{x,1}}
+        }{\sqrt{2}}\, .
+      \]
+
+      \noindent
+      But before returning the registers, to ensure an identical query, $\adv$
+      reset the $\register[Y]$ to $\ket{y}$, so that the state we receive is
+      \[
+        \ket{x} \ket{y} \frac{
+          \ket{\Dlist_\emptystring} 
+          + (-1)^y \ket{\Dlist_{x,1}}
+        }{\sqrt{2}}\, .
+      \]
+
+      \noindent
+      Now, the compressed oracle moves $\outputreg$ to the Hadamard domain:
+      \[
+        \ket{x} \left( \frac{\ket{0}+ (-1)^y \ket{1}}{\sqrt{2}} \right)
+        \left( \frac{
+           \ket{\Dlist_\emptystring} + (-1)^y \ket{\Dlist_{x,1}}
+        }{\sqrt{2}} \right)
+        = \ket{x} \frac{
+          \ket{0} \ket{\Dlist_{\emptystring}} + (-1)^y \ket{1}
+          \ket{\Dlist_{\emptystring}} 
+          + (-1)^y \ket{0} \ket{\Dlist_{x,1}} + \ket{1}
+          \ket{\Dlist_{x,1}} 
+        }{2}\, ,
+      \]
+      applies $\decomp$:
+      \[
+        \ket{x} \frac{
+          \ket{0} \ket{\Dlist_{x,0}} + (-1)^y \ket{1} \ket{\Dlist_{x,0}} 
+          + (-1)^y \ket{0} \ket{\Dlist_{x,1}} + \ket{1} \ket{\Dlist_{x,1}} 
+        }{2}\, ,
+      \]
+      and then $\entangle$:
+      \begin{align*}
+        &\ket{x} \frac{
+          \ket{0} \ket{\Dlist_{x,0}} + (-1)^y \ket{1} \ket{\Dlist_{x,1}} 
+          + (-1)^y \ket{0} \ket{\Dlist_{x,1}} 
+          + \ket{1} \ket{\Dlist_{x,0}} 
+        }{2} \\
+        &\quad = \ket{x} \frac{
+          \ket{0} \left( \ket{\Dlist_{x,0}} + (-1)^y\ket{\Dlist_{x,1}}
+          \right) + \ket{1} \left( 
+          \ket{\Dlist_{x,0}} + (-1)^y \ket{\Dlist_{x,1}} \right)
+        }{2} \\
+        &\quad = \ket{x} \left( \frac{
+          \ket{0} + \ket{1}
+        }{\sqrt{2}} \right) \left( \frac{
+           \ket{\Dlist_{x,0}} + (-1)^y \ket{\Dlist_{x,1}}
+         }{\sqrt{2}} \right)\, .
+      \end{align*}
+
+      \noindent
+      Thereafter, $\decomp$ is applied a second time, before $\outputreg$ is
+        moved back to the primal domain and shipped back to $\adv$, leaving us
+        with the state
+      \[
+        \ket{x} \ket{0}
+        \frac{
+           \ket{\Dlist_{\emptystring}} + (-1)^y \ket{\Dlist_{x,1}}
+         }{\sqrt{2}}\, .
+      \]
+
+      \noindent
+      This is exactly the same state that we had after measuring! We see
+        that the combined effect of putting $\outputreg$ back in the state
+        $\ket{y}$ and repeating the query on the same point $x$ actually
+        acted like the identity on the state. In particular, this means that
+        the query can be repeated indefinitely without any further effect on
+        the state on the combined system whatsoever.\footnote{
+          To check your understanding, you may want to verify that,
+          had $\adv$ kept $\outputreg$ in the $\ket{0}$ state in the second
+          query, the result would be the output state $\ket{y}$, which is
+          consistent with the measurement outcome $\RO(x) = y$.
+        }
+
+      Actually, since we showed that this works for both qubit states
+        $\ket{y}$, and since all operations are performed bitwise
+        anyway, this already implies that the oracle will exhibit the same
+        behaviour for general superpositions, and for $m>1$.
+
+      So, what was the crucial element that allowed consistency to be
+        maintained? In my view, it is the fact that measuring $\outputreg$
+        only lead to a \emph{partial} collapse of $\database$'s quantum
+        state. In particular, some branches of the superposition still
+        contained information about $x$, and (as so often happens in quantum
+        theory) these branches just \emph{happened} to be
+        arranged in just the right state for phases to cancel out 
+        in such a way that consistency is maintained.
+
+      In other words, consistency crucially relied on the \emph{database}
+        remaining in a superposition, even after measurement. If we were to
+        measure the \emph{database}, then all bets would be off!
+
+    \subsection{Extracting Queries}\label{sec:extracting}
+      So naturally, that's exactly what we'll do next. After all, the
+        usefulness of lazy sampling comes not only from the ability to efficiently
+        simulate a random oracle, but also the ability to \emph{see} what
+        inputs the adversary is interested in!
+
+      First, if we want our simulation to remain perfect, we must avoid any
+        and all measurements of the state of $\database$ as long as the game is
+        running---only after it has ended can we perform our measurement, and
+        see what we end up with.
+
+      So, does it work? \emph{Are} we guaranteed that, if the adversary
+        measures a series of queries and learns the values of $\RO(x_1), \ldots,
+        \RO(x_n)$, that measuring the database will give us the values $x_1,
+        \ldots, x_n$?
+
+      Well, \emph{almost}---and this is where deleting all those $x$'s 
+        comes back to haunt us. There is namely a tiny
+        probability that this leads to the adversary learning the point
+        $\RO(x)$, which just happened to correspond to an $x$ that we removed
+        in at least some of the branches of the superposition, and that upon
+        measuring the database, the branch we end up witnessing is exactly such
+        a branch.
+
+      Thankfully, we can show that the probability of this unfortunate outcome
+        is exponentially small in the length of the output.\footnote{
+          Which, provided we want our random oracles to be collision resistant, should
+          be set large enough anyway.
+        } This is what the next theorem, also proven by
+        Zhandry~\cite[Lemma~5]{C:Zhandry19}, shows.
+
+      \begin{theorem}[Extraction is imperfect]\label{thm:perfect}
+        Let the adversary $\adv$ be a quantum algorithm with oracle access to
+        a random oracle $\RO$, and that after at most $q$ queries outputs $\ell
+        \leq q$ tuples $(x,y)$ with unique values for $x$, and let
+        $\advantage{}{\rel}[\adv^{\RO}]$ be the probability that 
+        \begin{enumerate}
+          \item For all tuples $(x,y)$, $\RO(x) = y$; and
+          \item The collection of tuples $\{(x,y)\}$ is contained in some set
+            $\rel$ that we care about.
+        \end{enumerate}
+        Now, let the extractor $\extractor$ simulate the random oracle for
+          $\adv$ as a compressed random oracle. As stated in
+          \autoref{thm:perfect}, the simulation will be perfect, and
+          so we are guaranteed that with the same probability, $\adv$ will
+          output tuples as before. 
+
+        After $\adv$ halts, let $\extractor$ first move
+          the output register of the oracle database to the
+          primal domain by applying the Hadamard transformation to
+          $\database_\outputreg$, and
+          then observe the database, obtaining a list of queries $\Dlist$.
+          Let $\advantage{}{\rel}[\extractor^\adv]$ be the probability that
+        \begin{enumerate}
+          \item For all tuples $(x,y)$, $\Dlist[x] = y \neq\ \perp$; and
+          \item The collection of tuples $\{(x,y)\}$ is contained in $\rel$.
+        \end{enumerate}
+
+        \noindent
+        Then we have that, for all adversaries $\adv$,
+        \[
+          \sqrt{\advantage{}{\rel}[\adv^{\RO}]} \leq
+          \sqrt{\advantage{}{\rel}[\extractor^\adv]} +
+          \sqrt{\frac{\ell}{2^m}}\, ,
+        \]
+        which implies the slightly looser (but perhaps more practical) bound
+        \[
+          \advantage{}{\rel}[\adv^{\RO}] \leq
+          \advantage{}{\rel}[\extractor^\adv] +
+          2\sqrt{\frac{\ell}{2^{m}}} + \frac{\ell}{2^m}\, .
+        \]
+      \end{theorem}
+
