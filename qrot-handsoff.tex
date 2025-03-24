@@ -267,6 +267,17 @@
       %} A: Not true. In my earlier ``proof'', I had forgotten to take account of
       %   theta's effect on alpha_obsnev.
 
+      In a way, it should not surprise us that there \emph{exists}
+        distinguishers such that the relation is tight, since this is exactly
+        what we get with classical distinguishers and lazy-sampling, of which
+        quantum distinguishers and compressed oracles are a generalization.
+
+      \hhnote{
+        Can we show that tightness is achieved exactly when all queries are
+        restricted to a single basis, so that they are equivalent to classical
+        queries up to the choice of basis?
+      }
+
     \paragraph{Giving in to the bound.}
       Let us return to what we know so far:
 
@@ -347,7 +358,30 @@
     \]
     where we set the paramater $\ell$ in the theorem to $1$, since
       observing one $x^*_i$ is enough for $\obsev$ to be $\true$.
-      Inserting into the previous inequality then gives us our final bound.
+
+    One thing remains, namely to argue that performing the measurement
+      $\measurement_\extev$ did not disturb the state, which could alter the result of
+      observing the database and output register $\advbitregister$ in such a
+      way that $\extev = \true$ would not be guaranteed to imply that observing
+      the database gives one of the values we are looking for.
+
+    To see this, note that our implementation of
+      $\measurement_\extev$ only performed classical operations, as well as 
+      one computational basis measurement. Theorem 2.2 in Nielsen \&
+      Chuang~\cite[p.77]{NieChu10} implies that two projective measurements
+      commute if and only if there exists
+      an orthogonal basis such that the projectors defining the measurements are
+      simultaneously diagonal. In our case, the computational basis is such a
+      basis. This means that it does not matter if we perform the
+      measurement $\measurement_\extev$ first and then collapse the output
+      and database superpositions, or if we observe the output and database
+      first and then check for a value $x^*_i$ using $\measurement_\extev$.
+
+    Thus, we can be sure that if $\extev = \true$,
+      observing the database will provide us with a list that includes at least
+      one value $x^*_i$, which implies that $\prob{\extev} = \advantage{}{}[\extractor]$.
+      Inserting the above inequality into our previous bound then gives us our
+      final result:
       \begin{align*}
         \advantage{}{}[\distinguisher] &\leq 2 \sqrt{ 2 \cdot \prob{\obsev} } 
         \leq 2 \sqrt{2} \left( \sqrt{\prob{\extev}} + \sqrt{2^{-m}} \right) \\
