@@ -40,6 +40,16 @@
       O2H''.
   \end{remark}
 
+  \hhnote{ 
+    Mention that using this lemma will sometimes mean explicitly bounding the
+    runtime of $\adv$. (But surely this must be the case for normal O2H as
+    well? Let first query be bad, and let $\adv$ enter an infinite loop upon
+    noticing an inconsistency, making no further queries. If $i > 1$, then
+    $\extractor$ never halts. Maybe this is often just taken to be implicit?
+    Or $\adv$ is implicitly assumed to \emph{always} halt in polynomial time?
+    Discuss when first introducing O2H.
+  }
+
   \begin{theorem}[Hands-Off O2H]\label{thm:tight-o2h}
     Let $\RO_0: \bin^n \to \bin^m$ be a random oracle, and let distinguisher
       $\distinguisher$ be a quantum algorithm making at most $q$ queries to a
@@ -89,11 +99,7 @@
   As you can see, we still end up with the same, characteristic square root loss 
     shared by all O2H lemmas---but at least we are able to avoid the $q_{\RO}$ loss!
     This is essentially done by delegating the task of finding the right value out of
-    $q_{\RO}$ options to the reduction applying the lemma. (Ambainis et al.\
-    already showed a similar result, by splitting their Semi-Classical O2H
-    result in two parts: \ldots)
-
-  \hhnote{to-do: complete sentence}
+    $q_{\RO}$ options to the reduction applying the lemma. 
 
   Whether this result is ``better'' than, say, the Semi-Classical
     O2H lemma, will depend on the usecase, but for certain game hops 
@@ -345,6 +351,8 @@
         \item Compute the OR function between all result ancillas $\register[A]_j$, and
           store the result in one final ancilla $\register[A]$.
         \item Observe $\register[A]$ in the computational basis.
+        \item Uncompute steps (1)--(5) by doing the operations in the reverse
+          order (since the $\CXgate$, $\Xgate$, and Tofolli gates are all involutions).
       \end{enumerate}
 
     Let $\alpha_\extev$ be the amplitude resulting from applying the projector
@@ -406,3 +414,40 @@
   %  Check if I need to specify the phase for $\alpha_{\extnev}$ to begin with.
   %  (This one could screw up the whole project.) % It did.
   %}
+
+  As a proof of concept, \dots
+  \hhnote{
+    Show that a $\owpca$ KEM implies an $\indcpa$ PKE tightly up to the
+    square root, and with a $q_{\RO}$ loss 
+    when starting from $\owcpa$, via the BRE transform.
+  }
+
+  \hhnote{
+    Next, re-derive the Semi-Classical O2H bound by introducing
+    $\measurement_\extev$ directly into the random oracle (not necessarily
+    controlled by the extractor, so no plaintext checking needed \ldots right?), applied to
+    every query. (The case of using $\owqpca$ yourself should already have been
+    covered when discussing applications of SC-O2H.)
+  }
+
+  Ambainis et al.\
+    already showed a similar result, by splitting their Semi-Classical O2H
+    result in two parts: \ldots
+
+  \hhnote{
+    Next, re-derive the Semi-Classical O2H bound by introducing
+    $\measurement_\extev$ directly into the random oracle,
+    applied to every query.
+  }
+
+  \hhnote{
+    Then, show that there exists a KEM scheme that matches the bound,
+    namely the one that just hashes the keys, by starting from $\owqpca$ and
+    letting $\adv$ be the one that
+    performs measurements of the type $\measurement_\obsev$ on its own
+    collection of queries, and uncomputing the full collection if it ever
+    observes the outcome $1$, making it minimally entangled with
+    $\database$. Will hopefully impart a necessary square-root-like loss upon
+    any hands-off extractor.
+  }
+
