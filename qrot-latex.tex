@@ -10,6 +10,7 @@
 
 %%% Game interface
 \renewcommand{\pcthen}{:}
+\renewcommand{\chalbit}{\ensuremath{b}}
 
 %%% Oracles
   % See cryptocodeh for \RO
@@ -24,10 +25,12 @@
 
 %%% Registers
 \newcommand{\register}[1][R]{\ensuremath{\mathcal{#1}}}
+\newcommand{\advbitregister}{\hat{\register[B]}}
 
 %%% Classical objects
 \newcommand{\prfkey}{\ensuremath{k}}
 \newcommand{\rel}{\Rspace}
+\newcommand{\careset}{\Sspace}
 
 %%% Gates
 \newcommand{\unitary}[1][U]{\mathsf{#1}}
@@ -63,3 +66,14 @@
   \newcommand{\decompx}{\decomp_x}
   \newcommand{\inputreg}{{\register[X]}}
   \newcommand{\outputreg}{{\register[Y]}}
+
+%%% O2H
+  \newcommand{\hide}{\pcnotionstyle{HIDE}}
+  \newcommand{\oneway}{\pcnotionstyle{OW}}
+
+%%% Events
+  \newcommand{\extev}{\event{ext}}
+  \newcommand{\extnev}{\nevent{ext}}
+  \newcommand{\distev}{\event{dist}}
+  \newcommand{\obsev}{\event{obs}}
+  \newcommand{\obsnev}{\nevent{obs}}

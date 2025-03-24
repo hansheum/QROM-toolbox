@@ -732,7 +732,7 @@
         } This is what the next theorem, also proven by
         Zhandry~\cite[Lemma~5]{C:Zhandry19}, shows.
 
-      \begin{theorem}[Extraction is imperfect]\label{thm:perfect}
+      \begin{theorem}[Extraction is imperfect]\label{thm:imperfect}
         Let the adversary $\adv$ be a quantum algorithm with oracle access to
         a random oracle $\RO$, and that after at most $q$ queries outputs $\ell
         \leq q$ tuples $(x,y)$ with unique values for $x$, and let
@@ -740,7 +740,7 @@
         \begin{enumerate}
           \item For all tuples $(x,y)$, $\RO(x) = y$; and
           \item The collection of tuples $\{(x,y)\}$ is contained in some set
-            $\rel$ that we care about.
+            $\careset$ that we care about.
         \end{enumerate}
         Now, let the extractor $\extractor$ simulate the random oracle for
           $\adv$ as a compressed random oracle. As stated in
@@ -753,23 +753,23 @@
           primal domain by applying the Hadamard transformation to
           $\database_\outputreg$, and
           then observe the database, obtaining a list of queries $\Dlist$.
-          Let $\advantage{}{\rel}[\extractor^\adv]$ be the probability that
+          Let $\advantage{}{\careset}[\extractor^\adv]$ be the probability that
         \begin{enumerate}
           \item For all tuples $(x,y)$, $\Dlist[x] = y \neq\ \perp$; and
-          \item The collection of tuples $\{(x,y)\}$ is contained in $\rel$.
+          \item The collection of tuples $\{(x,y)\}$ is contained in $\careset$.
         \end{enumerate}
 
         \noindent
         Then we have that, for all adversaries $\adv$,
         \[
-          \sqrt{\advantage{}{\rel}[\adv^{\RO}]} \leq
-          \sqrt{\advantage{}{\rel}[\extractor^\adv]} +
+          \sqrt{\advantage{}{\careset}[\adv^{\RO}]} \leq
+          \sqrt{\advantage{}{\careset}[\extractor^\adv]} +
           \sqrt{\frac{\ell}{2^m}}\, ,
         \]
         which implies the slightly looser (but perhaps more practical) bound
         \[
-          \advantage{}{\rel}[\adv^{\RO}] \leq
-          \advantage{}{\rel}[\extractor^\adv] +
+          \advantage{}{\careset}[\adv^{\RO}] \leq
+          \advantage{}{\careset}[\extractor^\adv] +
           2\sqrt{\frac{\ell}{2^{m}}} + \frac{\ell}{2^m}\, .
         \]
       \end{theorem}
