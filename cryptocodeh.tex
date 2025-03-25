@@ -16,10 +16,14 @@
     \newcommand{\half}{\nicefrac{1}{2}}
     \newcommand{\notsim}[2]{\abs{#1} \neq \abs{#2}}
     \newcommand{\condlist}[2]{#1_{|#2}}
+    \newcommand{\done}{\ensuremath{\checkmark}}
 
     %% H: Matrices, etc.
     % The extra ``[]'' gives the standard value for #1, making it optional
-    \newcommand{\idmatrix}[1][]{\if!#1!{\ensuremath{\mathds{1}}}\else{\ensuremath{\mathds{1}_{#1 \times #1}}}\fi}
+    % n x n version
+    %\newcommand{\idmatrix}[1][]{\if!#1!{\ensuremath{\mathds{1}}}\else{\ensuremath{\mathds{1}_{#1 \times #1}}}\fi}
+    % square version
+    \newcommand{\idmatrix}[1][]{\if!#1!{\ensuremath{\mathds{1}}}\else{\ensuremath{\mathds{1}_{#1}}}\fi}
 
     %% H: machine code
     \newcommand{\pcoutput}{\highlightkeyword{output}}

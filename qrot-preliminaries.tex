@@ -1,26 +1,141 @@
-\section{Preliminaries}
+\section{Preliminaries}\label{sec:prelim}
   \paragraph{Basic notation.}
     We take the natural numbers $\NN$ to include $0$. For $n \in \NN$, we
       define the set $[n] = \{0, \dots, n-1\}$. We will employ the
       convention that $N = 2^n$; thus, $NM = 2^{n+m}$.
-
-    Functions are defined over bitstrings unless otherwise noted, and the set
+      Functions are defined over bitstrings unless otherwise noted, and the set
       of all functions from the set of $m$-length bitsrings $\bin^m$ to the
       set of $n$-length $\bin^n$ bitstrings is denoted $\funcspace{m}{n}$.
+      We will use $\idmatrix[n]$ to denote the $n$-by-$n$ identity matrix, dropping
+      the subscript whenever the dimension is clear from context.
 
-    We use $\idmatrix[n]$ to denote the $n$-by-$n$ identity matrix, dropping
-      the subscript whenever the dimension is clear from the context.
+    For a bit string $x\in\{0,1\}^*$, $\card{x}$ denotes its length.
+      For a finite set $\Xspace$, $\card{\Xspace}$ is the cardinality of
+      $\Xspace$, and likewise for lists. 
+      For a list $\Xlist$, $\Xlist[i]$ retrieves the $i$th element of the list.
+      Two lists $\Xlist$ and $\Ylist$ may be combined by concatination to form
+      a new list $\Xlist \concat \Ylist$. We will at times treat bitstrings as
+      lists of binary values.
 
-    \hhnote{From SoK: \\
-      For a positive integer $n$, we let $[n]$ denote the set $\{ 1, \dots, n \}$.
-      For a bit string $x\in\{0,1\}^*$, $\card{x}$ denotes its length.
-      For a finite set $\Xspace$, $\card{\Xspace}$ is the cardinality of $\Xspace$.
-      For a list $\Xlist$, $\Xlist[i]$ retrieves the $i$th element of the list,
-      and, for an index set $\Ispace$, $\Xlist[\Ispace]$ indicates
-      the list $\Xlist$ restricted to the elements whose indices are
-      contained in $\Ispace$. 
-    }
+    We use $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
+      to denote the conditional probability of $\mathsf{Event}$ occurring
+      when $\mathsf{Code}$ is executed, conditioned on $\mathsf{Condition}$.
+      We omit $\mathsf{Code}$ when it is clear from context and
+      $\mathsf{Condition}$ when it is not needed. 
+      Deterministic assignment is denoted $x \gets y$, whereas
+      $x \sample \Xspace$ denotes uniform sampling,
+      and $x \sample Y(\cdot)$ conveys that the probabilistic algorithm $Y$ halted
+      with output $x$. 
 
-    \hhnote{
-      todo: introduce condprobsample
-    }
+    %% MORE FROM SOA SOK
+    %We use code-based experiments, where by convention all sets, lists,
+      %and lazily sampled functions are initialized empty.
+      %In our experiments, we will assume that no oracle calls are made (by the adversary)
+      %with evidently out-of-bounds inputs (e.g.~list indices or key handles).
+
+    %We use the shorthand $\Xset \setapp x$ for
+      %the operation $\Xset \gets \Xset \cup \{ x \}$ and
+      %$\Xlist \listapp x$ for appending the element $x$ to a list $\Xlist$.
+
+    %We can make the
+      %randomness $\rand$ of $Y$ explicit by writing
+      %$x \gets Y(\, \cdot\, ; \rand)$, for previously sampled $\rand$.
+
+    %We will also consider stateful algorithms, for instance when we write
+    %  $\mssg \sample \mssgsamp[\samplestate](\dist)$
+    %  the algorithm $\mssgsamp$ takes as state $\samplestate$ and
+    %  as input the value $\dist$ and outputs $\mssg$,
+    %  but it may change its state $\samplestate$ as part of its processing
+    %  (code-snippet taken from \autoref{fig:IND-SOA}).
+
+  \paragraph{Game hopping.}
+    %\todoenum[Provide explanations of:]{
+    %  \item Basic background on game hopping and advantages, stuff like
+    %    difference vs.\ times two minus 1, with or
+    %    without absolute values, the fundamental lemma of game hopping.
+    %  \item Maybe write something about asymptotic vs.\ concrete security.
+    %}
+    For our security proofs, we will be working in the game-hopping
+      paradigm of Shoup~\cite{EPRINT:Shoup04}.
+      The fundamental lemma of game hopping states that the distinguishing advantage
+      of an adversary can be bounded in terms of their distinguishing advantage
+      over several intermediary game ``hops''. 
+
+    \begin{lemma}[Fundamental Lemma of Game Hopping]
+      For any adversary $\adv$ tasked with distinguishing $\game{0}$ from
+      $\game{n}$, and for any games $\game{1}, \ldots \game{n-1}\}$,
+      there exist distinguishers $(\adv_1, \ldots, \adv_n)$ such that
+      \[ 
+        \abs{
+          \probsample{\game{0}(\adv)}{1 \sample \adv} - 
+          \probsample{\game{n}(\adv)}{1 \sample \adv}
+        } \leq \sum_{i = 1}^n \abs{
+          \probsample{\game{i-1}(\adv)}{1 \sample \adv_i} - 
+          \probsample{\game{i}(\adv)}{1 \sample \adv_i}
+        }\, .
+      \]
+    \end{lemma}
+
+    \noindent
+    The lemma states that, if $\adv$ was able to distinguish, then
+      at least one of $\adv_1, \ldots, \adv_n$ must have been able to
+      distinguish too---and vice versa, that if none of the $\adv_i$ are able to
+      distinguish, then neither is $\adv$.
+      In fact, the $\adv_i$ that achieve this will essentially just be copies of $\adv$.
+
+    The proof is remarkably simple, reproduced here for those that haven't
+      seen it.
+
+    \begin{proof}
+      Insert $0 = \probsample{\game{i}(\adv_i)}{1 \sample \adv_i} -
+      \probsample{\game{i}(\adv_i)}{1 \sample \adv_i}$ into the left hand side
+      for all $i$, and then apply the union bound.
+      \qed
+    \end{proof}
+
+  \paragraph{Quantum computing.}
+    While we only assume knowledge of basic linear algebra, this tutorial 
+      still concerns itself with fundamentally quantum concepts. To help alleviate this
+      divide, we provide a quantum primer in \autoref{sec:primer}, which contains 
+      explanations and definitions for all quantum concepts and notational conventions
+      used throughout. A summary of our notation is provided in \autoref{tab:notation}.
+
+    \begin{table}%[b]
+      \centering
+      %
+      \caption{
+        \label{tab:notation}
+        An overview of our notational conventions.
+      }
+      %
+      \rowcolors{2}{}{gray!10}
+      \begin{tabular}{cccc}
+        \toprule
+        Object & Convention & Example & Class/definition \\
+        \midrule
+        Bitstring & Lowercase roman (end of alphabet) & $x$ & $\in \bin^n$ \\
+        General state label & Lowercase greek (middle of alphabet) & $\psi$ & $\in \{\text{\emph{labels}}\}$ \\
+        Qubit count & Lowercase roman (middle of alphabet) & $n$ & $\in \ZZ$ \\
+        Dimensonality & Uppercase roman (middle of alphabet) & $N$ & $\coloneqq 2^n$ \\
+        Amplitude & Lowercase greek (start of alphabet) & $\alpha$ & $\in \CC$ \\
+        \midrule
+        Computational basis state & Dirac ket with bitstring label & $\ket{x}$ & $\in \CC^{M},\ m \leq n$ \\
+        General quantum state & Dirac ket with general state label & $\ket{\psi}$ & $\in \CC^M,\ m \leq n $ \\
+        Time-evolved state & Dirac ket with time-dependent label & $\ket{\psi(t)}$ & $\in \CC^M,\ m \leq n,\ t \in \NN$ \\
+        \midrule
+        Qubit & Lowercase $\qubit$ (sans serif) & $\qubit$ & Two-dim.\ physical system \\
+        Qubit register & Uppercase roman (calligraphic) & $\register$ & List of $m \leq n$ qubits $\qubit_i$\\
+        Quantum memory & Uppercase $\qcomp$ (calligraphic) & $\qcomp$ & List of $n$ qubits $\qubit_i$ \\
+        Global quantum state & Dirac ket with quantum memory label & $\ket{\qcomp}$ & $\in \CC^N$ \\
+        \midrule
+        %Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
+        %Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
+        Operators & Uppercase roman (sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M},\ m \leq n$ \\
+        Apply unitary to register & $\pcalgostyle{Apply}$(unitary $\to$ register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
+        %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \autoref{def:}) \\ 
+        Measure register & $\pcalgostyle{Meas}$(measurement : register) & $x
+        \sample \meas{\measurement}{\register}$ & Method (see \autoref{def:measure}) \\ 
+        \bottomrule
+      \end{tabular}
+    \end{table}
+

@@ -43,11 +43,33 @@
 \maketitle
 
 \begin{abstract}
-  In which we reveal the tricks of the trade.
+  Proofs of security in the Quantum Random Oracle Model (QROM) face three main
+    challenges, relating to the non-applicability of several conceptually simple yet
+    powerful proof techniques from its classical counterpart (ROM):
+
+  \begin{enumerate}
+    \item Recording: Or, how to extract QRO queries.
+    \item Reprogramming: Or, how to alter specific outputs of the QRO.
+    \item Rewinding: Or, how to derandomize quantum oracle algorithms.
+  \end{enumerate}
+
+  \noindent
+  In this gentle introduction to QROM proof techniques, we will show how to
+    deal with the first two. We will
+    do this by taking a simple encryption scheme due to Bellare and
+    Rogaway~\cite{CCS:BelRog93} as our motivating example, and prove increasingly
+    strong statements for it as we move through the literature on quantum
+    random oracles and gather stronger and stronger tools.
+    %
+    We will only assume knowledge of basic linear algebra and standard
+    game-hopping techniques (though prior exposure to
+    classical random oracles doesn't hurt).
 
   \begin{keywords}
-    Provable Security \textperiodcentered~
-    Quantum Random Oracles
+    %Concrete Security \textperiodcentered~
+    Quantum Random Oracles \textperiodcentered~
+    One-Way to Hiding \textperiodcentered~
+    Compressed Oracle Technique
   \end{keywords}
 \end{abstract}
 

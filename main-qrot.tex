@@ -193,27 +193,28 @@
   \fi
 
   % Main body
+
+  % WIP
+  \ifdraftversion
     \input{qrot-introduction}
       \clearpage
+  \fi
+
     \input{qrot-preliminaries}
       \clearpage
-    \input{qrot-primer}
+    \input{qrot-definitions}
+      \clearpage
+    \input{qrot-reprogramming}
+      \clearpage
+    \input{qrot-compressed}
 
-    % WIP
-    \ifdraftversion
-        \clearpage
-      \input{qrot-definitions}
-        \clearpage
-      \input{qrot-reprogramming}
-        \clearpage
-      \input{qrot-tighter}
-        \clearpage
-      \input{qrot-compressed}
-        \clearpage
-      \input{qrot-handsoff}
-      \newpage
-    \fi
+  % WIP
+  \ifdraftversion
+      \clearpage
+    \input{qrot-handsoff}
+  \fi
 
+  %\newpage
 	\bibliographystyle{alpha}
   	%\bibliographystyle{splncs04}
   	% \bibliographystyle{plain}
@@ -228,11 +229,21 @@
     \appendix
   \fi
 
-  \ifsubmission
+  %\ifsubmission
     \clearpage
-  \fi
+  %\fi
 
   % Appendices input below
-    \input{qrot-solutions}
+
+  \input{qrot-primer}
+    \clearpage
+
+  % WIP
+  \ifdraftversion
+    \input{qrot-ttransform}
+      \clearpage
+  \fi
+
+  \input{qrot-solutions}
 
 \end{document}

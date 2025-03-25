@@ -1,4 +1,4 @@
-\section{Reprogramming QROs: The O2H Lemma and Friends}
+\section{Reprogramming QROs: The O2H Lemma and Friends}\label{sec:o2h}
 
   \todoenum[Plan: SoK-style classification of O2H lemmas in two dimensions]{
     \item : Power of distinguisher+extractor:
@@ -33,90 +33,61 @@
     \end{enumerate}
   }
 
-  \subsection{Recording ROs (or, Random Oracles are Good PRFs)}
+  \hhnote{
+    Provide an up front table with the previously known O2H lemmas that will be
+    presented herein, with bounds and sources: Original O2H, Semi-Classical O2H, 
+    Resampling O2H, and Adaptive O2H; and in a separate column, the bounds that
+    Joseph gave for the latter two using permutations. Also something about
+    like ``main weakness'' or ``good for'' (or both)?
+  }
+
+  \subsection{Bellare--Rogaway Encryption}
     \hhnote{
-      Copy-pasted from first intro draft. \emph{Maybe} do the following later when we introduce the
-      compressed random oracle technique? But definitely do not \emph{start} here. (Game figs. in
-      comments.) (Is O2H applicable to this though? Maybe we could provide
-      proofs using both techniques?)
+      In which I define our motivating scheme
     }
-    We start with the simplest ROM proof imaginable: showing that random
-      oracles are good pseudorandom functions. Specifically, we will show that
-      $\prf_k(x) = \ro(k || x)$ is indistinguishable from a random function, provided the
-      key $k$ is hard to guess.
-      
-    We will do this by showing that if an adversary $\adv$ can
-      distinguish the output of $\prf_k$ from random, then a reduction $\bdv$
-      can recover the key $k$. Crucially, the reduction does this by
-      \emph{recording} the queries of the adversary $\adv$ to the random oracle
-      $\ro$.
 
-    %\begin{figure}[t]
-    %  \centering
-    %  \begin{pchstack}
-    %    \procedure{Experiment $\experiment{\prfind}{\prf}$}{
-    %      \prfkey \sample \keyspace \\
-    %      \chalbit \sample \bin \\
-    %      \advbit \sample \adv^{\ro, \Oenc} \\
-    %      \pcreturn \chalbit = \advbit
-    %    }
+  \subsection{From One-Wayness to Indistinguishability: Single-Challenge}
+    \hhnote{
+      In which I introduce the original version of O2H, and use it to prove
+      our first result: Single-challenge $\owcpa$ KEM yields $\indcpa$ PKE.
+    }
 
-    %    \pchspace
+  \subsection{From One-Wayness to Indistinguishability: Multi-Challenge}
+    \hhnote{
+      In which I introduce the Semi-Classical O2H, and use it to prove
+      that if we start from $\owpca$, we get something tighter than applying 
+      the generic hybrid reduction to the previous theorem.
+    }
 
-    %    \procedure{Oracle $\Oenc(x)$}{
-    %      \pcif \chalbit = 0 \pcthen \\
-    %        \t y \gets \ro(\prfkey ||x) \\
-    %      \pcelse \pcthen \\
-    %        \t y \gets \randfunc(x) \\
-    %      \pcreturn y
-    %    }
-    %  \end{pchstack}
-    %  \caption{
-    %    The pseudorandomness indistinguishability game.
-    %  }
-    %\label{fig:prf-ind}
-    %\end{figure}
+    \subsubsection{Tightening the first hop.}
+      \hhnote{
+        In which I introduce the Resampling Lemma, and apply it to the first
+        game hop to make it ever so slightly tighter.
+      }
 
-    %\begin{figure}[t]
-    %  \centering
-    %  \begin{pchstack}
-    %    \procedure{Experiment $\experiment{\ku}{\prf}[\bdv]$}{
-    %      \prfkey \sample \keyspace \\
-    %      \advkey \sample \bdv^{\ro, \Oenc} \\
-    %      \pcreturn \prfkey = \advkey
-    %    }
+    \subsubsection{Tightening the second hop.}
+      \hhnote{
+        In which I introduce qPCA, and show that if we have this, then we can
+        exploit the modularity of the Semi-Classical O2H theorems to get a
+        tighter result.
+      }
 
-    %    \pchspace
+    \subsubsection{Moving between stronger notions.}
+    \hhnote{
+      In which I note that (with proof sketches) that what we have so far
+      already suffices to move between CCA-notions, and even between notions
+      with user corruptions, as long as opening challenges is disallowed,
+      (since we can still assume that all the reprogrammed points were defined
+      at the start of the game).
+    }
 
-    %    \procedure{Oracle $\Oenc(x)$}{
-    %      y \gets \ro(\prfkey ||x) \\
-    %      \pcreturn y
-    %    }
-    %  \end{pchstack}
-    %  \caption{
-    %    The pseudorandomness key recovery reduction.
-    %  }
-    %\label{fig:prf-ku}
-    %\end{figure}
-
-    %\begin{figure}[t]
-    %  \centering
-    %  \begin{pchstack}
-    %    \procedure{Reduction $\bdv^\ro$}{
-    %      \chalbit \sample \bin \\
-    %      \advbit \sample \adv^{\ro, \Oenc} \\
-    %      \pcreturn \advkey
-    %    }
-
-    %    \pchspace
-
-    %    \procedure{If $\adv$ calls $\Oenc(x)$}{
-    %      y \gets \ro(\prfkey ||x) \\
-    %      \pcreturn y
-    %    }
-    %  \end{pchstack}
-    %  \caption{
-    %    The pseudorandomness key recovery game.
-    %  }
-    %\label{fig:prf-ku}
-    %\end{figure}
+  \subsection{From One-Wayness to Indistinguishability with Corruptable Challenges}
+    \hhnote{
+      In which I introduce the notion of multi-bit, multi-challenge with sender
+      openings, and argue that now (finally), the above techniques are
+      insufficient. Introduce the Pan--Zeng adaptive reprogramming framework,
+      and \emph{either} use it directly to show security, and then show how
+      Joseph re-derived it from permutations, \emph{or} show how Joseph is able
+      to get adaptivity from Semi-Classical O2H directly, and use this to prove
+      the result (whichever one gives a simpler and more intuitive proof).
+    }
