@@ -23,7 +23,7 @@
       We omit $\mathsf{Code}$ when it is clear from context and
       $\mathsf{Condition}$ when it is not needed. 
       Deterministic assignment is denoted $x \gets y$, whereas
-      $x \sample \Xspace$ denotes uniform sampling,
+      $x \sample \Xspace$ denotes uniform sampling from a set,
       and $x \sample Y(\cdot)$ conveys that the probabilistic algorithm $Y$ halted
       with output $x$. 
 
@@ -63,8 +63,8 @@
 
     \begin{lemma}[Fundamental Lemma of Game Hopping]
       For any adversary $\adv$ tasked with distinguishing $\game{0}$ from
-      $\game{n}$, and for any games $\game{1}, \ldots \game{n-1}\}$,
-      there exist distinguishers $(\adv_1, \ldots, \adv_n)$ such that
+      $\game{n}$, and for any games $\game{1}, \ldots \game{n-1}$,
+      there exist adversaries $(\adv_1, \ldots, \adv_n)$ such that
       \[ 
         \abs{
           \probsample{\game{0}(\adv)}{1 \sample \adv} - 
@@ -89,16 +89,18 @@
     \begin{proof}
       Insert $0 = \probsample{\game{i}(\adv_i)}{1 \sample \adv_i} -
       \probsample{\game{i}(\adv_i)}{1 \sample \adv_i}$ into the left hand side
-      for all $i$, and then apply the union bound.
+      for all $i$ from $1$ to $n-1$, and then apply the union bound.
       \qed
     \end{proof}
 
   \paragraph{Quantum computing.}
     While we only assume knowledge of basic linear algebra, this tutorial 
-      still concerns itself with fundamentally quantum concepts. To help alleviate this
-      divide, we provide a quantum primer in \autoref{sec:primer}, which contains 
-      explanations and definitions for all quantum concepts and notational conventions
-      used throughout. A summary of our notation is provided in \autoref{tab:notation}.
+      still concerns itself with several fundamentally quantum concepts. To
+      help bridge this divide, we provide a self-contained primer on quantum
+      computing theory in
+      \autoref{sec:primer}, with explanations and definitions for all
+      quantum concepts and conventions that we will need. A summary of our
+      notation is given in \autoref{tab:notation}.
 
     \begin{table}%[b]
       \centering
