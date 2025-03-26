@@ -17,8 +17,8 @@
       \centering
       %
       \caption{
-        \label{tab:notation}
-        An overview of our notation for compressed oracles.
+        \label{tab:cro-notation}
+        An overview of our notation for compressed random oracles.
       }
       %
       \rowcolors{2}{}{gray!10}
@@ -26,27 +26,29 @@
         \toprule
         Object & Notation & Class/definition \\
         \midrule
-        Input register & $\inputreg$ & $n$-sized register \\
-        Output register & $\outputreg$ & $m$-sized register \\
-        Database & $\database$ & $(q \cdot (1 + n + m))$-sized register \\
+        Input register & $\inputreg$ & $n$-length qubit register \\
+        Output register & $\outputreg$ & $m$-length qubit register \\
+        Database & $\database$ & $(q \cdot (1 + n + m))$-length register \\
         \midrule
-        Empty string & $\emptystring$ & $0 \concat 0^n$ \\
-        Interpreted string & $x$ & $0 \concat x,\ x \in \bin^n$ \\
-        Invalid string & $\slashed{x}$ & $1 \concat x,\ x \in \bin^n \backslash \{0^n\}$ \\
-        Hadamard-domain value & $\hat{y}$ & Label for basis state in the support of $\Hgate^{\otimes m} \ket{y}$ \\
+        Empty string & $\emptystring$ & $\coloneqq 0 \concat 0^n$ \\
+        Interpreted input string & $x$ & $\coloneqq 0 \concat x,\ x \in \bin^n$ \\
+        Invalid string & $\slashed{x}$ & $\coloneqq 1 \concat x,\ x \in \bin^n \backslash \{0^n\}$ \\
+        Hadamard-domain value & $\hat{y}$ & Labels basis states in the support of $\Hgate^{\otimes m} \ket{y}$ \\
         \midrule
         List & $\Dlist$ & List of $q$ entries \\
-        Entry & $(x, \hat y)$ & $(1 + n, m)$-sized string tuple $(b_\emptystring \concat x, \hat y)$ \\
+        List entry & $(x, \hat y)$ & $(1 + n, m)$-sized string tuple $(b_\emptystring \concat x, \hat y)$ \\
         Initialized entry & $(\emptystring,0^m)$ & $(1 + n, m)$-sized string tuple \\
-        $x$ is in list & $\Dlist[x] = \hat{y}$ & $x \in \bin^n, \hat{y} = \bin^m$ \\
-        $x$ is not in list & $\Dlist[x] = \perp$ & Special symbol \\
+        List contains $(x,\hat y)$ & $\Dlist[x] = \hat{y}$ & $x \in \bin^n, \hat{y} = \bin^m$ \\
+        $x$ is not in list & $\Dlist[x] = \perp$ & Special symbol denoting ``undefined'' \\
         \midrule
-        Input subregister & $\database_\inputreg$ & $(q \cdot (1 + n))$-sized register storing input values \\
-        Output subregister & $\database_\outputreg$ & $(q \cdot m)$-sized register storing output values \\
-        Entry subregister & $\database_i$ & $(1+n+m)$-sized subregister of
-        $\database$ \\ && storing $i$th list entry \\
-        Specified entry subregister & $\database(x)$ & $(1+n+m)$-sized
-        subregister of $\database$ \\ && storing entry containing $x$ in current branch \\
+        Input subregister & $\database_\inputreg$ & $(q \cdot (1 + n))$-sized subregister storing input values \\
+        Output subregister & $\database_\outputreg$ & $(q \cdot m)$-sized subregister storing output values \\
+        Entry subregister & $\database[i]$ & $(1+n+m)$-sized subregister storing $i$th entry \\
+        Input-specific subregister & $\database(x)$ & Subregister
+        $\database[i]$ storing $(x, \Dlist[x])$ in current branch \\
+        Entry I/O registers & $\database_{\inputreg}[i], \database_{\outputreg}[i]$ & Subregisters storing $i$'th input resp.\ output value \\
+        Specific I/O registers & $\database_\inputreg(x),
+        \database_\outputreg(x)$ & Subregisters storing $x$ resp.\ $\Dlist[x]$ in current branch \\
         \bottomrule
       \end{tabular}
     \end{table}

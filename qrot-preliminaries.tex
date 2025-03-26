@@ -9,7 +9,7 @@
       We will use $\idmatrix[n]$ to denote the $n$-by-$n$ identity matrix, dropping
       the subscript whenever the dimension is clear from context.
 
-    For a bit string $x\in\{0,1\}^*$, $\card{x}$ denotes its length.
+    For a bitstring $x\in\{0,1\}^*$, $\card{x}$ denotes its length.
       For a finite set $\Xspace$, $\card{\Xspace}$ is the cardinality of
       $\Xspace$, and likewise for lists. 
       For a list $\Xlist$, $\Xlist[i]$ retrieves the $i$th element of the list.
@@ -93,47 +93,55 @@
       \qed
     \end{proof}
 
-  \paragraph{Quantum computing.}
-    While we only assume knowledge of basic linear algebra, this tutorial 
-      still concerns itself with several fundamentally quantum concepts. To
-      help bridge this divide, we provide a self-contained primer on quantum
-      computing theory in
-      \autoref{sec:primer}, with explanations and definitions for all
-      quantum concepts and conventions that we will need. A summary of our
-      notation is given in \autoref{tab:notation}.
+  \paragraph{Quantum notation.}
+    %  While we only assume knowledge of basic linear algebra, this tutorial 
+    %    still concerns itself with several fundamentally quantum concepts. To
+    %    help bridge this divide, we provide a self-contained primer on quantum
+    %    computing theory in
+    %    \autoref{sec:primer}, with explanations and definitions for all
+    %    the quantum concepts and conventions that we will need. A summary of our
+    %    notation is given in \autoref{tab:notation}.
+    Precise definitions for our quantum-notational conventions are provided in \autoref{sec:primer},
+      together with a gentle introduction to all the relevant concepts,
+      as summarized in \autoref{tab:notation}.
 
     \begin{table}%[b]
       \centering
       %
       \caption{
         \label{tab:notation}
-        An overview of our notational conventions.
+        An overview of our quantum notation. (lc.\ $=$ lowercase, uc.\
+        $=$ uppercase. ${}^*$Not always well-defined.)
       }
       %
       \rowcolors{2}{}{gray!10}
       \begin{tabular}{cccc}
         \toprule
-        Object & Convention & Example & Class/definition \\
+        Object & Convention & Examples & Class/definition \\
         \midrule
-        Bitstring & Lowercase roman (end of alphabet) & $x$ & $\in \bin^n$ \\
-        General state label & Lowercase greek (middle of alphabet) & $\psi$ & $\in \{\text{\emph{labels}}\}$ \\
-        Qubit count & Lowercase roman (middle of alphabet) & $n$ & $\in \ZZ$ \\
-        Dimensonality & Uppercase roman (middle of alphabet) & $N$ & $\coloneqq 2^n$ \\
-        Amplitude & Lowercase greek (start of alphabet) & $\alpha$ & $\in \CC$ \\
+        Bitstring & Roman (lc., end of alph.) & $x,y$ & $\in \bin^n$ \\
+        General state label & Greek (lc., middle of alph.) & $\psi,\varphi$ & $\in \{\text{labels}\}$ \\
+        Amplitude & Greek (lc, beginning of alph.) & $\alpha,\beta$ & $\in \CC$ \\
+        Qubit count & Roman (lc., middle of alph.) & $n,m$ & $\in \NN$ \\
+        Dimensonality & Roman (uc., middle of alph.) & $N,M$ & $\coloneqq 2^n, 2^m$ \\
         \midrule
-        Computational basis state & Dirac ket with bitstring label & $\ket{x}$ & $\in \CC^{M},\ m \leq n$ \\
-        General quantum state & Dirac ket with general state label & $\ket{\psi}$ & $\in \CC^M,\ m \leq n $ \\
-        Time-evolved state & Dirac ket with time-dependent label & $\ket{\psi(t)}$ & $\in \CC^M,\ m \leq n,\ t \in \NN$ \\
+        %Pure quantum state & Dirac ket with label & $\ket{\ \cdot\ }$ & $\in \CC^{M}$ \\
+        Computational basis state & Dirac ket w/ bitstring label & $\ket{x}$ & $\in \CC^{M}$ \\
+        General quantum state & w/ General state label & $\ket{\psi}$ & $\in \CC^M$ \\
+        Evolving state & w/ Time-dependent label & $\ket{\psi(t)}$ & $\in \CC^M,\ t \in \NN$ \\
         \midrule
         Qubit & Lowercase $\qubit$ (sans serif) & $\qubit$ & Two-dim.\ physical system \\
-        Qubit register & Uppercase roman (calligraphic) & $\register$ & List of $m \leq n$ qubits $\qubit_i$\\
-        Quantum memory & Uppercase $\qcomp$ (calligraphic) & $\qcomp$ & List of $n$ qubits $\qubit_i$ \\
-        Global quantum state & Dirac ket with quantum memory label & $\ket{\qcomp}$ & $\in \CC^N$ \\
+        Qubit register & Roman (uc., calligraphic) & $\register$ & List of $m \leq n$ qubits $\qubit_i$\\
+        Global quantum system & Register $\qcomp$ & $\qcomp$ & List of $n$ qubits $\qubit_i$ \\
+        \midrule
+        Qubit (pure) state$^*$ & Qubit label/index subscript & $\ket{\qubit_i}, \ket{\psi}_i$ & $\in \CC^2$ \\
+        Register (pure) state$^*$ & Register label/subscript & $\ket{\register}, \ket{\psi}_{\register}$ & $\in \CC^M, m \leq n$ \\
+        Global system state & Global system label & $\ket{\qcomp}$ & $\in \CC^N$ \\
         \midrule
         %Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
         %Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
-        Operators & Uppercase roman (sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M},\ m \leq n$ \\
-        Apply unitary to register & $\pcalgostyle{Apply}$(unitary $\to$ register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
+        Unitary/measurement operators & Roman (uc., sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M}$ \\
+        Apply unitary to register & $\pcalgostyle{Apply}$(unitary : register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
         %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \autoref{def:}) \\ 
         Measure register & $\pcalgostyle{Meas}$(measurement : register) & $x
         \sample \meas{\measurement}{\register}$ & Method (see \autoref{def:measure}) \\ 

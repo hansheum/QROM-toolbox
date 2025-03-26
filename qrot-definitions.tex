@@ -1,25 +1,23 @@
 \section{What Are Quantum Random Oracles?}\label{sec:defs}
-  A classical oracle $\Oracle_f$ is a black-box procedure that, given input
-    $x$, returns $f(x)$ in such a way that no information about $f$
-    other than that which can be inferred from its output is provided. A
-    classical random oracle,
-    then, is simply a classical oracle where the function $f$ was chosen
-    uniformly at random from the space of all functions from $\bin^m$ to
-    $\bin^m$.\footnote{
-      Typically, random oracles follow hash functions in
-      being defined from the space of all finite-length bit strings $\bin^*$ to
-      the space of $n$-length bitstrings $\bin^n$; technically, this simply means
-      that $f$ is a collection of random functions: one per input length. Since
-      quantum random oracles must operate by unitary means, we will
-      explicitly restrict the domain of the random function to $\bin^m$.
-    }
+  A classical oracle for a function $f$ is a black-box procedure $\Oracle_f$
+    such that, given input $x$, it returns $f(x)$ in such a way that no
+    information about $f$, other than that which can be inferred from its
+    output, is provided. It is helpful to think of the oracle as something that
+    exists beyond your reach, ``in the sky'' so to speak, and with which you can
+    only interact by sending inputs and receiving outputs.
+    A random oracle, then, is simply a classical function oracle where the
+    function $f$ was chosen uniformly at random from the space of all functions
+    from $\bin^n$ to $\bin^m$.
 
-  However, the above operation is not unitary, as required for evolutions of quantum
-    states (which is what we mean by ``quantum algorithms''). Therefore,
-    any quantum algorithm must instead be given access to
-    \emph{quantum-accessible} oracles, which on input the computational basis state $\ket{x, y}$,
-    returns the unitary evolution of the state $\ket{x, y \xor f(x)}$. In
-    general (letting $n$ and $m$ be the length of the $x$ and $y$
+  However, the operation $x \longrightarrow f(x)$ is generally not reversible,
+    and therefore not \emph{unitary}, as is required of operations on quantum
+    states. Therefore, we define \emph{quantum-accessible} oracles to be
+    oracles that apply the unitary $\unitary_f$, defined as the operation that
+    takes the computational basis states $\ket{x, y}$ to $\ket{x, y \xor f(x)}$.\footnote{
+      If any of this terminology confuses you, then now would be a good time
+      to read through the quantum primer found in \autoref{sec:primer}.
+    } In general 
+\hhnote{wip}
     registers, respectively), on input a quantum state $\ket{\psi} = \sum_{i
     \in [2^{n+m}]} \alpha_i \ket{x, y}$, we get:
     \[ 
@@ -39,6 +37,24 @@
         \apply{\Oracle_f} \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i \xor
         f(x_i) \xor f(x_i)} = \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i}\, .
     \]
+
+  \begin{remark} % Footnote, or remark?
+    Classical random oracles typically follow the standard for hash functions in
+      being defined from the space of \emph{all} finite-length bit strings
+      $\bin^*$ to the space of fixed-length bitstrings $\bin^m$. Technically, this means
+      that $f$ not a function, but rather a a collection of random functions
+      $f_\ell$, one for each input length $\ell$. However, since quantum random
+      oracles must operate by unitary means, we will make life easier for
+      ourselves by explicitly
+      restricting the input domain of the random function to be $\bin^n$, and then just
+      take for granted that any result trivially generalizes to
+      collections of oracles with varying input length. 
+      This follows from the observation that, even when loading up a hash function on 
+      real-world quantum hardware, the input \emph{length} to the hash function can
+      not be placed in superposition, since this does not correspond to a
+      well-defined unitary operation: Every ``branch'' of a superposition needs to
+      be defined over the same number of qubits. %% Should be careful about claiming this.
+  \end{remark}
 
   \noindent
   Sometimes it we will want to provide a quantum algorithm with access to a
