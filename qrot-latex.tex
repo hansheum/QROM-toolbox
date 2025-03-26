@@ -10,11 +10,13 @@
 
 %%% Game interface
 \renewcommand{\pcthen}{:}
+\renewcommand{\pcdo}{:}
 \renewcommand{\chalbit}{\ensuremath{b}}
 
 %%% Oracles
   % See cryptocodeh for \RO
   \newcommand{\ro}{\hash} % phasing out
+  \renewcommand{\state}{\ensuremath{\sigma}} 
 
 %%% Algorithms
 \newcommand{\randfunc}{\ensuremath{\mathcal{R}}}
@@ -43,6 +45,7 @@
 \newcommand{\CXgate}{\unitary[CX]}
 \newcommand{\eCXgate}{\CXgate_\emptystring}
 \newcommand{\SWAPgate}{\unitary[SWAP]}
+\newcommand{\CSWAPgate}{\unitary[CSWAP]}
 \newcommand{\SORTgate}{\unitary[SORT]}
 
 \newcommand{\isempty}[1]{

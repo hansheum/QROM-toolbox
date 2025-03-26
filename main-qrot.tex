@@ -48,7 +48,8 @@
 
 % HH: Added to make table-of-contents work
 %% see: https://tex.stackexchange.com/questions/272200/table-of-contents-showing-the-title-as-only-entry-latex
-  \setcounter{tocdepth}{2}
+  %\setcounter{tocdepth}{1} % Exclude subsections
+  \setcounter{tocdepth}{2} % Include subsections
   \makeatletter
   \renewcommand*\l@author[2]{}
   \renewcommand*\l@title[2]{}
@@ -131,12 +132,6 @@
 
 \input{qrot-latex}
 
-% \hyphenation{
-%   in-dis-tin-guish-able
-%   in-dis-tin-guisha-bil-i-ty
-% }
-
-
 % Commenting
 %-------------------------------------------------------------------------------%
 
@@ -185,27 +180,22 @@
 
   \input{qrot-header}  % maketitle and abstract
 
-  % \ifsubmission\setcounter{page}{1}\fi
-
-  \ifeprintfull
-    % \clearpage
-    \addcontentsline{toc}{section}{References}
-  \fi
-
   % Main body
 
   % WIP
-  \ifdraftversion
     \input{qrot-introduction}
       \clearpage
-  \fi
 
     \input{qrot-preliminaries}
       \clearpage
+
+  \ifdraftversion
     \input{qrot-definitions}
       \clearpage
-    \input{qrot-reprogramming}
+    \input{qrot-o2h}
       \clearpage
+  \fi
+
     \input{qrot-compressed}
 
   % WIP
@@ -215,9 +205,10 @@
   \fi
 
   %\newpage
+  \addcontentsline{toc}{section}{References}
 	\bibliographystyle{alpha}
   	%\bibliographystyle{splncs04}
-  	% \bibliographystyle{plain}
+  	%\bibliographystyle{plain}
   	\bibliography{./cryptobib/abbrev3,./cryptobib/crypto,./qrot.bib}
 
   \ifsubmission
@@ -229,9 +220,7 @@
     \appendix
   \fi
 
-  %\ifsubmission
-    \clearpage
-  %\fi
+  \clearpage
 
   % Appendices input below
 
@@ -240,6 +229,8 @@
 
   % WIP
   \ifdraftversion
+    \input{qrot-generic}
+      \clearpage
     \input{qrot-ttransform}
       \clearpage
   \fi

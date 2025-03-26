@@ -5,40 +5,46 @@
     output, is provided. It is helpful to think of the oracle as something that
     exists beyond your reach, ``in the sky'' so to speak, and with which you can
     only interact by sending inputs and receiving outputs.
-    A random oracle, then, is simply a classical function oracle where the
+    A random oracle, then, is simply a function oracle where the
     function $f$ was chosen uniformly at random from the space of all functions
     from $\bin^n$ to $\bin^m$.
 
   However, the operation $x \longrightarrow f(x)$ is generally not reversible,
     and therefore not \emph{unitary}, as is required of operations on quantum
-    states. Therefore, we define \emph{quantum-accessible} oracles to be
+    states. Therefore, we define \emph{quantum-accessible} function oracles to be
     oracles that apply the unitary $\unitary_f$, defined as the operation that
-    takes the computational basis states $\ket{x, y}$ to $\ket{x, y \xor f(x)}$.\footnote{
-      If any of this terminology confuses you, then now would be a good time
-      to read through the quantum primer found in \autoref{sec:primer}.
-    } In general 
-\hhnote{wip}
-    registers, respectively), on input a quantum state $\ket{\psi} = \sum_{i
-    \in [2^{n+m}]} \alpha_i \ket{x, y}$, we get:
+    takes computational basis states $\ket{x, y}$ to $\ket{x, y \xor
+    f(x)}$. Generally, the state of the input may be entangled with whoever
+    is performing the query, so saying that the oracle takes as input a quantum
+    \emph{state}, e.g.\ $\sum_i \alpha_i \ket{x_i, y_i}$, would not be
+    well-defined. Instead, we imagine that the query literally ships a
+    collection of qubits over to the oracle, collected in the input and output
+    registers $(\inputreg, \outputreg)$, and that the oracle then applies the
+    $\unitary_f$ to the registers before shipping them back
+    (see \autoref{fig:query} for an illustration).\footnote{
+      If any of this terminology confuses you, then this would be a good time
+      to have a read through the quantum primer found in \aref{sec:primer}!
+    } 
+
+  To see that this operation is unitary, it is enough to observe that it is
+    \emph{reversible}: Making a query with the same registers a second time
+    yields the original state, as seen by its effect on the computational basis
+    states:
     \[ 
-      \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i} 
-        \apply{O_f} \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i \xor f(x_i)}\, .
+      \ket{x, y} \apply{\Oracle_f} \ket{x, y \xor f(x)}
+        \apply{\Oracle_f} \ket{x, y \xor f(x) \xor f(x)} = \ket{x, y}\, .
     \]
-    %\[ 
-    %  \sum_{i \in [2^{n}]} \sum_{j \in [2^{m}]} \alpha_i \beta_j \ket{i, j} 
-    %    \apply{O_f} \sum_{i \in [2^{n}]} \sum_{j \in [2^{m}]} \alpha_i \beta_j \ket{i, j \xor f(i)}\, .
-    %\]
 
   \noindent
-  To see that this operation is unitary, it is enough to observe that it is
-    \emph{reversible}: Inputing the same state a second time yields the original state: 
-    \[ 
-      \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i \xor f(x_i)}
-        \apply{\Oracle_f} \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i \xor
-        f(x_i) \xor f(x_i)} = \sum_{i \in [2^{n+m}]} \alpha_i \ket{x_i, y_i}\, .
-    \]
+  With this, we are ready to define quantum random oracles.
 
-  \begin{remark} % Footnote, or remark?
+  \begin{definition}[Quantum Random Oracle]\label{def:qro}
+    An $n$-bit-to-$m$-bit \emph{Quantum Random Oracle} (QRO), denoted $\RO$, is a
+    quantum-accessible function oracle $\Oracle_f$ for a uniformly random
+    function $f \in \funcspace{n}{m}$.
+  \end{definition}
+
+  \begin{remark} 
     Classical random oracles typically follow the standard for hash functions in
       being defined from the space of \emph{all} finite-length bit strings
       $\bin^*$ to the space of fixed-length bitstrings $\bin^m$. Technically, this means
@@ -49,15 +55,330 @@
       restricting the input domain of the random function to be $\bin^n$, and then just
       take for granted that any result trivially generalizes to
       collections of oracles with varying input length. 
-      This follows from the observation that, even when loading up a hash function on 
-      real-world quantum hardware, the input \emph{length} to the hash function can
-      not be placed in superposition, since this does not correspond to a
-      well-defined unitary operation: Every ``branch'' of a superposition needs to
-      be defined over the same number of qubits. %% Should be careful about claiming this.
+
+    To see why this is the case, observe that, even when loading up a hash function on 
+      real-world quantum hardware, the input \emph{length} to the hash function
+      may not be placed in superposition, as this would not correspond to a
+      well-defined unitary operation. Intuitively speaking, every ``branch'' in
+      a superposition must be defined over the same number of qubits.
+      Or in other words: Adding and removing qubits to an operation is a
+      classical control mechanism, and not itself a quantum operation!
   \end{remark}
 
-  \noindent
-  Sometimes it we will want to provide a quantum algorithm with access to a
-    classical oracle.
-  
-  \hhnote{Next.}
+  \begin{figure}[h]
+    \centering
+    \def\arrowlength{3cm}
+    \fbox{
+      \pseudocode{
+        \underline{\text{Adversary } \adv}\
+              \<\< \underline{\text{Oracle } \Oracle_f} \\
+        \inputreg \gets (\qubit_{i_1}, \ldots \qubit_{i_n}) \\
+        \outputreg \gets (\qubit_{j_1}, \ldots \qubit_{j_m}) 
+          \<\sendmessageright*[\arrowlength]{\inputreg, \outputreg}
+          \< \applyU{\unitary_f}{\inputreg, \outputreg} \\
+        (x,y \xor f(x)) \sample \meas{}{\inputreg, \outputreg} 
+          \< \sendmessageleft*[\arrowlength]{\inputreg, \outputreg}
+      }
+    }
+    \caption{
+      \label{fig:query} 
+      An adversary $\adv$ prepares the qubit registers $\inputreg,
+      \outputreg$, and sends them to a quantum-accessible function oracle
+      $\Oracle_f$, who applies unitary $\unitary$ to them and sends them back
+      to the adversary.
+      $\adv$ then measures the registers to learn the values $(x,y \xor f(x))$
+      corresponding to an element $(x,y)$ in the initial superposition state of
+      $\inputreg, \outputreg$, chosen at random according to the distribution
+      inferred by the quantum state.
+    }
+  \end{figure}
+
+  \subsection{Classical Oracles in a Quantum World}
+    Sometimes, we want to provide a quantum algorithm with access to a
+      classical oracle, but being unitary, we still face the issue of
+      the operation $x \longrightarrow f(x)$ not being unitary. The way to fix,
+      and make classical oracles quantum-compatible, is to simply define
+      classical oracles to be quantum oracles that first measure the input
+      register, collapsing it to some basis state $\ket{x}$. 
+
+    \begin{definition}[Quantum-Compatible Classicle Oracle]
+      A quantum-compatible classical oracle
+        is a function oracle for $f$ that, on input qubit registers $(\inputreg, \outputreg)$,
+        first performs the computational-basis measurement $\meas{}{\inputreg}$,
+        and then performs the operation $\applyU{\unitary_f}{\inputreg,
+        \outputreg}$, before returning the registers to the sender.
+        Here, $f$ is the function defining the output of the classical oracle
+        on input $x$, given any state and/or randomness internal to the oracle.
+    \end{definition}
+
+    \noindent
+    Note that there is no need to collapse the output register $\outputreg$: If
+      the input state is some superposition 
+      $\sum_i \alpha_i \ket{x_i, y_i}$, then after measuring the $\inputreg$
+      register, it will have collapsed to the state $\ket{x} \left( \sum_i
+      \beta_i \ket{y_i} \right)$ for some $x$, and some set of amplitudes
+      $\{\beta_i\}$. 
+      Then the output state will be $\ket{x} \left( \sum_i \beta_i
+      \ket{y_i \xor f(x)} \right)$. Observe that the function $f$ is still only
+      evaluated on a single input, as desired.
+
+    With this definition in hand, we will go on to ignore these implementation
+      details and write classical oracles, such as those appearing in our
+      security games, in terms of their classical input/output interface.
+
+  \subsection{Equivalent Implementations}
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{Standard oracle $\RO[F](\inputreg, \outputreg)$}{
+          \pcif \state = \emptystring \pcthen \\
+            \t f \sample \funcspace{n}{m} \\
+            \t \state \gets f \\
+          \pclet \unitary_f \pcdo \\
+            \t \ket{x,y} \to \ket{x,y\xor f(x)} \\
+          \applyU{\unitary_f}{\inputreg, \outputreg} \\
+          \pcreturn (\inputreg, \outputreg)
+        }
+
+        \pchspace
+
+        \procedure{Phase oracle $\RO[G](\inputreg, \outputreg)$}{
+          \pcif \state = \emptystring \pcthen \\
+            \t g \sample \funcspace{n}{m} \\
+            \t \state \gets g \\
+          \pclet \unitary_g \pcdo \\
+            \t \ket{x,y} \to (-1)^{y \cdot g(x)} \ket{x,y} \\
+          \applyU{\unitary_g}{\inputreg, \outputreg} \\
+          \pcreturn (\inputreg, \outputreg)
+        }
+        
+        \pchspace
+
+        \procedure{Superposition oracle $\RO[H](\inputreg, \outputreg)$}{
+          \pcif \state = \emptystring \pcthen \\
+            \t \ket{\register[H]} \gets \sum_{\forall h \in \funcspace{n}{m}} \ket{h} \\ 
+            \t \state \gets \register[H] \\
+          \pclet \unitary_h \pcdo \\
+            \t \ket{x,y}\ket{h} \to \ket{x,y \xor h(x)}\ket{h} \\
+          \applyU{\unitary_h}{\inputreg, \outputreg, \register[H]} \\
+          \pcreturn (\inputreg, \outputreg) 
+        }
+      \end{pchstack}
+    \caption{
+      \label{fig:qros}
+      Various equivalent implementations of quantum random oracles.
+      Here, $\state$ is a state internal to the oracle, assumed 
+      initialized to the empty string $\emptystring$, and $\register[H]$ is a
+      $(2^n \cdot m)$-length qubit register.
+    }
+    \end{figure}
+
+    Random oracles are typically treated as fully black-box, or ``monolithic'',
+      meaning that we don't assume anything about their inner workings other
+      than that it satisfies \autoref{def:qro}. Still, it is
+      instructive to see how a quantum random oracle \emph{could} be
+      implemented. Following are several possible implementations, which turn
+      out to all be equivalent~\cite{C:Zhandry19}.
+
+    \paragraph{Standard oracles.}
+      This ``standard'' oracle, shown to the left in \autoref{fig:qros}, is the
+        oracle that simply implements our
+        intuition from the start of the section: It first 
+        draws a function $f$ from $\bin^n$ to $\bin^m$ uniformly at random, storing
+        the whol truth table as one exponential-sized list in the internal
+        state $\state$, and thereafter operates as the quantum-accessible
+        function oracle $\Oracle_f$.
+
+    \paragraph{Phase oracles.}
+      The ``phase'' oracle, shown in the middle of \autoref{fig:qros}, operates
+        exactly like the standard oracle, except that it
+        performs a phase operation on the output register rather than an xor.
+        It therefore provides a different interface to the adversary, and
+        is in that sense not equivalent in the sense of being
+        indistinguishable, but \emph{are} easily reducible to each other, as
+        one kind of oracle becomes identical to the other if you just apply the Hadamard
+        transformation $\Hgate^{\otimes m}$ to the output register $\outputreg$
+        before and after each query.
+
+    \paragraph{Superposition oracles.}
+      Instead of using a classically stochastic process to sample the random
+        function at the outset, one can exploit the randomness inherent to
+        quantum physics and simply provide a uniform superposition of
+        \emph{all} functions from $\bin^n$ to $\bin^m$. This ``superposition''
+        oracle, shown to the right in \autoref{fig:qros}, is just as
+        (in)efficiently implemented, and is completely indistinguishable from a
+        standard oracle from the point of view of the adversary. 
+
+      The reason, in
+        a nutshell, is that when applying the unitary $\unitary_h$, the oracle
+        \emph{entangles} the adversary with the gigantic superposition that it
+        keeps. Hiding away entanglement in this manner has the effect, from the
+        ``local'' point of view of the adversary, of introducing randomness
+        into the state of $\outputreg$. In technical terms, the state will no
+        longer be ``pure'' (but rather ``mixed''), which could
+        either be because of some hidden
+        entanglement somewhere, or due to interference with a classically stochastic
+        process---or both! However, there is no way to tell these cases apart
+        without a full view of the combined system.
+
+      Of course, with the choice of interface being orthogonal to the choice of
+        sampling vs.\ superposition, there is also a ``superposition phase oracle''.
+        We leave it to you to work out the details.
+
+    \paragraph{Compressed oracles.}
+      It turns out that there is a procedure through which we can efficiently
+        implement a superposition oracle, as described above, in a manner
+        completely analogous to the ubiquitous ``lazy-sampling'' technique for
+        classical random oracles. Introduced by Zhandry~\cite{C:Zhandry19},
+        these ``compressed oracles'' are enabled by the crucial insight that
+        a uniform superposition over possible outputs will simply be
+        represented by the all-zero string after a transformation to the
+        Hadamard domain. Thus, we only have to store the output values for
+        inputs that are \emph{not} in a uniform superposition, due to having
+        been entangled to the adversary via a query, leading to an efficient
+        simulation procedure.
+
+      Of course, the above is an oversimplification: We still haven't said
+        anything about how to deal with large superpositions over inputs, for
+        example. To get there, and to see that what we end up with really is a
+        faithful simulation, we will first need to lay some more groundwork. 
+        \autoref{sec:compressed} is dedicated to this.
+        
+  \subsection{Domain-Separating Quantum Random Oracles}
+    Sometimes, a construction uses more than one random oracle, which are
+      then required to be independent. A standard way to solve this in practice
+      is via \emph{domain-separation}~\cite{EC:BelDavGun20}: Given a random
+      oracle $\RO$ from $\bin^{n+1}$ to $\bin^m$ (or a hash function like SHA3,
+      if you are in the real world), let the random oracle $\RO[F]$ from
+      $\bin^n$ to $\bin^m$ be defined as $\RO[F](x) \coloneqq \RO(0 \concat
+      x)$, and likewise let the random oracle $\RO[G](x)$ be given by 
+      $\RO[G](x) \coloneqq \RO(1 \concat x)$. Clearly, this works in the
+      classical case, since the output of $\RO$ is uniformly random on each
+      input, so flipping even a single bit makes the outputs completely
+      uncorrelated. Further, it should be clear that the other direction also
+      holds: You don't get anything \emph{more} with oracle access to
+      $\RO$ directly than you do given oracle access to $\RO[F]$ and $\RO[G]$
+      separately.
+
+    But what about the quantum case? Now, we are supposed to be able to call
+      the oracles in superposition, yet we can only call one oracle at a time.
+      In particular, it seems that we can't make a query that is ``in a
+      superposition of going to $\RO[F]$ and to $\RO[G]$'', even though this
+      would be a trivial task given oracle access to $\RO$. Is it conceivable
+      that we can do \emph{more} if we are given oracle access to $\RO$ instead?
+
+    The following lemma answers this question in the negative: Domain-separation works
+      just as well in the QROM as it does in the classical
+      ROM---thankfully!\footnote{
+        I'm grateful to Joseph Jaeger for showing me this reduction.
+      }
+
+    \begin{lemma}
+    Let $\RO[F]$ and $\RO[G]$ be quantum random oracles from $\bin^n$ to $\bin^m$,
+      and let $\RO$ be a quantum random oracle from $\bin^{n+1}$ to $\bin^m$.
+      %
+      Then, for any adversary $\adv$ that expects simultaneous oracle access to 
+        $\RO[F]$ and $\RO[G]$, there is a reduction $\bdv$ that, given oracle
+        access to $\RO$, provides $\adv$ with a perfect simulation of $\RO[F]$
+        and $\RO[G]$.
+
+      And vice versa: For any adversary $\adv$ that expects oracle access
+        to $\RO$, there is a reduction $\bdv$ that, given simultaneous access
+        to $\RO[F]$ and $\RO[G]$, provides $\adv$ with a perfect simulation of $\RO[H]$.
+    \end{lemma}
+
+    \begin{proof}
+      The first direction is trivial, and works exactly like the classical case: Whenever
+        $\adv$ makes a call to $\RO[F]$ with registers
+        $(\inputreg,\outputreg)$ , $\bdv$ makes an oracle call to $\RO$
+        with registers $(\qubit \concat \inputreg, \outputreg)$, 
+        where $\qubit$ is a qubit placed in the state $\ket{\qubit} = \ket 0$; and likewise
+        for calls to $\RO[G]$, except with $\ket \qubit$ set to $\ket 1$. The
+        registers $(\inputreg,\outputreg)$ are then returned to $\adv$ as usual.
+
+      For the other direction, let the controlled swap gate $\CSWAPgate$ be
+        defined by the following operation on computational basis states
+        (where $\abs{x} = \abs{z}$):
+      \[
+        \ket{0}\ket{x}\ket{z} \apply{\CSWAPgate} \ket{0}\ket{x}\ket{z}\, , \quad
+        \ket{1}\ket{x}\ket{z} \apply{\CSWAPgate} \ket{0}\ket{z}\ket{x}\, .
+      \]
+
+      \noindent
+      The reduction $\bdv$ sets up up a new $n$-qubit register
+        $\register[Z]$, initialized to the uniform superposition over all
+        $z \in \bin^n$. Then, on input a query to $\RO$ with the registers $(q
+        \concat \inputreg, \outputreg)$, $\bdv$ does the following: 
+        \begin{enumerate}
+          \item Apply $\CSWAPgate$ on $\inputreg$ and $\register[Z]$, with qubit
+            $\qubit$ as the control;
+          \item Send $(\inputreg, \outputreg)$ to $\Oracle[F]$, and
+            $(\register[Z], \outputreg)$ to $\Oracle[G]$;
+          \item Apply $\CSWAPgate$ a second time to the same registers;
+          \item Return $(\inputreg, \outputreg)$ to $\adv$. 
+        \end{enumerate}
+
+      \noindent
+      To see that this leads to the correct distribution, consider the
+        result of applying this procedure to the first query if
+        qubit $\qubit$ is in some superposition state $\ket q = \alpha \ket 0 +
+        \beta \ket 1$, and $\inputreg$ and
+        $\outputreg$ are set to the computational basis states
+        $\ket{x}_\inputreg \ket{y}_\outputreg$. Then we start out with the
+        combined state
+      \begin{align*}
+        &\left( \alpha \ket{0}_\qubit + \beta \ket{1}_\qubit \right) \ket{x}_{\inputreg} \ket{y}_{\outputreg} \left(
+        \sum_{\forall z \in \bin^n} \frac{1}{\sqrt{2^n}} \ket{z}_{\register[Z]} \right) \\
+        &\qquad = \frac{1}{\sqrt{2^n}} \sum_{\forall z \in \bin^n} \alpha \ket{0}_\qubit
+          \ket{x}_{\inputreg} \ket{y}_{\outputreg} \ket{z}_{\register[Z]} +
+          \beta \ket{1}_\qubit \ket{x}_{\inputreg} \ket{y}_{\outputreg} 
+          \ket{z}_{\register[Z]}\, . 
+        \intertext{
+          After applying the first $\CSWAPgate$, we get the state
+        }
+        &\quad \apply{1.} \quad 
+        \frac{1}{\sqrt{2^n}} \sum_{\forall z \in \bin^n} 
+          \left( \alpha \ket{0}_\qubit
+          \ket{x}_{\inputreg} \ket{y}_{\outputreg} \ket{z}_{\register[Z]} +
+          \beta \ket{1}_\qubit \ket{z}_{\inputreg} \ket{y}_{\outputreg} 
+          \ket{x}_{\register[Z]} \right)\, . 
+        \intertext{
+          At this point, the registers $(\inputreg, \outputreg)$ are sent to
+          $\RO[F]$, and then registers $(\register[Z], \outputreg)$ are sent to
+          $\RO[G]$, with the resulting state
+        }
+        &\quad \apply{2.} \quad 
+        \frac{1}{\sqrt{2^n}} \sum_{\forall z \in \bin^n}
+          \left( \alpha \ket{0}_\qubit
+          \ket{x}_{\inputreg} \ket{y \xor \RO[F](x) \xor \RO[G](z)}_{\outputreg} \ket{z}_{\register[Z]} +
+          \beta \ket{1}_\qubit \ket{z}_{\inputreg} \ket{y \xor \RO[F](z) \xor \RO[G](x)}_{\outputreg} 
+          \ket{x}_{\register[Z]} \right)\, . 
+        \intertext{
+          Applying $\CSWAPgate$ a second time gives us
+        }
+        &\quad \apply{3.} \quad 
+        \frac{1}{\sqrt{2^n}} \sum_{\forall z \in \bin^n}
+          \left( \alpha \ket{0}_\qubit \ket{x}_{\inputreg} \ket{y \xor
+          \RO[F](x) \xor \RO[G](z)}_{\outputreg} \ket{z}_{\register[Z]} +
+          \beta \ket{1}_\qubit \ket{x}_{\inputreg} \ket{y \xor \RO[F](z) \xor \RO[G](x)}_{\outputreg} 
+          \ket{z}_{\register[Z]} \right)\, ,
+      \end{align*}
+
+      \noindent
+      at which point the registers $\inputreg$ and $\outputreg$ are returned to $\adv$.  
+
+      Note that register $\outputreg$ ends up entangled with register $\register[Z]$. As
+        explained when discussing superposition oracles, hidden entanglement
+        inuces a classical probability distribution when it is hidden from view, and
+        maximal entanglement with a hidden uniform superposition is
+        indistinguishable from the uniform probability distribution. Since the values of
+        $\RO[F]$ and $\RO[G]$ are xored into the output state, this uniformity
+        carries over; and yet, again thanks to entanglement, we see that we are
+        guaranteed consistency upon repeat queries. 
+
+      Since the correct behaviour is exhibited on all input basis states
+        $\ket{b \concat x, y}$, thanks to the linearity of quantum mechanics,
+        we may conclude that the simulation exhibits the correct behaviour on
+        all input states.
+      \qed
+    \end{proof}
