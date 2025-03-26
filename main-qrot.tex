@@ -11,8 +11,7 @@
   % \authversionfalse % triggers submission version for full version (anonymous, suppl material)
 
 \newif\ifdraftversion
-  % To flag stuff unlikely to make it by deadline
-   %\draftversionfalse
+  % \draftversionfalse
   \draftversiontrue
 
 %
@@ -185,13 +184,12 @@
   % WIP
     \input{qrot-introduction}
       \clearpage
-
     \input{qrot-preliminaries}
+      \clearpage
+    \input{qrot-definitions}
       \clearpage
 
   \ifdraftversion
-    \input{qrot-definitions}
-      \clearpage
     \input{qrot-o2h}
       \clearpage
   \fi
