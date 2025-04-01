@@ -1,48 +1,51 @@
 \section{A Better O2H Lemma from Compressed Oracles?}\label{sec:handsoff}
   All formulations of the O2H lemma involve either aborting the distinguisher at a
-    random point and measuring their query, which amounts to essentially guessing a
-    query, or performing gentle measurements to check for bad events, which
-    ever-so-slightly disturbs the combined state of the distinguisher and oracle. 
-    But now that we have \emph{compressed oracles}, maybe we don't have to
-    abort! What happens if we, instead, just let $\distinguisher$ run until the
-    end? Can we get something tighter?
+    random point and measuring their query (which essentially amounts to
+    guessing the query), or performing gentle measurements to check for bad
+    events (which ever-so-slightly disturbs the combined state of the distinguisher and
+    oracle for every query). Either approach leads to a loss that
+    depends on the number of queries $q$.
+    But what if we don't abort at all? Now that we have compressed oracles in
+    our toolbox, can we instead just let $\distinguisher$ run until the
+    end and then measure the database?
   
   The following is my attempt at an exact analysis of the best advantage
     an extractor, simulating a random oracle as a CRO for an optimal
-    distinguisher, could ever get. As we will see, we will get very
-    close to achieving complete tightness, but at the last minute an inevitable
-    roadblock will appear. Still, you may agree that discovering the nature of this
-    roadblock is very informative.
-    %The resulting theorem is \emph{not}
-    %general, in the sense that it can only be applied to very particular
-    %situations, but (barring errors in the proof) it \emph{does} appear to be optimal.
+    distinguisher, can ever get. As we will see, we will get very
+    close to tightness, but then the inevitable
+    roadblock will appear, leading us to the ubiquitous square root loss. 
+    Still, the bound we achieve is indeed independent of $q$.
+    Further you may agree that seeing what the nature of this roadblock is in
+    itself quite informative,
+    and it may even open a path towards \emph{proving} that the bound is optimal
+    (at least for non-aborting reductions).
 
-  \begin{remark}
-    Some differences to the Semi-Classical O2H lemma (SC-O2H): In this version, the 
-      extractor $\extractor$ provides an \emph{independent}
-      simulation of a random oracle, rather than one that is equal to the
-      ``real'' oracle on all but
-      $\ell$ points, and the adversary has to guess whether it
-      gets the real, ``monolithic'' random oracle $\RO$, or the independently
-      simulated random oracle $\RO[G]$, given some input
-      $z$ which depends arbitrarily on $\ell$ points in the real random
-      oracle $(\RO(x_1), \ldots, \RO(x_\ell))$. This matches a situation often
-      found in game hops. 
+  %\begin{remark}
+  %  Some differences to the Semi-Classical O2H lemma (SC-O2H): In this version, the 
+  %    extractor $\extractor$ provides an \emph{independent}
+  %    simulation of a random oracle, rather than one that is equal to the
+  %    ``real'' oracle on all but
+  %    $\ell$ points, and the adversary has to guess whether it
+  %    gets the real, ``monolithic'' random oracle $\RO$, or the independently
+  %    simulated random oracle $\RO[G]$, given some input
+  %    $z$ which depends arbitrarily on $\ell$ points in the real random
+  %    oracle $(\RO(x_1), \ldots, \RO(x_\ell))$. This matches a situation often
+  %    found in game hops. 
 
-    The goal of the extractor $\extractor$ will be to output a set of input values
-      such that the set intersects with the set $\{x_1, \ldots, x_n\}$ on at
-      least one value, after which point a reduction can either guess which one it
-      needs to output, or use a PCA oracle or similar to find the value it wants.
+  %  The goal of the extractor $\extractor$ will be to output a set of input values
+  %    such that the set intersects with the set $\{x_1, \ldots, x_n\}$ on at
+  %    least one value, after which point a reduction can either guess which one it
+  %    needs to output, or use a PCA oracle or similar to find the value it wants.
 
-    Finally, as mentioned, instead of measuring a random oracle query $i \in
-      [q]$, the distinguisher is run until the end, before the extractor measures
-      the oracle database and produces its output; hence the name ``Hands-Off
-      O2H''.
-  \end{remark}
+  %  Finally, as mentioned, instead of measuring a random oracle query $i \in
+  %    [q]$, the distinguisher is run until the end, before the extractor measures
+  %    the oracle database and produces its output; hence the name ``Hands-Off
+  %    O2H''.
+  %\end{remark}
 
   \hhnote{ 
     Mention that using this lemma will sometimes mean explicitly bounding the
-    runtime of $\adv$. (But surely this must be the case for normal O2H as
+    runtime of $\adv$? (But surely this must be the case for normal O2H as
     well? Let first query be bad, and let $\adv$ enter an infinite loop upon
     noticing an inconsistency, making no further queries. If $i > 1$, then
     $\extractor$ never halts. Maybe this is often just taken to be implicit?
@@ -51,7 +54,122 @@
   }
 
   \subsection{The Hands-Off O2H Lemma}
-    \begin{lemma}[Hands-Off O2H]\label{lemma:handsoff-o2h}
+    \textbf{ERROR: The Hands-Off O2H Lemma is false, as shown by Joseph's
+      counterexample, presented and analyzed in \autoref{sec:uncompute}.
+      This section is kept around for historical reasons only,
+      and as a jumping-off point for further investigations.}
+
+    Before we turn to the main theorem, let us show how we can generically go from the
+      situation considered therein, in which the $\RO$ and
+      $\RO[G]$ are completely independent oracles, to something more akin to the
+      Semi-Classical O2H, where the oracles only differ on input points in some set
+      $\careset$. The reduction proving the lemma implements a strategy similar
+      to (and inspired by) that of \autoref{lemma:two-equals-one}.
+
+    \begin{lemma}
+      Let $\careset \subseteq \bin^n$ be a set of input values $x^*_i$, and
+        let $\RO, \RO[G]$ be (independent) random oracles from $\bin^n$ to $\bin^m$. Then
+        there is a reduction $\bdv$ that, given $\careset$ and oracle access to
+        $\RO$ and $\RO[G]$, provides a perfect
+        simulation to any distinguisher $\ddv$ of a random oracle
+        $\altRO$ satisfying
+        \begin{enumerate}
+          \item $\forall x \not\in \careset, \altRO(x) = \RO(x)$, 
+          \item $\forall x \in \careset, \altRO(x) = \RO[G](x)$. 
+        \end{enumerate}
+
+      \noindent
+      If $\adv$ makes $q$ queries to $\altRO$, then $\bdv$ makes $3q$ queries
+        to $\RO$ and $2q$ queries to $\RO[G]$, or $5q$ queries in total.
+        (If only independence from $\RO$ is required for the points in
+        $\careset$, and not necessarily consistency
+        with $\RO[G](x)$, then this can be reduced to $q$ queries to $\RO$ and
+        $2q$ queries to $\RO[G]$, for $3q$ queries in total.)
+    \end{lemma}
+
+    \begin{proof}
+      Let $\bdv$ keep an $m$-bit register $\register[Z]$, initialized to the
+      all-zero state $\ket{0^m}_{\register[Z]}$. Let $\unitary_z$ be the
+      unitary that acts on $\inputreg, \outputreg, \register[Z]$ such
+      that, if $x \in \careset$, 
+      \[ 
+        \ket{x}\ket{y}\ket{z} \apply{\unitary_z} \ket{x}\ket{y \xor z}\ket{z}\, ,
+      \]
+      and otherwise acts like the identity.
+      (This may be implemented using a series of controlled-controlled not gates
+      (Toffoli gates), and ancilla qubits that store the results of equality
+      check with each $x^*_i$ in $\careset$ individually, which may then be
+      condenced to a single ancilla storing the result of the OR-operation on
+      each of the individual ancillas.)
+
+      Upon a query to $\altRO$ with
+      registers $\inputreg, \outputreg$, $\bdv$ does the following:
+      \begin{enumerate}
+        \item Query $(\inputreg,\outputreg) \gets \RO(\inputreg, \outputreg)$,
+        \item Query $(\inputreg,\register[Z]) \gets \RO(\inputreg, \register[Z])$,
+        \item Query $(\inputreg,\register[Z]) \gets \RO[G](\inputreg, \register[Z])$, 
+        \item $\applyU{\unitary_z}{\inputreg, \outputreg, \register[Z]}$,
+        \item Query $(\inputreg,\register[Z]) \gets \RO[G](\inputreg, \register[Z])$,
+        \item Query $(\inputreg,\register[Z]) \gets \RO(\inputreg, \register[Z])$,
+        \item Return ${\inputreg, \outputreg}$ to $\ddv$.
+      \end{enumerate}
+      
+      \noindent
+      Let us see what the effect of the above operations are on the
+        computational basis states $\ket x \ket y \ket 0^m$.
+
+      \begin{align*}
+        \ket{x}\ket{y}\ket{0^m} 
+          \quad \apply{(1.)} \quad
+          &\ket{x}\ket{y \xor \RO(x)}\ket{0^m}\, , \\
+        \quad \apply{(2.)} \quad
+          &\ket{x}\ket{y \xor \RO(x)}\ket{\RO(x)}\, , \\
+        \quad \apply{(3.)} \quad
+          &\ket{x}\ket{y \xor \RO(x)}\ket{\RO(x) \xor \RO[G](x)}\, .
+        \intertext{
+          If $x \neq \careset$, then the next steps give
+        }
+        \quad \apply{(4.)} \quad
+          &\ket{x}\ket{y \xor \RO(x)}\ket{\RO(x) \xor \RO[G](x)}\, , \\
+        \quad \apply{(5.)} \quad
+          &\ket{x}\ket{y \xor \RO(x)}\ket{\RO(x) \xor \RO[G](x) \xor \RO(x)} \\
+          &\quad = \ket{x}\ket{y \xor \RO(x)}\ket{\RO[G](x)}\, , \\
+        \quad \apply{(6.)} \quad
+          &\ket{x}\ket{y \xor \RO(x)}\ket{\RO[G](x) \xor \RO[G](x)} \\
+          &\quad = \ket{x}\ket{y \xor \RO(x)}\ket{0^m}\, ,
+        \intertext{
+          at which point $\inputreg$ and $\outputreg$ are returned to $\ddv$.
+          If $x \in \careset$, then we instead get,
+        }
+        \quad \apply{(4.)} \quad
+          &\ket{x}\ket{y \xor \RO(x) \xor \RO(x) \xor \RO[G](x)}\ket{\RO(x) \xor \RO[G](x)} \\
+          &\quad = \ket{x}\ket{y \xor \RO[G](x)}\ket{\RO(x) \xor \RO[G](x)}\, , \\
+        \quad \apply{(5.)} \quad
+          &\ket{x}\ket{y \xor \RO[G](x)}\ket{\RO(x) \xor \RO[G](x) \xor \RO(x)} \\
+          &\quad = \ket{x}\ket{y \xor \RO(x)}\ket{\RO[G](x)}\, , \\
+        \quad \apply{(6.)} \quad
+          &\ket{x}\ket{y \xor \RO[G](x)}\ket{\RO[G](x) \xor \RO[G](x)} \\
+          &\quad = \ket{x}\ket{y \xor \RO(x)}\ket{0^m}\, ,
+      \end{align*}
+      as desired.
+      Crucially, we see that $\bdv$ ends up un-entangled with both
+      $\distinguisher$ and
+      the random oracles after returning $\inputreg$ and $\outputreg$ to
+      $\distinguisher$. Thus, $\bdv$ acts only as an intermediary
+      interface between $\distinguisher$ and the random oracles.
+      \qed
+    \end{proof}
+
+    \begin{remark}
+      It is also possible for $\bdv$ to employ the above strategy to
+        adaptively reprogram $\altRO$ by changing the check in $\unitary_z$
+        between queries, with the effect of altering the values in $\careset$.
+        Of course, such behaviour may well be noticeable, and so requires a more
+        careful analysis (such as that found in the proof of the adaptive
+        reprogramming framework~\cite{PKC:PanZen24})\, .
+    \end{remark}
+
+    \begin{theorem}[Hands-Off O2H]\label{lemma:handsoff-o2h}
       Let $\RO_0: \bin^n \to \bin^m$ be a random oracle, and let distinguisher
         $\distinguisher$ be a quantum algorithm making at most $q$ queries to a
         random oracle. Let $\careset = \{ x^*_1, \ldots x^*_\ell \}$,
@@ -94,26 +212,29 @@
         \leq 2\sqrt{2 \cdot \advantage{q\hy\oneway}{}[\extractor^\distinguisher]}
         + \sqrt{2^{-m+3}}\, .
       \]
-    \end{lemma}
+    \end{theorem}
 
     \noindent
-    As you can see, we still end up with the same, characteristic square root loss 
-      shared by all O2H lemmas---but at least we are able to avoid the $q_{\RO}$ loss!
-      This is essentially done by delegating the task of finding the right value out of
-      $q_{\RO}$ options to the reduction applying the lemma. 
+    As you can see, we still end up with the same square root loss 
+      so characteristic for O2H lemmas---but at least we are able to avoid the
+      $q$ loss! This is essentially done by delegating the task of
+      finding the right value out of $q$ options to the reduction
+      applying the lemma.
 
-    Whether this result is ``better'' than, say, the Semi-Classical
-      O2H lemma, will depend on the usecase, but for certain game hops 
-      it will at least be easier to apply, and may lead to tighter bounds when
-      the right values are recognizable. On the other hand, there are clearly
-      situations where the Resampling Lemma (for which the $q_{\RO}$ loss is
-      \emph{also} under the square root) will provide a tighter bound.
+    Whether this result is ``better'' than previous art will
+      likely depend on the usecase, but for certain game hops 
+      it will certainly be easier to apply, and may lead to tighter bounds when
+      recognizing values that you care about is easy. On the other hand, there
+      are clearly situations where the Resampling Lemmaa, for which the
+      $q$ loss appears under the square root, will provide a tighter bound.
 
     What is most interesting to me, however, is seeing \emph{how} we
-      seem doomed to run head-first into the inevitable square-root loss. This is what the
-      following proof explores.
+      seem doomed to run head-first into the inevitable square-root loss, 
+      made explicit in the following proof.
 
     \begin{proof}
+      \textbf{ERROR: \autoref{thm:imperfect} is not applicable.} 
+
       Assume without loss of generality that the adversary plays optimally, and
         further that they never perform any measurements (i.e.\ that
         $\distinguisher$ is
@@ -356,6 +477,7 @@
             order (since the $\CXgate$, $\Xgate$, and Tofolli gates are all involutions).
         \end{enumerate}
 
+      \noindent
       Let $\alpha_\extev$ be the amplitude resulting from applying the projector
         $\projector_\extev$ to the combined state $\ket{\advbitregister
         \distinguisher \database}$, or in other words, let the probability of
@@ -416,6 +538,527 @@
     %  (This one could screw up the whole project.) % It did.
     %}
 
+  \subsection{Joseph's Counterexample: An Uncomputing Adversary}
+    \label{sec:uncompute}
+    Consider the adversary $\adv$, given in \autoref{fig:uncomputing-adv}, that
+      on input $(\target, \realRO(\target))$ and oracle access to $\idealRO$,
+      trivially distinguishes $\realRO$ from $\idealRO$ by calling $\idealRO$
+      on input $\target$ and comparing the output. Then, $\adv$ uncomputes its
+      knowledge of the output $\idealRO(\target)$ by calling the oracle a
+      second time, keeping only an ancilla
+      qubit storing information on whether or not the values were equal.
+
+    We want to know what the probability is of observing
+      $\target$ in the database at the end of the protocol. We proceed by
+      direct calculation of the combined quantum state.
+      We will need the following simple, but useful, lemma.
+
+    \begin{lemma}[Orthogonality Relation]\label{lemma:orthogonality}
+      For all $n$-bit integers $x$, $y$, $z$,
+      \[
+        \sum_{x \in [2^n]} \frac{(-1)^{x \cdot (y \xor z)}}{2^n} = \delta_{y, z}\, ,
+      \]
+      where $\delta_{y, z}$ is the Kronecker delta.
+    \end{lemma}
+
+    \begin{proof}
+      If $y = z$, then the exponent is zero independently of $x$, and the sum evaluates to
+      $2^n$. For all other values of $y$ and $z$, there will be equally many
+      values for $x$ that give a negative and a positive sign, respectively, so that the sum
+      evaluates to $0$.
+      \qed
+    \end{proof}
+
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{
+          Adversary $\adv^{\idealRO}(\target, \targetout \coloneqq \realRO(\target))$
+        }{
+          \bitreg \concat \inputreg \concat \outputreg \gets \reginit{(1+n+m)}{\ket{0}} \\
+          \ket{\inputreg} \gets \ket{\target} \\
+          (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
+          \pcforeach \ket{y} \pcin\ \outputreg \pcdo \\
+            \t \pcif y = \targetout \pcthen \applyU{\Xgate}{\register[B]} \\
+          (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
+          \pcreturn \register[B]
+        }
+
+        \pchspace
+
+        \procedure{Oracle $\idealRO(\inputreg, \outputreg : \database)$}{
+          \applyU{\decomp}{\inputreg \concat \database} \\
+          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          \applyU{\entangle}{\inputreg \concat \outputreg \concat \database} \\
+          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          \applyU{\decomp}{\inputreg \concat \database} \\
+          \pcreturn (\inputreg, \outputreg)
+        }
+      \end{pchstack}
+      \caption{
+        \label{fig:uncomputing-adv}
+        \emph{Left:} An adversary $\adv$ that after an RO query, entangles to an output
+        qubit, and then
+        uncomputes the query, in a scenario where it is given an
+        input corresponding to a query to the ``real'' oracle $\realRO$, while
+        given oracle access to the independent, simulated oracle $\idealRO$.
+        $\adv$ is then tasked with noticing the difference, which it can
+        trivially do by calling $\idealRO$ on $\target$. \\
+        %Here, $\inputreg$, $\outputreg$, and $\bitreg$ are $n$-, $m$-, and
+        %$1$-length qubit registers, respectively, initialized to the all-zero
+        %states. \\
+        \emph{Right:} The simulated oracle $\idealRO$, implemented as a compressed
+        oracle (taken from \autoref{def:compressed-ros}). Here, $\database$ is
+        the database, initialized to the list of $q$ identical tuples
+        $(\emptystring, 0^m)$, (i.e.\ at the outset the method $\database \gets
+        \reginit{q}{\ket{\emptystring, 0^m}}$ is run). 
+        %Since there are only $2$ queries in this example, we may set $q=2$.
+      }
+    \end{figure}
+
+    \noindent
+    Let us now compute the state resulting from the operations given in
+    \autoref{fig:uncomputing-adv}.
+    Just before the first oracle query, we have the combined state
+    \begin{align*}
+      \ket{\bitreg}\ket{\inputreg}\ket{\outputreg}\ket{\database_0} &=
+        \ket{0}_{\bitreg} \ket{\target}_{\inputreg} \ket{0^m}_{\outputreg}
+        \ket{\emptystring, 0^m}_{\database_0}\, ,
+      \intertext{
+        where $\database_0$ is the database subregister that houses the first tuple
+        in the list. As $\idealRO$ applies each unitary, as shown in
+        $\autoref{fig:uncomputing-adv}$, this state is then transformed as
+        follows.
+      }
+        %\ket{\bitreg}\ket{\inputreg}\ket{\outputreg}\ket{\database_0}
+          &\apply{\decomp} 
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\apply{\Hgate^{\otimes m}} 
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \sum_{y \in [2^m]}
+          \frac{1}{\sqrt{2^m}} 
+          \ket{y}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\apply{\entangle} 
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \sum_{y \in [2^m]}
+          \frac{1}{\sqrt{2^m}} 
+          \ket{y}_{\outputreg}
+          \ket{\target, y}_{\database_0} \\
+        &\apply{\Hgate^{\otimes m}} 
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \sum_{z \in [2^m]}
+          \sum_{y \in [2^m]}
+          \frac{(-1)^{z \cdot y}}{2^m} 
+          \ket{z}_{\outputreg}
+          \ket{\target, y}_{\database_0} \\
+        &\apply{\decomp} 
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \sum_{z \in [2^m]}
+          \sum_{y \in [2^m] \backslash \{0^m\}}
+          \frac{(-1)^{z \cdot y}}{2^m} 
+          \ket{z}_{\outputreg}
+          \ket{\target, y}_{\database_0} \\
+        &\qquad + 
+          \sum_{z \in [2^m]}
+          \frac{1}{2^m}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{z}_{\outputreg}
+          \ket{\emptystring, 0^m}_{\database_0}\, .
+        \intertext{
+          At this point, $\idealRO$ returns $\inputreg$ and $\outputreg$ to
+          $\adv$, who proceeds to do a conditional bitflip on $\bitreg$, conditioned on the
+          state of register $\outputreg$ being $\ket{\targetout}$. Let us
+          denote by $f(y)$ the predicate that is $=1$ when $y=\targetout$, and
+          $=0$ otherwise. Then we have:
+        }
+        &\apply{\CXgate}
+          \sum_{z \in [2^m]}
+          \sum_{y \in [2^m] \backslash \{0^m\}}
+          \frac{(-1)^{z \cdot y}}{2^m} 
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{z}_{\outputreg}
+          \ket{\target, y}_{\database_0} \\
+        &\qquad + 
+          \sum_{z \in [2^m]}
+          \frac{1}{2^m}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{z}_{\outputreg}
+          \ket{\emptystring, 0^m}_{\database_0}\, .
+        \intertext{
+          Now, $\adv$ makes its second query to $\idealRO$ with the same
+          registers $\inputreg$, $\outputreg$, leading to the following
+          transformations:
+        }
+        &\apply{\decomp}
+          \sum_{z \in [2^m]}
+          \sum_{y \in [2^m] \backslash \{0^m\}}
+          \frac{(-1)^{z \cdot y}}{2^m} 
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{z}_{\outputreg}
+          \ket{\target, y}_{\database_0} \\
+        &\qquad + 
+          \sum_{z \in [2^m]}
+          \frac{1}{2^m}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{z}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\quad = 
+          \frac{1}{2^m}
+          \sum_{z,y}
+          (-1)^{z \cdot y}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{z}_{\outputreg}
+          \ket{\target, y}_{\database_0}\, ,
+        \intertext{
+          in which we let the range of the sums be implicit (they will always
+          be over all of $\bin^m$ unless otherwise noted).
+        }
+        &\apply{\Hgate^{\otimes m}}
+          \frac{1}{2^{\nicefrac{3m}{2}}}
+          \sum_{w,z,y}
+          (-1)^{y \cdot z \xor z \cdot w}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{w}_{\outputreg}
+          \ket{\target, y}_{\database_0} \\
+        &\apply{\entangle}
+          \frac{1}{2^{\nicefrac{3m}{2}}}
+          \sum_{w,z,y}
+          (-1)^{y \cdot z \xor z \cdot w}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{w}_{\outputreg}
+          \ket{\target, y \xor w}_{\database_0} \\
+        &\apply{\Hgate^{\otimes m}}
+          \frac{1}{2^{2m}}
+          \sum_{v,w,z,y}
+          (-1)^{y \cdot z \xor z \cdot w \xor w \cdot v}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{v}_{\outputreg}
+          \ket{\target, y \xor w}_{\database_0} 
+        \intertext{
+          We would like to sum over $y$ and apply the orthogonality relation
+          \autoref{lemma:orthogonality}. However, the state of the $\database_0$ register
+          still depends on $y$. Towards remedying this, we make a change of
+          variable from $w$ to $u \coloneqq y \xor w \Leftrightarrow w = y \xor u$.
+        }
+        &\quad =
+          \frac{1}{2^{2m}}
+          \sum_{v,(y\xor u),z,y}
+          (-1)^{y \cdot z \xor z \cdot (y \xor u) \xor (y \xor u) \cdot v}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{v}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, .
+        \intertext{
+          Summing over all values of $y \xor u$, for fixed $y$, has the same
+          effect as summing over all values of $u$, since the xor operation is
+          a permutation. Therefore, we may write
+        }
+        &\quad =
+          \frac{1}{2^{2m}}
+          \sum_{v,z,y,u}
+          (-1)^{y \cdot z \xor z \cdot y \xor z \cdot u \xor y \cdot v \xor u \cdot v}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{v}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\quad =
+          \frac{1}{2^{2m}}
+          \sum_{v,z,y,u}
+          (-1)^{y \cdot (v \xor 0^m)}
+          (-1)^{u \cdot (z \xor v)}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{v}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, ,
+        \intertext{
+          where we inserted a $0^m$ in the exponential to prepare for the next
+          step. Now we sum over $y$, and apply \autoref{lemma:orthogonality}.
+        }
+        &\quad =
+          \frac{1}{2^{m}}
+          \sum_{v,z,u}
+          \delta_{v,0^m}
+          (-1)^{u \cdot (z \xor v)}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{v}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, .
+        \intertext{
+          Summing over $v$ gives
+        }
+        &\quad =
+          \frac{1}{2^{m}}
+          \sum_{z,u}
+          (-1)^{z \cdot u}
+          \ket{f(z)}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, .
+        \intertext{
+          In order to analyze this expression, we split the expression into the
+          two cases where $f(z) = 1$, which happens exactly when $z =
+          \targetout$, and $f(z)=0$.
+        }
+        &\quad =
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{1}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\qquad +
+          \frac{1}{2^{m}}
+          \sum_{z \neq \targetout,u}
+          (-1)^{z \cdot u}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, .
+        \intertext{
+          In order to be able to use \autoref{lemma:orthogonality} again, we
+          now add $0$ by adding and subtracting the $z = \targetout$ term, only
+          with $\ket{\bitreg}= \ket 0$:
+        }
+        &\quad =
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{1}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\qquad +
+          \frac{1}{2^{m}}
+          \sum_{z,u}
+          (-1)^{z \cdot (u \xor 0^m)}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\qquad -
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, .
+        \intertext{
+          Summing over $z$ in the middle term, followed by $u$, then gives us
+        }
+        &\quad =
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{1}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\qquad +
+          \sum_{u}
+          \delta_{u,0^m}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\qquad -
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\quad =
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{1}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\qquad +
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\qquad -
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, .
+        \intertext{
+          There is a phase cancellation for the case $u=0^m$,
+        }
+        &\quad =
+          \frac{1}{2^{m}}
+          \sum_{u}
+          (-1)^{\targetout \cdot u}
+          \ket{1}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\qquad +
+          \left(
+          1 - \frac{1}{2^m}
+          \right)
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\qquad -
+          \frac{1}{2^{m}}
+          \sum_{u \neq 0^m}
+          (-1)^{\targetout \cdot u}
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, ,
+        \intertext{
+          and combining the two sums and factoring gives
+          the final expression.
+        }
+        &\quad =
+          \frac{1}{2^{m}}
+          \ket{1}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\qquad +
+          \left(
+          1 - \frac{1}{2^m}
+          \right)
+          \ket{0}_{\bitreg} 
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\qquad +
+          \frac{1}{2^{m}}
+          \sum_{u \neq 0^m}
+          (-1)^{\targetout \cdot u}
+          \left(
+            \ket{1}_{\bitreg} 
+            - \ket{0}_{\bitreg} 
+          \right)
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0} \\
+        &\quad =
+          \left(
+            \left(
+              1 - \frac{1}{2^m}
+            \right) \ket{0}_{\bitreg} 
+            + \frac{1}{2^{m}}
+            \ket{1}_{\bitreg} 
+          \right)
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, 0^m}_{\database_0} \\
+        &\qquad +
+          \frac{1}{2^{m}}
+          \sum_{u \neq 0^m}
+          (-1)^{\targetout \cdot u}
+          \left(
+            \ket{1}_{\bitreg} 
+            - \ket{0}_{\bitreg} 
+          \right)
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, .
+        \intertext{
+          Finally, $\idealRO$ applies $\decomp$ one last time, 
+        }
+        &\quad =
+          \left(
+            \left(
+              1 - \frac{1}{2^m}
+            \right) \ket{0}_{\bitreg} 
+            + \frac{1}{2^{m}}
+            \ket{1}_{\bitreg} 
+          \right)
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\emptystring, 0^m}_{\database_0} \\
+        &\qquad +
+          \frac{1}{2^{m}}
+          \sum_{u \neq 0^m}
+          (-1)^{\targetout \cdot u}
+          \left(
+            \ket{1}_{\bitreg} 
+            - \ket{0}_{\bitreg} 
+          \right)
+          \ket{\target}_{\inputreg} 
+          \ket{0^m}_{\outputreg}
+          \ket{\target, u}_{\database_0}\, ,
+    \end{align*}
+
+    \noindent
+    and returns $\inputreg$ and $\outputreg$ to $\adv$.
+
+    The extractor can recover $\target$ iff
+      $u \neq 0$. We get the probability that $u \neq 0$ by summing the
+      amplitudes squared:
+      \[
+        \prob{\extev} = \frac{2^m - 1}{2^{2m}} 
+        = \frac{1}{2^m} \left( 
+          1 - \frac{1}{2^{m}} 
+        \right)
+        < \frac{1}{2^m}\, .
+      \] 
+
+    \noindent
+    The distinguisher, meanwhile, has probability 
+    \begin{align*}
+      \condprob{\distev}{u = 0} &= \left( 
+        1 - \frac{1}{2^m} \right)^2
+        = 1 - \frac{2}{2^m} + \frac{1}{2^{2m}} 
+        > 1 - \frac{1}{2^{m-1}}
+      \intertext{
+        of distinguishing when $u\neq 0$, and probability $\half$ otherwise,
+        leading to the total distinguishing probability
+      }
+      \prob{\distev} &= 
+        \prob{u = 0}
+        \condprob{\distev}{u = 0}
+        + \prob{u \neq 0}
+        \condprob{\distev}{u \neq 0} \\
+      &> 
+        \left( 1 - \frac{1}{2^m} \right) 
+        \left( 1 - \frac{1}{2^{m-1}} \right)
+        + \frac{1}{2^m} \left( 1 - \frac{1}{2^{m}} \right) 
+        \frac{1}{2}
+        > 1 - \frac{1}{2^m}\, .
+    \end{align*}
+
+    \paragraph{Conclusion:} An adversary really does have the ability to thwart the efforts
+      of any extractor simply by uncomputing its oracle queries.
+      Therefore, it seems aborting and measuring a random query really is
+      required in order to have any hope of extracting.
+
+    \paragraph{Next question:} Can we use this to prove the optimality of O2H?
+
+  \ifdraftversion
   \subsection{Optimality of the Bound}
     \hhnote{
       Then, show that there exists a KEM scheme that matches the bound,
@@ -448,6 +1091,7 @@
     As a proof of concept, \dots
     \hhnote{
       Show that a $\owpca$ KEM gives an $\indcpa$ PKE via the BRE transform,
-      tightly up to the square root. (Then generalize to CCA and publish at
+      tightly up to the square root. (Then achieve CCA-security and publish at
       TCC.)
     }
+  \fi

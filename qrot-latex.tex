@@ -17,6 +17,11 @@
   % See cryptocodeh for \RO
   \newcommand{\ro}{\hash} % phasing out
   \renewcommand{\state}{\ensuremath{\sigma}} 
+  \newcommand{\altRO}{\RO^\prime}
+  \newcommand{\realRO}{\RO_0}
+  \newcommand{\idealRO}{\RO_1}
+  \newcommand{\target}{\ensuremath{x^*}}
+  \newcommand{\targetout}{\ensuremath{y^*}}
 
 %%% Algorithms
 \newcommand{\randfunc}{\ensuremath{\mathcal{R}}}
@@ -58,17 +63,21 @@
 }
 
 %%% Quantum methods
-\newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] : #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
+\newcommandx*{\applyU}[3][3={}]{\pcalgostyle{Apply}_{#3}(\unitary[#1] \to #2)} % Apply Unitary #1 to Register #2 of Global Quantum System #3
 \newcommandx*{\meas}[3][3={}]{\pcalgostyle{Meas}_{#3}(\ifthenelse{\equal{#1}{}}{}{#1 : }#2)} % Apply measurement #1 to register #2 of Global Quantum System #3
   % Intended usage: \meas{}{\register}; \meas{\measurement}{\register}; % % \meas{}{\register}[\qcomp] 
+\newcommand{\reginit}[2]{\pcalgostyle{Init}(#1 \times #2)}
+  % Intended usage: \reginit{number of identical subregisters}{state per element}
+  % Can initialize several registers at once by reg1, reg2, reg3 \gets \reginit{n1, n2, n3}{state per element}
 
 %%% Compressed oracles
   \newcommand{\database}{\register[D]}
-  \newcommand{\decomp}{\unitary[S]}
-  \newcommand{\entangle}{\unitary[E]}
+  \newcommand{\decomp}{\unitary[Srt]}
+  \newcommand{\entangle}{\unitary[Ent]}
   \newcommand{\decompx}{\decomp_x}
   \newcommand{\inputreg}{{\register[X]}}
   \newcommand{\outputreg}{{\register[Y]}}
+  \newcommand{\bitreg}{{\register[B]}}
 
 %%% O2H
   \newcommand{\hide}{\pcnotionstyle{HIDE}}

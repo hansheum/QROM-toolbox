@@ -11,7 +11,7 @@
   % \authversionfalse % triggers submission version for full version (anonymous, suppl material)
 
 \newif\ifdraftversion
-  % \draftversionfalse
+  %\draftversionfalse
   \draftversiontrue
 
 %
@@ -189,6 +189,7 @@
     \input{qrot-definitions}
       \clearpage
 
+  % WIP
   \ifdraftversion
     \input{qrot-o2h}
       \clearpage
@@ -196,11 +197,6 @@
 
     \input{qrot-compressed}
 
-  % WIP
-  \ifdraftversion
-      \clearpage
-    \input{qrot-handsoff}
-  \fi
 
   %\newpage
   \addcontentsline{toc}{section}{References}
@@ -223,6 +219,7 @@
   % Appendices input below
 
   \input{qrot-primer}
+    \input{qrot-solutions}
     \clearpage
 
   % WIP
@@ -231,8 +228,7 @@
       \clearpage
     \input{qrot-ttransform}
       \clearpage
+    \input{qrot-handsoff}
   \fi
-
-  \input{qrot-solutions}
 
 \end{document}
