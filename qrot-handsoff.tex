@@ -579,7 +579,7 @@
           \ket{\inputreg} \gets \ket{\target} \\
           (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
           \pcforeach \ket{y} \pcin\ \outputreg \pcdo \\
-            \t \pcif y = \targetout \pcthen \applyU{\Xgate}{\register[B]} \\
+            \t \pcif y = \targetout \pcthen \applyU{\Xgate}{\bitreg} \\
           (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
           \pcreturn \register[B]
         }
@@ -1057,41 +1057,50 @@
       required in order to have any hope of extracting.
 
     \paragraph{Next question:} Can we use this to prove the optimality of O2H?
-
-  \ifdraftversion
-  \subsection{Optimality of the Bound}
-    \hhnote{
-      Then, show that there exists a KEM scheme that matches the bound,
-      namely the one that just hashes the keys, by starting from $\owqpca$ and
-      letting $\adv$ be the one that
+      Could phrase counterexample in terms of a KEM scheme just hashes the
+      keys, by starting from $\owqpca$ and letting $\adv$ be the one that
       performs measurements of the type $\measurement_\obsev$ on its own
-      collection of queries, and uncomputing the full collection if it ever
-      observes the outcome $1$, making it minimally entangled with
-      $\database$. Will hopefully impart a necessary square-root-like loss upon
-      any hands-off extractor.
-    }
+      collection of queries, and uncomputing after each query.
 
-  \subsection{Relation to Semi-Classical O2H}
-    \hhnote{
-      Next, re-derive the Semi-Classical O2H bound by introducing
-      $\measurement_\extev$ directly into the random oracle (not necessarily
-      controlled by the extractor, so no plaintext checking needed \ldots right?), applied to
-      every query. (The case of using $\owqpca$ yourself should already have been
-      covered when discussing applications of SC-O2H.)
-      But \ldots does this have any utility? A: If you can generalize to oracles
-      that only differ on points in $\Sspace$ then yes, if nothing else to show
-      that this is more general (if it is).
-    }
+  \subsection{Re-deriving the Semi-Classical O2H Lemma}
+    Next, let's re-derive the Semi-Classical O2H bound by introducing
+      $\measurement_\extev$ directly into the random oracle.
+      If $\extractor$ has access to a $\qpca$ oracle, then they may 
+      implement this oracle directly, which is shown in
+      \autoref{fig:semiclassical-oracle}.
 
-    Ambainis et al.\
-      already showed a similar result, by splitting their Semi-Classical O2H
-      result in two parts: \ldots
+    We again consider the setting that $\distinguisher$ is given some input $z$
+      that may depend arbitrarily on $\realRO$, and that $\extractor$ provides a
+      simulation for $\distinguisher$, except now it is implemented as a
+      Semi-Classical CRO.
 
-  \subsection{From Onewayness to Indistinguishability with Optimal Tightness}
-    As a proof of concept, \dots
-    \hhnote{
-      Show that a $\owpca$ KEM gives an $\indcpa$ PKE via the BRE transform,
-      tightly up to the square root. (Then achieve CCA-security and publish at
-      TCC.)
-    }
-  \fi
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{Oracle $\idealRO(\inputreg, \outputreg : \bitreg, \database)$}{
+          \pclinecomment{1.\ Check input} \\
+          \pcforeach \ket{x} \pcin\ \inputreg \pcdo \\
+            \t \pcif x \in \careset \pcthen \applyU{\Xgate}{\bitreg} \\
+          b \sample \meas{}{\bitreg} \\
+          \pcif b = 1 \pcthen \pcabort \\
+              %\t\t \target \sample \meas{}{\inputreg} \\
+              %\t\t \pcabort \pcand \pcreturn \target \\
+          \pclinecomment{2.\ Simulate oracle} \\
+          \applyU{\decomp}{\inputreg \concat \database} \\
+          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          \applyU{\entangle}{\inputreg \concat \outputreg \concat \database} \\
+          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          \applyU{\decomp}{\inputreg \concat \database} \\
+          \pcreturn (\inputreg, \outputreg)
+        }
+      \end{pchstack}
+      \caption{
+        \label{fig:semiclassical-oracle}
+        The simulated semi-classical oracle $\idealRO$, implemented as a compressed
+        oracle (taken from \autoref{def:compressed-ros}). Here, $\bitreg$ is a
+        single-qubit register initialized to $\ket 0$, and $\database$ is
+        the database, initialized to the list of $q$ identical tuples
+        $(\emptystring, 0^m)$, (i.e.\ at the outset the method $\database \gets
+        \reginit{q}{\ket{\emptystring, 0^m}}$ is run). 
+      }
+    \end{figure}
