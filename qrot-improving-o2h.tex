@@ -1,4 +1,207 @@
-\section{A Better O2H Lemma from Compressed Oracles?}\label{sec:handsoff}
+\section{One-Way to Hiding: Can We Do Better?}\label{sec:improving-o2h}
+  Now that we have compressed random oracles in our toolbox, it is natural to
+    ask if we can somehow use the to derive a better One-Way to Hiding bound.
+    After all, the lossiness of the O2H lemmas stand in stark contrast to the
+    classical case, but without appearing to reflect any real-world attacks.
+
+  \hhnote{
+    Think about whether there is an ``obvious'' application of Grover that I'm
+    missing, that the square root could be attributed to.
+  }
+
+  While a full impossibility theorem for tighter bounds is missing, the
+    following two lemmas provide some insight into why we should expect
+    1.\ the square root, and 2.\ some loss factor $c(q_{\RO})$
+    to be inevitable.
+
+  The first lemma takes a ``gray-box'' view of the adversary, and shows that
+    there is a separation between observing a value and distinguishing two
+    oracles, which seems to be unique to the quantum world.
+
+  \begin{lemma}
+    Let $\adv$ get an input $z$ that depends arbitrarily on $\realRO(x)$ for $x
+      \in \careset$, and let
+      $\idealRO$ be an independent random oracle. Given oracle access to
+      $\bitRO$, $\adv$ is tasked with outputting $\chalbit$. Let $\adv$
+      also output a second bit encoding the event $\obsev$, set to
+      $1$ if and only if $\adv$ ``observed'' a value $\bitRO$ for $x \in
+      \careset$. Then for all such $\adv$ we have, 
+      \[ 
+        \prob{\obsev} \leq 
+          \advantage{\hide}{\bitRO, z}[\distinguisher] 
+          \leq \prob{\obsev} 
+          + 2 \sqrt{ 
+            2 \cdot \prob{\obsev} \left( 1 - \prob{\obsev} \right)
+          }\, .
+      \]
+      Equality on the right may be achieved by applying a controlled $\Xgate$
+      gate to the ancilla $\qubit_\obsev$, and equality on the left is achieved by
+      applying a controlled $i \Xgate$ gate instead.
+  \end{lemma}
+
+  \noindent
+  The right-hand-side in the above lemma may of course be further bounded to give the
+  more familiar-looking
+  \[ 
+    %\prob{\obsev} + 2 \sqrt{ 
+    %  2 \cdot \prob{\obsev} \left( 1 - \prob{\obsev} \right)
+    %} 
+    \advantage{\hide}{\bitRO, z}[\distinguisher] 
+      \leq 2 \sqrt{2 \cdot \prob{\obsev}}\, .
+  \]
+
+  \begin{proof}
+    \hhnote{to-do: adapt the Hands-Off O2H proof}
+    \qed
+  \end{proof}
+
+  \noindent
+  Now, if an extractor $\extractor$ were lazy-sampling a classical random
+    oracle, then the event $\obsev$ would correspond exactly to $\extractor$
+    being able to extract. Even if we accept
+    that a square-root loss seems inevitable, can we at least get rid of the
+    factors $q_{\RO}$ by simulating the random oracle as a CRO, letting $\adv$
+    run until the end, and measuring the database to see what we get?
+
+  Unfortunately, the following lemma answers also this in the negative.
+
+  \begin{lemma}\label{lemma:uncomputing-adv}
+    Let $z$ be some value that depends arbitrarily on $\realRO(x)$ for $x
+    \in \careset$. Then there is a distinguisher $\distinguisher$ and an value
+    $z$, such that when $\distinguisher$ is given $z$,
+    \[
+      \advantage{\hide}{\idealRO, z}[\distinguisher^{\realRO}] = 1\, ,
+      \qquad \advantage{\hide}{\idealRO, z}[\distinguisher^{\idealRO}] > 1 - \frac{1}{2^m}\, ,
+    \]
+    and yet for any extractor $\extractor$ that simulates
+      $\idealRO$ as a compressed random oracle, without
+      ever aborting $\adv$, and observes the oracle database at the end of the
+      protocol,
+    \[
+      \advantage{\oneway}{}[\extractor] < \frac{1}{2^m}\, ,
+    \]
+    where $2^m$ is the size of the random oracles' output domains.
+  \end{lemma}
+  
+  \begin{proof}
+    Let $\adv$ be as given in \autoref{fig:uncomputing-adv} \ldots
+    \hhnote{
+      To-do: Add simple proof using gentle operator lemma.
+    }
+
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{
+          Adversary $\adv^{\idealRO}(\target, \targetout \coloneqq \realRO(\target))$
+        }{
+          \bitreg \concat \inputreg \concat \outputreg \gets \reginit{(1+n+m)}{\ket{0}} \\
+          \ket{\inputreg} \gets \ket{\target} \\
+          (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
+          \pcforeach \ket{y} \pcin\ \outputreg \pcdo \\
+            \t \pcif y = \targetout \pcthen \applyU{\Xgate}{\bitreg} \\
+          (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
+          \pcreturn \register[B]
+        }
+
+        \pchspace
+
+        \procedure{Oracle $\idealRO(\inputreg, \outputreg : \database)$}{
+          \applyU{\decomp}{\inputreg \concat \database} \\
+          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          \applyU{\entangle}{\inputreg \concat \outputreg \concat \database} \\
+          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          \applyU{\decomp}{\inputreg \concat \database} \\
+          \pcreturn (\inputreg, \outputreg)
+        }
+      \end{pchstack}
+      \caption{
+        \label{fig:uncomputing-adv}
+        \emph{Left:} An adversary $\adv$ that after an RO query, entangles to an output
+        qubit, and then
+        uncomputes the query, in a scenario where it is given an
+        input corresponding to a query to the ``real'' oracle $\realRO$, while
+        given oracle access to the independent, simulated oracle $\idealRO$.
+        $\adv$ is then tasked with noticing the difference, which it can
+        trivially do by calling $\idealRO$ on $\target$. \\
+        %Here, $\inputreg$, $\outputreg$, and $\bitreg$ are $n$-, $m$-, and
+        %$1$-length qubit registers, respectively, initialized to the all-zero
+        %states. \\
+        \emph{Right:} The simulated oracle $\idealRO$, implemented as a compressed
+        oracle (taken from \autoref{def:compressed-ros}). Here, $\database$ is
+        the database, initialized to the list of $q$ identical tuples
+        $(\emptystring, 0^m)$, (i.e.\ at the outset the method $\database \gets
+        \reginit{q}{\ket{\emptystring, 0^m}}$ is run). 
+        %Since there are only $2$ queries in this example, we may set $q=2$.
+      }
+    \end{figure}
+
+    \qed
+  \end{proof}
+
+  \noindent
+  The main difficulty is that $\adv$ can uncompute queries after entangling
+    with them simply by repeating the query with the same registers. If the
+    entanglement doesn't perturbe the state too
+    much, then $\database$ will also be ``almost unperturbed'', meaning it will
+    have a very low amplitude of storing the input value.
+    In order to avoid this uncomputing, it appears that we have no choice but
+    to let the extractor abort the distinguisher, either (as in the original O2H) at a random point,
+    or (as in the Semi-Classical O2H) by checking each query for a bad event.
+    Regardless of the approach taken, this is guaranteed to lead to a loss
+    factor that depends on $q_{\RO}$.
+
+  Another way to prove the \autoref{lemma:uncomputing-adv} is to do a direct calculation of the final
+    state of the combined system, which amounts to an instructive exercise
+    in reasoning about compressed oracles.
+
+  \begin{exercise}
+    Let $\adv$ perform the operations given in \autoref{fig:uncomputing-adv}
+    (left), and let $\extractor$ simulate $\idealRO$ as a compressed random oracle
+    (\autoref{fig:uncomputing-adv}, right). Denoting the
+    the registers holding the first
+    tuple of the oracle database as $\database_0$, show that the final 
+    state of the combined system before measuring is
+    \begin{align*}
+      \ket{\bitreg}\ket{\inputreg}\ket{\outputreg}\ket{\database_0}
+      &= \left(
+          \left(
+            1 - \frac{1}{2^m}
+          \right) \ket{0}_{\bitreg} 
+          + \frac{1}{2^{m}}
+          \ket{1}_{\bitreg} 
+        \right)
+        \ket{\target}_{\inputreg} 
+        \ket{0^m}_{\outputreg}
+        \ket{\emptystring, 0^m}_{\database_0} \\
+      &\qquad +
+        \frac{1}{2^{m}}
+        \sum_{u \neq 0^m}
+        (-1)^{\targetout \cdot u}
+        \left(
+          \ket{1}_{\bitreg} 
+          - \ket{0}_{\bitreg} 
+        \right)
+        \ket{\target}_{\inputreg} 
+        \ket{0^m}_{\outputreg}
+        \ket{\target, u}_{\database_0}\, ,
+    \end{align*}
+    and show that observing this state in the computational basis yields the
+      bounds stated in \autoref{lemma:uncomputing-adv}.
+      You will need the following relations: The Hadamard transformation,
+    \begin{align*}
+      \Hgate^{\otimes m} \ket{y} = \sum_{z \in [2^m]} (-1)^{y \cdot z} \ket{z}\, ,
+      \intertext{
+        and the orthogonality relation,
+      }
+      \frac{1}{2^m} \sum_{y} (-1)^{y \cdot (z \xor w)} = \delta_{z,w}\, .
+    \end{align*}
+    Here, $y \cdot z$ denotes the inner product modulo $2$.
+  \end{exercise}
+
+  \ifdraftversion
+  %% Original Hands-Off O2H section below
+  \subsection{OUTDATED BELOW}
   All formulations of the O2H lemma involve either aborting the distinguisher at a
     random point and measuring their query (which essentially amounts to
     guessing the query), or performing gentle measurements to check for bad
@@ -206,7 +409,7 @@
       \]
       
       \noindent
-      Then, for all distingusihers $\ddv$,
+      Then, for all distinguishers $\ddv$,
       \[
         \advantage{\hide}{\RO_\chalbit, z}[\distinguisher]
         \leq 2\sqrt{2 \cdot \advantage{q\hy\oneway}{}[\extractor^\distinguisher]}
@@ -225,7 +428,7 @@
       likely depend on the usecase, but for certain game hops 
       it will certainly be easier to apply, and may lead to tighter bounds when
       recognizing values that you care about is easy. On the other hand, there
-      are clearly situations where the Resampling Lemmaa, for which the
+      are clearly situations where the Resampling Lemma, for which the
       $q$ loss appears under the square root, will provide a tighter bound.
 
     What is most interesting to me, however, is seeing \emph{how} we
@@ -568,53 +771,6 @@
       evaluates to $0$.
       \qed
     \end{proof}
-
-    \begin{figure}[t]
-      \centering
-      \begin{pchstack}[center]
-        \procedure{
-          Adversary $\adv^{\idealRO}(\target, \targetout \coloneqq \realRO(\target))$
-        }{
-          \bitreg \concat \inputreg \concat \outputreg \gets \reginit{(1+n+m)}{\ket{0}} \\
-          \ket{\inputreg} \gets \ket{\target} \\
-          (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
-          \pcforeach \ket{y} \pcin\ \outputreg \pcdo \\
-            \t \pcif y = \targetout \pcthen \applyU{\Xgate}{\bitreg} \\
-          (\inputreg, \outputreg) \gets \idealRO(\inputreg, \outputreg) \\
-          \pcreturn \register[B]
-        }
-
-        \pchspace
-
-        \procedure{Oracle $\idealRO(\inputreg, \outputreg : \database)$}{
-          \applyU{\decomp}{\inputreg \concat \database} \\
-          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
-          \applyU{\entangle}{\inputreg \concat \outputreg \concat \database} \\
-          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
-          \applyU{\decomp}{\inputreg \concat \database} \\
-          \pcreturn (\inputreg, \outputreg)
-        }
-      \end{pchstack}
-      \caption{
-        \label{fig:uncomputing-adv}
-        \emph{Left:} An adversary $\adv$ that after an RO query, entangles to an output
-        qubit, and then
-        uncomputes the query, in a scenario where it is given an
-        input corresponding to a query to the ``real'' oracle $\realRO$, while
-        given oracle access to the independent, simulated oracle $\idealRO$.
-        $\adv$ is then tasked with noticing the difference, which it can
-        trivially do by calling $\idealRO$ on $\target$. \\
-        %Here, $\inputreg$, $\outputreg$, and $\bitreg$ are $n$-, $m$-, and
-        %$1$-length qubit registers, respectively, initialized to the all-zero
-        %states. \\
-        \emph{Right:} The simulated oracle $\idealRO$, implemented as a compressed
-        oracle (taken from \autoref{def:compressed-ros}). Here, $\database$ is
-        the database, initialized to the list of $q$ identical tuples
-        $(\emptystring, 0^m)$, (i.e.\ at the outset the method $\database \gets
-        \reginit{q}{\ket{\emptystring, 0^m}}$ is run). 
-        %Since there are only $2$ queries in this example, we may set $q=2$.
-      }
-    \end{figure}
 
     \noindent
     Let us now compute the state resulting from the operations given in
@@ -1104,3 +1260,4 @@
         \reginit{q}{\ket{\emptystring, 0^m}}$ is run). 
       }
     \end{figure}
+  \fi
