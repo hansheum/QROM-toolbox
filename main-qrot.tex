@@ -11,8 +11,8 @@
   % \authversionfalse % triggers submission version for full version (anonymous, suppl material)
 
 \newif\ifdraftversion
-  \draftversionfalse
-  %\draftversiontrue
+  %\draftversionfalse
+  \draftversiontrue
 
 %
 % BEGINNING OF DO NOT EDIT ZONE
@@ -47,8 +47,8 @@
 
 % HH: Added to make table-of-contents work
 %% see: https://tex.stackexchange.com/questions/272200/table-of-contents-showing-the-title-as-only-entry-latex
-  %\setcounter{tocdepth}{1} % Exclude subsections
-  \setcounter{tocdepth}{2} % Include subsections
+  \setcounter{tocdepth}{1} % Exclude subsections
+  %\setcounter{tocdepth}{2} % Include subsections
   \makeatletter
   \renewcommand*\l@author[2]{}
   \renewcommand*\l@title[2]{}
@@ -177,33 +177,60 @@
 \begin{document}
 \pcfixhyperref % As per cryptocode documentation, "8.3 Hyperref"
 
-  \input{qrot-header}  % maketitle and abstract
+  \input{qrot-header}  % maketitle, abstract, ToC
 
   % Main body
+  \input{qrot-introduction}
+  \input{qrot-preliminaries}
 
-  % WIP
-    \input{qrot-introduction}
-      \clearpage
-    \input{qrot-preliminaries}
-      \clearpage
+  \clearpage
+  \addcontentsline{toc}{part}{Part 0.\quad Into the (Post-)Quantum World}
+    \input{qrot-primer}
+    \input{qrot-pseudocode}
     \input{qrot-definitions}
-      \clearpage
 
-  % WIP
-  \ifdraftversion
+  %\part{
+  %  Confidentiality in the PQ World: 
+  %  %The O2H Lemma and Friends
+  %  %O2H and Friends
+  %  The Many Faces of One-Way to Hiding
+  %}
+
+  \clearpage
+  \addcontentsline{toc}{part}{Part 1.\quad One-Way to Hiding, or: How to Reprogram a QRO}
     \input{qrot-o2h}
-      \clearpage
+    \input{qrot-bre}
+
+  %% Add this in future version.
+  %\ifdraftversion
+  %  %\part{
+  %  %  Authenticity in the PQ World:
+  %  %  Rewinding Protocols
+  %  %}
+  %  \addcontentsline{toc}{part}{Part ?.\quad Rewinding in a Quantum World}
+
+  %  \input{qrot-rewinding}
+  %\fi 
+
+
+  \clearpage
+  \addcontentsline{toc}{part}{Part 2.\quad The Compressed-Oracle Technique, or: How to Lazy-sample a QRO}
+    \input{qrot-compressed}
+  \ifdraftversion
+    \input{qrot-consistency}
+    \input{qrot-improving-o2h}
+    % Add in V2
+    % \input{qrot-rewinding-revisited}
   \fi
 
-    \input{qrot-compressed}
-
-  % WIP
   \ifdraftversion
-      \clearpage
-    \input{qrot-improving-o2h}
+    \addcontentsline{toc}{part}{Part 3.\quad Down the Rabbit Hole, or: 
+      How to Prove QRO Lemmas}
+    \input{qrot-proofs}
   \fi
 
   %\newpage
+  \addcontentsline{toc}{part}{Supplementary Material}
   \addcontentsline{toc}{section}{References}
 	\bibliographystyle{alpha}
   	%\bibliographystyle{splncs04}
@@ -223,14 +250,11 @@
 
   % Appendices input below
 
-  \input{qrot-primer}
   \input{qrot-solutions}
     \clearpage
 
   % WIP
   \ifdraftversion
-    \input{qrot-generic}
-      \clearpage
     \input{qrot-ttransform}
   \fi
 

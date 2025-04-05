@@ -1,4 +1,4 @@
-\section{One-Way to Hiding: Can We Do Better?}\label{sec:improving-o2h}
+\section{One-Way to Hiding, Revisited}\label{sec:improving-o2h}
   Now that we have compressed random oracles in our toolbox, it is natural to
     ask if we can somehow use the to derive a better One-Way to Hiding bound.
     After all, the lossiness of the O2H lemmas stand in stark contrast to the
@@ -6,7 +6,9 @@
 
   \hhnote{
     Think about whether there is an ``obvious'' application of Grover that I'm
-    missing, that the square root could be attributed to.
+    missing, that the square root could be attributed to. \\
+    A: Seems like there might be, given the example proof in
+    \cite{C:AmbHamUnr19}!
   }
 
   While a full impossibility theorem for tighter bounds is missing, the
@@ -1218,46 +1220,14 @@
       performs measurements of the type $\measurement_\obsev$ on its own
       collection of queries, and uncomputing after each query.
 
-  \subsection{Re-deriving the Semi-Classical O2H Lemma}
-    Next, let's re-derive the Semi-Classical O2H bound by introducing
-      $\measurement_\extev$ directly into the random oracle.
-      If $\extractor$ has access to a $\qpca$ oracle, then they may 
-      implement this oracle directly, which is shown in
-      \autoref{fig:semiclassical-oracle}.
-
-    We again consider the setting that $\distinguisher$ is given some input $z$
-      that may depend arbitrarily on $\realRO$, and that $\extractor$ provides a
-      simulation for $\distinguisher$, except now it is implemented as a
-      Semi-Classical CRO.
-
-    \begin{figure}[t]
-      \centering
-      \begin{pchstack}[center]
-        \procedure{Oracle $\idealRO(\inputreg, \outputreg : \bitreg, \database)$}{
-          \pclinecomment{1.\ Check input} \\
-          \pcforeach \ket{x} \pcin\ \inputreg \pcdo \\
-            \t \pcif x \in \careset \pcthen \applyU{\Xgate}{\bitreg} \\
-          b \sample \meas{}{\bitreg} \\
-          \pcif b = 1 \pcthen \pcabort \\
-              %\t\t \target \sample \meas{}{\inputreg} \\
-              %\t\t \pcabort \pcand \pcreturn \target \\
-          \pclinecomment{2.\ Simulate oracle} \\
-          \applyU{\decomp}{\inputreg \concat \database} \\
-          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
-          \applyU{\entangle}{\inputreg \concat \outputreg \concat \database} \\
-          \applyU{\Hgate^{\otimes m}}{\outputreg} \\
-          \applyU{\decomp}{\inputreg \concat \database} \\
-          \pcreturn (\inputreg, \outputreg)
-        }
-      \end{pchstack}
-      \caption{
-        \label{fig:semiclassical-oracle}
-        The simulated semi-classical oracle $\idealRO$, implemented as a compressed
-        oracle (taken from \autoref{def:compressed-ros}). Here, $\bitreg$ is a
-        single-qubit register initialized to $\ket 0$, and $\database$ is
-        the database, initialized to the list of $q$ identical tuples
-        $(\emptystring, 0^m)$, (i.e.\ at the outset the method $\database \gets
-        \reginit{q}{\ket{\emptystring, 0^m}}$ is run). 
-      }
-    \end{figure}
+  \subsection{Connecting with the Real World}
+    \hhnote{
+      In which I introduce the more fine-grained analysis of counting depth and
+      breadth separately, as well as quantum vs.\ classical oracle calls. Thus,
+      if your loss is only in the depth of quantum calls to the oracle, one can
+      argue that this is much smaller than the $2^{80}$ loss that one would
+      arguably get from just a linear $q_{\RO}$ loss. (Indeed, in the current NISQ-era,
+      it will be \emph{very} small! Like, it is currently on the order of
+      \emph{maybe} $2^3$, for sufficiently small input and output domains.)
+    }
   \fi

@@ -23,6 +23,8 @@
   \newcommand{\bitRO}{\RO_{\chalbit}}
   \newcommand{\target}{\ensuremath{x^*}}
   \newcommand{\targetout}{\ensuremath{y^*}}
+  \newcommand{\qRO}{\ensuremath{q}}
+  \newcommand{\qRP}{\ensuremath{r}}
 
 %%% Algorithms
 \newcommand{\randfunc}{\ensuremath{\mathcal{R}}}
@@ -81,7 +83,10 @@
   \newcommand{\bitreg}{{\register[B]}}
 
 %%% O2H
+  \newcommand{\dist}{\pcnotionstyle{DIST}}
   \newcommand{\hide}{\pcnotionstyle{HIDE}}
+  \newcommand{\find}{\pcnotionstyle{FIND}}
+  \newcommand{\guess}{\pcnotionstyle{GUESS}}
   \newcommand{\oneway}{\pcnotionstyle{OW}}
 
 %%% Events
@@ -90,3 +95,26 @@
   \newcommand{\distev}{\event{dist}}
   \newcommand{\obsev}{\event{obs}}
   \newcommand{\obsnev}{\nevent{obs}}
+
+%%% Table symbols (taken from SOA)
+\usepackage{amssymb}
+\usepackage{marvosym}
+
+% Table macros
+
+  \usetikzlibrary{intersections,perspective,calc,decorations}
+
+  \newcommand{\Tpie}[1]{%
+    \begin{tikzpicture}[scale=.75]
+      \draw (0,0) circle (1ex); \fill (1ex,0) arc (0:#1:1ex) -- (0,0) -- cycle;
+    \end{tikzpicture}%
+  }
+  \newcommand{\Tdown}{\ensuremath{\Tpie{180}}}
+  \newcommand{\Tup}{\ensuremath{\Tpie{-180}}}
+  \newcommand{\Tleft}{\rotatebox{90}{\Tdown}}
+  \newcommand{\Tequiv}{\ensuremath{\sim}}
+  \newcommand{\Tvert}[1]{\rotatebox[origin=l]{90}{#1}}
+
+  \newcommand{\Tyes}{\ensuremath{\Tpie{360}}}
+  \newcommand{\Tno}{\ensuremath{\Tpie{0}}}
+  \newcommand{\Tmaybe}{\Tleft}

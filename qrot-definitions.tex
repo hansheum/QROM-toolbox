@@ -1,4 +1,4 @@
-\section{What Are Quantum Random Oracles?}\label{sec:defs}
+\section{What Is a Quantum Random Oracle?}\label{sec:defs}
   A classical oracle for a function $f$ is a black-box procedure $\Oracle_f$
     such that, given input $x$, it returns $f(x)$ in such a way that no
     information about $f$, other than that which can be inferred from its
@@ -273,7 +273,7 @@
         I'm grateful to Joseph Jaeger for showing me this reduction.
       }
 
-    \begin{lemma}[Two Oracles $=$ One Oracle]\label{lemma:two-equals-one}
+    \begin{lemma}[Two Oracles $\cong$ One Oracle]\label{lemma:two-equals-one}
     Let $\RO[F]$ and $\RO[G]$ be quantum random oracles from $\bin^n$ to $\bin^m$,
       and let $\RO$ be a quantum random oracle from $\bin^{n+1}$ to $\bin^m$.
       %
@@ -382,3 +382,18 @@
         all input states.
       \qed
     \end{proof}
+
+  \subsection{When ROM Security Implies QROM Security}
+    \hhnote{
+      Essentially whenever the random oracle could just as well be
+      instantiated with a standard-model hash function.
+    }
+    
+
+  \subsection{Generic Attacks}
+    \subsubsection{Grover's Search Algorithm}
+      \hhnote{
+        Give bound after one query and then expected number of queries to
+        win with probability $\bigO{1}$.
+      }
+    \subsubsection{Quantum Collision Finding}

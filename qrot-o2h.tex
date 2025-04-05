@@ -1,92 +1,140 @@
-\section{The Many Faces of One-Way to Hiding}\label{sec:o2h}
-  \todoenum[Plan: SoK-style classification of O2H lemmas in two dimensions]{
-    \item : Power of distinguisher+extractor:
-    \begin{enumerate}
-      \item Guessing O2H: $\advantage{}{}[\Dis{}]\leq q_H \sqrt{\advantage{}{}[\Ext{}]}$
-      \begin{itemize}
-        \item For when reprogramming is not independent of $\Dis{}$'s view, 
-            and $\Ext{}$ can not recognize the right value.
-      \end{itemize}
-      \item Resampling O2H: $\advantage{}{}[\Eve{}]\leq \sqrt{q_H\advantage{}{}[\Ext{}]}$
-      \begin{itemize}
-        \item For when reprogramming \emph{is} independent of $\Dis{}$'s view,
-            before \emph{and} after, \emph{and} the reprogramming is uniform
-            (hence ``resampling''), and $\Ext{}$ can not recognize the right value.
-      \end{itemize}
-      \item Checking O2H (conjectured): $\advantage{}{}[\Eve{}]\leq \sqrt{\advantage{}{}[\Ext{}]}$
-      \begin{itemize}
-        \item For when $\Ext{}$ \emph{can} recognize the right value
-          (regardless of independence of view?)
-      \end{itemize}
-    \end{enumerate}
-  \item Adaptivity of reprogramming (actully three dimensions of
-    generality). Incomparable bounds, or simply more general statements,
-    (particularly in light of Joseph's techniques)? Investigate!
-    \begin{enumerate}
-      \item Single point, non-adaptively, statistically hidden
-      \item Multiple points, non-adaptively, statistically hidden
-      \item Multiple points, non-adaptively, computationally hidden
-      \item Single point, adaptively, statistically hidden
-      \item Multiple points, adaptively, statistically hidden
-      \item Multiple points, adaptively, computationally hidden
-    \end{enumerate}
-  }
+\section{The One-Way to Hiding Toolkit}\label{sec:o2h}
+  %
+  Ever since their first introduction by Unruh~\cite{EC:Unruh14}, the One-Way
+    to Hiding (O2H) lemmas
+    have served as indispensible tools for cryptographers seeking to prove
+    security in the quantum random oracle model.
+    Note the plural: Over the years, the original O2H lemma, which only
+    introduced a very limited capability of reprogramming QROs, has
+    been repeatedly generalized and expanded, often to different
+    and seemingly-incomparable settings. Thus, there is not one
+    ``multi-tool'' O2H Lemma, but several
+    variants that together make up a ``toolkit''---and, as with any good
+    toolkit, different tools are the best fit for different jobs!
 
-  \hhnote{
-    Provide an up front table with the previously known O2H lemmas that will be
-    presented herein, with bounds and sources: Original O2H, Semi-Classical O2H, 
-    Resampling O2H, and Adaptive O2H; and in a separate column, the bounds that
-    Joseph gave for the latter two using permutations. Also something about
-    like ``main weakness'' or ``good for'' (or both)?
-  }
-
-  \subsection{Bellare--Rogaway Encryption}
-    \hhnote{
-      In which I define our motivating scheme
+  In the following sections, we will introduce the different variants in
+    increasing generality and complexity, starting with the very simplest
+    variant, and showing along the way how to apply each to a security
+    reduction. An overview of the O2H lemmas that will be presented is provided in
+    \autoref{tab:o2h}.\footnote{
+      There are other historical variants of the O2H lemma that are not covered here,
+      due later variants being strict generalisations. These include (\ldots)
     }
 
-  \subsection{Single-Challenge Implication from the O2H Lemma}
-    \hhnote{
-      In which I introduce the original version of O2H, and use it to prove
-      our first result: Single-challenge $\owcpa$ KEM yields $\indcpa$ PKE.
+  \begin{table}[h]
+    \centering
+    %
+    \caption{
+      \label{tab:o2h}
+      An overview of the various One-way to Hiding (O2H) lemmas. 
+      Here, Q $=$ Quantum-accessible oracles, M $=$ Multi-point reprogramming, A $=$ Adaptive
+      reprogramming, C $=$ Computationally-hidden (as opposed to
+      statistically-hidden) reprogramming, and L $=$ allows Leaking information about
+      which point was reprogrammed. $\qRO$ bounds the total number of
+      oracle calls, and $\qRP$ bounds the number of reprogrammed points. 
+      Most bounds presented here are simplified and/or approximate, ignoring
+      constant factors and information-theoretic terms; for the exact statement, see the
+      respective Lemma. Finally, to make for easy comparison between the bounds, the
+      ``Tightness'' column gives the highest value $\varepsilon$ 
+      the extraction advantage could be before 
+      the bound would trivialize (thus allowing a distinguisher to ``break
+      the scheme'' by removing the bound on their advantage). Smaller
+      reciprocals $=$ tighter bounds. You may assume that $\qRP \ll \qRO$.
     }
+    %
+    \rowcolors{2}{}{gray!10}
+    \begin{tabular}{cccccccccc}
+      \toprule
+      O2H Variant & Q & M & A & C & L & Bound (simplified) & Tightness & Def. & Ref. \\
+      \midrule
+      Classical, find & \Tno & \Tyes & \Tyes & \Tyes & \Tyes &
+        $\advantage{\dist}{1}[\Dis{}]\leq \advantage{\find}{}[\Ext{}]$ &
+        $\nicefrac{1}{\varepsilon} \approx 1$ & \autoref{lemma:cl-find} & \cite{CCS:BelRog93} \\
+      Classical, guess & \Tno & \Tyes & \Tyes & \Tyes & \Tyes &
+        $\advantage{\dist}{1}[\Dis{}]\leq \qRO \cdot \advantage{\guess}{}[\Ext{}]$
+        & $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:cl-guess} & \cite{CCS:BelRog93} \\
+      \midrule
+      Original O2H & \Tyes & \Tno & \Tno & \Tyes & \Tyes &
+        $\advantage{\dist}{1}[\Dis{}]\leq \qRO \sqrt{\advantage{\guess}{}[\Ext{}]}$ &
+        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:org-o2h} & \cite{EC:Unruh14} \\
+      Adaptive O2H & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
+        $\advantage{\dist}{1}[\Dis{}] \lesssim \qRO
+        \sqrt{\advantage{\guess}{}[\Ext{}]}$ & $\nicefrac{1}{\varepsilon} \approx
+        \qRO^2$ & \autoref{lemma:ad-o2h} & \cite{C:Unruh14} \\
+      \midrule
+      Semi-Cl., find & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
+        $\advantage{\dist}{e}[\Dis{}] \lesssim \sqrt{q \cdot
+        \advantage{\find}{}[\Ext{}]}$ & $\nicefrac{1}{\varepsilon} \approx \qRO$
+        & \autoref{lemma:sc-find} & \cite{C:AmbHamUnr19} \\
+      Semi-Cl., guess & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
+        $\advantage{\find}{}[\Ext{}] \lesssim q \cdot
+        \advantage{\guess}{}[\Ext{\guess}]$ & $\nicefrac{1}{\varepsilon}
+        \approx \qRO$ & \autoref{lemma:sc-guess} & \cite{C:AmbHamUnr19} \\
+      \midrule
+      Resampling Lemma & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
+        $\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot
+        \advantage{\guess}{}[\Ext{}] }$ & $\nicefrac{1}{\varepsilon} \approx
+        \qRP^2 \qRO$ & \autoref{lemma:resampling} & \cite{AC:GHHM21} \\
+      Fixed-Perm.\ RL & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
+        $\advantage{\dist}{e}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot
+        \advantage{\guess}{}[\Ext{}] }$ & $\nicefrac{1}{\varepsilon} \approx
+        \qRP^2 \qRO$ & \autoref{lemma:resampling-fp} & \cite{EPRINT:Jaeger24b} \\
+      \midrule
+      Comp.\ Ad.\ Reprog.\ Fr. & \Tyes & \Tyes & \Tyes & \Tyes & \Tno &
+        $\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \cdot \qRO \sqrt{ \advantage{\guess}{}[\Ext{}] }$ 
+        & $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO^2$ &
+        \autoref{lemma:carf} & \cite{PKC:PanZen24} \\
+      Fixed-Perm.\ CARF & \Tyes & \Tyes & \Tyes & \Tyes & \Tno &
+        $\advantage{\dist}{e}[\Dis{}] \lesssim \qRO \sqrt{ \advantage{\guess}{}[\Ext{}] }$ 
+        & $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:carf-fp} & \cite{EPRINT:Jaeger24b} \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
 
-  \subsection{Multi-Challenge Implication from Semi-Classical O2H}
-    \hhnote{
-      In which I introduce the Semi-Classical O2H, and use it to prove
-      that if we start from $\owpca$, we get something tighter than applying 
-      the generic hybrid reduction to the previous theorem.
-    }
+  %% Extract the following into separate files and sections
+      % as you get to them
+  %\subsection{Single-Challenge Implication from the O2H Lemma}
+  %  \hhnote{
+  %    In which I introduce the original version of O2H, and use it to prove
+  %    our first result: Single-challenge $\owcpa$ KEM yields $\indcpa$ PKE.
+  %  }
 
-  \subsection{Tightening the Bound with the Resampling Lemma}
-    \hhnote{
-      In which I introduce the Resampling Lemma, and apply it to the first
-      game hop to make it ever so slightly tighter.
-    }
+  %\subsection{Multi-Challenge Implication from Semi-Classical O2H}
+  %  \hhnote{
+  %    In which I introduce the Semi-Classical O2H, and use it to prove
+  %    that if we start from $\owpca$, we get something tighter than applying 
+  %    the generic hybrid reduction to the previous theorem.
+  %  }
 
-  \subsection{Tighter Still from qPCA}
-      \hhnote{
-        In which I introduce qPCA, and show that if we have this, then we can
-        exploit the modularity of the Semi-Classical O2H theorems to get a
-        tighter result.
-      }
+  %\subsection{Tightening the Bound with the Resampling Lemma}
+  %  \hhnote{
+  %    In which I introduce the Resampling Lemma, and apply it to the first
+  %    game hop to make it ever so slightly tighter.
+  %  }
 
-    \paragraph{Moving between stronger notions.}
-    \hhnote{
-      In which I note that (with proof sketches) that what we have so far
-      already suffices to move between CCA-notions, and even between notions
-      with user corruptions, as long as opening challenges is disallowed,
-      (since we can still assume that all the reprogrammed points were defined
-      at the start of the game).
-    }
+  %\subsection{Tighter Still from qPCA}
+  %    \hhnote{
+  %      In which I introduce qPCA, and show that if we have this, then we can
+  %      exploit the modularity of the Semi-Classical O2H theorems to get a
+  %      tighter result.
+  %    }
 
-  \subsection{Adding Challenge Opening with Adaptive Reprogramming O2H}
-    \hhnote{
-      In which I introduce the notion of multi-bit, multi-challenge with sender
-      openings, and argue that now (finally), the above techniques are
-      insufficient. Introduce the Pan--Zeng adaptive reprogramming framework,
-      and \emph{either} use it directly to show security, and then show how
-      Joseph re-derived it from permutations, \emph{or} show how Joseph is able
-      to get adaptivity from Semi-Classical O2H directly, and use this to prove
-      the result (whichever one gives a simpler and more intuitive proof).
-    }
+  %  \paragraph{Moving between stronger notions.}
+  %  \hhnote{
+  %    In which I note that (with proof sketches) that what we have so far
+  %    already suffices to move between CCA-notions, and even between notions
+  %    with user corruptions, as long as opening challenges is disallowed,
+  %    (since we can still assume that all the reprogrammed points were defined
+  %    at the start of the game).
+  %  }
+
+  %\subsection{Adding Challenge Opening with Adaptive Reprogramming O2H}
+  %  \hhnote{
+  %    In which I introduce the notion of multi-bit, multi-challenge with sender
+  %    openings, and argue that now (finally), the above techniques are
+  %    insufficient. Introduce the Pan--Zeng adaptive reprogramming framework,
+  %    and \emph{either} use it directly to show security, and then show how
+  %    Joseph re-derived it from permutations, \emph{or} show how Joseph is able
+  %    to get adaptivity from Semi-Classical O2H directly, and use this to prove
+  %    the result (whichever one gives a simpler and more intuitive proof).
+  %  }

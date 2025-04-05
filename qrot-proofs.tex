@@ -1,0 +1,131 @@
+\section{How to Prove Quantum Lemmas}
+  The previous sections were concerned with how cryptographers 
+    can use the tools developed for the QROM to give
+    post-quantum proofs of security. There, I did my best to leave the quantum
+    analyses to surface-level only, taking the various lemmas as given, and focusing
+    instead on developing an intuition for how to reason about the QROM.
+
+  However, proving results about the QROM itself can serve as 
+    rich playground for the more powerful tools found in \emph{Quantum
+    Information Theory}. So if you, like
+    many of us before you, have gotten a
+    taste for all things quantum, and would
+    like to dive deeper, then this is the section for you.
+
+  In the following, I will introduce the powerful \emph{density matrix}
+    formulation of quantum mechanics, introduced by legendary physicist and
+    computer scientist John von Neumann, and show how, once understood, 
+    it can provide elegant (and often simple!) proofs of the lemmas that we
+    employed.
+
+  \hhnote{
+    In which I present all the tools needed to prove all the lemmas
+    contained herein, some of which are then proven in-text and some of which are
+    left as exercises (but with solutions).
+  }
+  
+  \subsection{The Density Matrix Formalism}
+    \hhnote{A primer.}
+
+  \subsection{Tools of Quantum Information Theory}
+    \hhnote{
+      Distance measures, distinguishability, gentle measurements,
+      almost-commuting; essentially a summary of Wilde chapter 9.
+    }
+
+  \subsection{Equivalent Oracles}
+    \subsubsection{Superposition Oracles}
+      \hhnote{
+        A ``warmup'' proof showing that superposition oracles are
+        equivalent to monolithic oracles.
+      }
+
+    \subsubsection{Superposition Oracles}
+      \hhnote{
+        The more involved proof of CROs
+        being the same.
+      }
+
+  \subsection{One-way to Hiding}
+    \subsubsection{The Original O2H Lemma}
+      \hhnote{Include as warmup?}
+
+    \subsubsection{The Semi-Classical O2H Lemma}
+      \hhnote{
+        Prove the most general version; essentially just repeat 
+        the proof of the paper in your own notation.
+      }
+      
+      Next, let's re-derive the Semi-Classical O2H bound by introducing
+        $\measurement_\extev$ directly into the random oracle.
+        If $\extractor$ has access to a $\qpca$ oracle, then they may 
+        implement this oracle directly, which is shown in
+        \autoref{fig:semiclassical-oracle}.
+
+      We again consider the setting that $\distinguisher$ is given some input $z$
+        that may depend arbitrarily on $\realRO$, and that $\extractor$ provides a
+        simulation for $\distinguisher$, except now it is implemented as a
+        Semi-Classical CRO.
+
+      \hhnote{
+        The CRO is probably unnecessary; however, if we want $\RO_1$ to
+        be related to $\RO_0$ in the way specified in the SC-O2H, then we
+        could probably benefit from formulating it in terms of an independent
+        oracle, and using the CSWAP technique.
+        (Of course, the independent oracle \emph{could} then be implemented as
+        a CRO.) \\
+        Or wait \ldots the measurement projects the state onto the subspace
+        independent of $\careset$ \ldots so we \emph{can} really just call
+        $\RO_0$ instead?
+      }
+
+      \begin{figure}[t]
+        \centering
+        \begin{pchstack}[center]
+          \procedure{Oracle $\idealRO(\inputreg, \outputreg : \bitreg)$}{
+            \pclinecomment{1.\ Check input} \\
+            \pcforeach \ket{x} \pcin\ \inputreg \pcdo \\
+              \t \pcif x \in \careset \pcthen \applyU{\Xgate}{\bitreg} \\
+            b \sample \meas{}{\bitreg} \\
+            \pcif b = 1 \pcthen \pcabort \\
+                %\t\t \target \sample \meas{}{\inputreg} \\
+                %\t\t \pcabort \pcand \pcreturn \target \\
+            \pclinecomment{2.\ Process query} \\
+            (\inputreg, \outputreg) \gets \RO_0(\inputreg, \outputreg) \\
+            \pcreturn (\inputreg, \outputreg)
+          }
+          
+          %\pchspace
+
+          %\procedure{Oracle $\RO[CRO](\inputreg, \outputreg : \database)$}{
+          %  \applyU{\decomp}{\inputreg \concat \database} \\
+          %  \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          %  \applyU{\entangle}{\inputreg \concat \outputreg \concat \database} \\
+          %  \applyU{\Hgate^{\otimes m}}{\outputreg} \\
+          %  \applyU{\decomp}{\inputreg \concat \database} \\
+          %  \pcreturn (\inputreg, \outputreg)
+          %}
+        \end{pchstack}
+        \caption{
+          \label{fig:semiclassical-oracle}
+          The simulated semi-classical oracle $\idealRO$, implemented as a compressed
+          oracle (recalled from \autoref{def:compressed-ros}). Here, $\bitreg$ is a
+          single-qubit register initialized to $\ket 0$, and $\database$ is
+          the database, initialized to the list of $q$ identical tuples
+          $(\emptystring, 0^m)$, (i.e.\ at the outset, the oracle runs the method
+          $\database \gets \reginit{q}{\ket{\emptystring, 0^m}}$). 
+        }
+      \end{figure}
+
+    \subsubsection{The Resampling Lemma}
+      \hhnote{Include, or just rely on Joseph's permutations instead?}
+
+    \subsubsection{The Adaptive Reprogramming Framework}
+      \hhnote{Include, or just rely on Joseph's permutations instead?}
+
+    \subsubsection{Joseph's Counterexample}
+      \hhnote{
+        Showing how the proof, which we saw took a lot of calculation to derive
+        the state directly, becomes like two lines with the tools that we now
+        have.
+      }
