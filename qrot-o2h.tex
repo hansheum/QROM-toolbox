@@ -133,61 +133,77 @@
     \rowcolors{2}{}{gray!10}
     \begin{tabular}{ccccccccccc}
       \toprule
-      O2H Variant & Q & M & A & C & L & B & Bound (simplified) & Tightness & Def. & Ref. \\
+      Ref. & O2H Variant & Q & M & A & C & L & B & Simplified Bound & Tightness & Def. (tbd) \\
       \midrule
-      Classical, find & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
+      \cite{CCS:BelRog93} &
+        Classical, find & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
         %$\advantage{\dist}{1}[\Dis{}]\leq \advantage{\find}{}[\Ext{}]$ &
         $\leq \varepsilon$ &
-        $\nicefrac{1}{\varepsilon} = 1$ & \autoref{lemma:cl-find} & \cite{CCS:BelRog93} \\
+        $\nicefrac{1}{\varepsilon} = 1$ & \autoref{lemma:cl-find} \\
+      \cite{CCS:BelRog93} &
       Classical, guess & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
         %$\advantage{\dist}{1}[\Dis{}]\leq \qRO \cdot %\advantage{\guess}{}[\Ext{}]$ &
         $\leq q \varepsilon$ &
-        $\nicefrac{1}{\varepsilon} = \qRO$ & \autoref{lemma:cl-guess} & \cite{CCS:BelRog93} \\
+        $\nicefrac{1}{\varepsilon} = \qRO$ & \autoref{lemma:cl-guess} \\
       \midrule
-      (Original O2H) & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
+      \cite{EC:Unruh14} &
+        (Original O2H) & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
         %$\advantage{\dist}{1}[\Dis{}]\leq \qRO \sqrt{\advantage{\guess}{}[\Ext{}]}$ &
         $\leq q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:org-o2h} & \cite{EC:Unruh14} \\
-      Adaptive O2H & \Tyes & \Tno & \Tyes & \Tyes & \Tyes & \Tyes &
+        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:org-o2h} \\
+      \cite{C:Unruh14} &
+        Adaptive O2H & \Tyes & \Tno & \Tyes & \Tyes & \Tyes & \Tyes &
         %$\advantage{\dist}{1}[\Dis{}]\lesssim \qRO \sqrt{\advantage{\guess}{}[\Ext{}]}$ &
         $\lesssim q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:ad-o2h} & \cite{C:Unruh14} \\
+        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:ad-o2h} \\
       \midrule
-      Semi-Cl., find & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
+      \cite{C:AmbHamUnr19} &
+        Semi-Cl., find & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
         %$\advantage{\dist}{e}[\Dis{}] \lesssim \sqrt{q \cdot %\advantage{\find}{}[\Ext{}]}$ &
         $\lesssim \sqrt{q \varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:sc-find} & \cite{C:AmbHamUnr19} \\
-      Semi-Cl., guess & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
+        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:sc-find} \\
+      \cite{C:AmbHamUnr19} &
+        Semi-Cl., guess & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
         %$\advantage{\find}{}[\Ext{}] \lesssim q \cdot \advantage{\guess}{}[\Ext{\guess}]$ & 
         $\lesssim q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:sc-guess} & \cite{C:AmbHamUnr19} \\
+        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:sc-guess} \\
       \midrule
-      Resampling Lemma & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
+      \cite{AC:GHHM21} &
+        (Resampling Lemma) & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
         %$\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot \advantage{\guess}{}[\Ext{}] }$ & 
         $\lesssim r \sqrt{q \varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO$ & \autoref{lemma:resampling} & \cite{AC:GHHM21} \\
+        $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO$ & \autoref{lemma:resampling} \\
       %Fixed-Perm.\ RL & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
       %  $\advantage{\dist}{e}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot \advantage{\guess}{}[\Ext{}] }$ & 
       %  $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO$ & \autoref{lemma:resampling-fp} & \cite{EPRINT:Jaeger24b} \\
-      \midrule
-      (Comp.\ Ad.\ Repr.\ Fr.) & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
+      %\midrule
+      \cite{PKC:PanZen24} &
+        (Comp.\ Ad.\ Repr.\ Fr.) & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
         %$\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \cdot \qRO \sqrt{ \advantage{\guess}{}[\Ext{}] }$ & 
         $\lesssim r q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO^2$ & \autoref{lemma:carf} & \cite{PKC:PanZen24} \\
-      Fixed-Perm.\ CARF & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
+        $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO^2$ & \autoref{lemma:carf} \\
+      \cite{EPRINT:Jaeger24b} &
+        Fixed-Perm.\ O2H?? & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
         %$\advantage{\dist}{e}[\Dis{}] \lesssim \qRO \sqrt{ %\advantage{\guess}{}[\Ext{}] }$ &
-        $\lesssim q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:carf-fp} & \cite{EPRINT:Jaeger24b} \\
+        $\lesssim \sqrt{q\varepsilon}$ &
+        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:carf-fp} \\
       \midrule
-      Double-sided O2H & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
+      \cite{TCC:BHHHP19} &
+        Double-sided O2H & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
         %$\advantage{\dist}{1}[\Dis{}] \lesssim \sqrt{\advantage{\guess}{}[\Ext{}]}$ & 
         $\lesssim \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx 1$ & \autoref{lemma:ds-o2h} & \cite{TCC:BHHHP19} \\
+        $\nicefrac{1}{\varepsilon} \approx 1$ & \autoref{lemma:ds-o2h} \\
       \midrule
-      Meas.-Rewind-Meas. & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
+      \cite{EC:KSSSS20} &
+        (Meas.-Rewind-Meas.) & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
         %$\advantage{\dist}{e}[\Dis{}] \lesssim q \cdot \advantage{\guess}{}[\Ext{}]$ & 
         $\lesssim q \varepsilon$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:msm} & \cite{EC:KSSSS20} \\
+        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:msm} \\
+      \cite{AC:GeLiaXue24} &
+        Meas.-Rewind-Ext. & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
+        %$\advantage{\dist}{e}[\Dis{}] \lesssim q \cdot \advantage{\guess}{}[\Ext{}]$ & 
+        $\lesssim \sqrt{q} \varepsilon$ &
+        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:msm} \\
       \bottomrule
     \end{tabular}
   \end{table}
