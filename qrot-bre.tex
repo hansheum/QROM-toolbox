@@ -4,3 +4,45 @@
     variants of the O2H lemma, and show the classical (multi-chal.) security of BRE.
   }
 
+  \begin{figure}[t]
+    \centering
+    \begin{pchstack}[center]
+      %\begin{pcvstack}
+        \procedure{$\pkpm(\secparam)$}{
+          \params \sample \kempm(\secparam) \\
+          \pcreturn \params
+        }
+
+        %\pcvspace
+        \pchspace
+
+        \procedure{$\pkkg(\params)$}{
+          (\pk, \sk) \sample \kemkg(\params) \\
+          \pcreturn (\pk, \sk)
+        }
+      %\end{pcvstack}
+
+      \pchspace
+
+      \procedure{$\pkenc_\pk(\mssg)$}{
+        (\demkey, \ctxt_1) \sample \kemenc_\pk \\
+        \rnd \gets \RO(\demkey) \\
+        \demctxt \gets \mssg \xor \rnd \\
+        \pcreturn (\kemctxt, \demctxt)
+      }
+
+      \pchspace
+
+      \procedure{$\pkdec_\sk(\kemctxt, \demctxt)$}{
+        \demkey \gets \kemdec_\sk(\kemctxt) \\
+        \rnd \gets \RO(\demkey) \\
+        \mssg \gets \demctxt \xor \rnd \\
+        \pcreturn \mssg
+      }
+    \end{pchstack}
+  \caption{
+    \label{fig:bre}
+    A simple CPA-secure Bellare-Rogaway Encryption (BRE) scheme,
+    combining a CPA-secure KEM with the one-time pad.
+  }
+  \end{figure}
