@@ -1,9 +1,4 @@
 \section{Classical O2H and Bellare--Rogaway Encryption}
-  \hhnote{
-    In which I define our motivating scheme, define and prove classical
-    variants of the O2H lemma, and show the classical (multi-chal.) security of BRE.
-  }
-
   \begin{figure}[t]
     \centering
     \begin{pchstack}[center]
@@ -46,3 +41,211 @@
     combining a CPA-secure KEM with the one-time pad.
   }
   \end{figure}
+
+  Let us begin by introducing our motivating scheme $\pkescheme$, which will follow us
+    throughout as we explore the world of O2H lemmas. It is a hybrid public-key
+    encryption scheme, meaning that it is built from a Key Encapsulation Mechanism (KEM) and a
+    Data Encapsulation Mechanism (DEM). Two differences from the canonical
+    hybrid encryption construction: First, the symmetric key is not used as-is,
+    but rather derived by hashing the key output by the KEM; and secondly, the
+    DEM is taken to be the One-Time Pad (OTP).\footnote{
+      For many cases the latter choice
+      is not strictly necessary, and the scheme would work just as well with
+      e.g.\ AES as the DEM, but the choice of OTP makes the analysis easier.
+    } 
+
+  The algorithms of $\pkescheme$ are shown in \autoref{fig:bre}. The public parameter
+    generation algorithm $\pkpm$ and the keypair generation algorithm $\pkkg$
+    are inherited as-is from the underlying KEM, while the encryption algorithm
+    $\pkenc$ and the decryption algorithm $\pkdec$ are as outlined above: When
+    encrypting, the symmetric key $\demkey$ is used as a seed to the random
+    oracle $\RO$, yielding a random string $\rnd$, which is then used as a
+    one-time pad key, encrypting the message $\mssg$ by xoring with $\rnd$. For
+    decryption, $\rnd$ is re-computed and the xor operation is repeated, revealing
+    $\mssg$.
+
+  The scheme and its CCA-secure variants (where CCA security is usually achieved by adding
+    a MAC to the encryption process, which is then verified during decryption), was
+    introduced by Bellare and
+    Rogaway in their seminal paper ``Random Oracles are
+    Practical''~\cite{CCS:BelRog93},\footnote{
+      If you still haven't read Bellare and Rogaway's masterful introduction of
+      random oracles to provable security, do so now! I'll wait.
+    } and has shown up in many contexts since,
+    including as the REACT transform~\cite{RSA:OkaPoi01}, as non-committing
+    encryption~\cite{C:Nielsen02a,CSF:CLNS17}, to achieve security against
+    selective-opening attacks~\cite{PKC:HJKS15,AC:LYHW21}, and 
+    against mass surveillance~\cite{PKC:BruHeuSta24}. We refer to it as
+    Bellare-Rogaway Encryption (BRE).\footnote{
+      Technically, BRE is not \emph a scheme, but rather a class of schemes or
+      a construction \emph{paradigm}, in much the same way that ``hybrid encryption'' is.
+    }
+
+  At first glance, the hashing of the symmetric key may seem completely
+    unnecessary: Presumably, the symmetric key $\demkey$ output by the KEM already has
+    high enough entropy, such that hashing it only has the effect of changing
+    it from one random value to another. However, forcing the key to go through
+    the random oracle will allow our reduction to learn the value of the key,
+    which will allow us to weaken the assumed security of our underlying KEM, 
+    from indistinguishability to merely one-wayness. 
+
+  \paragraph{Preliminaries.}
+    Let us define a few conventions. First, whenever a value is generated
+      dependent on some other public value, such as the public key $\pk$ being
+      dependent on the public parameters $\params$, which in turn depend on the
+      security parameter $\secpar$, we assume without loss of generality that
+      the derivative value includes descriptions of the prior values (so if you
+      know $\pk$, then you also know $\params$, and so on). Further, we assume
+      that if a secret key $\sk$ belongs to the keypair $(\pk, \sk)$, then it
+      also includes a description of $\pk$. This is without loss in the sense
+      that after key generation, one could always define the keypair to be
+      $(\pk, (\pk, \sk))$; though note that doing this enforces a
+      unique-public-key relation, since now each private key will correspond to
+      exactly one public key. (There exist schemes that violate this, and
+      relaxing this relation may be beneficial to certain security
+      proofs~\cite{EC:BelHofYil09}.)
+
+    Adversaries $\adv$ are assumed to be generally quantum agents, having
+      access to as much classical and quantum memory as they need, on which
+      they can apply unitary operations and measurements as they
+      please. (We will come upon cases later where restricting this
+      assumption will be of benefit us, but for now we stick to the general
+      case.) We will mostly think of these agents as being \emph{efficient} in the sense of
+      running in time polynomial in the security parameter $\secpar$, although
+      we prefer the concrete treatment of security wherein asymptotics are
+      avoided, and the running time of reductions are instead stated directly in terms
+      of the running time of the original adversary. We may also
+      consider \emph{unbounded} adversaries; these can be thought of as running
+      in time (and space) exponential in the security parameter.
+
+    If the adversary $\adv$ has access to the random oracle $\RO$, this is
+      written $\adv^{\RO}$, and likewise for any other oracles it may have
+      access to. (We do not distinguish between quantum and classical oracles
+      in our notation.) Similarly, if a reduction $\bdv$ has black-box access
+      to $\adv$ (meaning it may control its input and read its output, but not
+      otherwise affect its internal workings), this is written $\bdv^\adv$.
+
+  \paragraph{Defining security.}
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{$\experiment{\indcpa}{\pkescheme}$}{
+          \params \sample \pkpm(\secparam) \\
+          (\pk, \sk) \sample \pkkg(\params) \\
+          \chalbit \sample \bin \\
+          \advbit \sample \adv^{\RO,\Oenc}(\pk) \\
+          \pcreturn (\advbit = \chalbit)
+        }
+  
+        \pchspace
+  
+        \procedure{$\Oenc(\mssg_0, \mssg_1)$}{
+          \pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
+            \t \pcreturn \fail \\
+          \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
+          \pcreturn \chalctxt
+        }
+  
+        \pchspace
+  
+        \procedure{$\experiment{\owcpa}{\pkescheme}[\bdv]$}{
+          \params \sample \kempm(\secparam) \\
+          (\pk, \sk) \sample \kemkg(\params) \\
+          (\chalkey, \chalctxt) \sample \kemenc_\pk \\
+          \advdemkey \sample \bdv(\pk, \chalctxt) \\
+          \pcreturn (\advdemkey = \chalkey)
+        }
+      \end{pchstack}
+    \caption{
+      \label{fig:ind-ow}
+      The experiments defining $\indcpa$ for PKE (left and middle), and
+      $\owcpa$ for KEM (right).
+    }
+    \end{figure}
+
+    The standard security notion for public-key encryption is $\indcca$, or
+      ``indistinguishability under chosen-ciphertext attacks''. For the sake
+      of this tutorial, we will keep it simple and stick to the weaker $\indcpa$
+      (``indistinguishability under chosen-\emph{plaintext} attacks''). Since
+      this is a public-key encryption scheme, the chosen-plaintext attacks can
+      be performed ``off-line'' by the adversary by simply running the
+      encryption algorithm itself using the provided $\pk$, and so, unlike the
+      case for symmetric encryption, we do not need to provide honest
+      encryptions as an oracle.
+
+    On the left of \autoref{fig:ind-ow} is the game (or ``experiment'')
+      defining the security notion in its simplest, single-user-and-challenge
+      variant. The game starts by sampling parameters $\params$, a keypair
+      $(\pk,\sk)$, and a challenge bit $\chalbit$, before handing the public
+      key to the adversary $\adv$. If the construction in question uses a
+      random oracle $\RO$ (as will always be the case here), then $\adv$
+      also gets oracle access to $\RO$. At this point, $\adv$ may query $\RO$
+      on whatever values it wants; in particular, these queries may depend on
+      the public key $\pk$. Being a random oracle, this capability should make no
+      difference to the security of the scheme (we will prove this shortly).
+
+    At some point, the adversary will decide on two equal-length messages
+      $\mssg_0$ and $\mssg_1$, and call its \emph{challenge} oracle $\Oenc$
+      (\autoref{fig:ind-ow}, middle). This oracle then provides an honest
+      encryption of the message $\mssg_{\chalbit}$, encoded in the challenge
+      ciphertext $\chalctxt$. Note from the pseudocode that if
+      the challenge oracle is ever called twice, or on messages of differing
+      lengths, then it should return the special ``fail'' symbol $\fail$
+      instead.\footnote{
+        The requirement that $\mssg_0$ and $\mssg_1$ be equal length
+        comes down to an assertion that a scheme should still be considered
+        secure even if ciphertexts leak information about message \emph{lengths};
+        if this requirement were not in place, then $\adv$ would be able to
+        ``break'' the scheme (i.e.\ win the game) by forwarding two different-length
+        messages to the challenge oracle, and learning which message
+        \emph{length} the challenge ciphertext corresponds to. In fact, you may
+        notice from \autoref{fig:bre} that
+        our BRE scheme leaks the message length exactly, since $\demctxt$
+        is guaranteed to have the same length as $\mssg$. Though we will not
+        consider them here, there are
+        ways of making schemes message-length-hiding, for example by padding the
+        messages before encryption.
+      } Now, $\adv$ may continue to call the random oracles, and this time the
+      oracle calls may depend arbitrarily on $\chalctxt$ too. Once it is
+      satisfied, $\adv$ halts with a guess $\advbit \in \bin$ about which message
+      was encrypted, and wins if it guesses correctly.
+
+    We measure security in terms of $\adv$'s \emph{advantage}, i.e.\ how much
+      better it can do than random guessing.
+
+    \begin{definition}[Distinguishing Advantage]
+      The distinguishing advantage of an adversary $\adv$ against a
+        public-key encryption scheme $\pkescheme$, under chosen ciphertext
+        attacks, is defined as
+      \begin{align*}
+        \advantage{\indcpa}{\pkescheme} &\coloneqq \abs{
+          2 \cdot \prob{\experiment{\indcpa}{\pkescheme}} - 1
+        }\, ,
+        \intertext{or, equivalently,}
+        \advantage{\indcpa}{\pkescheme} &\coloneqq \abs{
+          \prob{\experiment{\indcpa}{\pkescheme}} 
+          - \prob{\neg\experiment{\indcpa}{\pkescheme}}
+        }\, ,
+        \intertext{or, equivalently,}
+        \advantage{\indcpa}{\pkescheme} &\coloneqq \abs{
+          \condprobsample{
+            \experiment{\indcpa}{\pkescheme}
+          }{1 \sample \adv}{\chalbit = 1}
+          - \condprobsample{
+            \experiment{\indcpa}{\pkescheme}
+          }{1 \sample \adv}{\chalbit = 0}
+        }\, .
+      \end{align*}
+      where $\experiment{\indcpa}{\pkescheme}[]$ is as given in
+      \autoref{fig:ind-ow}.
+    \end{definition}
+
+    \noindent
+    As is easiest seen from the first of the above three equations, the
+      advantage is just the probability that $\adv$ wins the game, minus the
+      probability of winning based on a random guess, then scaled so that the
+      advantage is a value defined on the interval from $0$ to $1$ (inclusive),
+      where $0$ means $\adv$ has no advantage (for example if the messages are
+      information-theoretically hidden), and $1$ means that $\adv$ is a perfect
+      distinguisher (the scheme is either completely broken, or $\adv$ is an
+      unbounded adversary).

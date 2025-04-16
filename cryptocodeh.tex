@@ -53,11 +53,11 @@
 
       \newcommand{\pcadvantagesuperstyle}[1]{\mathrm{\MakeLowercase{#1}}}
       \newcommand{\pcadvantagesubstyle}[1]{#1}
-      \newcommandx*{\advantage}[3][3=(\adv)]{\ensuremath{\mathsf{Adv}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}(#3)}}
+      \newcommandx*{\advantage}[3][3=(\adv)]{\ensuremath{\mathsf{Adv}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}#3}}
         %% Example usage: \advantage{\indcpa}{\pkescheme}[\bdv]
 
       \newcommand{\sdash}{\mbox{-}}
-      \newcommandx*{\experiment}[3][3=\adv]{\ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}(#3)}}
+      \newcommandx*{\experiment}[3][3=(\adv)]{\ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{#1}}_{\pcadvantagesubstyle{#2}}#3}}
         %% Example usage: \experiment{\indcpa}{\pkescheme}[\bdv]
       \newcommandx*{\distexperiment}[4][1=b, 4=(\adv)]{\ensuremath{\mathsf{Exp}^{\pcadvantagesuperstyle{{#2}\sdash{#1}}}_{\pcadvantagesubstyle{#3}}#4}}
 
@@ -283,6 +283,7 @@
 
       \newcommand{\adata}{\pcvarstyle{a}}
       \newcommand{\ctxt}{\pcvarstyle{c}}
+      %\newcommand{\chalctxt}{\ctxt^*}
       \newcommand{\digest}{\pcvarstyle{d}}
       \newcommand{\mssg}{\pcvarstyle{m}}
       \newcommand{\lkey}{\pcvarstyle{l}}
@@ -332,7 +333,7 @@
       \newcommand{\advasig}{\pcvarstyle{\hat{s}}}
 
       \newcommand{\chalbit}{\pcaltvarstyle{b^{*}}}
-      \newcommand{\chalkey}{\pcvarstyle{k^{*}}}
+      \newcommand{\chalkey}{\pcvarstyle{K^{*}}}
       \newcommand{\chalpk}{\pcvarstyle{PK^{*}}}
       \newcommand{\chalsk}{\pcvarstyle{SK^{*}}}
       \newcommand{\chalmssg}{\pcvarstyle{m^{*}}}
@@ -362,6 +363,7 @@
       \newcommand{\kemctxt}{\pcvarstyle{c}_1}
       \newcommand{\demctxt}{\pcvarstyle{c}_2}
       \newcommand{\demkey}{\pcvarstyle{K}}
+      \newcommand{\advdemkey}{\hat{\demkey}}
 
   %%
   %%  Cryptocodex alternatives and extensions to 2.10 and 2.12 of cryptocode
