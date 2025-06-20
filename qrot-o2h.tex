@@ -9,7 +9,7 @@
     and seemingly-incomparable settings. Thus, there is not one
     ``multi-tool'' O2H Lemma, but several
     variants that together make up a ``toolkit''---and, as with any good
-    toolkit, different tools are the best fit for different jobs!
+    toolkit, different tools are best fit for different jobs!
 
   In the following sections, we will introduce the different variants in
     increasing generality and complexity, starting with the very simplest
@@ -20,90 +20,6 @@
       due later variants being strict generalisations. These include (\ldots)
     }
 
-  %% Version with more written-out (but still simplified) bounds
-    %\begin{table}[h]
-    %  \centering
-    %  %
-    %  \caption{
-    %    \label{tab:o2h}
-    %    An overview of the various One-way to Hiding (O2H) lemmas. 
-    %    Here, Q $=$ Quantum-accessible oracles, M $=$ Multi-point reprogramming, A $=$ Adaptive
-    %    reprogramming, B $=$ Black-box (as opposed to white-box) access to
-    %    the distinguisher, C $=$ Computationally (as opposed to
-    %    statistically) hidden reprogramming, and L $=$ allows Leaking information about
-    %    reprogrammed points after reprogramming. $\qRO$ bounds the total number of
-    %    oracle calls, and $\qRP$ bounds the number of reprogrammed points. 
-    %    Most bounds presented here are simplified and/or approximate, removing
-    %    sums and ignoring constant factors and information-theoretic terms; for
-    %    the exact statement, see the
-    %    respective Lemma. Finally, to make for easy comparison between the bounds, the
-    %    ``Tightness'' column gives the highest value $\varepsilon$ 
-    %    the extraction advantage could be set to before 
-    %    the bound would trivialize (thus allowing a distinguisher to ``break
-    %    the scheme'' by removing the bound on their advantage). Smaller
-    %    reciprocals $=$ tighter bounds. You may assume that $\qRP \ll \qRO$.
-    %  }
-    %  %
-    %  \rowcolors{2}{}{gray!10}
-    %  \begin{tabular}{ccccccccccc}
-    %    \toprule
-    %    O2H Variant & Q & M & A & C & L & B & Bound (approximate) & Tightness & Def. & Ref. \\
-    %    \midrule
-    %    Classical, find & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
-    %      $\advantage{\dist}{1}[\Dis{}]\leq \advantage{\find}{}[\Ext{}]$ &
-    %      $\nicefrac{1}{\varepsilon} = 1$ & \autoref{lemma:cl-find} & \cite{CCS:BelRog93} \\
-    %    Classical, guess & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
-    %      $\advantage{\dist}{1}[\Dis{}]\leq \qRO \cdot \advantage{\guess}{}[\Ext{}]$
-    %      & $\nicefrac{1}{\varepsilon} = \qRO$ & \autoref{lemma:cl-guess} & \cite{CCS:BelRog93} \\
-    %    \midrule
-    %    Original O2H & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
-    %      $\advantage{\dist}{1}[\Dis{}]\leq \qRO \sqrt{\advantage{\guess}{}[\Ext{}]}$ &
-    %      $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:org-o2h} & \cite{EC:Unruh14} \\
-    %    Adaptive O2H & \Tyes & \Tno & \Tyes & \Tyes & \Tyes & \Tyes &
-    %      $\advantage{\dist}{1}[\Dis{}] \lesssim \qRO
-    %      \sqrt{\advantage{\guess}{}[\Ext{}]}$ & $\nicefrac{1}{\varepsilon} \approx
-    %      \qRO^2$ & \autoref{lemma:ad-o2h} & \cite{C:Unruh14} \\
-    %    \midrule
-    %    Semi-Cl., find & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
-    %      $\advantage{\dist}{e}[\Dis{}] \lesssim \sqrt{q \cdot
-    %      \advantage{\find}{}[\Ext{}]}$ & $\nicefrac{1}{\varepsilon} \approx \qRO$
-    %      & \autoref{lemma:sc-find} & \cite{C:AmbHamUnr19} \\
-    %    Semi-Cl., guess & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
-    %      $\advantage{\find}{}[\Ext{}] \lesssim q \cdot
-    %      \advantage{\guess}{}[\Ext{\guess}]$ & $\nicefrac{1}{\varepsilon}
-    %      \approx \qRO$ & \autoref{lemma:sc-guess} & \cite{C:AmbHamUnr19} \\
-    %    \midrule
-    %    Double-sided & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
-    %      $\advantage{\dist}{1}[\Dis{}] \lesssim 
-    %      \sqrt{\advantage{\guess}{}[\Ext{}]}$ & $\nicefrac{1}{\varepsilon} \approx
-    %      1$ & \autoref{lemma:ds-o2h} & \cite{TCC:BHHHP19} \\
-    %    \midrule
-    %    Resampling Lemma & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
-    %      $\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot
-    %      \advantage{\guess}{}[\Ext{}] }$ & $\nicefrac{1}{\varepsilon} \approx
-    %      \qRP^2 \qRO$ & \autoref{lemma:resampling} & \cite{AC:GHHM21} \\
-    %    Fixed-Perm.\ RL & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
-    %      $\advantage{\dist}{e}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot
-    %      \advantage{\guess}{}[\Ext{}] }$ & $\nicefrac{1}{\varepsilon} \approx
-    %      \qRP^2 \qRO$ & \autoref{lemma:resampling-fp} & \cite{EPRINT:Jaeger24b} \\
-    %    \midrule
-    %    Comp.\ Ad.\ Repr.\ Fr. & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
-    %      $\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \cdot \qRO \sqrt{ \advantage{\guess}{}[\Ext{}] }$ 
-    %      & $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO^2$ &
-    %      \autoref{lemma:carf} & \cite{PKC:PanZen24} \\
-    %    Fixed-Perm.\ CARF & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
-    %      $\advantage{\dist}{e}[\Dis{}] \lesssim \qRO \sqrt{ \advantage{\guess}{}[\Ext{}] }$ 
-    %      & $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:carf-fp} & \cite{EPRINT:Jaeger24b} \\
-    %    \midrule
-    %    Meas.-Rewind-Meas. & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
-    %      $\advantage{\dist}{e}[\Dis{}] \lesssim q \cdot
-    %      \advantage{\guess}{}[\Ext{}]$ & $\nicefrac{1}{\varepsilon} \approx \qRO$
-    %      & \autoref{lemma:msm} & \cite{EC:KSSSS20} \\
-    %    \bottomrule
-    %  \end{tabular}
-    %\end{table}
-
-  %% Version with bounds expressed in terms of epsilon
   \begin{table}[h]
     \centering
     %
@@ -206,6 +122,9 @@
       \bottomrule
     \end{tabular}
   \end{table}
+
+  % Subsection: Classical O2H
+    \input{qrot-bre}
 
   %% Extract the following into separate files and sections
       % as you get to them

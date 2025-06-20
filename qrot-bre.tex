@@ -1,21 +1,18 @@
-\section{Classical O2H and Bellare--Rogaway Encryption}
+\subsection{Classical O2H and Bellare--Rogaway Encryption}
   \begin{figure}[t]
     \centering
     \begin{pchstack}[center]
-      %\begin{pcvstack}
-        \procedure{$\pkpm(\secparam)$}{
-          \params \sample \kempm(\secparam) \\
-          \pcreturn \params
-        }
+      \procedure{$\pkpm(\secparam)$}{
+        \params \sample \kempm(\secparam) \\
+        \pcreturn \params
+      }
 
-        %\pcvspace
-        \pchspace
+      \pchspace
 
-        \procedure{$\pkkg(\params)$}{
-          (\pk, \sk) \sample \kemkg(\params) \\
-          \pcreturn (\pk, \sk)
-        }
-      %\end{pcvstack}
+      \procedure{$\pkkg(\params)$}{
+        (\pk, \sk) \sample \kemkg(\params) \\
+        \pcreturn (\pk, \sk)
+      }
 
       \pchspace
 
@@ -47,11 +44,14 @@
     encryption scheme, meaning that it is built from a Key Encapsulation Mechanism (KEM) and a
     Data Encapsulation Mechanism (DEM). Two differences from the canonical
     hybrid encryption construction: First, the symmetric key is not used as-is,
-    but rather derived by hashing the key output by the KEM; and secondly, the
+    but rather derived by hashing the key output by the KEM; in the literature
+    on the Fujisaki-Okamoto transformation~\cite{C:FujOka99} this step is known as
+    the ``U transform''~\cite{TCC:HofHovKil17}. Secondly, the
     DEM is taken to be the One-Time Pad (OTP).\footnote{
-      For many cases the latter choice
-      is not strictly necessary, and the scheme would work just as well with
-      e.g.\ AES as the DEM, but the choice of OTP makes the analysis easier.
+      Information-theoretical DEM security
+      is not actually required for the proofs to go through, 
+      but it serves well as an example scheme, as using the OTP significantly
+      simplifies our analysis.
     } 
 
   The algorithms of $\pkescheme$ are shown in \autoref{fig:bre}. The public parameter
@@ -64,13 +64,14 @@
     decryption, $\rnd$ is re-computed and the xor operation is repeated, revealing
     $\mssg$.
 
-  The scheme and its CCA-secure variants (where CCA security is usually achieved by adding
-    a MAC to the encryption process, which is then verified during decryption), was
-    introduced by Bellare and
+  The scheme 
+    %and its CCA-secure variants (where CCA security is usually achieved by adding
+    %a MAC to the encryption process, which is then verified during decryption), 
+    was first analyzed by Bellare and
     Rogaway in their seminal paper ``Random Oracles are
     Practical''~\cite{CCS:BelRog93},\footnote{
       If you still haven't read Bellare and Rogaway's masterful introduction of
-      random oracles to provable security, do so now! I'll wait.
+      random oracles to provable security, do so now! Go on, I'll wait.
     } and has shown up in many contexts since,
     including as the REACT transform~\cite{RSA:OkaPoi01}, as non-committing
     encryption~\cite{C:Nielsen02a,CSF:CLNS17}, to achieve security against
@@ -79,6 +80,8 @@
     Bellare-Rogaway Encryption (BRE).\footnote{
       Technically, BRE is not \emph a scheme, but rather a class of schemes or
       a construction \emph{paradigm}, in much the same way that ``hybrid encryption'' is.
+      This is mainly due to the multiple ways in which CCA security can be achieved,
+      for example through an encrypt-then-mac construction. 
     }
 
   At first glance, the hashing of the symmetric key may seem completely
@@ -89,7 +92,7 @@
     which will allow us to weaken the assumed security of our underlying KEM, 
     from indistinguishability to merely one-wayness. 
 
-  \paragraph{Preliminaries.}
+  \subsubsection{Preliminaries.}
     Let us define a few conventions. First, whenever a value is generated
       dependent on some other public value, such as the public key $\pk$ being
       dependent on the public parameters $\params$, which in turn depend on the
@@ -125,7 +128,7 @@
       to $\adv$ (meaning it may control its input and read its output, but not
       otherwise affect its internal workings), this is written $\bdv^\adv$.
 
-  \paragraph{Defining security.}
+  \subsubsection{Defining security.}
     \begin{figure}[t]
       \centering
       \begin{pchstack}[center]
@@ -133,33 +136,43 @@
           \params \sample \pkpm(\secparam) \\
           (\pk, \sk) \sample \pkkg(\params) \\
           \chalbit \sample \bin \\
-          \advbit \sample \adv^{\RO,\Oenc}(\pk) \\
-          \pcreturn (\advbit = \chalbit)
+          \advbit \sample \adv^{\Oenc(,\RO)}(\pk) \\
+          \pcreturn \advbit = \chalbit
         }
   
         \pchspace
   
-        \procedure{$\Oenc(\mssg_0, \mssg_1)$}{
-          \pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
-            \t \pcreturn \fail \\
+        \procedure{$\Oenc(\mssg_0, \mssg_1) \pccomment{\ind}$}{
+          % Single-challenge:
+            %\pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
+          \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
           \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
           \pcreturn \chalctxt
         }
   
         \pchspace
   
-        \procedure{$\experiment{\owcpa}{\pkescheme}[\bdv]$}{
+        \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
           \params \sample \kempm(\secparam) \\
           (\pk, \sk) \sample \kemkg(\params) \\
-          (\chalkey, \chalctxt) \sample \kemenc_\pk \\
-          \advdemkey \sample \bdv(\pk, \chalctxt) \\
-          \pcreturn (\advdemkey = \chalkey)
+          i \gets 0 \\
+          (i,\advdemkey_i) \sample \adv^{\Oenc(,\RO)}(\pk) \\
+          \pcreturn (\advdemkey_i = \chalkeyi)
+        }
+  
+        \pchspace
+  
+        \procedure{$\Oenc \pccomment{\oneway}$}{
+          i \gets i+1 \\
+          (\chalkeyi, \chalctxt) \sample \kemenc_\pk \\
+          \pcreturn \chalctxt
         }
       \end{pchstack}
     \caption{
       \label{fig:ind-ow}
-      The experiments defining $\indcpa$ for PKE (left and middle), and
-      $\owcpa$ for KEM (right).
+      The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
+      $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
+      adversary gets access to this in addition to the challenge oracle $\Oenc$.
     }
     \end{figure}
 
@@ -249,3 +262,149 @@
       information-theoretically hidden), and $1$ means that $\adv$ is a perfect
       distinguisher (the scheme is either completely broken, or $\adv$ is an
       unbounded adversary).
+
+  \subsubsection{Kinds of reductions.}
+    \hhnote{Define SFBB, etc.}
+
+  \subsubsection{From one-wayness to indistinguishability.}
+    It is time to prove our first theorem.
+
+    \newcommand{\pkeEve}{\Eve{\pkescheme}}
+    \newcommand{\kemRed}{\Red{\kemscheme}}
+    \begin{theorem}\label{thm:bre-classical}
+      Let $\kemscheme$ be a key encapsulation mechanism, let $\pkescheme$ be the
+      public-key encryption scheme specified in \autoref{fig:bre}, and let $\RO$ be a random oracle. 
+      Then there is a SFBB reduction
+      $\kemRed$ against $\kemscheme$ 
+      for every adversary $\pkeEve$ against $\pkescheme$
+      satisfying
+      \[
+        \advantage{\indcpa}{\pkescheme}[(\pkeEve^{\RO})]
+        \leq 2 \cdot \advantage{\owcpa}{\kemscheme}[(\kemRed)]
+      \]
+      in the classical random oracle model. The runtime of $\kemRed$ is equal
+      to that of $\pkeEve$, plus the overhead of simulating the random oracle. 
+      If $\pkeEve$ makes $\qe$ calls to the challenge
+      oracle, then $\kemRed$ makes $\qe$ calls to its own challenge oracle.
+    \end{theorem}
+
+    \iftutorial
+      \noindent
+      Before proving the theorem, let us take a look at what the statement
+        actually tells us.
+
+      The first thing to note is the order of the quantifiers: $\exists$ reduction
+        $\kemRed$ $\forall$ adversaries $\pkeEve$. At a glance, this may seem false, since
+        $\kemRed$ clearly must depend on the behaviour of $\pkeEve$ in order to count as a
+        reduction. However, since $\kemRed$ only
+        depends on $\pkeEve$ in a \emph{black-box} manner, what we actually say
+        isthat \emph{up to} the black-box dependency on $\pkeEve$, $\kemRed$ can
+        be uniquely specified. 
+        Another way to think of this is that $\kemRed$ comes with a number of oracle
+        input/output interfaces, one of which is reserved for an adversary.
+
+      Second, what does the bound \emph{mean}? Well, our starting assumption is that
+        the key encapsulation mechanism is oneway-secure under chosen plaintext
+        attacks, which means that, for every adversary,
+        $\advantage{\owcpa}{\kemscheme}[(\kemRed)]$ is
+        \emph{small}; hence, $\advantage{\indcpa}{\pkescheme}[(\pkeEve^{\RO})]$
+        must also be small. In the asymptotic-security framework, we would say that 
+        by assumption, $\advantage{\owcpa}{\kemscheme}[]$ is
+        \emph{negligible}, i.e.\ smaller than any inverse-polynomial. Then the
+        bound tells us that $\advantage{\indcpa}{\pkescheme}[]$ must
+        also be negligible, and hence $\pkescheme$ must satisfy
+        indistinguishability against chosen-ciphertext attacks. Or vice versa:
+        \emph{If} there exists an adversary that breaks the indistinguishability
+        of $\pkescheme$, \emph{then} we can construct an alternative attacker
+        that breaks the onewayness of the underlying key encapsulation
+        mechanism, contradiction our starting assumption.\footnote{
+          Of course, in order to argue that $\kemscheme$ satisfies onewayness, we
+          would have to further reduce it to some underlying hardness assumption,
+          but those are their own whole fields of study. Indeed, ``pushing'' the
+          required security assumption as far down as possible, as we do when reducing
+          from indistuinguishability (stronger) to onewayness (weaker), makes
+          instantiating our scheme from a variety of hardness assumptions that
+          much easier. 
+          To quote Hugo Krawczyk~\cite{KrawczykDistLect23}: 
+          ``Modularity is the best friend of simplicity.''
+        }
+
+      Third, the right-hand-side comes with a factor of $2$. Thus, if the
+        advantage of $\kemRed$ is $\half$ (meaning it guesses the correct
+        preimage $50\%$ of the time), then the bound is already void, since 
+        advantages are trivially upper-bounded by $1$. What this means for
+        practice is that if the $\kemscheme$ scheme achieves a security level
+        of, say, $2^{128}$, then the theorem only guarantees that our $\pkescheme$
+        construction achieves a security level of 
+        $\nicefrac{2^{128}}{2} = 2^{127}$. Of course, compensating for such
+        a small tightness loss is easily done by increasing the parameters (key
+        lengths etc.) by just a few bits; we will later see examples of much
+        more severe tightness losses, and a large part of our goal will be to
+        minimize these losses.
+
+      Fourth, note that in the statement, $\pkeEve$ gets access to a random
+        oracle $\RO$ while $\kemRed$ does not. This is because $\kemRed$ can
+        easily simulate a random oracle for $\pkeEve$ by so-called
+        ``lazy-sampling'', in which $\kemRed$ just samples random values for
+        each new oracle call, and then stores them in a list to ensure
+        consistency between calls. Alternatively, we could give $\kemRed$ access
+        to a random oracle as well, and let it simply forward the oracle calls;
+        once we move to the quantum random oracle model, this will be the
+        preferred approach.
+
+      Finally, in order for the bound to be meaningful, we also need to bound
+        the runtime of our reduction. In this case, this is the runtime
+        of the adversary itself, plus the overhead cost of lazy-sampling,
+        which we can assume to be comparably small.
+    \fi
+    
+    \crakzfigcode{bre-classical}{
+      Proof outline for \autoref{thm:bre-classical}.
+      Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
+      the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
+      $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
+    }
+
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{$\game{0}$ -- $\game{3}$}{
+          \params \sample \kempm(\secparam) \\
+          (\pk, \sk) \sample \kemkg(\params) \\
+          \advbit \sample \adv^{\Oenc,\RO}(\pk) \\
+          \pcreturn \advbit = 0 \pccomment{$\game{0}, \game{1}$} \\
+          \pcreturn \advbit = 1 \pccomment{$\game{2}, \game{3}$}
+        }
+  
+        \pchspace
+  
+        \procedure{$\Oenc(\mssg_0, \mssg_1)$}{
+          \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
+          (\demkey, \ctxt_1) \sample \kemenc_\pk \\
+          \rnd \gets \RO(\demkey) \\
+          \demctxt \gets \mssg \xor \rnd \\
+          % CONT HERE
+          \chalctxt \sample \pkenc_\pk(\mssg_0) \pccomment{$\game{0}, \game{1}$} \\
+          \chalctxt \sample \pkenc_\pk(\mssg_1) \pccomment{$\game{2}, \game{3}$} \\
+          \pcreturn \chalctxt
+        }
+      \end{pchstack}
+    \caption{
+      \label{fig:bre-classical-games}
+      The games $\game{0}$ to $\game{3}$ from the proof of
+      \autoref{thm:bre-classical}.
+    }
+    \end{figure}
+
+    \begin{proof}
+      The proof proceeds over four games and three game hops, outlined in
+        \autoref{fig:bre-classical}: 
+      \begin{itemize}
+        \item $\game{0}$ is identical to the ``left-world'' $\indcpa$ game,
+          i.e.\ $\experiment{\indcpa}{\pkescheme}[]$ from \autoref{fig:ind-ow}
+          when instantiated with the challenge bit $\chalbit = 0$, where we have
+          also ``unrolled'' the construction in \autoref{fig:bre}.
+      \end{itemize}
+    \end{proof}
+    \let\pkeEve\undefined
+    \let\kemRed\undefined

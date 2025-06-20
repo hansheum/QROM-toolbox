@@ -14,6 +14,10 @@
   \authversiontrue % triggers copyright footnote for non-full eprint author version
   % \authversionfalse % triggers submission version for full version (anonymous, suppl material)
 
+\newif\iftutorial % to flag parts that should be excluded in a SoK
+  \tutorialtrue
+  %\tutorialfalse
+
 %
 % BEGINNING OF DO NOT EDIT ZONE
 %
@@ -199,7 +203,6 @@
   \clearpage
   \addcontentsline{toc}{part}{Part 1.\quad One-Way to Hiding, or: How to Reprogram a QRO}
     \input{qrot-o2h}
-    \input{qrot-bre}
 
   %% Add this in future version.
   %\ifdraftversion

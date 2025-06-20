@@ -1,0 +1,40 @@
+\begin{tikzpicture}[
+    game/.style={rectangle, draw, thick, minimum width=2.5cm, minimum height=1cm, rounded corners=3pt},
+    transition/.style={->, >=Stealth, thick},
+    label/.style={font=\small}
+]
+  % Define positions
+  \node[game] (G0) at (0,0) {$\game{0} = \indcpa_0$};
+  \node[game] (G1) at (0,-4.5) {$\game{1}$};
+  \node[game] (G2) at (5,-4.5) {$\game{2}$};
+  \node[game] (G3) at (5,0) {$\game{3} = \indcpa_1$};
+  
+  % Draw transitions with labels
+  \draw[transition] (G0) -- (G1) node[midway, above, label, sloped] {$\demkey$ real $\to$ $\demkey$ random};
+  \draw[transition] (G1) -- (G2) node[midway, below, label] {$\mssg_0 \to \mssg_1$};
+  \draw[transition] (G2) -- (G3) node[midway, below, label, sloped] {$\demkey$ random $\to$ $\demkey$ real};
+  \draw[transition, dashed] (G0) -- (G3); 
+  
+  % Braces
+    % Left
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}] 
+      ([xshift=-8pt]G0.south west) -- ([xshift=-8pt]G1.north west) 
+      node[midway, left=10pt, align=right]
+      {$\leq \advantage{\owcpa}{\kemscheme}[(\kemRed)]$};
+
+    % Lower
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}] 
+      ([yshift=-8pt]G1.south east) -- ([yshift=-8pt]G2.south west) 
+      node[midway, below=10pt] {$=0$};
+
+    % Right
+  \draw[decorate, decoration={brace, amplitude=5pt}] 
+      ([xshift=8pt]G3.south east) -- ([xshift=8pt]G2.north east) 
+      node[midway, right=10pt, align=left]
+      {$\leq \advantage{\owcpa}{\kemscheme}[(\kemRed)]$};
+
+    % Upper
+  \draw[decorate, decoration={brace, amplitude=5pt}] 
+      ([yshift=8pt]G0.north east) -- ([yshift=8pt]G3.north west) 
+      node[midway, above=10pt] {$\leq \advantage{\indcpa}{\pkescheme}[(\pkeEve)]$};
+\end{tikzpicture}
