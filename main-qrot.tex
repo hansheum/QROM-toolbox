@@ -185,13 +185,16 @@
 
   % Main body
   \input{qrot-introduction}
-  \input{qrot-preliminaries}
 
   \clearpage
-  \addcontentsline{toc}{part}{Part 0.\quad Into the (Post-)Quantum World}
+  \addcontentsline{toc}{part}{Prelude.\quad The Classical Random Oracle Model}
+    \input{qrot-preliminaries}
+    \input{qrot-bre}
+
+  \clearpage
+  \addcontentsline{toc}{part}{Part 1.\quad Into the Quantum Realm}
     \input{qrot-primer}
     \input{qrot-pseudocode}
-    \input{qrot-definitions}
 
   %\part{
   %  Confidentiality in the PQ World: 
@@ -201,7 +204,8 @@
   %}
 
   \clearpage
-  \addcontentsline{toc}{part}{Part 1.\quad One-Way to Hiding, or: How to Reprogram a QRO}
+  \addcontentsline{toc}{part}{Part 2.\quad Public-Key Encryption in the Quantum Random Oracle Model}
+    \input{qrot-definitions}
     \input{qrot-o2h}
 
   %% Add this in future version.
@@ -217,7 +221,7 @@
 
 
   \clearpage
-  \addcontentsline{toc}{part}{Part 2.\quad The Compressed-Oracle Technique, or: How to Lazy-sample a QRO}
+  \addcontentsline{toc}{part}{Part 3.\quad Compressed Random Oracles: Quantum Lazy-sampling}
     \input{qrot-compressed}
   \ifdraftversion
     \input{qrot-consistency}
@@ -227,8 +231,14 @@
   \fi
 
   \ifdraftversion
-    \addcontentsline{toc}{part}{Part 3.\quad Down the Rabbit Hole, or: 
-      How to Prove QRO Lemmas}
+    \clearpage
+    \addcontentsline{toc}{part}{Part 4.\quad Sigma Protocols in the Quantum Random Oracle Model}
+    %\input{...}
+  \fi
+
+  \ifdraftversion
+    \clearpage
+    \addcontentsline{toc}{part}{Part 5.\quad Under the Rug: Proving Quantum Lemmas}
     \input{qrot-proofs}
   \fi
 

@@ -61,7 +61,7 @@
       of an adversary can be bounded in terms of their distinguishing advantage
       over several intermediary game ``hops''. 
 
-    \begin{lemma}[Fundamental Lemma of Game Hopping]
+    \begin{lemma}[Fundamental Lemma of Game Hopping]\label{lemma:game-hopping}
       For any adversary $\adv$ tasked with distinguishing $\game{0}$ from
       $\game{n}$, and for any games $\game{1}, \ldots \game{n-1}$,
       there exist adversaries $(\adv_1, \ldots, \adv_n)$ such that
@@ -101,7 +101,8 @@
     %    \autoref{sec:primer}, with explanations and definitions for all
     %    the quantum concepts and conventions that we will need. A summary of our
     %    notation is given in \autoref{tab:notation}.
-    Precise definitions for our quantum-notational conventions are provided in \aref{sec:primer},
+    Precise definitions for our quantum-notational conventions are provided in
+      \autoref{sec:primer},
       along with a gentle introduction to the relevant quantum concepts,
       summarized in \autoref{tab:notation}.
 
@@ -149,3 +150,11 @@
       \end{tabular}
     \end{table}
 
+    \hhnote{
+      Add subsection on classical random oracles: what they are (random
+      extendable-output functions), oracle interfaces, lazy-sampling, reprogramming, etc.?
+    }
+    \hhnote{
+      Also move security definitions etc.\ over here? Also definitions of PKE,
+      KEM, hybrid encryption.
+    }

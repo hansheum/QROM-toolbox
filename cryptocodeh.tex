@@ -11,7 +11,9 @@
     %% H: Basic notation
     \newcommand{\hy}{\ensuremath{\pcmathhyphen{}}}
     \newcommand{\setapp}{\overset{\cup}{\longleftarrow}}
-    \newcommand{\listapp}{\overset{\frown}{\longleftarrow}}
+    %\newcommand{\listapp}{\overset{\frown}{\longleftarrow}}
+    \newcommand{\listapp}{\twoheadleftarrow}
+    \newcommand{\elms}[1]{\ensuremath{\llbracket #1 \rrbracket}}
     \providecommand{\listsample}{\hskip2.3pt{\listapp\!\!\mbox{\scriptsize${\$}$\normalsize}}\,}
     \newcommand{\half}{\nicefrac{1}{2}}
     \newcommand{\notsim}[2]{\abs{#1} \neq \abs{#2}}
@@ -364,6 +366,7 @@
       \newcommand{\demctxt}{\pcvarstyle{c}_2}
       \newcommand{\demkey}{\pcvarstyle{K}}
       \newcommand{\advdemkey}{\hat{\demkey}}
+      \newcommand{\altdemkey}{\demkey^\prime}
 
   %%
   %%  Cryptocodex alternatives and extensions to 2.10 and 2.12 of cryptocode
@@ -380,6 +383,7 @@
     \newcommand{\pcfunctionstyle}[1]{{\ensuremath{\mathrm{#1}}}}
 
     \newcommand{\Aspace}{\pcsetstyle{A}}
+    \newcommand{\Bspace}{\pcsetstyle{B}}
     \newcommand{\Cspace}{\pcsetstyle{C}}
     \newcommand{\Dspace}{\pcsetstyle{D}}
     \newcommand{\Fspace}{\pcsetstyle{F}}
@@ -400,6 +404,7 @@
     \newcommand{\Alist}{\pcliststyle{A}}
     \newcommand{\Clist}{\pcliststyle{C}}
     \newcommand{\Dlist}{\pcliststyle{D}}
+    \newcommand{\Hlist}{\pcliststyle{H}}
     \newcommand{\Ilist}{\pcliststyle{I}}
     \newcommand{\Klist}{\pcliststyle{K}}
     \newcommand{\Llist}{\pcliststyle{L}}
