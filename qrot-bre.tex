@@ -1,4 +1,4 @@
-\section{Bellare--Rogaway Encryption in the Random Oracle Model}\label{sec:bre}
+\section{Bellare--Rogaway Encryption in the Classical Random Oracle Model}\label{sec:bre}
   \begin{figure}[t]
     \centering
     \begin{pchstack}[center]
@@ -101,7 +101,7 @@
     which will allow us to weaken the assumed security of our underlying KEM, 
     from indistinguishability to merely one-wayness. 
 
-  \subsubsection{Preliminaries.}
+  \subsection{Preliminaries}
     Let us define a few conventions. First, whenever a value is generated
       dependent on some other public value, such as the public key $\pk$ being
       dependent on the public parameters $\params$, which in turn depend on the
@@ -275,13 +275,13 @@
   \subsubsection{Kinds of reductions.}
     \hhnote{Define SFBB, etc.}
 
-  \subsubsection{From one-wayness to indistinguishability.}
+  \subsection{From One-wayness to Indistinguishability}
     It is time to prove our first theorem.
 
     %\newcommand{\pkeEve}{\Eve{\brescheme}}
     %\newcommand{\kemRed}{\Red{\kemscheme}}
-    \newcommand{\pkeEve}{\Eve{}}
-    \newcommand{\kemRed}{\Red{}}
+    \newcommand{\pkeEve}{\adv}
+    \newcommand{\kemRed}{\bdv}
     \begin{theorem}\label{thm:bre-classical}
       Let $\kemscheme$ be a key encapsulation mechanism, let $\brescheme$ be the
       public-key encryption scheme defined in \autoref{fig:bre}, and let $\RO$ be a random oracle. 
@@ -289,9 +289,9 @@
       for every adversary $\pkeEve$ against $\pkescheme$ satisfying
       \[
         \advantage{\indcpa}{\brescheme}[(\pkeEve^{\RO})]
-        \leq 2 \cdot \qRO \cdot \advantage{\owcpa}{\kemscheme}[(\kemRed)]
+        \leq 2\cdot\qRO\cdot \advantage{\owcpa}{\kemscheme}[(\kemRed)]
       \]
-      in the (classical, programmable) random oracle model. The runtime of $\kemRed$ is equal
+      in the classical random oracle model. The runtime of $\kemRed$ is equal
       to that of $\pkeEve$, plus the overhead of simulating the random oracle. 
       If $\pkeEve$ makes $\qe$ calls to the challenge
       oracle, then $\kemRed$ makes $\qe$ calls to its own challenge oracle.
@@ -366,21 +366,19 @@
         the runtime of our reduction. In this case, this is the runtime
         of the adversary itself, plus the overhead cost of lazy-sampling,
         which we can assume to be comparably small.
-
-    \paragraph{Proof idea.}
-      \crakzfigcode{bre-classical}{
-        Proof outline for \autoref{thm:bre-classical}.
-        Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
-        the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
-        $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
-      }
-      \hhnote{Add high-level explanation of main ideas.}
     \fi
+
+    \crakzfigcode{bre-classical}{
+      Proof outline for \autoref{thm:bre-classical}.
+      Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
+      the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
+      $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
+    }
     
     \begin{figure}[t]
       \centering
       \begin{pchstack}[center]
-        \procedure{$\game{0}$ -- $\game{3}$}{
+        \procedure{$\game{0}(\pkeEve)$ -- $\game{3}(\pkeEve)$}{
           \Hlist \gets \emptystring \\
           \params \sample \kempm(\secparam) \\
           (\pk, \sk) \sample \kemkg(\params) \\
@@ -398,6 +396,7 @@
           \rnd \gets \RO_{\abs{\mssg_0}}(\pk, \demkey, \kemctxt) \\
           \demctxt \gets \mssg_0 \xor \rnd \pccomment{$\game{0}, \game{1}$} \\
           \demctxt \gets \mssg_1 \xor \rnd \pccomment{$\game{2}, \game{3}$} \\
+          \Cspace \setapp \kemctxt \\
           \pcreturn (\kemctxt, \demctxt)
         }
 
@@ -414,10 +413,32 @@
       \end{pchstack}
     \caption{
       \label{fig:bre-classical-games}
-      The games $\game{0}$ to $\game{3}$ from the proof of
+      The games $\game{0}$ to $\game{3}$ in the proof of
       \autoref{thm:bre-classical}.
     }
     \end{figure}
+
+    \paragraph{Proof sketch.}
+      \hhnote{todo: rewrite and expand}
+      For the first game hop, note how $\game{0}$ and $\game{1}$ are identical,
+        except for the real symmetric key being exchanged for a random one. This
+        is reminiscent of the IND-CPA experiment for key encapsulation
+        mechanisms, and indeed if $\pkeEve$ can tell the difference between the
+        games, then a reduction can use this to break $\indcpa$ for the
+        underlying KEM.
+
+      However, since we are in the random oracle model, we can do one better: If
+        $\pkeEve$ can tell the difference between $\game{0}$ and $\game{1}$, then 
+        a reduction can break the \emph{onewayness} of the underlying KEM,
+        recovering the symmetric key $\demkey$. How? Simple: Just store the
+        adversary's inputs to the random oracle, and output one of them at random.
+        If $\pkeEve$ has a distinguishing strategy, then that strategy must
+        involve calling the random oracle on the symmetric key encapsulated in
+        $\kemctxt$, since the only way to tell the games apart is by breaking
+        $\kemctxt$, reconstructing $\demctxt$, and checking for consistency.
+        Then, since $\pkeEve$ makes at most $\qRO$ calls to the random oracle,
+        the reduction will output the correct value with probability at least
+        $\nicefrac{1}{\qRO}$.
 
     \begin{proof}
       \iftutorial
@@ -443,7 +464,9 @@
           the inconsistency (since with overwhelming probability attempting to
           thereafter decrypt $\demctxt$ will yield neither $\mssg_0$ nor
           $\mssg_1$). This is captured by the $\bad$ event, which if ever hit
-          upon causes the game to abort.
+          upon causes the game to abort. Note how the random oracle ensures that
+          $\game{0}$ and $\game{1}$ are identical from the view of the player
+          unless and until the $\bad$ event is triggered.
         \item $\game{2}$ is the same as $\game{1}$, except that the challenge oracle
           now encrypts the ``right-world'' message $\mssg_1$.
         \item $\game{3}$ is the same as $\game{2}$, except that the symmetric key
@@ -483,79 +506,23 @@
       \end{align*}
 
       \noindent
-      For the first game hop, note how $\game{0}$ and $\game{1}$ are identical,
-        except for the real symmetric key being exchanged for a random one. This
-        is reminiscent of the IND-CPA experiment for key encapsulation
-        mechanisms, and indeed if $\pkeEve$ can tell the difference between the
-        games, then a reduction can use this to break $\indcpa$ for the
-        underlying KEM.
-
-      However, since we are in the random oracle model, we can do one better: If
-        $\pkeEve$ can tell the difference between $\game{0}$ and $\game{1}$, then 
-        a reduction can break the \emph{onewayness} of the underlying KEM,
-        recovering the symmetric key $\demkey$. How? Simple: Just store the
-        adversary's inputs to the random oracle, and output one of them at random.
-        If $\pkeEve$ has a distinguishing strategy, then that strategy must
-        involve calling the random oracle on the symmetric key encapsulated in
-        $\kemctxt$, since the only way to tell the games apart is by breaking
-        $\kemctxt$, reconstructing $\demctxt$, and checking for consistency.
-        Then, since $\pkeEve$ makes at most $\qRO$ calls to the random oracle,
-        the reduction will output the correct value with probability at least
-        $\nicefrac{1}{\qRO}$.
-
-      In more detail,
-      \hhnote{Cont.\ from here}
-
-      \newcommand{\keyset}{\Bspace} % Unsure what is a good notation
-      \begin{figure}[t]
-        \centering
-        \begin{pchstack}[center]
-          \procedure{$\kemRed(\pk)$}{
-            \keyset \gets \emptyset \\
-            \advbit \sample \adv^{\Oenc,\RO}(\pk) \\
-            \demkey \sample \keyset \\
-            \pcreturn \demkey 
-          }
-  
-          \pchspace
-  
-          \procedure{If $\pkeEve$ calls $\Oenc(\mssg_0, \mssg_1)$}{
-            \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
-            \kemctxt \sample \Oenc_{\bdv},\ 
-            \Cspace \setapp \kemctxt \\
-            %\demctxt \sample \bin^{\abs{\mssg_0}} \\
-            \demkey \sample \keyspace \\
-            \pcwhile \abs{\Hlist[\pk, \demkey, \kemctxt]} < \abs{\mssg_0} \\
-              \t \Hlist[\pk, \demkey, \kemctxt] \listapp \bin \\
-            \rnd \gets \Hlist[\pk, \demkey, \kemctxt]\elms{\abs{\mssg_0}} \\
-            \demctxt \gets \mssg_0 \xor \rnd \\
-            \pcreturn (\kemctxt, \demctxt)
-          }
-
-          \pchspace
-
-          \procedure{If $\pkeEve$ calls $\RO_\ell(x)$}{
-            \pcif \pcparse x = (\pk, \demkey, \ctxt) \pcthen \\
-              \t \pcif \ctxt \in \Cspace \pcthen \keyset \setapp \demkey \\
-            \pcwhile \abs{\Hlist[x]} < \ell \pcdo \\
-              \t \Hlist[x] \listapp \bin \\
-            \pcreturn \Hlist[x]\elms{\ell}
-          }
-        \end{pchstack}
-      \caption{
-        \label{fig:bre-classical-reduction}
-        The reduction $\kemRed$.
-      }
-      \end{figure}
-
-      After moving to $\game{1}$, the DEM
+      For the first game hop, recall that from the view of $\pkeEve$, $\game{0}$
+        and $\game{1}$ are identical-until-bad. From this, we have
+      \[
+        \abs{
+          \probsample{\game{0}(\pkeEve)}{0 \sample \pkeEve}
+          - \probsample{\game{1}(\pkeEve)}{0 \sample \pkeEve}
+        } \leq \probsample{\game{1}(\pkeEve)}{\bad}\, .
+      \]
+      %
+      Next, note how in $\game{1}$, the DEM
         ciphertext $\demctxt$ is independent of the KEM ciphertext $\kemctxt$,
         meaning that the only way for $\pkeEve$ to learn whether $\demctxt$
         contains $\mssg_0$ or $\mssg_1$ is to study $\demctxt$ itself.
         However, the message has been encrypted with the one-time pad, using a
-        value that is guaranteed to be uniformly random, by the definition of
+        value that is guaranteed to be uniformly random by the definition of
         a random oracle. Hence, the message is perfectly
-        (information-theoretically) hidden from
+        (i.e.\ information-theoretically) hidden from
         the view of $\pkeEve$, which implies that
       \[
         \abs{
@@ -563,7 +530,187 @@
           - \probsample{\game{2}(\pkeEve)}{0 \sample \pkeEve}
         } = 0\, .
       \]
+      %
+      Finally, $\game{2}$ and $\game{3}$ are again identical-until-bad:
+        %Since this is technically a different bad event, let us call it $\bad^\prime$.
+      \[
+        \abs{
+          \probsample{\game{2}(\pkeEve)}{0 \sample \pkeEve}
+          - \probsample{\game{3}(\pkeEve)}{0 \sample \pkeEve}
+        } \leq \probsample{\game{2}(\pkeEve)}{\bad}\, ,
+      \]
+      %
+      giving us 
+      \[
+        \advantage{\indcpa}{\brescheme}[(\pkeEve)] 
+          \leq \probsample{\game{1}(\pkeEve)}{\bad} + \probsample{\game{2}(\pkeEve)}{\bad}\, .
+      \]
 
+      If $\pkeEve$ has a significant chance of triggering the $\bad$ event, then
+        this can be exploited by a reduction $\kemRed_0$ that simulates
+        $\game{1}$ for $\pkeEve$, collecting candidate keys from random
+        oracle queries, and outputting one of them uniformly at random at the
+        end (together with the index indicating which challenge is being targeted).
+
+      \newcommand{\keyset}{\Bspace} % Unsure what is a good notation
+      \begin{figure}[t]
+        \centering
+        \begin{pchstack}[center]
+          \procedure{$\kemRed_b(\pk)$}{
+            \keyset \gets \emptyset, \Clist \gets \emptystring \\
+            \advbit \sample \adv^{\Oenc,\RO}(\pk) \\
+            (i, \demkey) \sample \keyset \\
+            \pcreturn (i, \demkey)
+          }
+  
+          \pchspace
+  
+          \procedure{If $\pkeEve$ calls $\Oenc(\mssg_0, \mssg_1)$}{
+            \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
+            \kemctxt \sample \Oenc_{\bdv} \\
+            \demkey \sample \keyspace \\
+            \rnd \gets \RO_{\abs{\mssg_0}}(\pk, \demkey, \kemctxt) \\
+            \demctxt \gets \mssg_b \xor \rnd \\
+            \Clist \listapp \kemctxt \\
+            \pcreturn (\kemctxt, \demctxt)
+          }
+
+          \pchspace
+
+          \procedure{If $\pkeEve$ or $\kemRed_b$ calls $\RO_\ell(x)$}{
+            \pcif \pcparse x = (\pk, \demkey, \ctxt) \pcthen \\
+              \t \pcif \exists_{i\in\NN}\ \Clist[i] = \ctxt \pcthen \keyset \setapp (i, \demkey) \\
+            \pcwhile \abs{\Hlist[x]} < \ell \pcdo \\
+              \t \Hlist[x] \listapp \bin \\
+            \pcreturn \Hlist[x]\elms{\ell}
+          }
+        \end{pchstack}
+      \caption{
+        \label{fig:bre-classical-red}
+        Pseudocode for the two reductions $\kemRed_0$ and $\kemRed_1$.
+      }
+      \end{figure}
+
+      The pseudocode for $\kemRed_0$ is given in
+        \autoref{fig:bre-classical-red} (for $b=0$). 
+        Let $\chalkeyi$ denote the symmetric key encapsulated in the $i$th
+        challenge issued to $\kemRed_0$ (see \autoref{fig:ind-ow}).
+        Then $\kemRed_0$ gains the following advantage:
+      %
+      \begin{align*}
+        \advantage{\owcpa}{\kemscheme}[(\kemRed_0)] 
+          &\coloneqq \probsample{(i, \demkey) \sample \kemRed_0}{\demkey = \chalkeyi}
+        \intertext{
+          Let us split the probability into the $\bad$ and $\neg\bad$ cases.
+        }
+        &= \probsample{(i, \demkey) \sample \kemRed_0}{\demkey = \chalkeyi \land \bad} 
+          + \probsample{(i, \demkey) \sample \kemRed_0}{\demkey = \chalkeyi \land \neg\bad} \\
+        &= \prob{\bad} \cdot \condprobsample{(i, \demkey) \sample \kemRed_0}{\demkey = \chalkeyi}{\bad} \\
+        &\quad + \prob{\neg\bad} \cdot
+            \condprobsample{(i, \demkey) \sample \kemRed_0}{\demkey = \chalkeyi}{\neg\bad}
+        \intertext{
+          In the case $\neg\bad$, none of the keys input to the random oracle
+          were the solution to a challenge, and hence the latter probability
+          evaluates to zero.
+        }
+        &= \prob{\bad} \cdot \condprobsample{(i, \demkey) \sample \kemRed_0}{\demkey = \chalkeyi}{\bad}
+        \intertext{
+          In the $\bad$ case, at least one of the calls to the random oracle was
+          the solution to a challenge issued to $\kemRed_0$. Since $\pkeEve$
+          makes at most $\qRO$ calls to the random oracle, the probability that
+          $\kemRed$ outputs a correct solution is at least $\nicefrac{1}{\qRO}$:
+        }
+        &\geq \prob{\bad}\frac{1}{\qRO}\, , \\
+        \implies &\probsample{\game{1}(\pkeEve)}{\bad} \leq \qRO \cdot
+        \advantage{\owcpa}{\kemscheme}[(\kemRed_0)]\, .
+      \end{align*}
+
+      An analysis identical to the above gives that
+      \[
+        \probsample{\game{2}(\pkeEve)}{\bad} \leq \qRO \cdot
+        \advantage{\owcpa}{\kemscheme}[(\kemRed_1)]\, ,
+      \]
+      giving us 
+      \[
+        \advantage{\indcpa}{\brescheme}[(\pkeEve)] 
+          \leq \qRO \left( 
+            \advantage{\owcpa}{\kemscheme}[(\kemRed_0)]
+            + \advantage{\owcpa}{\kemscheme}[(\kemRed_1)]
+          \right)\, .
+      \]
+      Finally, roll the two reductions ``into one'' by defining
+      \[
+        \advantage{\owcpa}{\kemscheme}[(\kemRed)] \coloneqq 
+          \max \{
+            \advantage{\owcpa}{\kemscheme}[(\kemRed_0)],
+            \advantage{\owcpa}{\kemscheme}[(\kemRed_1)]
+          \}\, ,
+      \]
+      which allows us to conclude that
+      \begin{align*}
+        \advantage{\indcpa}{\brescheme}[(\pkeEve)] 
+          &\leq 
+          \qRO \left( 
+            \advantage{\owcpa}{\kemscheme}[(\kemRed_0)]
+            + \advantage{\owcpa}{\kemscheme}[(\kemRed_1)]
+          \right) \\
+          &\leq 2\cdot\qRO\cdot\advantage{\owcpa}{\kemscheme}[(\kemRed)]\, .
+      \end{align*}
+      \qed
     \end{proof}
     \let\pkeEve\undefined
     \let\kemRed\undefined
+
+    \begin{exercise}
+      Write an alternative proof that improves on \autoref{thm:bre-classical} by
+        avoiding the factor $2$ tightness loss. 
+        (Hint: Think about how you can make the pseudocode of
+        \autoref{fig:bre-classical-red} work over a single game hop.)
+    \end{exercise}
+
+  \subsection{A Tight Reduction with Plaintext Checking}
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{$\Ocheck(\demkey, \ctxt)$}{
+          \pcreturn \kemdec_\sk(\ctxt) = \demkey
+        }
+      \end{pchstack}
+    \caption{
+      \label{fig:pca}
+      The plaintext-checking oracle.
+    }
+    \end{figure}
+
+    \newcommand{\pkeEve}{\adv}
+    \newcommand{\kemRed}{\bdv}
+    \begin{theorem}\label{thm:bre-pca}
+      Let $\kemscheme$ be a key encapsulation mechanism, let $\brescheme$ be the
+      public-key encryption scheme defined in \autoref{fig:bre}, and let $\RO$ be a random oracle. 
+      Then there is a SFBB reduction $\kemRed$ against $\kemscheme$ 
+      for every adversary $\pkeEve$ against $\pkescheme$ satisfying
+      \[
+        \advantage{\indcpa}{\brescheme}[(\pkeEve^{\RO})]
+        \leq 2\cdot \advantage{\owpca}{\kemscheme}[(\kemRed)]
+      \]
+      in the classical random oracle model. The runtime of $\kemRed$ is equal
+      to that of $\pkeEve$, plus the overhead of simulating the random oracle. 
+      If $\pkeEve$ makes $\qe$ calls to the challenge
+      oracle, then $\kemRed$ makes $\qe$ calls to its own challenge oracle,
+      and if $\pkeEve$ makes $\qRO$ calls to the random oracle, then $\kemRed$
+      makes at most $\qRO$ calls to its plaintext-checking oracle.
+    \end{theorem}
+
+    \begin{proof}[sketch]
+      Lorem ipsum.
+    \end{proof}
+
+    \begin{exercise}
+      Write out the full formal proof, following the structure of
+      the proof of \autoref{thm:bre-classical}.
+    \end{exercise}
+
+  \subsection{A Classical One-way to Hiding Lemma}
+    \hhnote{
+      Extract both ``find'' and ``guess'' versions from the above proofs.
+    }
