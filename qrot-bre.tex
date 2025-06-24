@@ -17,8 +17,8 @@
       \pchspace
 
       \procedure{$\breenc_\pk(\mssg)$}{
-        (\demkey, \ctxt_1) \sample \kemenc_\pk \\
-        \rnd \gets \RO(\demkey) \\
+        (\demkey, \kemctxt) \sample \kemenc_\pk \\
+        \rnd \gets \RO_{\abs{\mssg}}(\pk, \demkey, \kemctxt) \\
         \demctxt \gets \mssg \xor \rnd \\
         \pcreturn (\kemctxt, \demctxt)
       }
@@ -27,7 +27,7 @@
 
       \procedure{$\bredec_\sk(\kemctxt, \demctxt)$}{
         \demkey \gets \kemdec_\sk(\kemctxt) \\
-        \rnd \gets \RO(\demkey) \\
+        \rnd \gets \RO_{\abs{\demctxt}}(\pk, \demkey, \kemctxt) \\
         \mssg \gets \demctxt \xor \rnd \\
         \pcreturn \mssg
       }
@@ -39,6 +39,14 @@
     the one-time pad.
   }
   \end{figure}
+
+  \hhnote{
+    Include $\pk$ in $\RO$ or not? Maybe skip to avoid clutter and delegate to a
+    footnote about multi-user security (unless I am going to cover multi-user
+    notions later \ldots though I think I prefer to stick with single-user, and
+    instead go multi-bit). Or should I try to convey that ``hash everything'' is
+    good crypto practice?
+  }
 
   Let us begin by introducing our motivating public-key encryption scheme $\brescheme$, which will follow us
     throughout as we explore the world of O2H lemmas. It is a hybrid public-key
@@ -130,53 +138,6 @@
       otherwise affect its internal workings), this is written $\bdv^\adv$.
 
   \subsubsection{Defining security.}
-    \begin{figure}[t]
-      \centering
-      \begin{pchstack}[center]
-        \procedure{$\experiment{\indcpa}{\pkescheme}$}{
-          \params \sample \pkpm(\secparam) \\
-          (\pk, \sk) \sample \pkkg(\params) \\
-          \chalbit \sample \bin \\
-          \advbit \sample \adv^{\Oenc(,\RO)}(\pk) \\
-          \pcreturn \advbit = \chalbit
-        }
-  
-        \pchspace
-  
-        \procedure{$\Oenc(\mssg_0, \mssg_1) \pccomment{\ind}$}{
-          % Single-challenge:
-            %\pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
-          \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
-          \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
-          \pcreturn \chalctxt
-        }
-  
-        \pchspace
-  
-        \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
-          \params \sample \kempm(\secparam) \\
-          (\pk, \sk) \sample \kemkg(\params) \\
-          i \gets 0 \\
-          (i,\advdemkey_i) \sample \adv^{\Oenc(,\RO)}(\pk) \\
-          \pcreturn (\advdemkey_i = \chalkeyi)
-        }
-  
-        \pchspace
-  
-        \procedure{$\Oenc \pccomment{\oneway}$}{
-          i \gets i+1 \\
-          (\chalkeyi, \chalctxt) \sample \kemenc_\pk \\
-          \pcreturn \chalctxt
-        }
-      \end{pchstack}
-    \caption{
-      \label{fig:ind-ow}
-      The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
-      $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
-      adversary gets access to this in addition to the challenge oracle $\Oenc$.
-    }
-    \end{figure}
-
     The standard security notion for public-key encryption is $\indcca$, or
       ``indistinguishability under chosen-ciphertext attacks''. For the sake
       of this tutorial, we will keep it simple and stick to the weaker $\indcpa$
@@ -226,6 +187,53 @@
 
     We measure security in terms of $\adv$'s \emph{advantage}, i.e.\ how much
       better it can do than random guessing.
+
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{$\experiment{\indcpa}{\pkescheme}$}{
+          \params \sample \pkpm(\secparam) \\
+          (\pk, \sk) \sample \pkkg(\params) \\
+          \chalbit \sample \bin \\
+          \advbit \sample \adv^{\Oenc(,\RO)}(\pk) \\
+          \pcreturn \advbit = \chalbit
+        }
+  
+        \pchspace
+  
+        \procedure{$\Oenc(\mssg_0, \mssg_1) \pccomment{\ind}$}{
+          % Single-challenge:
+            %\pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
+          \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
+          \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
+          \pcreturn \chalctxt
+        }
+  
+        \pchspace
+  
+        \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
+          \params \sample \kempm(\secparam) \\
+          (\pk, \sk) \sample \kemkg(\params) \\
+          i \gets 0 \\
+          (i,\advdemkey_i) \sample \adv^{\Oenc(,\RO)}(\pk) \\
+          \pcreturn (\advdemkey_i = \chalkeyi)
+        }
+  
+        \pchspace
+  
+        \procedure{$\Oenc \pccomment{\oneway}$}{
+          i \gets i+1 \\
+          (\chalkeyi, \chalctxt) \sample \kemenc_\pk \\
+          \pcreturn \chalctxt
+        }
+      \end{pchstack}
+    \caption{
+      \label{fig:ind-ow}
+      The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
+      $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
+      adversary gets access to this in addition to the challenge oracle $\Oenc$.
+    }
+    \end{figure}
 
     \begin{definition}[Distinguishing Advantage]
       The distinguishing advantage of an adversary $\adv$ against a
@@ -290,11 +298,10 @@
     \end{theorem}
 
     \iftutorial
-      \noindent
+    \paragraph{Interpretation.}
       Before proving the theorem, let us take a look at what the statement
         actually tells us.
-
-      The first thing to note is the order of the quantifiers: $\exists$ reduction
+        The first thing to note is the order of the quantifiers: $\exists$ reduction
         $\kemRed$ $\forall$ adversaries $\pkeEve$. At a glance, this may seem false, since
         $\kemRed$ clearly must depend on the behaviour of $\pkeEve$ in order to count as a
         reduction. However, since $\kemRed$ only
@@ -359,19 +366,22 @@
         the runtime of our reduction. In this case, this is the runtime
         of the adversary itself, plus the overhead cost of lazy-sampling,
         which we can assume to be comparably small.
+
+    \paragraph{Proof idea.}
+      \crakzfigcode{bre-classical}{
+        Proof outline for \autoref{thm:bre-classical}.
+        Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
+        the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
+        $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
+      }
+      \hhnote{Add high-level explanation of main ideas.}
     \fi
     
-    \crakzfigcode{bre-classical}{
-      Proof outline for \autoref{thm:bre-classical}.
-      Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
-      the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
-      $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
-    }
-
     \begin{figure}[t]
       \centering
       \begin{pchstack}[center]
         \procedure{$\game{0}$ -- $\game{3}$}{
+          \Hlist \gets \emptystring \\
           \params \sample \kempm(\secparam) \\
           (\pk, \sk) \sample \kemkg(\params) \\
           \advbit \sample \adv^{\Oenc,\RO}(\pk) \\
@@ -385,10 +395,21 @@
           \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
           (\demkey, \kemctxt) \sample \kemenc_\pk \\
           \demkey \sample \keyspace \pccomment{$\game{1}, \game{2}$} \\
-          \rnd \gets \RO(\demkey) \\
+          \rnd \gets \RO_{\abs{\mssg_0}}(\pk, \demkey, \kemctxt) \\
           \demctxt \gets \mssg_0 \xor \rnd \pccomment{$\game{0}, \game{1}$} \\
           \demctxt \gets \mssg_1 \xor \rnd \pccomment{$\game{2}, \game{3}$} \\
           \pcreturn (\kemctxt, \demctxt)
+        }
+
+        \pchspace
+
+        \procedure{$\RO_\ell(x)$}{
+          \pcif \pcparse x = (\pk, \demkey, \ctxt) \pcthen \\
+            \t \pcif \ctxt \in \Cspace \land \kemdec_\sk(\ctxt) = \demkey \pcthen \\
+              \t\t \red{\bad} \pccomment{\game{1}, \game{2}} \\
+          \pcwhile \abs{\Hlist[x]} < \ell \pcdo \\
+            \t \Hlist[x] \listapp \bin \\
+          \pcreturn \Hlist[x] \elms{\ell}
         }
       \end{pchstack}
     \caption{
@@ -399,6 +420,14 @@
     \end{figure}
 
     \begin{proof}
+      \iftutorial
+      Though the reduction is conceptually fairly simple, you should
+        make sure you thoroughly understand the details of the formal argument, 
+        as the proof introduces several ideas that will be
+        central when we move to arguing about security in the QROM.
+        %such as how to use $\bad$ events to reduce to weaker notions of security.
+
+      \fi
       The proof proceeds over four games and three game hops, outlined in
         \autoref{fig:bre-classical}: 
       \begin{itemize}
@@ -409,12 +438,18 @@
         \item $\game{1}$ is the same as $\game{0}$, except that the symmetric key
           $\demkey$ output by $\kemenc$ is overwritten by an independent value,
           ensuring that $\rnd$ and hence $\ctxt_2$ is independent of $\ctxt_1$.
+          If $\pkeEve$ ever calls the random oracle on the correct symmetric key
+          $\demkey$ encapsulated as part of a challenge, then they can notice
+          the inconsistency (since with overwhelming probability attempting to
+          thereafter decrypt $\demctxt$ will yield neither $\mssg_0$ nor
+          $\mssg_1$). This is captured by the $\bad$ event, which if ever hit
+          upon causes the game to abort.
         \item $\game{2}$ is the same as $\game{1}$, except that the challenge oracle
           now encrypts the ``right-world'' message $\mssg_1$.
         \item $\game{3}$ is the same as $\game{2}$, except that the symmetric key
-          $\demkey$ is no longer overwritten, making $\game{3}$ identical to the
-          ``right-world'' $\indcpa$ game when instantiated with the BRE
-          construction.
+          $\demkey$ is no longer overwritten, removing the need for a $\bad$ event,
+          making $\game{3}$ identical to the ``right-world'' $\indcpa$ game when
+          instantiated with the BRE construction.
       \end{itemize}
 
       \noindent
@@ -486,19 +521,25 @@
   
           \procedure{If $\pkeEve$ calls $\Oenc(\mssg_0, \mssg_1)$}{
             \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
-            \kemctxt \sample \Oenc_{\oneway} \\
+            \kemctxt \sample \Oenc_{\bdv},\ 
             \Cspace \setapp \kemctxt \\
-            \demctxt \sample \bin^{\abs{\mssg_0}} \\
+            %\demctxt \sample \bin^{\abs{\mssg_0}} \\
+            \demkey \sample \keyspace \\
+            \pcwhile \abs{\Hlist[\pk, \demkey, \kemctxt]} < \abs{\mssg_0} \\
+              \t \Hlist[\pk, \demkey, \kemctxt] \listapp \bin \\
+            \rnd \gets \Hlist[\pk, \demkey, \kemctxt]\elms{\abs{\mssg_0}} \\
+            \demctxt \gets \mssg_0 \xor \rnd \\
             \pcreturn (\kemctxt, \demctxt)
           }
 
           \pchspace
 
-          \procedure{If $\pkeEve$ calls $\RO_\ell(\demkey, \ctxt)$}{
-            \pcif \ctxt \in \Cspace \pcthen \keyset \setapp \demkey \\
-            \pcwhile \abs{\Hlist[\demkey, \ctxt]} < \ell \pcdo \\
-              \t \Hlist[\demkey, \ctxt] \listapp \bin \\
-            \pcreturn \Hlist[\demkey, \ctxt] \elms{\ell}
+          \procedure{If $\pkeEve$ calls $\RO_\ell(x)$}{
+            \pcif \pcparse x = (\pk, \demkey, \ctxt) \pcthen \\
+              \t \pcif \ctxt \in \Cspace \pcthen \keyset \setapp \demkey \\
+            \pcwhile \abs{\Hlist[x]} < \ell \pcdo \\
+              \t \Hlist[x] \listapp \bin \\
+            \pcreturn \Hlist[x]\elms{\ell}
           }
         \end{pchstack}
       \caption{
