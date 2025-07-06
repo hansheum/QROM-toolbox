@@ -275,7 +275,7 @@
   \subsubsection{Kinds of reductions.}
     \hhnote{Define SFBB, etc.}
 
-  \subsection{From One-wayness to Indistinguishability}
+  \subsection{From One-wayness to Indistinguishability}\label{sec:bre-classical}
     It is time to prove our first theorem.
 
     %\newcommand{\pkeEve}{\Eve{\brescheme}}
@@ -669,6 +669,32 @@
     \end{exercise}
 
   \subsection{A Tight Reduction with Plaintext Checking}
+    As discussed in \autoref{sec:bre-classical}, the $\qRO$ loss is large.
+    \hhnote{to-do}
+
+    Inspecting the proof, it is clear that the loss comes from the reduction
+      having to guess \emph{which} of at most $\qRO$ queries contains the
+      solution it is looking for. Fundamentally, this is because the reduction
+      has no way of knowing whether a tuple $(\demkey, \ctxt)$ satisfies that
+      $\ctxt$ encapsulates $\demkey$. If only $\kemRed$ could
+      \emph{recognize} a correct solution, then they could abort the game
+      immediately upon receiving a correct solution as the input to $\RO$, which
+      would happen if and only if the bad event would triggered in $\game 1$ and
+      $\game 2$.
+
+    We can provide the reduction with the capability to recognize solutions via a
+      \emph{plaintext-checking oracle}, shown in \autoref{fig:pca}. This oracle
+      takes a tuple $(\demkey, \ctxt)$ as input, and returns $\true$ if $\ctxt$
+      encapsulates $\demkey$, and $\false$ otherwise. Crucially (and unlike
+      e.g.\ CCA decryption oracles), there is no restriction on calling the
+      oracle on challenge ciphertexts.
+
+    Note how the latter point means that any game of indistinguishability
+      would be trivially winnable in the presence of a plaintext-checking
+      oracle. Hence, the security notion $\ind\hy\pca$ is \emph{void}, meaning
+      no encryption scheme can ever achieve it (there will always be adversaries
+      that trivially win).
+
     \begin{figure}[t]
       \centering
       \begin{pchstack}[center]
