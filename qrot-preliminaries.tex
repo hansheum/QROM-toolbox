@@ -169,3 +169,19 @@
     \hhnote{
       Add identical-until-bad lemma?
     }
+    \begin{figure}[t]
+      \centering
+      \begin{pchstack}[center]
+        \procedure{$\RO_\ell(x)$}{
+          \pcwhile \abs{\Hlist[x]} < \ell \pcdo \\
+            \t \Hlist[x] \listapp \bin \\
+          \pcreturn \Hlist[x]\elms{\ell}
+        }
+      \end{pchstack}
+    \caption{
+      \label{fig:lazy-sampling}
+      An extendable-output function (XOF) modelled as a lazy-sampled random
+      oracle. The oracle is \emph{stateful} in the sense that the list $\Hlist$
+      of sampled values is maintained between calls.
+    }
+    \end{figure}

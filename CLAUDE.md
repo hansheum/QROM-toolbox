@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a LaTeX academic paper project titled "The Quantum Random Oracle Toolbox" - a comprehensive survey and tutorial on quantum random oracle model (QROM) proofs in cryptography. The project is structured as a modular LaTeX document with multiple sections covering various aspects of QROM proofs.
+This is a LaTeX academic paper project titled "The Quantum Random Oracle Toolbox" - a comprehensive survey and tutorial on quantum random oracle model (QROM) proofs in cryptography. The project is structured as a modular LaTeX document with multiple sections covering various aspects of QROM proofs. It includes primers on quantum computing and the random oracle model, as well as exercises for the reader to complete. The imagined target audience is a first-year cryptography PhD student. It only assumes knowledge of linear algebra, and some familiarity with game-based security proofs.
 
 ## Build Commands
 
@@ -41,7 +41,7 @@ The paper is organized into modular `.tex` files:
 - `qrot-header.tex`: Title, authors, and metadata
 - `qrot-introduction.tex`: Introduction section
 - `qrot-preliminaries.tex`: Preliminary definitions
-- `qrot-definitions.tex`: Core definitions
+- `qrot-definitions.tex`: Introduces quantum random oracles and discusses different formalizations and general properties
 - `qrot-primer.tex`: Primer on quantum physics and quantum computing
 - `qrot-o2h.tex`: O2H (One-way To Hiding) transformations
 - `qrot-improving-o2h.tex`: (Failed) attempts at improving O2H via CRO
