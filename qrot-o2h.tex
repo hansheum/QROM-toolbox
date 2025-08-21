@@ -27,101 +27,339 @@
       \label{tab:o2h}
       An overview of the various One-way to Hiding (O2H) lemmas. 
       Here, Q $=$ Quantum-accessible oracles, M $=$ Multi-point reprogramming, A $=$ Adaptive
-      reprogramming, B $=$ Black-box (as opposed to white-box) access to
+      reprogramming, B $=$ fully (as opposed to rewindable) Black-box access to
       the distinguisher, C $=$ Computationally (as opposed to
-      statistically) hidden reprogramming, and L $=$ allows Leaking information about
-      reprogrammed points after reprogramming. $\qRO$ bounds the total number of
-      oracle calls, and $\qRP$ bounds the number of reprogrammed points. 
+      statistically) hidden reprogramming, L $=$ allows Leaking information about
+      reprogrammed points after reprogramming, and G $=$ Guess, meaning the
+      extractor does not have access to an indicator function for the target
+      value(s). $q$ bounds the total number of
+      oracle calls, and $r$ bounds the number of reprogrammed points. 
       Variants in paranthesis have been superseded by later results, and are
       included mainly for historical reasons.
       Most bounds presented here are simplified and/or approximate, removing
       sums and ignoring constant factors and information-theoretic terms; for
-      the exact statement, see the
-      respective Lemma. Finally, to make for easier comparison, the
-      ``Tightness'' column gives the highest value $\varepsilon$ 
-      the extraction advantage could be set to before 
-      the bound would trivialize (thus allowing a distinguisher to ``break
-      the scheme'' by removing the bound on their advantage). Roughly speaking,
-      smaller reciprocals $=$ tighter bounds. You may assume that $\qRP \ll \qRO$.
+      the exact statement, see the respective Lemma. 
+      Finally, to make for easier comparison, the
+      ``Set $\secpar$ to'' column gives a numerical example for how much one
+      would have to increase the security parameter if one wants to bound the
+      distinguishing advantage by $2^{-128}$, assuming 1) that the extractors
+      advantage is bounded by $\varepsilon \leq 2^{-\secpar}$, 2) $q \leq 2^{80}$ queries
+      to the random oracle (a common estimate for the total number of SHA3
+      evaluations over the course of its lifetime), and 3) $r \leq 2^{10}$
+      reprogrammed points (following the example of Bellare et
+      al.~\cite{AC:BRTZ24}, who bounded the number of user corruptions
+      similarly); the closer to the optimal value $\secpar = 128$ the better.
     }
     %
     \rowcolors{2}{}{gray!10}
     \begin{tabular}{ccccccccccc}
       \toprule
-      Ref. & O2H Variant & Q & M & A & C & L & B & Simplified Bound & Tightness & Def. (tbd) \\
+      Ref. & O2H Variant  & \rotatebox{90}{Guessing} 
+                          & \rotatebox{90}{Quantum} 
+                          & \rotatebox{90}{Multi-point} 
+                          & \rotatebox{90}{Adaptive} 
+                          & \rotatebox{90}{Computational} 
+                          & \rotatebox{90}{Leaking} 
+                          & \rotatebox{90}{Black-box} 
+                          & Bound (simplified) & Set $\secpar$ to \\
       \midrule
       \cite{CCS:BelRog93} &
-        Classical, find & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\dist}{1}[\Dis{}]\leq \advantage{\find}{}[\Ext{}]$ &
-        $\leq \varepsilon$ &
-        $\nicefrac{1}{\varepsilon} = 1$ & \autoref{lemma:cl-find} \\
+        Classical O2H (guess) 
+        & \Tyes & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
+        $\leq q \varepsilon$ & 208 \\
       \cite{CCS:BelRog93} &
-      Classical, guess & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\dist}{1}[\Dis{}]\leq \qRO \cdot %\advantage{\guess}{}[\Ext{}]$ &
-        $\leq q \varepsilon$ &
-        $\nicefrac{1}{\varepsilon} = \qRO$ & \autoref{lemma:cl-guess} \\
+        Classical O2H (search) 
+        & \Tno & \Tno & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes & 
+        $\leq \varepsilon$ & 128 \\
       \midrule
       \cite{EC:Unruh14} &
-        (Original O2H) & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\dist}{1}[\Dis{}]\leq \qRO \sqrt{\advantage{\guess}{}[\Ext{}]}$ &
-        $\leq q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:org-o2h} \\
+        Original O2H 
+        & \Tyes & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
+        $\lesssim q \sqrt{\varepsilon}$ & 416 \\
       \cite{C:Unruh14} &
-        Adaptive O2H & \Tyes & \Tno & \Tyes & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\dist}{1}[\Dis{}]\lesssim \qRO \sqrt{\advantage{\guess}{}[\Ext{}]}$ &
-        $\lesssim q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO^2$ & \autoref{lemma:ad-o2h} \\
+        ``Adaptive'' O2H 
+        & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes & \Tyes &
+        $\lesssim q \sqrt{\varepsilon}$ & 416 \\
       \midrule
       \cite{C:AmbHamUnr19} &
-        Semi-Cl., find & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\dist}{e}[\Dis{}] \lesssim \sqrt{q \cdot %\advantage{\find}{}[\Ext{}]}$ &
-        $\lesssim \sqrt{q \varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:sc-find} \\
+        ``Semi-Classical'' O2H (guess) 
+        & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
+        $\lesssim q \sqrt{\varepsilon}$ & 416 \\
       \cite{C:AmbHamUnr19} &
-        Semi-Cl., guess & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\find}{}[\Ext{}] \lesssim q \cdot \advantage{\guess}{}[\Ext{\guess}]$ & 
-        $\lesssim q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:sc-guess} \\
+        ``Semi-Classical'' O2H (search) 
+        & \Tno & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tyes &
+        $\lesssim \sqrt{q \varepsilon}$ & 336 \\
       \midrule
       \cite{AC:GHHM21} &
-        (Resampling Lemma) & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
-        %$\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot \advantage{\guess}{}[\Ext{}] }$ & 
-        $\lesssim r \sqrt{q \varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO$ & \autoref{lemma:resampling} \\
+        Resampling Lemma 
+        & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
+        $\lesssim r \sqrt{q \varepsilon}$ & 356 \\
       %Fixed-Perm.\ RL & \Tyes & \Tyes & \Tyes & \Tno & \Tyes & \Tyes &
       %  $\advantage{\dist}{e}[\Dis{}] \lesssim \qRP \sqrt{ \qRO \cdot \advantage{\guess}{}[\Ext{}] }$ & 
       %  $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO$ & \autoref{lemma:resampling-fp} & \cite{EPRINT:Jaeger24b} \\
       %\midrule
       \cite{PKC:PanZen24} &
-        (Comp.\ Ad.\ Repr.\ Fr.) & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
-        %$\advantage{\dist}{1}[\Dis{}] \lesssim \qRP \cdot \qRO \sqrt{ \advantage{\guess}{}[\Ext{}] }$ & 
-        $\lesssim r q \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRP^2 \qRO^2$ & \autoref{lemma:carf} \\
+        Comp.\ Ad.\ Reprog.\ Framew. 
+        & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes & \Tno & \Tyes &
+        $\lesssim r q \sqrt{\varepsilon}$ & 436 \\
       \cite{EPRINT:Jaeger24b} &
-        Fixed-Perm.\ O2H?? & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\dist}{e}[\Dis{}] \lesssim \qRO \sqrt{ %\advantage{\guess}{}[\Ext{}] }$ &
-        $\lesssim \sqrt{q\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:carf-fp} \\
+        ``Fixed-Permutation'' O2H
+        & \Tyes & \Tyes & \Tyes & \Tyes & \Tyes? & \Tyes? & \Tyes &
+        $\lesssim \sqrt{q\varepsilon}$? & 336? \\
       \midrule
       \cite{TCC:BHHHP19} &
-        Double-sided O2H & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
-        %$\advantage{\dist}{1}[\Dis{}] \lesssim \sqrt{\advantage{\guess}{}[\Ext{}]}$ & 
-        $\lesssim \sqrt{\varepsilon}$ &
-        $\nicefrac{1}{\varepsilon} \approx 1$ & \autoref{lemma:ds-o2h} \\
+        ``Double-sided'' O2H 
+        & \Tno & \Tyes & \Tno & \Tno & \Tyes & \Tyes & \Tyes &
+        $\lesssim \sqrt{\varepsilon}$ & 256 \\
       \midrule
       \cite{EC:KSSSS20} &
-        (Meas.-Rewind-Meas.) & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
-        %$\advantage{\dist}{e}[\Dis{}] \lesssim q \cdot \advantage{\guess}{}[\Ext{}]$ & 
-        $\lesssim q \varepsilon$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:msm} \\
+        Meas.-Rewind-Meas. 
+        & \Tno & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
+        $\lesssim q \varepsilon$ & 208 \\
       \cite{AC:GeLiaXue24} &
-        Meas.-Rewind-Ext. & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
-        %$\advantage{\dist}{e}[\Dis{}] \lesssim q \cdot \advantage{\guess}{}[\Ext{}]$ & 
-        $\lesssim \sqrt{q} \varepsilon$ &
-        $\nicefrac{1}{\varepsilon} \approx \qRO$ & \autoref{lemma:msm} \\
+        Meas.-Rewind-Ext. 
+        & \Tno & \Tyes & \Tyes & \Tno & \Tyes & \Tyes & \Tno &
+        $\lesssim \sqrt{q} \varepsilon$ & 168 \\
       \bottomrule
     \end{tabular}
   \end{table}
+
+  \subsection{Guess versus Find}
+    Let us show that the extractor having access to both $\RO$ and $\GO$ is
+      equivalent to the extractor having access to a quantum-accessible
+      indicator function.
+    
+    \begin{lemma}[Double-sided oracle access $\Leftrightarrow$ Indicator oracle access]
+      Let $\careset \subseteq \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
+      be classical random oracles satisfying $\forall x \not\in \careset: \RO(x) =
+      \GO(x)$, and let $\indfunc$ be an indicator oracle for $\careset$. 
+      A quantum oracle algorithm with oracle access $\indfunc$ can
+      faithfully simulate $\RO$ and $\GO$, and a quantum oracle algorithm with
+      oracle access to $\RO$ and $\GO$ can simulate $\indfunc$, up to collisions in
+      $\careset$.
+    \end{lemma}
+
+    \begin{proof}[sketch]
+      First direction: The algorithm maintains two independent simulations of
+      random oracles using the compressed random oracle technique; call them
+      $\RO_1$ and $\RO_2$. Upon receiving a query to $\RO$, the algorithm
+      responds using $\RO_1$. Upon receiving a query to $\GO$, the algorithm
+      computes the output of both $\RO_1$ and $\RO_2$, storing each in separate output
+      registrers, then uses $\indfunc$ to coherently implement a control for a
+      CSWAP operation that swaps the first and second output register. The simulated
+      $\GO$ then behaves like $\RO_1$ on inputs $x \in \careset$, and like
+      $\RO_2$ on inputs $x \not\in \careset$.
+
+      Second direction: Recall that the indicator oracle operates on an $n$-length
+      input register and a single-qubit output register, which is flipped if the
+      input $x$ is in $\careset$. To simulate $\indfunc$,
+      the algorithm pairs the input register with an $m$-length output register
+      initilazied to $\ket{0^m}$, then first calls $\RO$, followed by $\GO$. The
+      resulting state will have basis states $\ket{x, \RO(x) \xor \GO(x)}$.
+      Using CNOTs to implement an OR-function, the output bit is then flipped
+      iff the state of the output is not equal to $\ket{0^m}$. Thus, we get an
+      oracle that indicates whether $\RO(x)$ is unequal to $\GO(x)$, which is
+      identical to the indicator function for $\careset$ up to collisions in
+      $\careset$ (for which the simulation will return a false negative).
+      Before returning the result, the state of the output register is
+      uncomputed via one more call each to $\RO$ and $\GO$, removing 
+      unwanted entanglement.
+      \hhnote{
+        To-do: Quantify both the loss due to collisions and due to any residue
+        entanglement.
+      }
+    \end{proof}
+
+  \subsection{Non-Adaptive State of the Art}
+    In the lemmas below, $\RO$, $\GO$, $\careset$ (or $\target$), and $z$ are random
+      with arbitrary joint distributions.
+
+    \begin{lemma}[Classical O2H~\cite{CCS:BelRog93}]
+      Let $\careset \subseteq \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
+      be classical random oracles satisfying $\forall x \not\in \careset: \RO(x) =
+      \GO(x)$, let $\indfunc$ be an indicator oracle for $\careset$, and let $z$ be arbitrary. Then 
+      there are SFBB extractors $\findext, \guessext$ such that, for all distinguishers
+      $\distinguisher$ making at most $\qRO$ calls to its random oracle,
+      \[
+        \abs{
+          \prob{1 \sample \distinguisher^{\RO}(z)} - \prob{1 \sample \distinguisher^{\GO}(z)}
+        } \leq \probsample{x \sample \findext^{\indfunc}(z)}{x \in \careset}\, ,
+      \]
+      and
+      \[
+        \abs{
+          \prob{1 \sample \distinguisher^{\RO}(z)} - \prob{1 \sample \distinguisher^{\GO}(z)}
+        } \leq \qRO \cdot \probsample{x \sample \guessext(z)}{x \in \careset}\, .
+      \]
+      The extractors run in time that of $\distinguisher$ plus the
+      overhead of simulating at most $\qRO$ oracle calls, and
+      $\findext$ additionally makes at most $\qRO$ calls to its
+      indicator oracle.
+    \end{lemma}
+
+    \begin{lemma}[Original O2H Lemma~\cite{EC:Unruh14}]
+      Let $\RO, \GO: \Xspace \to \Yspace$
+      be random oracles satisfying $\forall x \neq \target: \RO(x) =
+      \GO(x)$ (and independent otherwise), and let $z$ be a value that depends arbitrarily on $\RO, \GO$,
+      and $\target$. Then there is an SFBB extractor $\extractor$ such that, for all distinguishers
+      $\distinguisher$ making at most $\qRO$ calls to its random oracle,
+      \[
+        \abs{
+          \prob{1 \sample \distinguisher^{\RO}(z)} - \prob{1 \sample \distinguisher^{\GO}(z)}
+        } \leq 2\qRO \sqrt{\prob{\target \sample \extractor(z)}\, ,
+      \]
+      where the extractor runs in time that of $\distinguisher$, plus the
+      overhead of simulating at most $\qRO$ oracle responses.
+    \end{lemma}
+
+    \begin{lemma}[Multi-point O2H~\cite{C:AmbHamUnr19}]
+      Let $\careset \subseteq \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
+      be quantum random oracles satisfying $\forall x \not\in \careset: \RO(x) =
+      \GO(x)$, let $\indfunc$ be a quantum-accessible indicator oracle for $\careset$, and let $z$ be arbitrary. Then 
+      there are SFBB extractors $\findext, \guessext$ such that, for all distinguishers
+      $\distinguisher$ making at most $\qRO$ calls to its random oracle,
+      $\forall e \in \{1, \half\}$,
+      \[
+        \abs{
+          \prob{1 \sample \distinguisher^{\RO}(z)}^e - \prob{1 \sample \distinguisher^{\GO}(z)}^e
+        } \leq 2 \sqrt{
+          (\qRO + 1) \cdot \probsample{x \sample \findext^{\indfunc}(z)}{x \in \careset}
+        }\, ,
+      \]
+      and
+      \[
+        \abs{
+          \prob{1 \sample \distinguisher^{\RO}(z)}^e - \prob{1 \sample \distinguisher^{\GO}(z)}^e
+        } \leq 2 \qRO \sqrt{
+          \probsample{x \sample \guessext(z)}{x \in \careset}
+        }\, .
+      \]
+      The extractors run in time that of $\distinguisher$ plus the
+      overhead of simulating at most $\qRO$ oracle responses, and
+      $\findext$ additionally makes at most $\qRO$ calls to its
+      indicator oracle.
+    \end{lemma}
+
+    \begin{lemma}[Single-point O2H, find~\cite{TCC:BHHHP19}]
+      Let $\target \in \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
+      be quantum random oracles satisfying $\forall x \neq \target: \RO(x) =
+      \GO(x)$, let $\indfunc$ be a quantum-accessible indicator oracle for $\target$, and let $z$ be arbitrary. Then 
+      there is an SFBB extractor $\extractor$ such that, for all distinguishers
+      $\distinguisher$ making at most $\qRO$ calls to its random oracle, 
+      $\forall e \in \{1, \half\}$,
+      \[
+        \abs{
+          \prob{1 \sample \distinguisher^{\RO}(z)}^e - \prob{1 \sample \distinguisher^{\GO}(z)}^e
+        } \leq 2 \sqrt{
+          \prob{\target \sample \extractor^{\indfunc}(z)}
+        }\, ,
+      \]
+      where $\extractor$ runs in time that of $\distinguisher$ plus the
+      overhead of simulating at most $2\qRO$ oracle responses, and makes at most $\qRO$ calls to its
+      indicator oracle.
+    \end{lemma}
+
+    \begin{lemma}[Multi-point O2H with rewinding, find~\cite{AC:GeLiaXue24}]
+      Let $\careset \subseteq \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
+      be quantum random oracles satisfying $\forall x \not\in \careset: \RO(x) =
+      \GO(x)$, let $\indfunc$ be a quantum-accessible indicator oracle for
+      $\careset$, and let $z$ be arbitrary. Then 
+      there is an RBB extractor $\extractor$ such that, for all distinguishers
+      $\distinguisher$ making at most $\qRO$ calls to its random oracle, 
+      \[
+        \abs{
+          \prob{1 \sample \distinguisher^{\RO}(z)} - \prob{1 \sample \distinguisher^{\GO}(z)}
+        } \leq 4 \sqrt{\qRO} \cdot \probsample{x \sample \extractor^{\indfunc}(z)}{x \in \careset}\, ,
+      \]
+      where $\extractor$ runs in time thrice that of $\distinguisher$ (rewinding
+      twice), plus the overhead of simulating at most $6\qRO$ oracle responses,
+      and makes at most $3\qRO$ calls to its indicator oracle.
+    \end{lemma}
+
+    \hhnote{
+      MRM required access to both $\RO$ and $\GO$; exchanged for indicator
+      function, making MRE strictly more general. Also double-check that it is
+      rewinding twice.
+    }
+
+    \hhnote{Attempt at putting them all in one lemma}
+    \begin{lemma}[Non-adaptive O2H, state of the art]
+      Let $\RO, \GO: \Xspace \to \Yspace$
+      be quantum random oracles, let $\careset \subseteq \Xspace$ be such that
+      $\forall x \not\in \careset: \RO(x) = \GO(x)$, let $\indfunc$ be a
+      quantum-accessible indicator oracle for $\careset$, and let $z$ be a value
+      that depends arbitrarily on $\RO, \GO$ and $\careset$.
+      Let $\distinguisher$ be a distinguisher that makes at most $\qRO$ calls to
+      its random oracle. Then,
+      \begin{enumerate}
+        \item \textbf{(Classical guess)} There is an SFBB extractor $\extractor$ such that, for all $\distinguisher$ that only
+          make classical calls to the random oracle, 
+          \[
+            \abs{
+              \prob{1 \sample \distinguisher^{\RO}(z)} - \prob{1 \sample \distinguisher^{\GO}(z)}
+            } \leq \qRO \cdot \probsample{x \sample \extractor(z)}{x \in \careset}\, ,
+          \]
+          where $\extractor$ runs in time that of $\distinguisher$ plus the
+          overhead of simulating at most $\qRO$ oracle responses.
+        \item \textbf{(Classical search)} There is an SFBB extractor $\extractor$ such that, for all $\distinguisher$ that only
+          make classical calls to the random oracle, 
+          \[
+            \abs{
+              \prob{1 \sample \distinguisher^{\RO}(z)} - \prob{1 \sample \distinguisher^{\GO}(z)}
+            } \leq \probsample{x \sample \extractor^{\indfunc}(z)}{x \in \careset}\, ,
+          \]
+          where $\extractor$ runs in time that of $\distinguisher$ plus the
+          overhead of simulating at most $\qRO$ oracle responses,
+          and makes at most $\qRO$ calls to its indicator oracle.
+        \item \textbf{(Multi-point guess)} There is an SFBB extractor $\extractor$ such
+          that, for all $\distinguisher$ and $e \in \{1, \half\}$,
+          \[
+            \abs{
+              \prob{1 \sample \distinguisher^{\RO}(z)}^e - \prob{1 \sample \distinguisher^{\GO}(z)}^e
+            } \leq 2 \qRO \sqrt{
+              \probsample{x \sample \extractor(z)}{x \in \careset}
+            }\, ,
+          \]
+          where $\extractor$ runs in time that of $\distinguisher$ plus the
+          overhead of simulating at most $\qRO$ oracle responses.
+        \item \textbf{(Multi-point search)} There is an SFBB extractor $\extractor$ such
+          that, for all $\distinguisher$ and $e \in \{1, \half\}$,
+          \[
+            \abs{
+              \prob{1 \sample \distinguisher^{\RO}(z)}^e - \prob{1 \sample \distinguisher^{\GO}(z)}^e
+            } \leq 2 \sqrt{
+              (\qRO + 1) \cdot \probsample{x \sample \extractor^{\indfunc}(z)}{x \in \careset}
+            }\, ,
+          \]
+          where $\extractor$ runs in time that of $\distinguisher$ plus the
+          overhead of simulating at most $\qRO$ oracle responses,
+          and makes at most $\qRO$ calls to its indicator oracle.
+        \item \textbf{(Single-point search)} For $\careset = \{\target\}$, there is an SFBB extractor $\extractor$ such
+          that, for all $\distinguisher$ and $e \in \{1, \half\}$,
+          \[
+            \abs{
+              \prob{1 \sample \distinguisher^{\RO}(z)}^e - \prob{1 \sample \distinguisher^{\GO}(z)}^e
+            } \leq 2 \sqrt{
+              \prob{\target \sample \extractor^{\indfunc}(z)}
+            }\, ,
+          \]
+          where $\extractor$ runs in time that of $\distinguisher$ plus the
+          overhead of simulating at most $2\qRO$ oracle responses,
+          and makes at most $\qRO$ calls to its indicator oracle.
+        \item \textbf{(Multi-point search with rewinding)} There is an RBB
+          extractor $\extractor$ such that, for all $\distinguisher$,
+          \[
+            \abs{
+              \prob{1 \sample \distinguisher^{\RO}(z)} - \prob{1 \sample \distinguisher^{\GO}(z)}
+            } \leq 4 \sqrt{\qRO} \cdot \probsample{x \sample \extractor^{\indfunc}(z)}{x \in \careset}\, ,
+          \]
+          where $\extractor$ runs in time at most thrice that of $\distinguisher$ (rewinding
+          twice), plus the overhead of simulating at most $6\qRO$ oracle
+          responses, and makes at most $3\qRO$ calls to its indicator oracle.
+      \end{enumerate}
+    \end{lemma}
+
+  \subsection{Making the Lemmas Adaptive}
 
   % Subsection: Classical O2H
     %\input{qrot-bre}
