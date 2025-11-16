@@ -1,4 +1,7 @@
-\section{How to Lazy-Sample a Quantum Random Oracle}\label{sec:compressed}
+\section{The Compressed-Oracle Technique, or: How to Lazy-Sample a QRO}\label{sec:compressed}
+  Classical random oracles have the neat feature that they are easy to
+  simulate: simply (\ldots)
+  
   We will employ the compressed oracle technique, as introduced by
     Zhandry~\cite{C:Zhandry19};
     specifically, we employ an adapted version of the ``standard Fourier
@@ -24,7 +27,7 @@
       \rowcolors{2}{}{gray!10}
       \begin{tabular}{cccc}
         \toprule
-        Object & Notation & Class/definition \\
+        Meaning & Notation & Object Class \\
         \midrule
         Input register & $\inputreg$ & $n$-length qubit register \\
         Output register & $\outputreg$ & $m$-length qubit register \\
@@ -46,7 +49,7 @@
         Entry subregister & $\database[i]$ & $(1+n+m)$-sized subregister storing $i$th entry \\
         Input-specific subregister & $\database(x)$ & Subregister
         $\database[i]$ storing $(x, \Dlist[x])$ in current branch \\
-        Entry I/O registers & $\database_{\inputreg}[i], \database_{\outputreg}[i]$ & Subregisters storing $i$'th input resp.\ output value \\
+        Entry I/O registers & $\database_{\inputreg, i}, \database_{\outputreg, i}$ & Subregisters storing $i$'th input resp.\ output value \\
         Specific I/O registers & $\database_\inputreg(x),
         \database_\outputreg(x)$ & Subregisters storing $x$ resp.\ $\Dlist[x]$ in current branch \\
         \bottomrule
@@ -77,7 +80,7 @@
         will lead to the invalid state $\ket{x}\ket{\slashed{z}}$, where $z = x \xor
         y$, but we will never apply the gate to such cases.)
 
-      Finally, observe that $x \cdot \emptystring = 0$ for any $x$, where $\cdot$
+      Observe that $x \cdot \emptystring = 0$ for any $x$, where $\cdot$
         denotes the bitwise inner product.
 
     \paragraph{Databases.}
@@ -101,7 +104,7 @@
         \ket{\emptystring, 0^m}_q\, ,
       \end{align*}
       with unique and increasing input elements $x_1 < x_2 < \ldots < x_k$,
-        non-zero output elementst $\hat{y}_i$, and $k \leq \ell$.
+        non-zero output elements $\hat{y}_i$, and $k \leq \ell$.
         We write $\Dlist[x] = \hat{y}$ if the list contains an element
         $(x,\hat{y})$, and $\Dlist[x] = \perp$ otherwise. 
         %This is well-defined,
@@ -109,9 +112,10 @@
         %the value $x$ at any time.
 
       The state of the database register will in general be highly entangled
-        with the parties performing the queries; indeed, a list element will be
-        non-empty \emph{only if} the register is entangled with the state of a
-        querying party. Finally, the number of ``active'' versus ``fresh''
+        with the parties performing the queries; indeed, it will turn out that
+        a list element is 
+        non-empty \emph{if and only if} the register is entangled with the state of
+        some querying party. Finally, the number of ``active'' versus ``fresh''
         entries may differ between branches of the superposition of $\database$,
         though their sum will always be $q$.\footnote{
           In the original formulation of the compressed oracle technique, the size
@@ -120,7 +124,8 @@
           \emph{size} of the register is in superposition. In our formalization,
           registers are classically well-defined lists storing qubits (which are
           two-level physical systems), and
-          while it is possible to resize registers by moving qubits around, we do
+          while it is technically possible to resize registers (by moving
+          qubits around), we do
           not allow for this to happen in superposition. Therefore, we fix
           the size of $\database$ to be $q$ a priori,
           and simply accept that the simulation will fail if the query count
@@ -128,28 +133,30 @@
         }
 
     \paragraph{Database subregisters.}
-      Next, let us define a naming convention for the subregisters of $\database$:
+      Next, let us define a naming convention for subregisters of $\database$:
         Let $\database_\inputreg$ refer to the collection of qubits that
-        store input values in the list (i.e.\ a subregister of size $q\cdot
+        store input values in the list (so a subregister of size $q\cdot
         (1+n)$), and let $\database_\outputreg$ refer to the collection of
         qubits that stores output values (with size $q \cdot m$).
 
-      Now, provided $\Dlist[x] \neq \emptystring$,
+      Now, provided $\Dlist[x] \neq \emptystring$ in some branch of the
+        superposition,
         let $\database(x)$ refer to the qubits that store the
-        relevant tuple $(x, \hat{y})$. Note that even in branches where this
+        tuple $(x, \hat{y})$ in that branch. Note that even in branches where this
         holds, the exact qubit indices corresponding to
         $\database(x)$ will in general differ between branches, since the lists in the
         superposition may contain a varying number of entries that precede $x$,
         making $\database(x)$ only well-defined when specializing to single
-        branches of $\database_\inputreg$ superposition.
-        When speaking generally, we may use $\database_i$ to refer to the registers
-        that will store the $i$'th tuple of any list.
+        branches of the $\database_\inputreg$ state.
+        When speaking generally, we will instead use $\database_i$ to refer to
+        the qubits that store the $i$'th tuple.
 
-      Combining, we can then refer to the subregister storing the first element of
-        the tuple $(x,\hat y)$ as $\database_\inputreg(x)$, and the register
+      Combining the above, we can then refer to the subregister storing the first element of
+        the tuple $(x,\hat y)$ in a particular branch as $\database_\inputreg(x)$, and the register
         storing the corresponding value $\hat{y}$ as
-        $\database_\outputreg(x)$, (and likewise for $\database_{\inputreg,i}$,
-        $\database_{\outputreg,i}$).
+        $\database_\outputreg(x)$. Likewise, $\database_{\inputreg,i}$ (resp.\
+        $\database_{\outputreg,i}$) refers to the subregister storing the input
+        (resp.\ output) value of the $i$'th tuple, irrespective of branch.
 
       %\hhnote{
       %  I \emph{think} \ldots but it may be the case (indeed, the \emph{point})
@@ -168,7 +175,7 @@
 
     \paragraph{The primal and the Hadamard domain.}
       You may have noticed the hats. These denote that the value in question is
-        defined in the Hadamard-domain: A computational basis state
+        defined in the Hadamard-domain: a computational basis state
         $\ket{y}$ in the primal domain (left) will be the following 
         superposition in the Hadamard domain (right):
         \begin{align*}
@@ -193,54 +200,55 @@
 
       \noindent
       As illustrated, one can move between the primal domain and the
-        Hadamard domain by performing the ``Hadamard transformation'',
-        which is just applying the $\Hgate$ gate to each qubit in the
-        register individually.\footnote{
-          In his paper~\cite{C:Zhandry19}, Zhandry varyingly refers to the Quantum Fourier
+        Hadamard domain by performing the Hadamard transformation
+        (which is just applying the $\Hgate$ gate to each of the qubits in the
+        register).\footnote{
+          Zhandry~\cite{C:Zhandry19} varyingly refers to the Quantum Fourier
           Transformation and the Hadamard transformation, but he clarifies in
           App.\ A that he only ever uses the latter. (The Hadamard gate $\Hgate$ is the
           single-qubit Quantum Fourier Transformation.)
-        } We will only move between domains on the output register,
-        i.e.\ the $\outputreg$ register forwarded as part of the query.  
-        The input registers $\inputreg$ and
-        $\database_{\inputreg}$ will both be kept in the primal domain,
-        and the output register $\database_{\outputreg}$ of the database 
+        } We will only move between domains on the output register $\outputreg$;
+        %i.e.\ the $\outputreg$ register forwarded as part of the query.  
+        the input registers $\inputreg$ and
+        $\database_{\inputreg}$ will be kept in the primal domain,
+        and the database's output registers $\database_{\outputreg}$ 
         will be kept in the Hadamard domain.
 
-  \subsection{Defining CROs}\label{sec:defining-cros}
+  \subsection{Defining Compressed Random Oracles}\label{sec:defining-cros}
     \paragraph{Updating the database.}
       Next, we define a unitary that acts on the combined state of the input
         register $\inputreg$ and the database $\database$,
-        named $\decomp$ for ``Store/Sort''.\footnote{
-          Zhandry calls this unitary $\unitary[FourDecomp]$, for ``Fourier
-          Decompress''~\cite[App.~C]{C:Zhandry19}.
+        named $\decomp$ for ``Store'' and/or ``Sort''.\footnote{
+          This is the $\unitary[FourDecomp]$ unitary in the language of Zhandry, 
+          for ``Fourier Decompress''~\cite[App.~C]{C:Zhandry19}.
         } In essence, it is an operation that
-        reads the input, and updates the database accordingly.
+        reads the input and updates the database accordingly.
         We define it by specifying it on all basis states, verifying along the
-        way that each step is reversible, and therefore
-        unitary. Indeed, $\decomp$ will turn out to be an involution, meaning
-        that applying it twice in a row will return the same state, (or in 
+        way that each step is reversible, and conclude that $\decomp$ is 
+        unitary and therefore well-defined. Indeed, $\decomp$ will turn out to be an involution, meaning
+        that applying it twice in a row will return the same state (or in 
         other words, that $\decomp^2 = \idmatrix$).
 
       \begin{definition}[Unitary $\decomp$]
         For each computational basis state $\ket{x}\ket{\Dlist}$ in the
-          support of the combined state of registers $\inputreg$ and $\database$:
+          support of the combined state of registers $\inputreg$ and
+          $\database$, perform the following steps:
         \begin{enumerate}
           \item Do one of the following, depending on the case: 
           \begin{enumerate}
-            \item If $\Dlist[x] = \hat{y} \neq 0^m$, then $\RO(x)$ has already been
-              set, and $\database(x)$ must furthermore be entangled with a
-              querying party; do nothing.
             \item If $\Dlist[x] = \perp$, set
               the first empty element $(\emptystring, 0^m)$ in $\Dlist$ to
-              $(x, 0^m)$ by applying $\eCXgate$ from $\inputreg$ to the
+              $(x, 0^m)$, by applying $\eCXgate$ from $\inputreg$ to the
               corresponding subregister $\database_{\inputreg,i}$.
             \item If $\Dlist[x] = 0^m$, ``forget'' the element by applying 
               $\eCXgate$ from $\inputreg$ to the subregister
               of $\database_{\inputreg}(x)$,
-              resulting in the entry $(\emptystring, 0^m)$. 
+              yielding the entry $(\emptystring, 0^m)$. 
               %(Notice that this
               %operation is identical to the above one, but with the inverse outcome.)
+            \item If $\Dlist[x] = \hat{y} \neq 0^m$, then $\RO(x)$ has already been
+              set, and $\database(x)$ must furthermore be entangled with a
+              querying party; do nothing.
             \item For all other basis states, which is to say for lists $\Dlist$ that 
               contain no empty entries $(\emptystring, 0^m)$ (which can
               only happen if the query count exceeds $q$), and for lists that
@@ -252,14 +260,14 @@
 
         \noindent
         The If-statements may be implemented as mult-bit controlled
-        operations. Notice that the cases are mutually exclusive as well as
-        exhaustive, and that they define an involution. Therefore, $\decomp$ is
+        operations. Notice that the cases are exhaustive and mutually
+        exclusive, and that they define an involution. Therefore, $\decomp$ is
         unitary.
       \end{definition}
 
-    \paragraph{Entangling the query.}
-      With the updating procedure defined, all that remains is to 
-        define how an output is provided. 
+    \paragraph{Entangling the Query.}
+      With the database updating procedure defined, all that remains is to 
+        define how the output is to be prepared. 
 
       In essence, the idea is to
         move the output register $\outputreg$ to the Hadamard
@@ -269,10 +277,10 @@
         $\inputreg$ and $\outputreg$ back to the querying party.
         The entanglement, which is hidden from view of whoever made the query,
         will make it look like a classical probability distribution has been
-        induced over the possible states of $\outputreg$---just as if $\RO$ had
-        been sampled from the set of all functions.
+        induced over the possible states of $\outputreg$, just as if $\RO$ had
+        been pre-sampled from the set of all functions.
 
-      Let us define the ``Entangling'' unitary $\entangle$ next.
+      Let us next define the ``Entangling'' unitary $\entangle$.
 
       \begin{definition}
         Let $\entangle$ be the unitary that acts on basis states
@@ -284,14 +292,15 @@
             \ket{x}\ket{\hat y}\ket{\ldots, (x, \hat y \xor z), \ldots}\, ,
           \]
           and as the identity whenever $\Dlist[x] = \perp$.\footnote{
-            We will ensure that this never occurs.
-          } The cases are mutually exclusive and exhaustive, and define
+            Which we will again ensure never occurs.
+          } The cases are exhaustive and mutually exclusive, and define
           an involution. Therefore, $\entangle$ is unitary.
       \end{definition}
 
-    \paragraph{The oracle procedure.}
+    \paragraph{The Oracle Procedure.}
       With $\decomp$ and $\entangle$ defined, we are finally ready to define
-        the action performed by our compressed random oracle upon receiving a query.
+        the action performed by our compressed random oracle upon receiving a
+        query $\RO(\inputreg, \outputreg)$.
 
       \begin{definition}[Compressed random oracle]
         \label{def:compressed-ros}
@@ -313,7 +322,7 @@
         oracle~\cite[Lemma~4]{C:Zhandry19}.
 
       \begin{theorem}[Simulation is perfect]\label{thm:perfect}
-        Let $\RO$ be a quantum-accessible random oracle, and let $\RO[G]$ be a
+        Let $\RO$ be a (monolithic) quantum-accessible random oracle, and let $\RO[G]$ be a
         compressed random oracle. Then we have for all distinguishers $\distinguisher$,
         \[
           \prob{1 \sample \distinguisher^{\RO}} = \prob{1 \sample
@@ -321,11 +330,11 @@
         \]
       \end{theorem}
 
-  \subsection{Playing with CROs}
+  \subsection{But How Do They Work?}
     What is the effect of the operations listed in \autoref{def:compressed-ros}? Let's explore!
 
     \paragraph{Classical queries.}
-      For our first sanity check, consider the result of performing the
+      As a first sanity check, consider the result of performing the
         first three steps on a classical query, i.e.\ with $\inputreg$
         and $\outputreg$ put in a computational basis state
         $\ket{x}\ket{y}$, to the initially-empty database
@@ -903,3 +912,14 @@
     %\label{fig:prf-ku}
     %\end{figure}
   \fi
+
+  
+  \subsection{Making Reprogramming Consistent}
+    \hhnote{
+      Show a minimal working example of something you can do with CROs that
+      seems difficult to do without: Either indifferentiability of a minimal version
+      of Merkle--Damgaard, or something more on-topic like NCE security of BRE.
+      (But maybe the example to \emph{has} to involve several oracles being called 
+      iteratively, like in Merkle--Damgaard. Still, would be nice with a simpler
+      example that somehow involves encryption.)
+    }
