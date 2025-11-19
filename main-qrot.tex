@@ -139,9 +139,11 @@
 % Commenting
 %-------------------------------------------------------------------------------%
 
+\definechangesauthor[name={Kathrin}, color=purple]{TS}
 \definechangesauthor[name={Hans}, color=darkgreen]{HH}
 
 \newcommand{\hhnote}[2][]{\todo[inline,color=Linen]{\textbf{Hans:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
+\newcommand{\khnote}[2][]{\todo[inline,color=AliceBlue]{\textbf{Kathrin:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
 \newcommand{\revnote}[1]{\todo[inline]{\textbf{Reviewer:} #1}\xspace}
 
 \newcommand\todoenum[2][]{\todo[inline,color=Cornsilk,caption={2do}]{
