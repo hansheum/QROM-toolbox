@@ -189,57 +189,36 @@
 
   % Main body
 
-  %\clearpage
   %\addcontentsline{toc}{part}{Part 1.\quad Setting The Stage}
+  \input{qrot-preface}
   \part{Setting The Stage}
-    \input{qrot-introduction}
-    \clearpage
-    \input{qrot-preliminaries}
-    \clearpage
-    \input{qrot-bre}
+    \input{qrot-basics}
     \clearpage
     \input{qrot-primer}
     \clearpage
-    \input{qrot-pseudocode}
-    \clearpage
-    \input{qrot-definitions}
+    \input{qrot-rom}
 
-  %\clearpage
-  %\addcontentsline{toc}{part}{Part 2.\quad Main Tools}
+  \part{(Post-)Quantum Headaches}
+    \input{qrot-pke-rom}
+    \clearpage
+    \input{qrot-dsa-rom}
+    \clearpage
+    \input{qrot-problems}
+
   \part{Tools of the Toolbox}
     \input{qrot-o2h}
     \clearpage
-  %\addcontentsline{toc}{part}{Part 3.\quad Quantum Lazy-sampling with Compressed Random Oracles}
     \input{qrot-compressed}
-  \ifdraftversion
-    \clearpage 
-    \input{qrot-improving-o2h}
-    % Add in V2
-    % \input{qrot-rewinding-revisited}
-  \fi
-
-  %% Add this in future version.
-  %\ifdraftversion
-  %  %\part{
-  %  %  Authenticity in the PQ World:
-  %  %  Rewinding Protocols
-  %  %}
-  %  \addcontentsline{toc}{part}{Part ?.\quad Rewinding in a Quantum World}
-
-  %  \input{qrot-rewinding}
-  %\fi 
-
-  %\ifdraftversion
-  %  \clearpage
-  %  \addcontentsline{toc}{part}{Part 3.\quad Sigma Protocols in the Quantum Random Oracle Model}
-  %  %\input{...}
-  %\fi
+    \clearpage
+    \input{qrot-extract}
+    \ifdraftversion
+      \clearpage
+      \input{qrot-rewind} % maybe leave for v2
+    \fi
 
   \ifdraftversion
-    %\clearpage
-    %\addcontentsline{toc}{part}{Part 3.\quad Under the Rug: Proving Quantum Lemmas}
     \part{Under The Rug}
-    \input{qrot-proofs}
+    \input{qrot-proofs} % maybe leave for v3
     \clearpage
   \fi
 
@@ -264,12 +243,15 @@
 
   % Appendices input below
 
+  \input{qrot-pseudocode}
+    \clearpage
   \input{qrot-solutions}
     \clearpage
 
   % WIP
   \ifdraftversion
     \input{qrot-ttransform}
+    \input{qrot-improving-o2h}
     \input{qrot-handsoff}
   \fi
 
