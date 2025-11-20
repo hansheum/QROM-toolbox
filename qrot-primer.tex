@@ -1171,3 +1171,46 @@
         \]
       \end{lemma}
 
+      \begin{table}%[b]
+        \centering
+        %
+        \caption{
+          \label{tab:notation}
+          An overview of our quantum notation. (lc.\ $=$ lowercase, uc.\
+          $=$ uppercase. ${}^*$Not always well-defined.)
+        }
+        %
+        \rowcolors{2}{}{gray!10}
+        \begin{tabular}{cccc}
+          \toprule
+          Object & Convention & Examples & Class/definition \\
+          \midrule
+          Bitstring & Roman (lc., end of alph.) & $x,y$ & $\in \bin^n$ \\
+          General state label & Greek (lc., middle of alph.) & $\psi,\varphi$ & $\in \{\text{labels}\}$ \\
+          Amplitude & Greek (lc, beginning of alph.) & $\alpha,\beta$ & $\in \CC$ \\
+          Qubit count & Roman (lc., middle of alph.) & $n,m$ & $\in \NN$ \\
+          Dimensonality & Roman (uc., middle of alph.) & $N,M$ & $\coloneqq 2^n, 2^m$ \\
+          \midrule
+          %Pure quantum state & Dirac ket with label & $\ket{\ \cdot\ }$ & $\in \CC^{M}$ \\
+          Computational basis state & Dirac ket w/ bitstring label & $\ket{x}$ & $\in \CC^{M}$ \\
+          General quantum state & w/ General state label & $\ket{\psi}$ & $\in \CC^M$ \\
+          Evolving state & w/ Time-dependent label & $\ket{\psi(t)}$ & $\in \CC^M,\ t \in \NN$ \\
+          \midrule
+          Qubit & Lowercase $\qubit$ (sans serif) & $\qubit$ & Two-dim.\ physical system \\
+          Qubit register & Roman (uc., calligraphic) & $\register$ & List of $m \leq n$ qubits $\qubit_i$\\
+          Global quantum system & Register $\qcomp$ & $\qcomp$ & List of $n$ qubits $\qubit_i$ \\
+          \midrule
+          Qubit (pure) state$^*$ & Qubit label/index subscript & $\ket{\qubit_i}, \ket{\psi}_i$ & $\in \CC^2$ \\
+          Register (pure) state$^*$ & Register label/subscript & $\ket{\register}, \ket{\psi}_{\register}$ & $\in \CC^M, m \leq n$ \\
+          Global system state & Global system label & $\ket{\qcomp}$ & $\in \CC^N$ \\
+          \midrule
+          %Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
+          %Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
+          Unitary/measurement operators & Roman (uc., sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M}$ \\
+          Apply unitary to register & $\pcalgostyle{Apply}$(unitary : register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
+          %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \autoref{def:}) \\ 
+          Measure register & $\pcalgostyle{Meas}$(measurement : register) & $x
+          \sample \meas{\measurement}{\register}$ & Method (see \autoref{def:measure}) \\ 
+          \bottomrule
+        \end{tabular}
+      \end{table}

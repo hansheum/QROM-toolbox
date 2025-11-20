@@ -6,10 +6,17 @@
     \item QROM proofs are conceptually challenging and usually lossy
     \item Therefore, it is important that we lower the barrier for entry
     \item Hence, this tutorial
+    \item \ldots Actually, do we need to motivate post-quantum security at all
+      (beyond the abstract)? Prospective readers will clearly already know that stuff,
+      since otherwise they wouldn't have started to read a tutorial
+      on QROM proof techniques.
   }
   \khnote{test}
 
-  Proofs of security in the Random Oracle Model are often conceptually
+  \noindent
+  So you want to prove security in the QROM.
+
+  Proofs of security in the Random Oracle Model (ROM) are often conceptually
     simple, and yet regularly achieve strong security claims with
     near-tightness for highly efficient constructions---which is as close as
     one gets to a holy trinity for provable security. In contrast, proofs in the
@@ -38,7 +45,7 @@
     possible, so that the community may together bring our transition to a
     post-quantum world into effect, in a safe and (provably) secure manner.
 
-  \paragraph{The ROM techniques don't transfer \ldots}
+  \paragraph{ROM Techniques Don't Transfer \ldots}
     One of the most useful facts about reductions in the random oracle model,
       is that anyone can efficiently \emph{simulate} a random oracle, simply by
       drawing the random outputs one-at-a-time, and storing them in a list to
@@ -55,7 +62,7 @@
       store an exponentially large list of input values in order just to process the
       input!
 
-  \paragraph{\ldots But the concepts do.}
+  \paragraph{\ldots But the Concepts Do.}
     And yet, the past decade has seen the development of techniques that
       recover much of these capabilities. Prime among these are the various
       One-Way to Hiding (O2H) lemmas, that allow for careful reprogramming of
@@ -64,7 +71,7 @@
       efficiently implement a simulation of a quantum random oracle, in direct
       correspondence to the ``lazy sampling'' technique described above.
 
-  \paragraph{Outline.}
+  \subsubsection{Outline.}
     After defining our notation in \autoref{sec:prelim}, we define quantum
       random oracles in \autoref{sec:defs}. We provide several definitions, and
       show that they are all equivalent. In the process, we will try to get a
