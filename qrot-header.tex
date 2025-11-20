@@ -1,7 +1,7 @@
 \title{
   The Quantum Random Oracle Toolbox
   \thanks{
-    Version 0.1 (\today)
+    Version 0 (\today)
   }
 }
 
@@ -16,10 +16,16 @@
 \authorrunning{H.~Heum and K.~H\"ovelmanns}
 
 \institute{ 
-  %Norwegian University of Science and Technology, Trondheim, Norway\\
-  %\email{hans.heum@ntnu.no} \and
-  Simula UiB, Bergen, Norway\\
-  \email{hansh@simula.no} \and
+  % If published earlier than January 3rd:
+    %Norwegian University of Science and Technology, Trondheim, Norway\\
+    %\email{hans.heum@ntnu.no}
+  % If published later than January 5th:
+    Simula UiB, Bergen, Norway\\
+    \email{hansh@simula.no}
+  % (On January 4th I am technically unemployed.)
+  \and
+  Eindhoven University of Technology, The Netherlands\\
+  \email{k.hovelmanns@tue.nl}
 }
 
 \maketitle
@@ -27,48 +33,47 @@
 \begin{abstract}
   The Random Oracle Model (ROM) has been highly successful in bringing to life
   cryptographic schemes that are 1) efficient and 2) provably secure, with
-  security proofs that are often furthermore 3) conceptually simple, and 4) tight. 
-  However, a quantum attacker would be able to run the primitives we are
-  modelling as random oracles (say, SHA3) in \emph{quantum superposition}. 
-  Hence, if we want to claim post-quantum security relative to random oracles,
-  we better ensure our random oracles are \emph{quantum-accessible}.
+  security proofs that are furthermore 3) conceptually simple, and 4) tight. 
+  However, a quantum attacker would clearly be able to run the primitives our
+  random oracles are modelling (such as, say, SHA3) on a \emph{quantum
+  superposition} of inputs.
+  We can not in general exclude the existence of quantum attacks that employ such a
+  strategy; hence, if we want to claim post-quantum security relative to a random oracle,
+  we better ensure that our random oracle is \emph{quantum-accessible}.
 
   This is the Quantum Random Oracle Model (QROM).
-  Unlike its classical counterpart, security proofs in the QROM are often both
-  1) conceptually challenging and 2) lossy. The issue boils in large part down to three main
-  challenges, relating to the non-applicability of three simple yet
-  powerful proof techniques that sit at the heart of the random oracle model:
+  Unlike their classical counterparts, proofs of security in the QROM are often 
+  1) conceptually challenging and 2) lossy. These issues boil down in large part
+  to three main challenges, relating to the non-applicability of three simple yet
+  powerful techniques that sit at the heart of the classical random oracle
+  model:
 
   \begin{enumerate}
-    \item Reprogramming: Or, how to alter the random oracle on certain inputs.
-    \item Extraction: Or, how to learn from the inputs to the random oracle.
-    \item Simulation: Or, how to lazy-sample a random oracle.
+    \item Reprogramming: or, altering the random oracle on certain inputs
+    \item Extraction: or, learning from the inputs to the random oracle
+    \item Simulation: or, lazy-sampling a random oracle
   \end{enumerate}
 
-  In this gentle introduction to proving security in the QROM, we will show how
-  one can recover these capabilities, by surveying the tools developed over the
-  past decade, including:
+  In this gentle introduction to provable security in the QROM, we will survey how
+  tools developed over the past decade recover these capabilities, and how to
+  apply them:
 
   \begin{enumerate}
-    \item The one-way to hiding lemmas
-    \item Online-extractability of QROs
-    \item The compressed-oracle technique
+    \item The one-way to hiding lemma (for reprogramming)
+    \item Online-extractability of quantum random oracles (for extraction)
+    \item The compressed-oracle technique (for simulation)
   \end{enumerate}
 
-  As motivating examples, we will show how one can apply these tools to prove
-  the security of popular security paradigms like the Fujisaki--Okamoto
-  transformation and the Fiat--Shamir transformations, employed in the recently
-  standardized ML-KEM and ML-DSA, respectively.
+  Along the way, we will meet popular construction paradigms like the Fujisaki--Okamoto
+  transformation and the Fiat--Shamir transformation, employed in post-quantum
+  standards including ML-KEM (Kyber) and ML-DSA (Dilithium): through examples
+  lifted from their proofs of post-quantum security, we will show how
+  one can apply which tool, when, and the impact of each tool on the tightness
+  of the proof.
 
-  %Our approach will be based on pop
-  %a simple encryption scheme due to Bellare and Rogaway~\cite{CCS:BelRog93}
-  %as our motivating example, and prove increasingly
-  %strong statements about it, as we move through the literature on quantum
-  %random oracles and enlargen our toolbox.
-
-  We only assume knowledge of basic linear algebra. Hence,
-  this tutorial also serves as an introduction to both quantum computing and
-  provable security itself, with ample examples and exercises throughout.   
+  We will only assume knowledge of basic linear algebra; hence,
+  this tutorial also serves to introduce both provable security and
+  quantum physics, with ample examples and exercises throughout.   
 
   \begin{keywords}
     Post-Quantum Security \textperiodcentered~
@@ -77,8 +82,6 @@
   \end{keywords}
 \end{abstract}
 
-\ifeprintfull
-  \newpage
-  \tableofcontents
-  \newpage
-\fi
+\newpage
+\tableofcontents
+\newpage

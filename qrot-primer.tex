@@ -1,104 +1,95 @@
 \section{A Brief Quantum Primer}\label{sec:primer}
-  \todoenum[rough structure]{
-    \item intuitive introduction to quantum computing
-    \item introduce and explain without derivation our quantum pseudocode
-      formalism 
-  }
-  Quantum theory arose as a branch of physics, and so much of the
-    standard notational conventions are hand-wavy, and often inconsistently
-    implemented across the literature. For the sake of clarity and
-    self-containedness, we specify all our
-    conventions below, providing a brief summary of the
-    building blocks that make up quantum computing theory along the way;
-    for more details, see the rightly celebrated introductory text by Nielsen and
-    Chuang~\cite{NieChu10}.
+  Quantum theory arose as a branch of physics, and so (naturally) much of the
+    standard notational conventions are hand-wavy and inconsistently
+    implemented across the literature. For the sake of conceptual clarity and
+    self-containedness, we therefore specify all our
+    working conventions below, introducing the
+    building blocks that make up quantum computing theory along the way.
+    For more details, see the rightly celebrated introductory text by Nielsen and
+    Chuang~\cite{NieChu10}, or the equally-excellent book on quantum
+    information theory by Mark Wilde~\cite{Wilde}.
 
   This chapter contains many footnotes: these are tangents with additional details
     that may interest the reader, but are inessential to the rest of the text.
-    In particular, if a footnote made no sense to you, you should feel free to
+    In particular, if a footnote made \emph{no} sense to you, feel free to
     ignore it.\footnote{
-      Or ask me about it! I love explaining this stuff.
+      Or ask Hans about it! He loves explaining this stuff.
     }
 
-  The best way to get a feel for the logic of quantum computing, is to play
-    around with it, and this chapter also provides several exercises towards
-    this purpose,
+  The best way to get a \emph{feel} for the esoteric logic of quantum physics is to play
+    around with it. This chapter also provides several exercises meant to serve this purpose,
     inserted at points in the text where you should be able to use them to test
     your understanding of the material presented so far. 
     Solutions for some (but not all) of the exercises are provided in
     \autoref{sec:solutions}.
 
-  \todoenum[Provide explanations of:]{
-    \item[\done] Bare-bones background on quantum states and Dirac notation; states
-      vs.\ labels.
-    \item[\done] $N = 2^n$; the set $[n]$; $n$-length registers are described by
-      vectors in an $N$-sized Hilbert space.
-    \item[\done] Greek letters: When and why I use them.
-    \item[\done] Precise notational conventions regarding registers.
-    \item[\done] Precise conventions regarding fonts.
-    \item[\done] Notation for unitary evolutions: $\apply{U}$.
-    \item[\done] Pseudocode for applying unitaries
-    \item[\done] Formalism for measurements, and pseudocode for performing them.
-    \item[\done?] Mention the generalization to density matrices?
-    \item Provide notation for ``$\adv$ access to register $\register$'', and
-      establish that registers are taken to be initialized to the all-zero
-      string. Can we come up with a notation for them that makes their size explicit?
-  }
-  
-  \subsection{Dirac Notation}
-    In general, quantum states are complex-valued vectors in a Hilbert space (a
-      vector space defined over functions),
-      which may or may not be finite-dimensional.\footnote{
-        For example, consider the state $\ket{p(x)}$
-        describing the position $x \in [a,b]$ of particle $p$; this will live
-        in an infinite-dimensional Hilbert space characterized by the basis
-        states $\{\ket{p(x)}\}_{x\in[a,b]}$.
-      }
+  \subsection{Quantum Physics and the Dirac Notation}
+    In general, quantum states are complex-valued vectors in Hilbert space,
+    which is to say, a vector space defined over functions. This Hilbert space
+    may or may not be infinite-dimensional (though thankfully, we will only have
+    to worry about the finite-dimensional case).\footnote{
+      For an example of an infinite-dimensional Hilbert space, consider the
+      state $\ket{p(x)}$ describing the physical position $x \in [0,1]$ of some
+      particle $p$. Since space is not (known to be) discretized, observing this state has infinitely
+      many possible outcomes: one for every real number between $0$ and $1$. Hence, $\ket{p(x)}$ lives
+      in the infinite-dimensional Hilbert space spanned by the infinite set of basis
+      states $\{\ket{p(x)}\}_{x\in[0,1]}$.
+    }
     %
     Quantum states are represented using the Dirac notation, in which a quantum state
       carrying the \emph{label} $\psi$ is written $\ket{\psi}$, its conjugate
       transpose is written $\bra{\psi} \coloneqq \ket{\psi}^\dagger \coloneqq
       (\ket{\psi}^*)^T$, and its
       inner product with itself is written $\braket{\psi|\psi} \coloneqq
-      \abs{\ket{\psi}}^2$. Quantum states are unit-norm, and so we have that
-      $\braket{\psi|\psi} = 1$. For two not necessarily equal quantum states
+      \ket{\psi}^\dagger \ket{\psi} = \abs{\ket{\psi}}^2$. Quantum states are unit-norm, and so we have that
+      $\braket{\psi|\psi} = 1$. For two not-necessarily-equal quantum states
       $\ket{\psi}$ and $\ket{\varphi}$, their inner product
-      $\braket{\psi|\varphi}$ is a complex number $\alpha$ with norm
-      $\abs{\alpha}$ between zero and one, where
-      ``zero'' means the states are orthogonal, and ``one'' means the states are
-      identical (modulo an unobservable global phase factor $e^{i\theta}$).
+      $\braket{\psi|\varphi}$ is some complex number $\alpha$ whose norm
+      $\abs{\alpha}$ sits between zero and one, where
+      ``zero'' means that the states are orthogonal, and ``one'' means that the
+      states are identical (modulo an unobservable global phase factor $e^{i\theta}$).
 
     This calculus is fine, but one may wonder, what \emph{is} a quantum
       state---in the sense, what kind of mathematical object is it? The answer
       can be found in the statement that they live in $N$-dimensional \emph{Hilbert
-      space:} Hilbert spaces are vector spaces defined over \emph{functions} in
-      place of vectors, where the inner product between two functions $f$ and
-      $g$ on the interval $[a,b]$ is defined to be $\int_{-\infty}^{\infty}
-      f(x)^* g(x) dx$. This inner product defines a norm, and a notion of
+      space:} Hilbert spaces are vector spaces defined over \emph{functions}
+      rather than vectors. Here, the inner product between two functions $f$ and
+      $g$ on the interval $[a,b]$ is defined as $\int_{a}^{b}
+      f(x)^* g(x) dx$. This inner product defines a norm, as well as a notion of
       orthogonality, from which a vector space may be constructed.
       Quantum states, then, are the functions that arise as solutions to a
-      differential equation describing the dynamics of the system, i.e.
-      the Schrödinger equation in the non-relativistic, non-spin case; the
-      Pauli equation in the case with spin (such as electrons), and the Dirac
-      equation in the relativistic case (excluding gravity). They take some
-      input variable corresponding to an observable, such as the position $x$,
-      and returns the \emph{amplitude} corresponding to that position; squaring
-      this then gives the probability that observing the particle will yield
-      $x$ as a result.
+      differential equation describing the dynamics of the system. 
+      This is the famous Schrödinger equation, for the non-relativistic,
+      non-spin case. For fermions like electrons (which do have spin), we need the
+      \emph{Pauli} equation, and making quantum physics consistent with
+      Einstein's theory of special relitivity requires the \emph{Dirac}
+      equation.\footnote{
+        Of course, combining quantum physics with \emph{general}
+        relativity constitutes \emph{the} open problem of theoretical physics,
+        and has given us a half-century of stagnant debate over which
+        as-of-yet unsuccessful approach, such as string theory vs.\ loop quantum
+        gravity, is more ``natural''. (For more on this, see the popular science
+        section of your local book store.)
+      } These functions take some
+      input value corresponding to a possible observation, such as a particular
+      position $x$, and returns the \emph{amplitude} corresponding to that
+      position; squaring this then gives the probability that when you observe the
+      particle, you will find it in position $x$.
 
     If all of this sounds terribly complicated, then you understand why
-      physicists grew so fond of Dirac's notation, which neatly swept all of
-      these horrible details under a rug of conceptual clarity!
+      physicists grew so fond of Dirac's notation, which neatly sweeps all of
+      these horrible details under a rug of algebraic clarity.
 
-    Thankfully, things become a bit easier in the discrete case: the Hilbert
+    Thankfully, things are easier in the discrete case: the Hilbert
       space is now finite, and so it can be expressed in terms of a finite set of basis
       ``vectors'' (i.e., functions), and the inner
       product is now a sum rather than an integral. Further, functions now have finite domains,
       and may thus be written as $N$-length vectors instead, where each element
       corresponds to an input to the function, enabling us to
       employ our toolbox from linear algebra to study them (leveraging
-      the isomorphism between $\funcspace{\bin^n}{\CC}$ and $\CC^{2^n}$). This is the
-      approach taken in the quantum information sciences.
+      the isomorphism between $\funcspace{\bin^n}{\CC}$ and $\CC^{2^n}$). 
+
+    This is the approach taken in the quantum information sciences.
 
   \subsection{Qubit Basis States}
     \subsubsection{Single-Qubit States.}
