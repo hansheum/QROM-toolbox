@@ -324,11 +324,14 @@
       where $\Ispace = [\ell]$ (for some $\ell \in \NN$) indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
         \braket{\psi|x} \neq 0\}$.
 
-      \begin{exercise}[Global phases.]
-        Let $\ket\psi = \sum_i \alpha_i \ket i$, and let $\ket\varphi =
-        e^{i\theta}\ket\psi$, where the \emph{phase} $\theta$ is a real number between $0$ and
-        $2\pi$. Show that no measurement can distinguish $\ket\psi$ from $\ket\varphi$.
+      \begin{exercise}
+        Let $\ket\psi$ be a quantum state, and let $\ket\varphi =
+        e^{i\theta}\ket\psi$, where the complex phase $\theta$ is a real number between $0$ and
+        $2\pi$. Show that no measurement can distinguish $\ket\psi$ from
+        $\ket\varphi$.\\
+        \emph{(Hint: try expanding $\ket{\psi}$ in terms of an arbitrary orthonormal basis.)}
       \end{exercise}
+      % solution: exand in terms of arbitrary basis
 
   \subsection{Qubit Registers}
     Given a collection of $n$ qubits, we will find it useful to divide it
@@ -337,7 +340,7 @@
       registers, unless the register we are referring to is clear from context.
 
     As an example, let's say we have $n$ qubits, all initialized to $\ket{0}$,
-      and that we want to put the $i$'th qubit in the state $\ket{\psi}$ the
+      and that we want to put the $i$'th qubit in the state $\ket{\psi}$ and the
       $j$'th qubit in the state state $\ket{\varphi}$. In other words, we want
       to do the following:
 
@@ -372,7 +375,8 @@
     \end{align*}
     
     \noindent
-    By indexing the qubit states, this may be written more succinctly:
+    By indexing the qubit states by the corresponding qubit \emph{register},
+    this may be expressed much more concisely:
     \[
       \ket{0}_i \ket{0}_j \longrightarrow \ket{\psi}_i \ket{\varphi}_j\, ,
     \]
@@ -380,46 +384,47 @@
     unchanged by the operation.\footnote{
       In particular, this means that this operation would not
       be well-defined if qubit $i$ and/or $j$ were entangled with any other
-      qubits; we will remedy this situation in \autoref{sec:pseudocode}.
+      qubits; we will remedy this issue in \autoref{subsec:pseudocode}.
     }
 
   \subsection{Unitary Operations}\label{sec:unitaries}
-    Since we are working over finite-dimensional Hilbert spaces, quantum
-      operations, that is, evolutions of quantum states, may be represented as 
+    Since we are working over finite-dimensional Hilbert spaces, 
+      operations that evolve quantum states may be represented as 
       $N \times N$-dimensional matrices. What properties should they have?
     
-    Clearly, any operation that we perform on a quantum state (\emph{except}
-      observing them---we'll get to that!) should yield another valid quantum state
+    Clearly, any operation that we perform on a quantum state (other than
+      observing them---we'll get to that) should yield another valid quantum state
       as a result. Since quantum states must be unit-norm, this means
-      that any operation we perform on them must preserve the norm. 
+      that any operation we perform on them must preserve this norm. 
       This fact turns out to be sufficient
       to restrict the space of allowed operations to the unitary matrices,
-      i.e.\ invertible square matrices $\unitary$ satisfying $\unitary^{-1} =
+      i.e.\ invertible square matrices $\unitary$ that satisfy $\unitary^{-1} =
       \unitary^\dagger$.
 
     \begin{exercise}\label{ex:unitarity}
       Prove that requiring operations to be norm-preserving is equivalent to
-      restricting the set of legal operations to the set of unitary matrices.
-      (Solution is given in \autoref{sec:solutions:unitarity}.)
+      restricting the set of legal operations to those that can be represented
+      by a unitary matrix.
+      (See \autoref{sec:solutions:unitarity} for the solution.)
     \end{exercise}
 
     \noindent
     We will use (sans-serif) capital roman letters to refer to quantum operations, in
-      reference to their matrix representation (see \autoref{tab:notation} for
-      a summary of our notational conventions). Whenever the qubit(s) that the
+      reference to their matrix representation.
+      %(see \autoref{tab:notation} for a summary of our notational conventions). 
+      Whenever what qubit(s) the
       operation is being applied to is not clear from context, we provide
-      the indices of the qubits in the
-      subscript, so for example $\unitary_i$ for a single-qubit operation
-      applied to qubit $i$, and $\unitary_{i,j}$ for a
+      their indices as subscript, so for example $\unitary_i$ for a
+      single-qubit operation applied to qubit $i$, and $\unitary_{i,j}$ for a
       two-qubit operation applied to qubit $i$ and $j$.
       (Note that in general, $\unitary_{i,j} \neq \unitary_{j,i}$.)
 
     It is often useful to refer to operations in terms of the effect they have
-      on the starting state, and so we define $\ket{\psi} \apply{U}
+      on the initial state, and so we define $\ket{\psi} \apply{U}
       \ket{\varphi}$ to mean that we perform the operation $\ket{\psi}
-      \longrightarrow U \ket{\psi} \coloneqq \ket{\varphi}$.
+      \longrightarrow \ket{\varphi} \coloneqq U \ket{\psi}$.
 
-    Some elementary unitary transformations, known as quantum \emph{gates}, include
+    Some common, elementary unitary transformations, known as quantum \emph{gates}, include
       \[
         \Xgate = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\, , \quad
         \Zgate = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, , \quad
@@ -431,8 +436,9 @@
 
     \begin{exercise}\label{ex:truthtable}
       Write down ``truth tables'' for each of the above gates by writing down
-      their effect on the (single-qubit resp.\ two-qubit) computational basis states.
-      (E.g., $\ket{0} \apply{\Xgate} \ket{1}$, etc.)
+      their effect on the (single- or two-qubit) computational basis states.
+      (So $\ket{0} \apply{\Xgate} \ket{1}$, $\ket{00} \apply{\CXgate}
+      \ket{00}$, and so on.)
     \end{exercise}
 
     \noindent
@@ -440,14 +446,14 @@
       the first qubit \emph{controls} the operation on the second qubit:
       $\ket{1b} \apply{\CXgate} \ket{1(1-b)}$, but
       $\ket{0b} \apply{\CXgate} \ket{0b}$.
-      Any single-qubit operation $\unitary$ defines a two-qubit controlled version of the same
-      operation in the manner shown, which we will refer to as $\unitary[CU]$.
+      Any single-qubit operation $\unitary$ implies a two-qubit controlled version of the same
+      operation in the manner shown, which we will hence refer to as $\unitary[CU]$.
 
     \begin{exercise}
       Starting with the two-qubit state $\ket{\psi}_{0,1} = \ket{0}_0\ket{0}_1$, apply the operations $\Hgate_0$ and
       $\CXgate_{0, 1}$. What are the possible outcomes of observing the resulting
       state, and what are their probabilities? Compare with the result of
-      applying the single-qubit gates $\Hgate_0$ and $\Hgate_1$ instead.
+      instead applying the two single-qubit gates $\Hgate_0$ and $\Hgate_1$.
     \end{exercise}
 
     \begin{exercise}\label{ex:HadamardBasis}
@@ -455,33 +461,33 @@
       terms of the alternative ``Hadamard'' basis 
       \[
         \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
-        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}
+        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
       \]
-      instead. Compare
-      with the truth table from \autoref{ex:truthtable}. What has changed?
+      Compare with the truth table from \autoref{ex:truthtable}. What has changed?
     \end{exercise}
 
     \begin{exercise}
-      Give the (computational-basis) matrix representation of a unitary operation that acts on the
-      Hadamard basis from \autoref{ex:HadamardBasis} in the same way that
-      $\CXgate$ acts on the computational basis. What would we call this
+      Give the computational-basis matrix representation of the unitary
+      that has the same effect on the
+      Hadamard basis states (given in \autoref{ex:HadamardBasis}) as
+      $\CXgate$ has on the computational basis. What should we call this
       unitary, following the conventions introduced so far?
     \end{exercise}
 
-    \paragraph{The SWAP gate.}
-    Another two-qubit unitary gate that will turn out to be useful is the $\SWAPgate$
+    \noindent
+    Another two-qubit unitary that will turn out to be useful is the $\SWAPgate$
       gate, defined as $\ket{01} \apply{\SWAPgate} \ket{10}$, $\ket{10}
       \apply{\SWAPgate} \ket{01}$, and acting like the identity on $\ket{00}$
       and $\ket{11}$. Applying this to general qubit states, we get
 
     \begin{align*}
-      &(\alpha_0 \ket{0} + \alpha_1 \ket{1}) \otimes (\beta_0 \ket{0} + \beta_1 \ket{1}) 
+      \ket{\psi\varphi} &= (\alpha_0 \ket{0} + \alpha_1 \ket{1}) \otimes (\beta_0 \ket{0} + \beta_1 \ket{1}) 
         = \alpha_0 \beta_0 \ket{00} + \alpha_0 \beta_1 \ket{01} +
         \alpha_1 \beta_0 \ket{10} + \alpha_1 \beta_1 \ket{11} \\
       &\apply{\SWAPgate} \alpha_0 \beta_0 \ket{00} + \alpha_0 \beta_1 \ket{10} +
         \alpha_1 \beta_0 \ket{01} + \alpha_1 \beta_1 \ket{11} = 
         (\beta_0 \ket{0} + \beta_1 \ket{1}) \otimes (\alpha_0 \ket{0} +
-        \alpha_1 \ket{1})\, . 
+        \alpha_1 \ket{1}) = \ket{\varphi\psi}\, . 
     \end{align*}
 
     \noindent
@@ -490,7 +496,7 @@
         We delibaretly avoided specifying registers in this example, as the
         question of whether it was the quantum \emph{states} that were swapped, or the
         physical qubits themselves that switched places in the register, is a
-        metaphysical question without relevance in this model. 
+        metaphysical question without relevance to our model. 
         This is because by definition, qubits must be physically
         indistinguishable quantum systems. If they weren't, this
         distinguishability could be used to
@@ -504,9 +510,9 @@
         continuity of positions and momenta in space (with their corresponding
         infinite-dimensional Hilbert spaces) usually means that one \emph{can}
         tell whether the particles from which the qubits are constructed were
-        physically moved (as for trapped-ion or neutral atom systems), or
+        physically moved (as for atomic qubits), or
         whether the qubits were made to interact via a particular mechanism
-        (as for superconducting qubit systems).
+        (as for superconducting qubits).
       }
 
     \begin{exercise}
@@ -515,9 +521,9 @@
 
     \subsubsection{Transformations in Space vs.\ Time.}
       You may have noticed that we are working with two different kinds of
-        product when dealing with unitary matrices: The matrix product
+        product when dealing with unitary matrices: the matrix product
         $\unitary_1 \unitary_2$, and the tensor product $\unitary_1 \otimes
-        \unitary_2$. When should each kind of product be used?
+        \unitary_2$. When should each kind be used?
 
       To illustrate, let $\ket{\psi}$ and $\ket{\varphi}$ be two single-qubit
         states, combined in the two-qubit state $\ket{\psi, \varphi} \coloneqq
@@ -533,7 +539,7 @@
 
       \noindent
       The matrix $\unitary_{1,2} \coloneqq \unitary_1 \otimes \unitary_2$ will be a two-qubit
-        transformation (i.e.\ a $4 \times 4$ unitary) that combine the effect
+        transformation, i.e.\ a $4 \times 4$ unitary that combine the effect
         of the two single-qubit transformations to apply them in parallel
         (that is, in the same time step).
 
@@ -544,48 +550,48 @@
         
       \[
         \ket{\psi(0), \varphi(0)} \apply{\unitary_1} \ket{\psi(1), \varphi(1)}
-          \apply{\unitary_2} \ket{\psi(2), \varphi(2)} ,
+          \apply{\unitary_2} \ket{\psi(2), \varphi(2)}\, ,
       \]
 
       \noindent
-      where $\ket{\psi(t)}$ denotes the evolved state at time step $t \in \NN$, and
-        $\ket{\psi(0)} \coloneqq \ket{\psi}$. This is then given by
+      where $\ket{\psi(t)}$ denotes the evolved state at time step $t$, and
+        $\ket\psi \coloneqq \ket{\psi(0)}$. This is then given by
 
       \[
         \unitary_2 \unitary_1 \ket{\psi(0), \varphi(0)}
         = \unitary_2 (\unitary_1 \ket{\psi(0), \varphi(0)})
-        \coloneqq \unitary_2 \ket{\psi(1), \varphi(1)}
-        \coloneqq \ket{\psi(2), \varphi(2)} .
+        = \unitary_2 \ket{\psi(1), \varphi(1)}
+        = \ket{\psi(2), \varphi(2)}\, .
       \]
 
       \noindent
-      Note the reversed order of operations! 
+      Note the reversed ordering!
 
       As before, we could define a unitary $\unitary_{1,2} \coloneqq \unitary_1 \unitary_2$. 
         Thus, even though we want to say that the application of $\unitary_1$ and $\unitary_2$
         happens in two time steps, we see that the time of application can be ``collapsed'' to a
-        single time-step! This means that when counting time steps in the analysis of quantum
-        algorithms, we first have to fix some Turing-universal set of
-        elementary quantum gates that are all said to happen take one time-step
-        to apply, and require that all other unitaries are constructed from
-        this gate set, in series and/or in parallel.
+        single time-step! This is why, in order for complexity analyses that count
+        the number of time steps spent by a quantum
+        algorithms to be meaningful, we first have to agree on some Turing-universal set of
+        elementary quantum gates that can be said to require one time-step
+        each to apply, and require that all other unitaries are constructed from
+        that gate set, in series and/or in parallel.
 
       To summarize, the tensor product is used when applying unitaries in
         \emph{parallel}, while the matrix product is used when applying unitaries in
         \emph{series}.
 
     \begin{exercise}
-      Construct the $\SWAPgate$ gate as a series of $\CXgate$ gates.
+      Construct the $\SWAPgate$ gate from a series of $\CXgate$ gates.
     \end{exercise}
 
   \subsection{Quantum Entities and Hidden Entanglement}
-    We have defined notation for computational basis states
+    Until now we have defined notation for computational basis states
       $\ket{x}$, general quantum states $\ket{\psi}$,
       unitary transformations $\unitary$, and the
       the result of applying a unitary transformation $\unitary$ on a
       quantum state $\ket{\psi}$, written 
-      $\ket{\psi} \apply{\unitary} \ket{\varphi}$, as summarized in
-      \autoref{tab:notation}.
+      $\ket{\psi} \apply{\unitary} \ket{\varphi}$.
 
     And still this isn't enough. This is because we are going to be talking
       about communicating parties. Consider the situation that Alice has two
@@ -602,9 +608,9 @@
       Then, the two-qubit state is \emph{non-separable}, meaning that it can no
       longer be cleanly factored into a tensor product of two single-qubit
       states. In the world of quantum
-      physics, this means that the two qubits are \emph{entangled}---a fancy
+      physics, this means that the two qubits are \emph{entangled}, a fancy
       word describing a phenomenon with many deep consequences for physics and
-      philosophy alike---but mathematically speaking it is nothing but the quantum
+      philosophy alike, but which mathematically speaking is nothing but the quantum
       generalization of correlated probabilities.\footnote{
         In other words, the term ``separable'' here carries exactly the same
         meaning as the term ``product'' does when talking about classical
@@ -618,9 +624,9 @@
         which basis you use to observe the state, implying that
         entanglement is an observation-independent (and therefore
         ``objective'') property of the state.
-      } Alice can still send her second qubit to Bob, and Bob can still apply
-      the operation $\unitary$ to it; our problem is just that with the tools
-      presented so far, we have no way of writing the operation that Bob is
+      } Alice can of course still send her second qubit to Bob, and Bob can still apply
+      the operation $\unitary$ to it; our problem merely one of notation,
+      as we have no way of writing the operation that Bob is
       performing on $\ket{0}_1$ without referencing the entire
       state, like so:
       \[
@@ -630,11 +636,10 @@
       \] 
 
     \noindent
-    What we want, is to be able to write down the operations that Alice and Bob
+    What we want, is to be able to write the operations that Alice and Bob
       perform, without having to reference qubits that they don't have access
       to, regardless of any entanglement.
-      In other words, what we need is a better quantum \emph{pseudocode}. We
-      will present one solution in \autoref{subsec:pseudocode}.\footnote{
+      In other words, what we want is an entanglement-agnostic quantum \emph{pseudocode}.\footnote{
         For readers ahead of the curve: Yes, one may reference one half of an
         entangled state using the generalized notion of a 
         \emph{mixed state}, by moving from Dirac's bra-ket notation to the
@@ -652,7 +657,7 @@
         since going from a pure state to a mixed states loses information about
         the original state (since you can no longer tell from the state whether the qubit was
         measured or entangled), which would mean extra bookkeeping keeping track of the global
-        state, which is precisely what we wanted our pseudocode to abstract away to begin with.
+        state, which is precisely what we wanted to abstract away to begin with.
         \ifdraftversion % for future version with the ``Under The Rug'' part
           Nonetheless, density matrices are invaluable to quantum information-theoretical
           analyses, and we will meet them again in \autoref{sec:proofs}. 
@@ -660,9 +665,12 @@
       }
 
   \subsection{Measurements}
-    But before we introduce our quantum pseudocode in the next section, we need
-      to talk about measurements. For if
-      observing a quantum state is not a unitary operation, then what \emph{is} it?
+    But before we present our quantum pseudocode in
+      \autoref{subsec:pseudocode}, we have
+      to talk about measurements. We mentioned earlier that measurements
+      constitute an exception to the rule that any operation performed on a
+      quantum state must be unitary. But if observing a quantum state is not a
+      unitary operation, then what \emph{is} it?
      
     \subsubsection{Projectors.} 
       The answer may be gleaned from the fact, stated earlier, that \emph{upon
@@ -683,13 +691,12 @@
       \noindent
       Such operators are known as \emph{projectors}, so named because they have
         the effect of \emph{projecting} a higher dimensional object onto a
-        lower-dimensional hyperplane---or, in the case of global observations
-        (i.e.\ measuring every qubit at once),
+        lower-dimensional hyperplane---or, in the case of 
+        measuring all the qubits at once,
         all the way down to one of the basis vectors.
 
       For single-qubit states, it is easy to verify that the following
         operators satisfy this definition:
-
       \[
         \projector_0 \coloneqq \ket{0}\bra{0}
         = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \begin{bmatrix} 1 & 0 \end{bmatrix}
@@ -705,21 +712,23 @@
         $\ket 0$ state from the superposition: 
 
       \[
-        \projector_0 \ket{\psi} = \projector_0(\alpha \ket{0} + \beta \ket{1})
-        = \alpha \ket{0}\, ,
+        \projector_0 \ket{\psi} = \projector_0(\alpha_0 \ket{0} + \alpha_1 \ket{1})
+        = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} \alpha_0 \\ \alpha_1 \end{bmatrix} 
+        = \alpha_0 \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \alpha_0 \ket{0}\, ,
       \]
 
       \noindent
       and applying $\projector_0$ on it again thereafter
-        will have no effect, while applying $\projector_1$ will simply yield
-        the zero vector. What's more, we see that 
+        will have no effect, whereas applying $\projector_1$ will simply yield
+        the zero vector (which does not correspond to a quantum state, as it
+        is not unit length). What's more, we see that 
         $\projector_0 + \projector_1 = \idmatrix[2]$. 
         Clearly, these projectors will be \emph{orthogonal} in the sense that they
         satisfy $\projector_i \projector_j = \delta_{ij} \projector_i$.
 
       On the other hand, these matrices are manifestly \emph{not} unitary, as
         seen from the fact that they are not even invertible. This reflects the
-        irreversible loss of information induced by observation: After
+        irreversible loss of information induced by observation: after
         measuring a state, there is no way to recover the full pre-collapse
         state, other than to re-create it from scratch!
 
@@ -1208,10 +1217,11 @@
           %Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
           %Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
           Unitary/measurement operators & Roman (uc., sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M}$ \\
-          Apply unitary to register & $\pcalgostyle{Apply}$(unitary : register) & $\applyU{U}{\register}$ & Method (see \autoref{def:apply}) \\ 
+          Apply unitary to register & $\pcalgostyle{Apply}$(unitary : register)
+          & $\applyU{U}{\register}$ & \autoref{def:apply} \\ 
           %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \autoref{def:}) \\ 
-          Measure register & $\pcalgostyle{Meas}$(measurement : register) & $x
-          \sample \meas{\measurement}{\register}$ & Method (see \autoref{def:measure}) \\ 
+          Measure register & $\pcalgostyle{Meas}$(projector : register) & $x
+          \sample \meas{\measurement}{\register}$ & \autoref{def:measure} \\ 
           \bottomrule
         \end{tabular}
       \end{table}
