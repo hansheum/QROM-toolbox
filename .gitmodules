@@ -1,3 +1,6 @@
 [submodule "cryptobib"]
 	path = cryptobib
 	url = https://github.com/cryptobib/export
+[submodule "cryptocodeh"]
+	path = cryptocodeh
+	url = https://github.com/hansheum/cryptocodeh.git
