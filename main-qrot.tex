@@ -3,8 +3,8 @@
   %\darktrue % triggers dark coloured pdf for late night work
 
 \newif\ifdraftversion
-  %\draftversionfalse
-  \draftversiontrue
+  \draftversionfalse
+  %\draftversiontrue
 
 \newif\iffullversion
   % \fullversionfalse % use for camera-ready and author version only
@@ -191,34 +191,40 @@
 
   %\addcontentsline{toc}{part}{Part 1.\quad Setting The Stage}
   \input{qrot-preface}
-  \part{Setting the Stage}
+  \part{Setting the Stage}\label{part:prelims}
     \input{qrot-basics}
     \clearpage
     \input{qrot-primer}
     \clearpage
     \input{qrot-rom}
 
-  \part{Classical Security, (Post-)Quantum Difficulties}
-    \input{qrot-pke-rom}
-    \clearpage
-    \input{qrot-dsa-rom}
-    \clearpage
-    \input{qrot-problems}
+  \part{Classical Security, (Post-)Quantum Difficulties}\label{part:classical}
+    \ifdraftversion
+      \input{qrot-pke-rom}
+      \clearpage
+      \input{qrot-dsa-rom}
+      \clearpage
+      \input{qrot-problems}
+    \fi
 
-  \part{Tools of the Toolbox}
-    \input{qrot-o2h}
-    \clearpage
+  \part{Tools of the Toolbox}\label{part:tools}
+    \ifdraftversion
+      \input{qrot-o2h}
+      \clearpage
+    \fi
     \input{qrot-compressed}
-    \clearpage
-    \input{qrot-extract}
     \ifdraftversion
       \clearpage
-      \input{qrot-rewind} % maybe leave for v2
+      \input{qrot-extract}
+      \clearpage
+      \input{qrot-adaptive}
+      \clearpage
+      \input{qrot-rewind} % maybe leave this for v2
     \fi
 
   \ifdraftversion
-    \part{Under The Rug}
-    \input{qrot-proofs} % maybe leave for v3
+    \part{Under The Rug}\label{part:proofs}
+    \input{qrot-proofs} % maybe leave this for v3
     \clearpage
   \fi
 
@@ -245,14 +251,14 @@
 
   \input{qrot-pseudocode}
     \clearpage
-  \input{qrot-solutions}
-    \clearpage
-
-  % WIP
   \ifdraftversion
     % \input{qrot-ttransform} % let's skip this
+    % \clearpage
     \input{qrot-improving-o2h}
+    \clearpage
     \input{qrot-handsoff}
+    \clearpage
   \fi
+  \input{qrot-solutions}
 
 \end{document}

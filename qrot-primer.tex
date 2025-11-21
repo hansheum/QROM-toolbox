@@ -114,6 +114,10 @@
         and do not say anything about the physical system in question other than that
         it supports (at least) two orthogonal quantum states, which we have the
         ability to distinguish, and which we choose to map to the values $0$ and $1$.
+        In particular, the $\ket0$ state is not the zero
+        \emph{vector}, since the latter is not of unit length (and can
+        furthermore not be normalized through multiplication with some
+        constant), and can therefore not correspond to a quantum state.
 
       Since two qubit basis states $\ket{b_1}$ and $\ket{b_2}$, for $b_1, b_2 \in
         \{0,1\}$, must be either identical (up to the
@@ -123,6 +127,21 @@
       \]
       where $\delta_{ij}$ is the Kronecker delta, equal to $1$ if $i = j$ and $0$
         otherwise.
+      
+      Expressing the qubit states (which, remember, are functions from a binary
+        set of observable values to a complex amplitude of magnitude at most
+        $1$) as vectors, as explained above, we see that we can express our qubit
+        basis states as
+      \[
+        \ket0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\, ,\ 
+        \ket1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\, .
+      \]
+
+      \noindent
+      If you are ever confused about a calculation on Dirac
+        brakets, it can be very useful to make the translation into vectors
+        and matrices, and check the calculation
+        using the familiar language of linear algebra.
       
     \subsubsection{Multi-Qubit States.}
       In general, two quantum systems (i.e.\ states describing 
@@ -739,15 +758,16 @@
         simply be the sum of the relevant basis projectors:
 
       \[
-        \projector_\Sspace = \sum_{\forall i \in [k]} \ket{x_i} \bra{x_i} = 
-        \sum_{\forall i \in [k]} \projector_{x_i}\, .
+        \projector_\Sspace = \sum_{i = 0}^{k-1} \ket{x_i} \bra{x_i} = 
+        \sum_{i = 0}^{k-1} \projector_{x_i}\, .
       \]
 
       \noindent
-      The larger the sum, the ``gentler'' the measurement.
+      The larger the sum, the ``gentler'' the measurement, in the sense that
+        you learn less from performing it and hence also disturb the state less.
 
       \begin{example}\label{ex:projector}
-        Let $\ket\psi = \sum_{i \in [8]} \alpha_i \ket{i}$ be a
+        Let $\ket\psi = \sum_{\forall i \in [8]} \alpha_i \ket{i}$ be a
         three-qubit state. Then the projector $\projector_{00b}$, given
         by 
         \[
@@ -755,16 +775,29 @@
         \] 
         ``selects'' the states 
         in the superposition in which the first and second qubits are zero:
-        \[
-          \projector_{00b} \ket\psi = \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
-        \]
+        \begin{align*}
+          \projector_{00b} \ket\psi &= 
+          \ket{000}\bra{000} \sum_{\forall i \in [8]} \alpha_i \ket{i}
+          + \ket{001}\bra{001} \sum_{\forall i \in [8]} \alpha_i \ket{i} \\
+          &= \ket{000} \sum_{\forall i \in [8]} \alpha_i \braket{000|i}
+          + \ket{001} \sum_{\forall i \in [8]} \alpha_i \braket{001|i} \\
+          &= \ket{000} \sum_{\forall i \in [8]} \alpha_i \cdot \delta_{000, i}
+          + \ket{001} \sum_{\forall i \in [8]} \alpha_i \cdot \delta_{001, i} 
+          = %\ket{000}\alpha_0  + \ket{001}\alpha_1  = 
+          \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
+        \end{align*}
+        %as follows from the orthonormality of basis states.
         We see that $\ket\psi$ has been \emph{projected} from 
         $8$-dimensional Hilbert space down to the $2$-dimensional subspace
-        spanned by $\ket{000}$ and $\ket{001}$.
+        spanned by $\ket{000}$ and $\ket{001}$. Note, however, that
+        $\projector_{00b} \ket\psi$ will not itself be a valid quantum
+        \emph{state}, since (unless all the other $\alpha_i$ were already zero) we will have
+        $\abs{\alpha_0} + \abs{\alpha_1} < 1$, meaning $\projector_{00b}
+        \ket\psi$ will not satisfy the requirement of quantum states being unit length.
       \end{example}
 
       \noindent
-      Unlike the basis-state projectors $\projector_i$, two general projectors
+      Unlike the basis-state projectors $\projector_i$, two projectors
         $\projector_{\Sspace}$, $\projector_\Tspace$
         need \emph{not} be orthogonal, as subspaces $\Sspace$ and $\Tspace$ may
         be spanned by an overlapping set of basis vectors.
@@ -781,34 +814,31 @@
       \noindent
       We will for the most part be interested in sets of orthogonal projectors.
         From the perspective of the computational basis states $\ket x$, this just means
-        that no two projectors ``accept'' the same string $x$ as part of their
-        respective selections.
-        %substrings of $x$ are a particular value, and that no two projectors
-        %in the set checks the same bit for the same value. 
-        For measurements,
-        this translates to no measurement outcome being classified as ``undecided''.
+        that no two projectors ``select'' the same string $x$ as part of their
+        overall selection.
+        (When applied to measurements, projectors being orthogonal will
+        translate to no measurement yielding the outcome ``undecided''.)
 
       Projectors may not be unitary, but it is easy to see that they are
-        \emph{Hermitian}, meaning
-        that they satisfy $\projector^\dagger = \projector$. For the
-        computational basis projectors, this follows trivially from the
-        matrices being real and symmetric, but it also holds for general
-        choices of basis states: Let $\projector_\varphi$ be the projector that
-        projects a state $\ket \psi$ onto the one-dimensional subspace spanned
-        by the state $\ket\varphi$. Then,
-      \[
-        \projector^\dagger_\varphi = (\ket{\varphi} \bra{\varphi})^\dagger 
-        = \ket{\varphi} \bra{\varphi} = \projector_\varphi\, .
-      \]
+        \emph{Hermitian}, which is to say they
+        satisfy $\projector^\dagger = \projector$. For 
+        computational-basis projectors, this follows trivially from the
+        matrices being real and symmetric, but it also holds in general. 
+
+      \begin{exercise}\label{ex:hermitian-projectors}
+        Show that any projector is Hermitian.
+        \emph{(Hint: Try expanding in terms of an arbitrary set of basis
+        states.)}
+      \end{exercise}
 
       \noindent
       Finally, a set of projectors $\{\projector_{\Sspace_i}\}_{\forall i \in [k]}$ is said to be
         \emph{complete} if $\sum_{\forall i \in [k]} \projector_{\Sspace_i} = \idmatrix$.
-        In particular, the set of computational-basis projectors $\{
-        \projector_i \}_{i \in [N]} = \{ \ket{i}\bra{i} \}_{i \in [N]}$
+        In particular, the set of computational-basis projectors
+        $\{\projector_i \}_{\forall i \in [N]} = \{ \ket{i}\bra{i} \}_{\forall i \in [N]}$
         is easily seen to be complete: Each element in the sum will simply add one $1$ to
-        a previously-zero spot on the diagonal, and zero everywhere else; and
-        the sum has $N$ elements, so the full diagonal is covered.
+        a previously-zero spot on the diagonal, and zeroes everywhere else; and
+        the sum has $N$ elements, so the full diagonal must be covered.
         In the context of measurements, completeness reflects that outcome
         probabilities should sum to one.
 
@@ -819,22 +849,22 @@
       \end{exercise}
 
     \subsubsection{Projective Measurements.}
-      However, $\projector \ket{\psi}$ will not itself be a quantum
-        state, since it will not have unit norm (unless $\projector =
-        \idmatrix$, that is). Additionally, we have not yet
+      As mentioned, $\projector \ket{\psi}$ will not itself be a quantum
+        state, since it will typically not have unit norm.
+        Additionally, we have not yet
         touched on the concept of measurement \emph{outcomes}. What are the
         values that are actually observed? Something more is needed.
-        %This leads us to the concept of a \emph{measurement basis}.
 
-      Let's say that the outcome of some measurement is $m_x$, which we
-        interpret as the string $x$. We can formalize this by letting
+      Let's say that the outcome of some measurement is $m_x$, which is
+        thereafter interpreted as the binary string $x$. We can formalize this by letting
         $\measurement$ be a \emph{measurement operator} such that
         \[
           \ket\psi \apply{M} m_x \ket x\, ,
         \]
         for one of several possible strings $x$, via some as-yet-undefined
-        process. We can also make it more general, by checking which of several
-        subspaces $\ket\psi$ belongs to
+        process. We can also make it more general, by making a measurement
+        which determines which of several
+        subspaces $\Sspace_i$ $\ket\psi$ belongs to:
         \[
           \ket\psi \apply{M} m_{\Sspace_i} \ket{\psi_{\Sspace_i}}\, ,
         \]
@@ -853,7 +883,8 @@
           \measurement = \sum_{\forall i \in [k]} m_{\Sspace_i} \projector_{\Sspace_i}\, .
         \]
         In linear algebra terms, this defines the \emph{spectral decomposition} of the
-          operator $\measurement$, with the eigenvalues $m_{\Sspace_i}$.
+          operator $\measurement$, with $m_{\Sspace_i}$ being the eigenvalues
+          of $\measurement$.
 
         In the case that you are just reading off the values of $n$ qubits
           directly in what we'll refer to as a ``computational-basis
@@ -866,7 +897,7 @@
           $N$ matrices with the single non-zero element $m_i$ in the $i$'th
           position along its diagonal.
 
-        Finally, then, we are ready to formally define our measurement procedure.
+        With all of this in place, we are finally ready to formally define our measurement procedure.
 
         \begin{definition}[Projective measurement]
           Let $i$ be an $n$-length bitstring, let $\{ \projector_{\Sspace_i}
@@ -880,10 +911,11 @@
             $\Sspace_i$ with probability:
             \[
               \prob{\abs{\measurement \ket\psi} = m_{\Sspace_i}}
-              = \abs{\projector_{\Sspace_i} \ket{\psi}}^2\, ,
+              = \abs{\projector_{\Sspace_i} \ket{\psi}}^2 \coloneqq
+              \abs{\alpha_{\Sspace_i}}^2\, ,
             \]
             and, conditioned on $\Sspace_i$ being observed, the act of measuring 
-            transforms the state as follows:
+            collapses the state as follows:
             \[
               \ket{\psi} \apply{\measurement} \frac{\projector_{\Sspace_i}
               \ket{\psi}}{\abs{\projector_{\Sspace_i} \ket{\psi}}}\, .
@@ -893,7 +925,14 @@
         \end{definition}
         
         \noindent
-        Again specializing to the case of measuring $n$ qubits in the
+        The first half of the above definition, defining the probabilities of
+          measurement outcomes as the square of their amplitudes, is known as the
+          \emph{Born rule}. The second half of the definition describes how
+          projected states are \emph{renormalized},
+          thus ensuring that the post-collapse state has unit length and is
+          therefore a valid quantum state.
+          
+        Specializing to the case of measuring $n$ qubits in the
           computational basis and reading off the resulting string, we see that
           the probability of observing any particular string $x$ is given by
           \[
@@ -908,16 +947,18 @@
             = \frac{\alpha_x }{\abs{\alpha_x}} \ket x
             \longrightarrow \ket x\, ,
           \]
-          as required (where the final step does away with the unobservable
+          as required (where the final step, shown as a rightward arrow, does
+          away with the unobservable
           global phase $\frac{\alpha_x }{\abs{\alpha_x}} = e^{i\theta}$).
         
-        You may wonder, what \emph{are} the values of the measurement outcomes, $m_x$?  Let
+        You may wonder, what \emph{are} the values $m_x$ output by the
+          measurement procedure? Why not just let $m_x = x$? Well, let
           us look at single-bit measurements: $m_0$ will signal outcome $\ket 0$, and
           $m_1$ will signal outcome $\ket 1$. Though tempting, we surely can't set
           $m_b = b$, since the outcome $\ket 0$ would then multiply away the
           entire state! Instead, the canonical choice\footnote{
             Historically, this choice corresponds to the possible outcomes of
-            the \emph{spin} observable for fermionic particles, such as
+            the \emph{spin} observable for fermionic particles such as
             electrons, with the value $+1$ corresponding to
             ``spin-up'' (the spin vector points in the positive direction of
             the $z$-coordinate) and the value $-1$ meaning ``spin-down'' (the
@@ -932,7 +973,7 @@
           fact, computational-basis measurements are often referred to as
           ``$\Zgate$ measurements'' for this reason. As you can see, this
           choice also has the useful property that the measurement operator is
-          unitary, and so may be identified with an operator, with the possible
+          unitary, with the possible
           outcomes represented by the eigenvalues and eigenstates of that operator.
 
         This mapping, from a unitary to a measurement, is possible to do for any
@@ -942,11 +983,16 @@
           with real values along the diagonal, and complex-conjugate symmetry
           over the off-diagonals: $\unitary{[i,j]} = \unitary{[j,i]}^*$. 
 
-        For example, in addition to the $\Zgate$ and $\Xgate$, we also
-          have a $\Ygate \coloneqq i\Xgate\Zgate$. It turns out that any
-          measurement that is possible to perform on a single qubit, can be
-          written as a linear combination of these three matrices, which are
-          known as the \emph{Pauli matrices} after their discoverer.
+        Just like we can perform a $\Zgate$ measurement, we can also perform an
+          $\Xgate$ measurement. This is sometimes called measuring in the Hadamard
+          basis, since it is equivalent to first applying a Hadamard gate to the
+          qubit, and then performing a $\Zgate$ measurement.
+        
+        There is also a $\Ygate$ gate, equal to $i\Xgate\Zgate$. As
+          it turns, every possible single-qubit
+          measurement can be written as a linear combination of these three
+          unitaries, known as the \emph{Pauli matrices} after their
+          discoverer.
 
         \begin{exercise}
           Show that interpreting the $\Xgate$ (a.k.a. ``NOT'') gate as a
@@ -959,18 +1005,19 @@
         \begin{exercise}
           Write out the matrix representation of $\Ygate$ in the computational
           basis, and find the possible measurement outcomes it gives rise to
-          when interpreted as a measurement operator by identifying its
+          when used as a measurement operator by identifying its
           eigenstates and eigenvalues.
         \end{exercise}
 
   \subsection{A Quantum Pseudocode}\label{subsec:pseudocode}
-    We now have everything we need to define our quantum pseudocode. Rather than
-      quantum states, the central objects of our pseudocode will be
+    We finally have everything we need to define our quantum pseudocode. 
+      Our goal is to construct a well-defined pseudocode rich enough 
+      to draw interaction diagrams like the one in \autoref{fig:aliceandbob},
+      with local operations agnostic to the global state of the
+      system and any existing entanglement between its parts.
+      Rather than quantum states, the central objects of our pseudocode will be
       \emph{qubit registers}, which is nothing but an ordered list of qubits,
-      in correspondence with the bit registers of classical computing models.
-      Our goal is a quantum pseudocode rich enough 
-      to draw well-defined interaction diagrams, like the one shown in
-      \autoref{fig:aliceandbob}.
+      in analogy to the bit registers of classical computation.
 
     \begin{figure}[t]
       \centering

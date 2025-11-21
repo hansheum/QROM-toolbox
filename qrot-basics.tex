@@ -1,4 +1,4 @@
-\section{Cryptography Basics}\label{sec:prelim}
+\section{Cryptography Basics}\label{sec:basics}
   \todoenum[rough structure]{
     \item PKE and KEM: Definitions, OW vs IND, CPA vs CCA
     \item Signatures (and NIZKs?): Definition, EU-CMA
@@ -13,7 +13,7 @@
       of all functions from the set of $m$-length bitsrings $\bin^m$ to the
       set of $n$-length $\bin^n$ bitstrings is denoted $\funcspace{m}{n}$.
       We will use $\idmatrix[n]$ to denote the $n$-by-$n$ identity matrix, dropping
-      the subscript whenever the dimension is clear from context.
+      the subscript whenever the dimensionality is clear from context.
 
     For a bitstring $x\in\{0,1\}^*$, $\card{x}$ denotes its length.
       For a finite set $\Xspace$, $\card{\Xspace}$ is the cardinality of
@@ -83,43 +83,36 @@
     \end{lemma}
 
     \noindent
-    The lemma states that, if $\adv$ was able to distinguish, then
-      at least one of $\adv_1, \ldots, \adv_n$ must have been able to
+    The lemma states that, if $\adv$ were able to distinguish, then
+      at least one of $\adv_1, \ldots, \adv_n$ must be able to
       distinguish too---and vice versa, that if none of the $\adv_i$ are able to
       distinguish, then neither is $\adv$.
-      In fact, the $\adv_i$ that achieve this will essentially just be copies of $\adv$.
+      (In fact, the $\adv_i$ that achieve this will in essence be just copies
+      of $\adv$.)
 
-    The proof is remarkably simple, reproduced here for those that haven't
+    The proof is remarkably simple, reproduced here for those who haven't 
       seen it.
 
     \begin{proof}
-      Insert $0 = \probsample{\game{i}(\adv_i)}{1 \sample \adv_i} -
-      \probsample{\game{i}(\adv_i)}{1 \sample \adv_i}$ into the left hand side
-      for all $i$ from $1$ to $n-1$, and then apply the union bound.
+      For all $i$ from $1$ to $n-1$, insert $0 = \probsample{\game{i}(\adv_i)}{1 \sample \adv_i} -
+      \probsample{\game{i}(\adv_i)}{1 \sample \adv_i}$ into the absolute value
+      on the left hand side, then apply the union bound.
       \qed
     \end{proof}
 
-  \paragraph{Quantum notation.}
-    %  While we only assume knowledge of basic linear algebra, this tutorial 
-    %    still concerns itself with several fundamentally quantum concepts. To
-    %    help bridge this divide, we provide a self-contained primer on quantum
-    %    computing theory in
-    %    \autoref{sec:primer}, with explanations and definitions for all
-    %    the quantum concepts and conventions that we will need. A summary of our
-    %    notation is given in \autoref{tab:notation}.
-    Precise definitions for our quantum-notational conventions are provided in
-      \autoref{sec:primer},
-      along with a gentle introduction to the relevant quantum concepts,
-      summarized in \autoref{tab:notation}.
+  %\paragraph{Quantum notation.}
+  %  %  While we only assume knowledge of basic linear algebra, this tutorial 
+  %  %    still concerns itself with several fundamentally quantum concepts. To
+  %  %    help bridge this divide, we provide a self-contained primer on quantum
+  %  %    computing theory in
+  %  %    \autoref{sec:primer}, with explanations and definitions for all
+  %  %    the quantum concepts and conventions that we will need. A summary of our
+  %  %    notation is given in \autoref{tab:notation}.
+  %  Precise definitions for our quantum-notational conventions are provided in
+  %    \autoref{sec:primer},
+  %    along with a gentle introduction to the relevant quantum concepts,
+  %    summarized in \autoref{tab:notation}.
 
-    \hhnote{
-      Add subsection on classical random oracles: what they are (random
-      extendable-output functions), oracle interfaces, lazy-sampling, reprogramming, etc.?
-    }
-    \hhnote{
-      Also move security definitions etc.\ over here? Also definitions of PKE,
-      KEM, hybrid encryption.
-    }
     \hhnote{
       Add: $\pcparse$ keyword. (Allow $\pcif \pcparse$ too? By having $\pcparse$
       return a boolean value? Hmm, tricky.) And: $\red\bad$ abort convention.

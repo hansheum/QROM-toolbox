@@ -20,8 +20,8 @@
     simple, and yet regularly achieve strong security claims with
     near-tightness for highly efficient constructions---which is as close as
     one gets to a holy trinity for provable security. In contrast, proofs in the
-    Quantum Random Oracle Model are often hard to understand---even requiring
-    specialized knowledge in quantum information---and infamously lossy.
+    Quantum Random Oracle Model are often hard to parse without specialized
+    knowledge in quantum information theory, and infamously lossy.
 
   And yet, if we want our proofs of security to have merit in a post-quantum
     world, it seems that our choice is between the Standard Model and the
@@ -29,83 +29,119 @@
     publicly available algorithms that anyone can run locally on their machine.
     Therefore, there is nothing stopping someone with a quantum computer to
     boot it up and run it on a superposition of inputs. If we want to
-    accurately model quantum attackers, then our model must include this
-    capability. 
+    accurately model quantum attackers, then, our model must allow for such
+    strategies. 
 
-  In the standard model, of course, this is not a problem at all,
+  In the standard model, this is not a problem at all,
     since then the hash functions in question is provided to the attacker
-    as-is.  But if QROM proofs are lossy, then Standard Model constructions
+    as-is. But if QROM proofs are lossy, then Standard Model constructions
     that achieve the same goals as their ROM counterparts are often highly
-    inefficient in comparison---and, as every cryptographer knows, efficiency
-    trumps security in real-world implementations.
+    inefficient in comparison (and, as every cryptographer knows, efficiency
+    tends to trump security in the real world).
 
   Therefore, as we inch ever closer to the looming threat of
     cryptographically-relevant quantum computers, it is important that the
-    barrier for entry into the Quantum Random Oracle Model is lowered as much as
+    barrier for proving security in the QROM is lowered as much as
     possible, so that the community may together bring our transition to a
-    post-quantum world into effect, in a safe and (provably) secure manner.
+    post-quantum world into effect, in a safe, efficient, and (provably) secure
+    manner.
 
   \paragraph{ROM Techniques Don't Transfer \ldots}
-    One of the most useful facts about reductions in the random oracle model,
+    One of the most useful facts about security reductions in the random oracle model
       is that anyone can efficiently \emph{simulate} a random oracle, simply by
-      drawing the random outputs one-at-a-time, and storing them in a list to
-      ensure consistency. This technique, known as \emph{lazy sampling}, allows
+      drawing the random outputs one-at-a-time and storing them in an
+      appropriate list. This technique, known as \emph{lazy sampling}, allows
       the reduction to not only implement the oracle efficiently, but also to
-      see what input values the adversary is interested in, as well as
-      adaptively \emph{reprogram} the oracle on inputs of its choice.
+      see what input values the adversary is interested in, \emph{and}
+      adaptively reprogram the oracle on inputs of its choice.
       Indeed, much of the strength of the random oracle model lies in exactly
       these capabilities.
 
-    None of this transfers to the case where the oracle is quantum-accessible.
+    None of this transfers directly to the case of quantum-accessible oracles.
       To see why, consider an adversary that queries the oracle on a
-      superposition of all possible inputs at once: The simulator would have to
-      store an exponentially large list of input values in order just to process the
-      input!
+      superposition of all possible inputs at once: the simulator would have to
+      store an exponentially large list of input values in order process just
+      this single query!
 
   \paragraph{\ldots But the Concepts Do.}
     And yet, the past decade has seen the development of techniques that
-      recover much of these capabilities. Prime among these are the various
-      One-Way to Hiding (O2H) lemmas, that allow for careful reprogramming of
-      the quantum random oracle, as well as limited query extraction; and the
-      Compressed Random Oracle (CRO) technique, which allows a reduction to
-      efficiently implement a simulation of a quantum random oracle, in direct
-      correspondence to the ``lazy sampling'' technique described above.
+      recover most of these capabilities, albeit at a loss. Prime among these
+      techniques are the various One-Way to Hiding (O2H) lemmas, which allow
+      for careful reprogramming of the quantum random oracle (as well as
+      limited extraction of the input values); Quantum Online-Extractability
+      (QOE), which as the name suggests allows for on-the-fly extraction of oracle inputs;
+      and the Compressed Random Oracle (CRO) technique, which allows one to
+      efficiently simulate a quantum random oracle, in direct
+      analogy to classical ``lazy sampling''.
 
   \subsubsection{Outline.}
-    After defining our notation in \autoref{sec:prelim}, we define quantum
-      random oracles in \autoref{sec:defs}. We provide several definitions, and
-      show that they are all equivalent. In the process, we will try to get a
-      ``feel'' for QROs, and we discuss how to (and how not to) reason
-      intuitively about them.
+    We start in \autoref{part:prelims} by laying the foundations, with
+      definitions for basic crypto concepts in \autoref{sec:basics}, before
+      introducing the reader to basic quantum computing concepts in \autoref{sec:primer}
+      (we only assume knowledge of basic linear algebra). Then in
+      \autoref{sec:rom} we introduce the random oracle model, and show how to
+      update the formalism to support quantum queries.
+      We will build some intuition, trying to get a
+      ``feel'' for QROs and how to (and how not to) reason about them.
 
-    In \autoref{sec:o2h}, we
-      introduce our main motivating scheme, a hybrid public-key encryption
-      scheme due to Bellare and Rogaway~\cite{CCS:BelRog93}, and show that it
-      achieves indistinguishability from the one-wayness of the underlying key
-      encapsulation mechanism, by applying Unruh's One-Way to Hiding
-      lemma~\cite{ACM:Unruh14}. We then generalize this
-      result several times, through application of newer and more general
-      variations of the lemma, including the Semi-Classical O2H lemma due to
-      Ambainis et al.~\cite{C:AmbHamUnr19}, the Adaptive Resampling lemma of
-      Grilo et al.~\cite{AC:GHHM21}, the Adaptive Reprogramming framework of
-      Pan and Zeng~\cite{PKC:PanZen24}, and the Fixed-Permutation framework of
-      Jaeger~\cite{EPRINT:Jaeger24b}. The goal of this exercise, of course, is
-      \emph{not} to show that the Bellare--Rogaway encryption scheme is secure,
-      but rather to gain an understanding of the various O2H lemmas that exist
-      in the literature, and when and how to apply each.
 
-    Then, in \autoref{sec:compressed}, we introduce the Compressed Random
-      Oracle technique, which is to QROs as lazy sampling is to classical
-      random oracles.
+    \autoref{part:classical} is all about the classical case. Here, we show
+      several examples of security proofs in the random oracle model, all of
+      which are conceptually simple and yield (relatively) tight security.
+      The examples are lifted from the security proofs of two important
+      transformations, the Fujisaki-Okamoto (FO) transformation (which transforms
+      a weakly-secure public-key encryption scheme into a strongly-secure key
+      encapsulation mechanism), and the Fiat-Shamir (FS) transformation (which
+      transforms an interactive zero-knowledge protocol into a non-interactive
+      signature scheme). 
+
+    We meet these examples again in \autoref{part:tools}, where we use
+      them to showcase the tools as we introduce them by showing that security
+      holds also in the QROM, though usually with a security loss compared to the
+      classical case, with the particular security loss depending on the tool used.
+      \autoref{sec:o2h} is all about the One-way To Hiding (O2H) lemma, and its many variants: 
+      how to use it to reprogram quantum random oracles, when to employ which
+      version, and the impact of each version on the tightness of the proof. 
+      Our running example here
+      will be the second half of the FO transformation, known as the U-transform,
+      and showing that if we start with a one-way secure (OW-CPA) deterministic PKE, we
+      get an indistinguishable KEM secure against passive attacks (IND-CPA). 
+      In \autoref{sec:extract}, we introduce the technique of
+      Quantum Online-Extraction (QOE), and show how it can be used to prove
+      that the U-transform \emph{also} upgrades to security against active attacks
+      (IND-CCA).
+      In \autoref{sec:adaptive}, we show how reprogramming can be made
+      \emph{adaptive}, meaning that the reprogramming may now happen
+      on-the-fly, on points that may (in full or in part) depend on
+      adversarially-chosen input values. We use this to show
+      how to go from a passively-secure Non-Interactive Zero-Knowledge (NIZK)
+      protocol (such as constructed from a sigma protocol via the FS
+      transformation) to an actively-secure signature scheme (EUF-CMA).
+      Then, in \autoref{sec:compressed}, we delve into the details of 
+      Compressed Random Oracles (CROs), and show how one might implement the
+      technique to provide an efficient yet exact simulation of a quantum
+      random oracle.
       This incredibly powerful technique takes some effort to wrap one's head
       around, and so we dedicate significant space to give gentle and
-      intuitive explanations for all its moving parts, as they are introduced.
+      intuitive explanations for all its moving parts, with several examples
+      showing how queries are processed.
+    \ifdraftversion
+      Finally, in \autoref{sec:rewind}, we show how to lift rewinding arguments
+      from the ROM to the QROM, with the central example being how the FS
+      transformation transforms a kind of interactive zero-knowledge protocol known
+      as a sigma protocol, to a NIZK.
+      \hhnote{leave for version 2}
+    \fi
 
-    Finally, with this technique in hand, we demonstrate its power by showing 
-      in \autoref{sec:handsoff} how we can use it to prove statements that were
-      previously beyond our reach.
+    \ifdraftversion
+    \autoref{part:proofs} is all about \emph{constructing the tools
+      themselves}, which requires a deeper dive into the world of quantum
+      information theory.
+      \hhnote{and so on and so forth; leave for version 3}
+    \fi
 
-    In addition, \aref{sec:primer} contains a primer on quantum computing,
-      including introductions to all the concepts and definitions for all the
-      notation used in this text. It also includes several exercises to test
-      your understanding, solutions to which are provided in \aref{sec:solutions}.
+    The appendices contain extra material, including some more formal
+      definitions in \autoref{sec:pseudocode}, and solutions to select
+      exercises in \autoref{sec:solutions}.
+
+    \hhnote{fix ``Sect.'' vs ``App.''}
