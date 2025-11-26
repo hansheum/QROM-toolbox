@@ -93,6 +93,9 @@
   \usepackage[final,todonotes=disable]{changes}
 \fi
 
+% Things Kat has added
+\usepackage{nicodemus}  % For easier handling of pseudocode
+
 % Things Hans has added
   \usepackage{slashed}
   \usepackage[normalem]{ulem}
@@ -135,6 +138,7 @@
 }
 
 \input{qrot-latex}
+\input{qrot-latex-Kat} % <- Kat's collection of macros for stuff on FO
 
 % Commenting
 %-------------------------------------------------------------------------------%
@@ -143,7 +147,7 @@
 \definechangesauthor[name={Hans}, color=darkgreen]{HH}
 
 \newcommand{\hhnote}[2][]{\todo[inline,color=Linen]{\textbf{Hans:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
-\newcommand{\khnote}[2][]{\todo[inline,color=AliceBlue]{\textbf{Kathrin:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
+\newcommand{\khnote}[2][]{\todo[inline,color=violet]{\textbf{Kathrin:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
 \newcommand{\revnote}[1]{\todo[inline]{\textbf{Reviewer:} #1}\xspace}
 
 \newcommand\todoenum[2][]{\todo[inline,color=Cornsilk,caption={2do}]{
@@ -269,6 +273,7 @@
 
   % WIP
   \ifdraftversion
+  	\input{qrot-KEMs-and-FO} % <- Kat's collection of stuff on FO
     \input{qrot-ttransform}
     \input{qrot-handsoff}
   \fi
