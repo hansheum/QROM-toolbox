@@ -14,3 +14,20 @@
       holds: any unitary matrix must be norm-preserving. Therefore, the
       set of norm-preserving operations on $N$-dimensional Hilbert space
       equal to the set of $N\times N$ unitary matrices.
+
+  \subsubsection{Solution to \autoref{ex:hermitian-projectors}}\label{sec:solutions:hermitian-projectors}
+    Let $\projector_\varphi$ be the projector that
+      projects a state $\ket \psi$ onto the one-dimensional subspace spanned
+      by the state $\ket\varphi$. Then,
+      \[
+        \projector^\dagger_\varphi = (\ket{\varphi} \bra{\varphi})^\dagger 
+        = \ket{\varphi} \bra{\varphi} = \projector_\varphi\, .
+      \]
+
+    \noindent
+    Since $\ket\varphi$ is arbitrary, and any projector can be written as a sum of
+      such one-dimensional projectors, \emph{and} a sum of Hermitian matrices must itself be Hermitian: 
+      \[
+        \projector^\dagger = \sum_i \projector^\dagger_i = \sum_i \projector_i = \projector\, ,
+      \]
+      this suffices to show that any projector must be Hermitian.

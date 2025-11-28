@@ -1,0 +1,126 @@
+\section{Cryptography Basics}\label{sec:basics}
+  \todoenum[rough structure]{
+    \item PKE and KEM: Definitions, OW vs IND, CPA vs CCA
+    \item Signatures (and NIZKs?): Definition, EU-CMA
+    \item Game hopping
+  }
+
+  \paragraph{Basic notation.}
+    We take the natural numbers $\NN$ to include $0$. For $n \in \NN$, we
+      define the set $[n] = \{0, \dots, n-1\}$. We will employ the
+      convention that $N = 2^n$; thus, $NM = 2^{n+m}$.
+      Functions are defined over bitstrings unless otherwise noted, and the set
+      of all functions from the set of $m$-length bitsrings $\bin^m$ to the
+      set of $n$-length $\bin^n$ bitstrings is denoted $\funcspace{m}{n}$.
+      We will use $\idmatrix[n]$ to denote the $n$-by-$n$ identity matrix, dropping
+      the subscript whenever the dimensionality is clear from context.
+
+    For a bitstring $x\in\{0,1\}^*$, $\card{x}$ denotes its length.
+      For a finite set $\Xspace$, $\card{\Xspace}$ is the cardinality of
+      $\Xspace$, and likewise for lists. 
+      For a list $\Xlist$, $\Xlist[i]$ retrieves the $i$th element of the list.
+      Two lists $\Xlist$ and $\Ylist$ may be combined by concatination to form
+      a new list $\Xlist \concat \Ylist$. We will at times treat bitstrings as
+      lists of binary values.
+
+    We use $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
+      to denote the conditional probability of $\mathsf{Event}$ occurring
+      when $\mathsf{Code}$ is executed, conditioned on $\mathsf{Condition}$.
+      We omit $\mathsf{Code}$ when it is clear from context and
+      $\mathsf{Condition}$ when it is not needed. 
+      Deterministic assignment is denoted $x \gets y$, whereas
+      $x \sample \Xspace$ denotes uniform sampling from a set,
+      and $x \sample Y(\cdot)$ conveys that the probabilistic algorithm $Y$ halted
+      with output $x$. 
+
+    %% MORE FROM SOA SOK
+    %We use code-based experiments, where by convention all sets, lists,
+      %and lazily sampled functions are initialized empty.
+      %In our experiments, we will assume that no oracle calls are made (by the adversary)
+      %with evidently out-of-bounds inputs (e.g.~list indices or key handles).
+
+    %We use the shorthand $\Xset \setapp x$ for
+      %the operation $\Xset \gets \Xset \cup \{ x \}$ and
+      %$\Xlist \listapp x$ for appending the element $x$ to a list $\Xlist$.
+
+    %We can make the
+      %randomness $\rand$ of $Y$ explicit by writing
+      %$x \gets Y(\, \cdot\, ; \rand)$, for previously sampled $\rand$.
+
+    %We will also consider stateful algorithms, for instance when we write
+    %  $\mssg \sample \mssgsamp[\samplestate](\dist)$
+    %  the algorithm $\mssgsamp$ takes as state $\samplestate$ and
+    %  as input the value $\dist$ and outputs $\mssg$,
+    %  but it may change its state $\samplestate$ as part of its processing
+    %  (code-snippet taken from \autoref{fig:IND-SOA}).
+
+  \paragraph{Game hopping.}
+    %\todoenum[Provide explanations of:]{
+    %  \item Basic background on game hopping and advantages, stuff like
+    %    difference vs.\ times two minus 1, with or
+    %    without absolute values, the fundamental lemma of game hopping.
+    %  \item Maybe write something about asymptotic vs.\ concrete security.
+    %}
+    For our security proofs, we will be working in the game-hopping
+      paradigm of Shoup~\cite{EPRINT:Shoup04}.
+      The fundamental lemma of game hopping states that the distinguishing advantage
+      of an adversary can be bounded in terms of their distinguishing advantage
+      over several intermediary game ``hops''. 
+
+    \begin{lemma}[Fundamental Lemma of Game Hopping]\label{lemma:game-hopping}
+      For any adversary $\adv$ tasked with distinguishing $\game{0}$ from
+      $\game{n}$, and for any games $\game{1}, \ldots \game{n-1}$,
+      there exist adversaries $(\adv_1, \ldots, \adv_n)$ such that
+      \[ 
+        \abs{
+          \probsample{\game{0}(\adv)}{1 \sample \adv} - 
+          \probsample{\game{n}(\adv)}{1 \sample \adv}
+        } \leq \sum_{i = 1}^n \abs{
+          \probsample{\game{i-1}(\adv)}{1 \sample \adv_i} - 
+          \probsample{\game{i}(\adv)}{1 \sample \adv_i}
+        }\, .
+      \]
+    \end{lemma}
+
+    \noindent
+    The lemma states that, if $\adv$ were able to distinguish, then
+      at least one of $\adv_1, \ldots, \adv_n$ must be able to
+      distinguish too---and vice versa, that if none of the $\adv_i$ are able to
+      distinguish, then neither is $\adv$.
+      (In fact, the $\adv_i$ that achieve this will in essence be just copies
+      of $\adv$.)
+
+    The proof is remarkably simple, reproduced here for those who haven't 
+      seen it.
+
+    \begin{proof}
+      For all $i$ from $1$ to $n-1$, insert $0 = \probsample{\game{i}(\adv_i)}{1 \sample \adv_i} -
+      \probsample{\game{i}(\adv_i)}{1 \sample \adv_i}$ into the absolute value
+      on the left hand side, then apply the union bound.
+      \qed
+    \end{proof}
+
+  %\paragraph{Quantum notation.}
+  %  %  While we only assume knowledge of basic linear algebra, this tutorial 
+  %  %    still concerns itself with several fundamentally quantum concepts. To
+  %  %    help bridge this divide, we provide a self-contained primer on quantum
+  %  %    computing theory in
+  %  %    \autoref{sec:primer}, with explanations and definitions for all
+  %  %    the quantum concepts and conventions that we will need. A summary of our
+  %  %    notation is given in \autoref{tab:notation}.
+  %  Precise definitions for our quantum-notational conventions are provided in
+  %    \autoref{sec:primer},
+  %    along with a gentle introduction to the relevant quantum concepts,
+  %    summarized in \autoref{tab:notation}.
+
+    \hhnote{
+      Add: $\pcparse$ keyword. (Allow $\pcif \pcparse$ too? By having $\pcparse$
+      return a boolean value? Hmm, tricky.) And: $\red\bad$ abort convention.
+    }
+    \hhnote{
+      Add: Adversaries are always assumed to halt in due time, even when the
+      environment fails to match their expectation.
+    }
+    \hhnote{
+      Add identical-until-bad lemma?
+    }

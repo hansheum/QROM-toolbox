@@ -3,8 +3,8 @@
   %\darktrue % triggers dark coloured pdf for late night work
 
 \newif\ifdraftversion
-  %\draftversionfalse
-  \draftversiontrue
+  \draftversionfalse
+  %\draftversiontrue
 
 \newif\iffullversion
   % \fullversionfalse % use for camera-ready and author version only
@@ -103,8 +103,8 @@
   \usepackage{nicefrac}
   \usepackage{braket}
 
-\input{./cryptocodeh}
-\input{./cryptocrakz}
+\input{./cryptocodeh/cryptocodeh}
+\input{./cryptocodeh/cryptocrakz}
 \graphicspath{{../figures/}}
 
 \usepackage{orcidlink}
@@ -193,57 +193,42 @@
 
   % Main body
 
-  %\clearpage
   %\addcontentsline{toc}{part}{Part 1.\quad Setting The Stage}
-  \part{Setting The Stage}
-    \input{qrot-introduction}
-    \clearpage
-    \input{qrot-preliminaries}
-    \clearpage
-    \input{qrot-bre}
+  \input{qrot-preface}
+  \part{Setting the Stage}\label{part:prelims}
+    \input{qrot-basics}
     \clearpage
     \input{qrot-primer}
     \clearpage
-    \input{qrot-pseudocode}
-    \clearpage
-    \input{qrot-definitions}
+    \input{qrot-rom}
 
-  %\clearpage
-  %\addcontentsline{toc}{part}{Part 2.\quad Main Tools}
-  \part{Tools of the Toolbox}
-    \input{qrot-o2h}
-    \clearpage
-  %\addcontentsline{toc}{part}{Part 3.\quad Quantum Lazy-sampling with Compressed Random Oracles}
+  \part{Classical Security, (Post-)Quantum Difficulties}\label{part:classical}
+    \ifdraftversion
+      \input{qrot-pke-rom}
+      \clearpage
+      \input{qrot-dsa-rom}
+      \clearpage
+      \input{qrot-problems}
+    \fi
+
+  \part{Tools of the Toolbox}\label{part:tools}
+    \ifdraftversion
+      \input{qrot-o2h}
+      \clearpage
+    \fi
     \input{qrot-compressed}
-  \ifdraftversion
-    \clearpage 
-    \input{qrot-improving-o2h}
-    % Add in V2
-    % \input{qrot-rewinding-revisited}
-  \fi
-
-  %% Add this in future version.
-  %\ifdraftversion
-  %  %\part{
-  %  %  Authenticity in the PQ World:
-  %  %  Rewinding Protocols
-  %  %}
-  %  \addcontentsline{toc}{part}{Part ?.\quad Rewinding in a Quantum World}
-
-  %  \input{qrot-rewinding}
-  %\fi 
-
-  %\ifdraftversion
-  %  \clearpage
-  %  \addcontentsline{toc}{part}{Part 3.\quad Sigma Protocols in the Quantum Random Oracle Model}
-  %  %\input{...}
-  %\fi
+    \ifdraftversion
+      \clearpage
+      \input{qrot-extract}
+      \clearpage
+      \input{qrot-adaptive}
+      \clearpage
+      \input{qrot-rewind} % maybe leave this for v2
+    \fi
 
   \ifdraftversion
-    %\clearpage
-    %\addcontentsline{toc}{part}{Part 3.\quad Under the Rug: Proving Quantum Lemmas}
-    \part{Under The Rug}
-    \input{qrot-proofs}
+    \part{Under The Rug}\label{part:proofs}
+    \input{qrot-proofs} % maybe leave this for v3
     \clearpage
   \fi
 
@@ -268,14 +253,18 @@
 
   % Appendices input below
 
-  \input{qrot-solutions}
+  \input{qrot-pseudocode}
     \clearpage
-
-  % WIP
   \ifdraftversion
-  	\input{qrot-KEMs-and-FO} % <- Kat's collection of stuff on FO
-    \input{qrot-ttransform}
+
+    % \input{qrot-ttransform} % let's skip this
+    % \clearpage
+    \input{qrot-KEMs-and-FO} % <- Kat's collection of stuff on FO
+    \input{qrot-improving-o2h}
+    \clearpage
     \input{qrot-handsoff}
+    \clearpage
   \fi
+  \input{qrot-solutions}
 
 \end{document}
