@@ -5,7 +5,7 @@
     \item Game hopping
   }
 
-  \subsection{Sets, Lists, and Probabilities}
+  \subsection{Sets, Lists and Probabilities}
     Let us start by defining our conventions. 
       We will take the natural numbers $\NN$ to include $0$, and for $n \in \NN$, we
       will use $[n]$ to denote the set $\{0, \dots, n-1\}$. We will also use
@@ -40,14 +40,18 @@
       We omit $\mathsf{Code}$ when it is clear from context and
       $\mathsf{Condition}$ when it is not needed. 
 
+    \hhnote{todo: introduce predicates $\bool{\cdot}$}
+
   \subsection{Algorithms and Oracles}
-    Algorithms are assumed to be either classical~\cite{Turing36} or quantum Turing
-      machines~\cite{Deutsch85} (although we will follow the convention of
-      expressing quantum algorithms as quantum circuits~\cite{Yao93});
-      which of the two we are talking about will usually be clear from context.
+    Algorithms are assumed to be either classical~\cite{Turing36} or quantum~\cite{Deutsch85} 
+      Turing machines, although we will follow the convention of
+      expressing quantum algorithms as quantum circuits~\cite{Yao93}.
+      %which of the two we are talking about will usually be clear from context.
       An \emph{oracle} algorithm is an algorithm $A$ that additionally has black-box access to
       some oracle $\Oracle$, meaning it can only call the oracle on some input
-      and receive its output; this is written $A^\Oracle$. 
+      and receive its output; this is written $A^\Oracle$. For $A$ to query the
+      oracle on some input and receive a corresponding output only takes up a
+      single time step in the execution of the Turing machine.
 
     Unlike algorithms, oracles are typically not limited to bounded resources.
       Classical oracles take a classical value $x$ as input and return some
@@ -70,7 +74,7 @@
       querying party. The operation applied may be probabilistic in nature and
       may include measurements (which has the effect of transforming pure
       quantum states into mixed states\footnote{
-        Such quantum operators are known as \emph{superoperators}
+        Such general operators are known as \emph{superoperators}.
       }), though it will often be required to be unitary.
       For quantum oracle algorithms, we will take a classical oracle to be a
       quantum oracle that performs a computational-basis measurement on the
@@ -80,15 +84,16 @@
 
     In \autoref{subsec:pseudocode}, we define a quantum pseudocode that allows
       us to talk about general quantum oracles, which we apply to quantum random
-      oracles in \autoref{sec:rom}. For now, we note that a quantum oracle
-      $\Oracle_f$ that evaluates a function $f$ on superpositions of inputs are
-      defined as the oracle that applies the unitary operation
+      oracles in \autoref{sec:rom}. For now, we note that an oracle that
+      evaluates a function $f$ on superpositions of inputs is
+      usually defined as the quantum oracle $\Oracle_f$ that applies the
+      unitary operation
       \[
         \ket{x,y} \to \ket{x,y \xor f(x)}\, ,
       \]
       where $\ket{x,y}$ are the computational basis states of the qubit
-      input/output registers given to the oracle. (See \autoref{sec:primer} for
-      an introduction to the basics of quantum computation.)
+      registers input to the oracle. (In case this notation is
+      unfamiliar to you, \autoref{sec:primer} provides a gentle introduction.)
 
     %% MORE FROM SOA SOK
     %We use code-based experiments, where by convention all sets, lists,
@@ -112,6 +117,33 @@
     %  (code-snippet taken from \autoref{fig:IND-SOA}).
 
   \subsection{Public Key Encryption}
+	  \begin{definition}[Public-Key Encryption Scheme]\label{def:PKE}
+	  	A public-key encryption scheme $\PKE = (\KG, \Enc, \Dec)$ is a triple of algorithms
+	  	defined with respect to public-key space \PKSpace, secret-key space \SKSpace,
+	  	message (plaintext) space \MSpace, ciphertext space \CSpace,
+	  	and randomness space \RSpace.
+	  	More precisely, the triple of algorithms is defined as follows.
+	  	\begin{itemize}
+	  		\item
+	  			$\KG() : (\pk, \sk) \in \PKSpace \times \SKSpace$.
+	  			Probabilistic algorithm that takes no input and outputs a ``key pair'' $(\pk, \sk)$.
+	  		\item
+	  			$\Enc(\pk \in \PKSpace, m \in \MSpace) : c \in \CSpace$.
+	  			Probabilistic algorithm that, given a public key $\pk$ and message $m$,
+	  			produces an ``encryption'' (``ciphertext'') $c$ of $m$ under $\pk$.
+	  			We may explicitly specify the randomness used in encryption by writing $\Enc(\pk, m; r)$,
+	  			where $r \in \RSpace$.
+	  		\item
+	  			$\Dec(c \in \CSpace, \sk \in \SKSpace) : m \in \MSpace \cup \{\bot\}$.
+	  			Deterministic algorithm that, given a secret key $\sk$ and ciphertext $c$,
+	  			yields either a message $m \in \MSpace$ or an explicit failure symbol $\bot \notin \MSpace$,
+	  			the latter indicating that $c$ is not a valid ciphertext (under $\sk$).
+	  	\end{itemize}
+	  \end{definition}
+	  
+	  \todo{OWCPA or INDPCA, correctness, rigidity}
+
+    \hhnote{old text below}
     First, whenever some object is generated
       dependent on some other public object, such as the public key $\pk$ being
       dependent on the public parameters $\params$ (which in turn depend on the
@@ -190,52 +222,111 @@
       We measure security in terms of $\adv$'s \emph{distinguishing advantage},
         i.e.\ how much better it can do than random guessing.
 
-      \begin{figure}[t]
-        \centering
-        \begin{pchstack}[center]
-          \procedure{$\experiment{\indcpa}{\pkescheme}$}{
-            \params \sample \pkpm(\secparam) \\
-            (\pk, \sk) \sample \pkkg(\params) \\
-            \chalbit \sample \bin \\
-            \advbit \sample \adv^{\Oenc(,\RO)}(\pk) \\
-            \pcreturn \advbit = \chalbit
-          }
+      %\begin{figure}[t]
+      %  \centering
+      %  \begin{pchstack}[center]
+      %    \procedure{$\experiment{\indcpa}{\pkescheme}$}{
+      %      \params \sample \pkpm(\secparam) \\
+      %      (\pk, \sk) \sample \pkkg(\params) \\
+      %      \chalbit \sample \bin \\
+      %      \advbit \sample \adv^{\Oenc(,\RO)}(\pk) \\
+      %      \pcreturn \advbit = \chalbit
+      %    }
     
-          \pchspace
+      %    \pchspace
     
-          \procedure{$\indOenc(\mssg_0, \mssg_1) \pccomment{\ind}$}{
-            % Single-challenge:
-              %\pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
-            \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
-            \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
-            \pcreturn \chalctxt
-          }
+      %    \procedure{$\indOenc(\mssg_0, \mssg_1) \pccomment{\ind}$}{
+      %      % Single-challenge:
+      %        %\pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
+      %      \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
+      %      \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
+      %      \pcreturn \chalctxt
+      %    }
     
-          \pchspace
+      %    \pchspace
     
-          \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
-            \params \sample \kempm(\secparam) \\
-            (\pk, \sk) \sample \kemkg(\params) \\
-            i \gets 0 \\
-            (i,\advdemkey_i) \sample \adv^{\Oenc(,\RO)}(\pk) \\
-            \pcreturn (\advdemkey_i = \chalkeyi)
-          }
+      %    \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
+      %      \params \sample \kempm(\secparam) \\
+      %      (\pk, \sk) \sample \kemkg(\params) \\
+      %      i \gets 0 \\
+      %      (i,\advdemkey_i) \sample \adv^{\Oenc(,\RO)}(\pk) \\
+      %      \pcreturn (\advdemkey_i = \chalkeyi)
+      %    }
     
-          \pchspace
+      %    \pchspace
     
-          \procedure{$\owOenc \pccomment{\oneway}$}{
-            i \gets i+1 \\
-            (\chalkeyi, \chalctxt) \sample \kemenc_\pk \\
-            \pcreturn \chalctxt
-          }
-        \end{pchstack}
-      \caption{
-        \label{fig:ind-ow}
-        The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
-        $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
-        adversary gets access to this in addition to the challenge oracle $\Oenc$.
-      }
-      \end{figure}
+      %    \procedure{$\owOenc \pccomment{\oneway}$}{
+      %      i \gets i+1 \\
+      %      (\chalkeyi, \chalctxt) \sample \kemenc_\pk \\
+      %      \pcreturn \chalctxt
+      %    }
+      %  \end{pchstack}
+      %\caption{
+      %  \label{fig:ind-ow}
+      %  The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
+      %  $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
+      %  adversary gets access to this in addition to the challenge oracle $\Oenc$.
+      %}
+      %\end{figure}
+
+	  	\begin{figure}[t]
+	  		\begin{center}
+	  			\fbox{
+	  				\small
+	  				\nicoresetlinenr
+	  				\begin{minipage}[t]{3.5cm}	
+	  					\underline{{\bf Game} $\OWCPA_{\PKE}$}
+	  					\begin{nicodemus}
+	  						\item $(\pk, \sk) \gets \KG$
+                \item $\chalmssg \sample \Mspace$
+                \item $\chalctxt \sample \Enc_\pk(\chalmssg)$
+	  						\item $\advmssg \sample \adv(\pk, \chalctxt)$
+	  						\item $\pcreturn \bool{\advmssg = \chalmssg}$
+	  					\end{nicodemus}
+	  				\end{minipage}
+
+	  				\pchspace
+
+	  				\begin{minipage}[t]{3.5cm}	
+	  					\underline{{\bf Game} $\INDCCA_{\PKE}$}
+	  					\begin{nicodemus}
+	  						\item $(\pk, \sk) \gets \KG$
+	  						\item $\chalbit \sample \bin$
+	  						\item $\advbit \sample \adv^{\Oenc,\Odec}(\pk)$
+	  						\item $\pcreturn \bool{\advbit = \chalbit}$
+	  					\end{nicodemus}
+	  				\end{minipage}
+
+	  				\pchspace
+	  				
+	  				\begin{minipage}[t]{4cm}
+	  					\underline{$\Oenc(\mssg_0, \mssg_1)$}
+	  					\begin{nicodemus}
+                \item $\pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail$ 
+                  % what's happening with the spacing?
+                \item $\chalctxt \sample \Enc_\pk(\mssg_{\chalbit})$
+                \item $\chalset \setapp \chalctxt$
+	  						\item $\pcreturn \chalctxt$
+	  					\end{nicodemus}	
+	  				\end{minipage}
+
+	  				\pchspace
+
+	  				\begin{minipage}[t]{3cm}
+	  					\underline{$\Odec(\ctxt)$}
+	  					\begin{nicodemus}
+                \item $\pcif \ctxt \in \chalset \pcthen \pcreturn \fail$
+                \item $\mssg \gets \Dec_\sk(c)$
+	  						\item $\pcreturn \mssg$
+	  					\end{nicodemus}	
+	  				\end{minipage}
+	  			}
+	  		\end{center}
+	  		\caption{\label{fig:def:IND-CCA:PKE}
+          The single-challenge \OWCPA game and multi-challenge \INDCCA
+          game for $\PKE = (\KG, \Enc, \Dec)$.
+        }
+	  	\end{figure}
 
       \begin{definition}[Distinguishing Advantage]
         The distinguishing advantage of an adversary $\adv$ against a
@@ -274,6 +365,73 @@
         completely broken, or $\adv$ is unbounded).
 
   \subsection{Key Encapsulation Mechanisms}
+	  \begin{definition}[Key Encapsulation Mechanism]\label{def:KEM}
+	  	A key encapsulation mechanism $\KEM = (\KG, \Encaps, \Decaps)$ is a triple of algorithms
+	  	defined with respect to public-key space \PKSpace, secret-key space \SKSpace,
+	  	key space \KSpace, and ciphertext space \CSpace.
+	  	More precisely, the triple of algorithms is defined as follows.
+	  	\begin{itemize}
+	  		\item
+	  			$\KG() : (\pk, \sk) \in \PKSpace \times \SKSpace$.
+	  			Probabilistic algorithm that takes no input and outputs a ``key pair'' $(\pk, \sk)$.
+	  		\item
+	  			$\Encaps(\pk \in \PKSpace) : (K, c) \in \KSpace \times \CSpace$.
+	  			Probabilistic algorithm that, given a public key $\pk$,
+	  			produces a tuple $(c,\KEMoutputKey)$,
+	  			where $c$ is said to be an ``encapsulation'' (``ciphertext'') of the key $\KEMoutputKey$.
+	  		\item
+	  			$\Decaps(\sk \in \SKSpace, c \in \CSpace) : \KEMoutputKey \in \KSpace \cup \{\bot\}$.
+	  			Deterministic algorithm that, given a secret key $\sk$ and ciphertext $c$,
+	  			yields either a key $\KEMoutputKey \in \KSpace$ or an explicit failure symbol $\bot \notin \KSpace$,
+	  			the latter indicating that $c$ is not a valid ciphertext (under $\sk$).
+	  	\end{itemize}
+	  \end{definition}
+	  
+	  We also recall the standard security definition for KEMs,
+	  \underline{Ind}istinguishability under \underline{C}hosen \underline{C}iphertext \underline{A}ttacks ($\INDCCA$).
+	  
+	  \begin{definition}[\INDCCA]\label{def:indcca}
+	  	We define the \INDCCA game as in Figure~\ref{fig:def:IND-CCA}
+	  	and the \INDCCA advantage function of an adversary \AdversaryA (with binary output) against KEM as 
+	  	\[
+	  		\Advantage_{\KEM}^{\INDCCA}(\AdversaryA)
+	  		= \left| \Pr\left[\INDCCA^{\AdversaryA}_\KEM \Rightarrow 1\right] - \frac{1}{2} \right| \enspace .
+	  	\]
+	  	
+	  	
+	  	\begin{figure}[ht]
+	  		\begin{center}
+	  			\fbox{
+	  				\small
+	  				\nicoresetlinenr
+	  				\begin{minipage}[t]{5cm}	
+	  					\underline{{\bf Game} $\INDCCA_{\KEM}$:}
+	  					\begin{nicodemus}
+	  						\item $(\pk, \sk) \leftarrow \KG$
+	  						\item $b \sample \{0,1\}$
+	  						\item $(K_0,c^*) \leftarrow \Encaps(\pk)$
+	  						\item $K_1 \sample \KSpace$
+	  						\item $b' \leftarrow A^{\oracleDecaps}(\pk, c^*, K_b)$
+	  						\item \pcreturn $\bool{b' = b^*}$
+	  					\end{nicodemus}
+	  				\end{minipage}
+	  				
+	  				\quad
+	  				
+	  				\begin{minipage}[t]{3.5cm}
+	  					\underline{ $\oracleDecaps( c\ne c^*)$:}
+	  					\begin{nicodemus}
+	  						\item $K \gets \Decaps(\sk,c)$
+	  						\item \pcreturn $K$
+	  					\end{nicodemus}	
+	  				\end{minipage}
+	  			}
+	  		\end{center}
+	  		\caption{\INDCCA game for $\KEM = (\KG, \Encaps, \Decaps)$.}
+	  		\label{fig:def:IND-CCA}
+	  	\end{figure}
+	  	
+	  \end{definition}
 
   \subsection{Digital Signature Algorithms}
 
@@ -365,3 +523,109 @@
       \hhnote{
         Add identical-until-bad lemma?
       }
+
+  \subsection{The Fujisaki-Okamoto Transform}
+  	In this section, we recall the definition of one of the \FO-transforms that were given in~\cite{TCC:HofHovKil17},
+  	as the composition of the two following transformations:
+  	
+  	\begin{itemize}
+  		\item
+  			The de-randomizing \emph{\T-transform} that additionally adds a re-encryption check to the decryption procedure;
+  			and 
+  		\item
+  			PKE-to-KEM \emph{\U-transform}\todo{Specify variant} that derives a KEM output key \KEMoutputKey
+  			from a randomly chosen message $m$, which it encrypts using \PKE.
+  			(\cite{TCC:HofHovKil17} also defined other \U-variants that differ from the variant discussed here
+  			in how they handle invalid ciphertexts and in what they hash into the output key \KEMoutputKey.)
+  	\end{itemize} 
+  	
+  	\begin{definition}[\T-transform]
+  		To a PKE scheme $\PKE = (\KG, \Enc, \Dec)$ and a hash function $\ROrand:\MSpace \rightarrow \RSpace$,
+  		we associate the (deterministic) PKE scheme $\T[\PKE, \ROrand]$ defined in Figure~\ref{fig:def:T-transform}.
+  		
+  		\begin{figure}[t]
+  			\begin{center}
+  				\fbox{
+  					\small
+  					\nicoresetlinenr
+  					
+  					\begin{minipage}[t]{3.6cm}	
+  						\underline{ $\TEnc(pk, m)$:}
+  						\begin{nicodemus}
+  							\item $c \gets \Enc(pk, m; \ROrand(m))$
+  							\item \pcreturn $c$
+  						\end{nicodemus}
+  					\end{minipage}
+  					
+  					\quad
+  					
+  					\begin{minipage}[t]{5cm}
+  						\underline{ $\TDec(sk, c)$:}
+  						\begin{nicodemus}
+  							\item $m^\prime \gets \Enc(sk,c)$
+  							\item \pcif $m^\prime = \perp$ or $c \neq \Enc(pk, m; \ROrand(m))$
+  							\item \quad \pcreturn $\perp$
+  							\item \pcelse \pcreturn $m^\prime$
+  						\end{nicodemus}	
+  					\end{minipage}
+  				}
+  			\end{center}
+  			\caption{Algorithms of $\T[\PKE, \ROrand]=: (\KG, \TEnc, \TDec)$.}
+  			\label{fig:def:T-transform}
+  		\end{figure}
+  		
+  	\end{definition}
+  
+  	
+  	
+  	\begin{definition}[\UImpMess-transform]
+  		%
+  		To a PKE scheme $\PKE = (\KG, \Enc, \Dec)$ and a hash function \ROkey,
+  		we associate the KEM $\KEMImpMess := \UImpMess[\PKE, \ROkey]$ defined in~\ref{fig:def:U-transform}.
+  		
+  		\begin{figure}[ht]
+  			\begin{center}
+  				\fbox{
+  					\small
+  					\nicoresetlinenr
+  					\begin{minipage}[t]{3cm}
+  						\underline{$\KGImp()$}
+  						\begin{nicodemus}
+  							\item $(pk, sk) \sample \KG()$
+  							\item $\rejectionSeed \sample \MSpace$
+  							\item $\sk' \leftarrow (sk, \rejectionSeed)$
+  							\item \pcreturn $(pk, \sk')$
+  						\end{nicodemus}
+  					\end{minipage}
+  					
+  					\quad
+  					
+  					\begin{minipage}[t]{3.2cm}
+  						\underline{$\EncapsMess(pk)$}
+  						\begin{nicodemus}
+  							\item $m \sample \MSpace$
+  							\item $c \leftarrow \Enc(pk, m)$
+  							\item $\KEMoutputKey := \ROkey(m)$
+  							\item \pcreturn $(\KEMoutputKey, c)$
+  						\end{nicodemus}
+  					\end{minipage}
+  					
+  					\quad
+  					
+  					\begin{minipage}[t]{3.4cm}
+  						\underline{$\DecapsImpMess(\sk', c)$}
+  						\begin{nicodemus}
+  							\item Parse $\sk' := (sk, \rejectionSeed)$
+  							\item $m' := \Dec(sk, c)$
+  							\item \pcif $m' = \bot$
+  								\item \pcreturn $\ROkey(\rejectionSeed, c)$
+  							\item \pcreturn $\ROkey(m')$
+  						\end{nicodemus}
+  					\end{minipage}
+  				}
+  			\end{center}
+  			\caption{Algorithms of $\UImpMess[\PKE, \ROkey, \ROimp] =: (\KGImp, \EncapsMess, \DecapsImpMess)$.}
+  			\label{fig:def:U-transform}			
+  		\end{figure} 
+  		
+  	\end{definition}
