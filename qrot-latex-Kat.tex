@@ -1,0 +1,97 @@
+\newcommand{\PKE}{\ensuremath{\mathsf{PKE}}\xspace}
+\newcommand{\DPKE}{\ensuremath{\mathsf{DPKE}}\xspace}
+\newcommand{\KG}{\ensuremath{\mathsf{KeyGen}}\xspace}
+\newcommand{\Enc}{\ensuremath{\mathsf{Enc}}\xspace}
+\newcommand{\Dec}{\ensuremath{\mathsf{Dec}}\xspace}
+
+\newcommand{\KEM}{\ensuremath{\mathsf{KEM}}\xspace}
+\newcommand{\Encaps}{\ensuremath{\mathsf{Encaps}}\xspace}
+\newcommand{\Decaps}{\ensuremath{\mathsf{Decaps}}\xspace}
+\newcommand{\KEMoutputKey}{\ensuremath{\mathsf{k}}\xspace}
+
+% PKE /KEM spaces
+\newcommand{\PKSpace}{\ensuremath{\mathcal{PK}}\xspace}
+\newcommand{\SKSpace}{\ensuremath{\mathcal{SK}}\xspace}
+\newcommand{\MSpace}{\ensuremath{\mathcal{M}}\xspace}
+\newcommand{\KSpace}{\ensuremath{\mathcal{K}}\xspace}
+\newcommand{\CSpace}{\ensuremath{\mathcal{C}}\xspace}
+\newcommand{\RSpace}{\ensuremath{\mathcal{R}}\xspace}
+
+% Security notions for PKEs/KEMs
+\mathchardef\mhyphen="2D % Define a "math hyphen"
+\newcommand{\OW}{\ensuremath{\mathsf{OW}}\xspace}
+\newcommand{\IND}{\ensuremath{\mathsf{IND}}\xspace}
+\newcommand{\CPA}{\ensuremath{\mathsf{CPA}}\xspace}
+\newcommand{\CCA}{\ensuremath{\mathsf{CCA}}\xspace}
+\newcommand{\OWCPA}{\ensuremath{\OW\mhyphen\CPA}\xspace}
+\newcommand{\INDCPA}{{\ensuremath{\IND\mhyphen\CPA}}\xspace}
+\newcommand{\INDCCA}{{\ensuremath{\IND\mhyphen\CCA}}\xspace}
+
+% === standard FO notation
+\newcommand{\T}{\ensuremath{\mathsf{T}}\xspace}
+\newcommand{\TEnc}{\ensuremath{\Enc'}\xspace}
+\newcommand{\TDec}{\ensuremath{\Dec'}\xspace}
+
+\newcommand{\U}{\ensuremath{\mathsf{U}}\xspace}
+\newcommand{\notp}{{\not\perp}} % <- for implicit rejection
+%\newcommand{\UExp}{\ensuremath{\U^\perp}\xspace}
+%\newcommand{\UExpMess}{\ensuremath{\UExp_{m}}\xspace}
+\newcommand{\UImp}{\ensuremath{\U^\notp}\xspace}
+\newcommand{\UImpMess}{\ensuremath{\UImp_{m}}\xspace}
+
+%\newcommand{\KEMExp}{\ensuremath{\KEM^{\perp}}\xspace}
+%\newcommand{\KEMExpMess}{\ensuremath{\KEMExp_m}\xspace}
+\newcommand{\KEMImp}{\ensuremath{\KEM^{\notp}}\xspace}
+\newcommand{\KEMImpMess}{\ensuremath{\KEMImp_m}\xspace}
+
+%\newcommand{\KGExp}{\ensuremath{\KG}\xspace}
+\newcommand{\KGImp}{\ensuremath{\KG^\notp}\xspace}
+\newcommand{\rejectionSeed}{\ensuremath{z}\xspace}
+\newcommand{\EncapsMess}{\ensuremath{\Encaps_m}\xspace}
+%\newcommand{\DecapsExpMess}{\ensuremath{\Decaps^\perp_m}\xspace}
+\newcommand{\DecapsImpMess}{\ensuremath{\Decaps^\notp_m}\xspace}
+
+\newcommand{\FO}{\ensuremath{\mathsf{FO}}\xspace}
+%\newcommand{\FOExp}{\ensuremath{\FO^{\perp}}\xspace}
+%\newcommand{\FOImp}{\ensuremath{\FO^\notp}\xspace}
+%\newcommand{\FOMess}{\ensuremath{\FO_m}\xspace}
+%\newcommand{\FOMessExp}{\ensuremath{\FOExp_m}\xspace}
+%\newcommand{\FOMessImp}{\ensuremath{\FOImp_m}\xspace}
+
+
+% Hash functions used by FO
+\newcommand{\hashTS}[1]{\ensuremath{\mathsf{#1}}\xspace} % <- for typesetting hash functions
+\newcommand{\ROkey}{\hashTS{H}}
+\newcommand{\ROrand}{\hashTS{G}}
+\newcommand{\ROimp}{\hashTS{H'}}
+
+
+% Stuff for security definitions
+\newcommand{\AdversaryA}{\ensuremath{\mathcal{A}}\xspace}
+\newcommand{\Advantage}{\ensuremath{\mathrm{Adv}}\xspace}
+\newcommand{\oracleDecaps}{\ensuremath{\mathsc{Dec}}\xspace}
+\newcommand{\bool}[1]{\ensuremath{\llbracket #1\rrbracket}\xspace}
+%\newcommand{\sample}{{\:\leftarrow\hspace*{-3pt}\raisebox{.5pt}{$\scriptscriptstyle\$$}\:}}
+
+% most of the commands are still in nicodemus.sty. However, e.g. texstudio will not allow for autocompletion of commands in nicodemus.sty :-/
+\newenvironment{nicodemus}[1][\thenicolinenr]{%  % parameter controls initial line number
+	\begin{enumerate}[
+		topsep=0ex,
+		label=\nicolinenrformat\PaddingUp*,
+		ref=\nicorefprefix\PaddingUp*,
+		align=right,
+		leftmargin=0em,
+		itemindent=!,
+		labelindent=0em,
+		labelwidth=\nicolinenrwidth,
+		labelsep=\nicolinenrsep,
+		listparindent=\parindent,
+		noitemsep,
+		]%
+		\setcounter{enumi}{#1}%
+		\addtocounter{enumi}{-1}%
+	}{%
+	\end{enumerate}%
+	\addtocounter{enumi}{1}%
+	\setcounter{nicolinenr}{\theenumi}%
+}
