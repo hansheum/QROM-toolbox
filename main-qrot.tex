@@ -147,7 +147,7 @@
 \definechangesauthor[name={Hans}, color=darkgreen]{HH}
 
 \newcommand{\hhnote}[2][]{\todo[inline,color=Linen]{\textbf{Hans:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
-\newcommand{\khnote}[2][]{\todo[inline,color=violet]{\textbf{Kathrin:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
+\newcommand{\khnote}[2][]{\todo[inline,color=violet,textcolor=white]{\textbf{Kathrin:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
 \newcommand{\revnote}[1]{\todo[inline]{\textbf{Reviewer:} #1}\xspace}
 
 \newcommand\todoenum[2][]{\todo[inline,color=Cornsilk,caption={2do}]{
@@ -252,12 +252,8 @@
   % Appendices input below
 
   \input{qrot-pseudocode}
-    \clearpage
+  \clearpage
   \ifdraftversion
-
-    % \input{qrot-ttransform} % let's skip this
-    % \clearpage
-    \input{qrot-KEMs-and-FO} % <- Kat's collection of stuff on FO
     \input{qrot-improving-o2h}
     \clearpage
     \input{qrot-handsoff}

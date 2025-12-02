@@ -3,3 +3,114 @@
     \item Classical ROM proof of OW to IND
     \item Classical ROM proof of CPA to CCA
   }
+
+  \subsection{The Fujisaki-Okamoto Transformation}
+  	In this section, we recall the definition of one of the \FO-transforms that
+      were given in~\cite{TCC:HofHovKil17}, as the composition of the two
+      following transformations:
+
+    \hhnote{
+      Could we do the more general $U^\perp$ transform instead? Or is that too
+      hard to work with?
+    }
+  	
+  	\begin{itemize}
+  		\item
+  			The de-randomizing \emph{\T-transform} that additionally adds a re-encryption check to the decryption procedure;
+  			and 
+  		\item
+  			PKE-to-KEM \emph{\U-transform}\todo{Specify variant} that derives a KEM output key \KEMoutputKey
+  			from a randomly chosen message $m$, which it encrypts using \PKE.
+  			(\cite{TCC:HofHovKil17} also defined other \U-variants that differ from the variant discussed here
+  			in how they handle invalid ciphertexts and in what they hash into the output key \KEMoutputKey.)
+  	\end{itemize} 
+  	
+  	\begin{definition}[\T-transform]
+  		To a PKE scheme $\PKE = (\KG, \Enc, \Dec)$ and a hash function $\ROrand:\MSpace \rightarrow \RSpace$,
+  		we associate the (deterministic) PKE scheme $\T[\PKE, \ROrand]$ defined in Figure~\ref{fig:def:T-transform}.
+  		
+  		\begin{figure}[t]
+  			\begin{center}
+  				\fbox{
+  					\small
+  					\nicoresetlinenr
+  					
+  					\begin{minipage}[t]{3.6cm}	
+  						\underline{ $\TEnc(pk, m)$:}
+  						\begin{nicodemus}
+  							\item $c \gets \Enc(pk, m; \ROrand(m))$
+  							\item \pcreturn $c$
+  						\end{nicodemus}
+  					\end{minipage}
+  					
+  					\quad
+  					
+  					\begin{minipage}[t]{5cm}
+  						\underline{ $\TDec(sk, c)$:}
+  						\begin{nicodemus}
+  							\item $m^\prime \gets \Enc(sk,c)$
+  							\item \pcif $m^\prime = \perp$ or $c \neq \Enc(pk, m; \ROrand(m))$
+  							\item \quad \pcreturn $\perp$
+  							\item \pcelse \pcreturn $m^\prime$
+  						\end{nicodemus}	
+  					\end{minipage}
+  				}
+  			\end{center}
+  			\caption{Algorithms of $\T[\PKE, \ROrand]=: (\KG, \TEnc, \TDec)$.}
+  			\label{fig:def:T-transform}
+  		\end{figure}
+  		
+  	\end{definition}
+  
+  	
+  	
+  	\begin{definition}[\UImpMess-transform]
+  		%
+  		To a PKE scheme $\PKE = (\KG, \Enc, \Dec)$ and a hash function \ROkey,
+  		we associate the KEM $\KEMImpMess := \UImpMess[\PKE, \ROkey]$ defined in~\ref{fig:def:U-transform}.
+  		
+  		\begin{figure}[ht]
+  			\begin{center}
+  				\fbox{
+  					\small
+  					\nicoresetlinenr
+  					\begin{minipage}[t]{3cm}
+  						\underline{$\KGImp()$}
+  						\begin{nicodemus}
+  							\item $(pk, sk) \sample \KG()$
+  							\item $\rejectionSeed \sample \MSpace$
+  							\item $\sk' \leftarrow (sk, \rejectionSeed)$
+  							\item \pcreturn $(pk, \sk')$
+  						\end{nicodemus}
+  					\end{minipage}
+  					
+  					\quad
+  					
+  					\begin{minipage}[t]{3.2cm}
+  						\underline{$\EncapsMess(pk)$}
+  						\begin{nicodemus}
+  							\item $m \sample \MSpace$
+  							\item $c \leftarrow \Enc(pk, m)$
+  							\item $\KEMoutputKey := \ROkey(m)$
+  							\item \pcreturn $(\KEMoutputKey, c)$
+  						\end{nicodemus}
+  					\end{minipage}
+  					
+  					\quad
+  					
+  					\begin{minipage}[t]{3.4cm}
+  						\underline{$\DecapsImpMess(\sk', c)$}
+  						\begin{nicodemus}
+  							\item Parse $\sk' := (sk, \rejectionSeed)$
+  							\item $m' := \Dec(sk, c)$
+  							\item \pcif $m' = \bot$
+  								\item \pcreturn $\ROkey(\rejectionSeed, c)$
+  							\item \pcreturn $\ROkey(m')$
+  						\end{nicodemus}
+  					\end{minipage}
+  				}
+  			\end{center}
+  			\caption{Algorithms of $\UImpMess[\PKE, \ROkey, \ROimp] =: (\KGImp, \EncapsMess, \DecapsImpMess)$.}
+  			\label{fig:def:U-transform}			
+  		\end{figure} 
+  	\end{definition}
