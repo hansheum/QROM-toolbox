@@ -266,47 +266,87 @@
         random oracles in \autoref{sec:rom}.
         %will  but let us first discuss how we define security in general.
 
-  \subsection{Security}
-    \subsubsection{Games and Advantages.}
-      Security is defined in terms of a security game (or \emph{experiment})
+  \subsection{Security Notions}
+    \newcommand{\primitive}{\pcalgostyle{P}}
+    \subsubsection{Experiments and Advantages.}
+      Security is defined in terms of a security game, or \emph{experiment},
         $\experiment{}{}[]$, such that if a player (or \emph{adversary}) $\adv$
         wins the game when it is instanstiated with some primitive $\pcalgostyle{P}$
-        (in which case $\experiment{}{\pcalgostyle{P}}$ outputs $1$), then we say that
-        $\adv$ broke the security of $\pcalgostyle{P}$.
+        (in which case $\experiment{}{\primitive}$ outputs $1$), then we say that
+        $\adv$ broke the security of $\primitive$.
         If there exists an efficient adversary (i.e., an attack algorithm) that wins the game with 
-        significant \emph{advantage}, then we say that $\pcalgostyle{P}$ is
-        \emph{broken}.
+        significant \emph{advantage}, then we say that $\primitive$ is broken.
 
       How advantages are defined depends on what kind of security notion we are talking
-        about. Usually, we are only concerned with two kinds of notions:
-        \emph{computational}, in which case the adversary is tasked with
+        about. Most security notions we care about fall into one of two
+        categories: \emph{computational}, in which case the adversary is tasked with
         recovering some secret value, and \emph{distinguishing}, in which case
-        the adversary should distinguish between two known cases. For the former
-        case, the advantage is simply the probability that the adversary wins.
-        For the latter case, however, the adversary can win with probability
+        the adversary should distinguish between two known cases. In the case of
+        computational notions, the advantage is simply the probability that the adversary wins.
+
+      \newcommand{\compnotion}{\pcnotionstyle{COMP}}
+      \begin{definition}[Computational Advantage]
+        The computing advantage of an adversary $\adv$ against a primitive
+          $\primitive$ under a computational security notion
+          $\compnotion$, is its probability of winning
+          the security experiment $\experiment{\compnotion}{\primitive}$:
+          \[
+            \advantage{\compnotion}{\primitive} \coloneqq
+            \prob{\experiment{\compnotion}{\primitive}}\, .
+          \]
+      \end{definition}
+
+      For distinguishing notions, the adversary can win with probability
         $\half$ by simply making a uniform guess, and so we scale the
         advantage to instead be how much \emph{better} the adversary can do than
-        a simple guess.
+        a simple guess. There are several, equivalent ways to do this, and it will 
+        sometimes be useful to switch between them.
 
-      \begin{definition}[Computational Advantage]
-        xyz
-      \end{definition}
-
+      \newcommand{\distnotion}{\pcnotionstyle{DIST}}
       \begin{definition}[Distinguishing Advantage]
-        abc
+        The distinguishing advantage of an adversary $\adv$ against a primitive
+        $\primitive$ under a distinguishing security notion
+        $\pcnotionstyle{DIST}$, is defined as:
+        \begin{align*}
+          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
+            2 \cdot \prob{\experiment{\distnotion}{\primitive}} - 1
+          }\, ,
+          \intertext{or, equivalently,}
+          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
+            \prob{\experiment{\distnotion}{\primitive}}
+            - \prob{\neg\experiment{\distnotion}{\primitive}}
+          }\, ,
+          \intertext{or, equivalently,}
+          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
+            \condprobsample{
+              \experiment{\distnotion}{\primitive}
+            }{0 \sample \adv}{\chalbit = 0}
+            - \condprobsample{
+              \experiment{\distnotion}{\primitive}
+            }{0 \sample \adv}{\chalbit = 1}
+          }\, .
+        \end{align*}
       \end{definition}
 
-      \hhnote{outdated below}
+      \noindent
+      Note how each formula scales the advantage so that it is contained on the
+        interval $[0, 1]$, matching the computational case.
 
-      The standard notion of security for public-key encryption is usually taken to
-        be ``Indistinguishability under Chosen-Ciphertext Attacks'', or $\indcca$,
-        but for the sake of this tutorial we will stick to the weaker 
+    \subsubsection{PKE Security.}
+      At minimum, a secure PKE scheme should hide the message being encrypted.
+        We can formalize this as ``One-Wayness under Chosen-Plaintext Attacks'',
+        or $\owcpa$.
+
+      \hhnote{outdated under}
+
+      The standard notion of security for public-key encryption is 
+        ``Indistinguishability under Chosen-Ciphertext Attacks'', or $\indcca$,
+        but for the sake of this tutorial we will stick to the weaker but simpler
         ``Indistinguishability under Chosen-\emph{Plaintext} Attacks'' ($\indcpa$). Since
-        this is a public-key encryption scheme, the chosen-plaintext attacks can
-        be performed ``offline'' by the adversary simply by running the
-        encryption algorithm itself using the provided public key. 
-        %Therefore, unlike in the symmetric encryption case, we do not need to provide 
-        %the adversary with an honest encryption via an oracle.
+        this is public-key encryption, any adversary can generate as many
+        encryptions it wants of whatever message it chooses, so the ``CPA'' 
+        capability is provided for free. (For symmetric schemes, this would
+        have to be provided via an encryption oracle.)
         % Eh, it gets this anyway, by letting m0 = m1, making the point moot.
 
       On the left of \autoref{fig:ind-ow} is the experiment
@@ -314,7 +354,7 @@
         parameters $\params$, a keypair
         $(\pk,\sk)$, and a challenge bit $\chalbit$, before handing the public
         key to the adversary $\adv$. If the construction in question uses a
-        random oracle $\RO$, then $\adv$ also gets oracle access to $\RO$. 
+        random oracle $\RO$, then $\adv$ also gets oracle access to $\RO$.
 
       At some point, the adversary decides on two equal-length messages
         $\mssg_0$ and $\mssg_1$, and call its \emph{challenge encryption} oracle $\Oenc$
@@ -327,11 +367,11 @@
         secure even if ciphertexts leak information about message lengths.
         In fact, you may notice from \autoref{fig:bre} that
         our BRE scheme leaks the message length exactly, since $\demctxt$
-        must necessarily have the same length as $\mssg$. 
-        
+        must necessarily have the same length as $\mssg$.
+
       We are in the \emph{multi-challenge} setting, and so the adversary may
         continue to make as many calls to $\Oenc$ as it likes,
-        in addition to arbitrary calls to the random oracle $\RO$. 
+        in addition to arbitrary calls to the random oracle $\RO$.
         (If the adversary is restricted to a single call to $\Oenc$, we call this
         the \emph{single-challenge setting}.)
         Once it is satisfied, $\adv$ halts with a guess $\advbit \in
@@ -341,151 +381,126 @@
         i.e.\ how much better it can do than random guessing.
 
       %\begin{figure}[t]
-        %  \centering
-        %  \begin{pchstack}[center]
-        %    \procedure{$\experiment{\indcpa}{\pkescheme}$}{
-        %      \params \sample \pkpm(\secparam) \\
-        %      (\pk, \sk) \sample \pkkg(\params) \\
-        %      \chalbit \sample \bin \\
-        %      \advbit \sample \adv^{\Oenc(,\RO)}(\pk) \\
-        %      \pcreturn \advbit = \chalbit
-        %    }
-    
-        %    \pchspace
-    
-        %    \procedure{$\indOenc(\mssg_0, \mssg_1) \pccomment{\ind}$}{
-        %      % Single-challenge:
-        %        %\pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\ 
-        %      \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
-        %      \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
-        %      \pcreturn \chalctxt
-        %    }
-    
-        %    \pchspace
-    
-        %    \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
-        %      \params \sample \kempm(\secparam) \\
-        %      (\pk, \sk) \sample \kemkg(\params) \\
-        %      i \gets 0 \\
-        %      (i,\advdemkey_i) \sample \adv^{\Oenc(,\RO)}(\pk) \\
-        %      \pcreturn (\advdemkey_i = \chalkeyi)
-        %    }
-    
-        %    \pchspace
-    
-        %    \procedure{$\owOenc \pccomment{\oneway}$}{
-        %      i \gets i+1 \\
-        %      (\chalkeyi, \chalctxt) \sample \kemenc_\pk \\
-        %      \pcreturn \chalctxt
-        %    }
-        %  \end{pchstack}
-        %\caption{
-        %  \label{fig:ind-ow}
-        %  The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
-        %  $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
-        %  adversary gets access to this in addition to the challenge oracle $\Oenc$.
-        %}
-        %\end{figure}
+      %  \centering
+      %  \begin{pchstack}[center]
+      %    \procedure{$\experiment{\indcpa}{\pkescheme}$}{
+      %      \params \sample \pkpm(\secparam) \\
+      %      (\pk, \sk) \sample \pkkg(\params) \\
+      %      \chalbit \sample \bin \\
+      %      \advbit \sample \adv^{\Oenc(,\RO)}(\pk) \\
+      %      \pcreturn \advbit = \chalbit
+      %    }
+      %
+      %    \pchspace
+      %
+      %    \procedure{$\indOenc(\mssg_0, \mssg_1) \pccomment{\ind}$}{
+      %      % Single-challenge:
+      %        %\pcif \chalctxt \neq \emptystring \lor \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \\
+      %      \pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail \\
+      %      \chalctxt \sample \pkenc_\pk(\mssg_\chalbit) \\
+      %      \pcreturn \chalctxt
+      %    }
+      %
+      %    \pchspace
+      %
+      %    \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
+      %      \params \sample \kempm(\secparam) \\
+      %      (\pk, \sk) \sample \kemkg(\params) \\
+      %      i \gets 0 \\
+      %      (i,\advdemkey_i) \sample \adv^{\Oenc(,\RO)}(\pk) \\
+      %      \pcreturn (\advdemkey_i = \chalkeyi)
+      %    }
+      %
+      %    \pchspace
+      %
+      %    \procedure{$\owOenc \pccomment{\oneway}$}{
+      %      i \gets i+1 \\
+      %      (\chalkeyi, \chalctxt) \sample \kemenc_\pk \\
+      %      \pcreturn \chalctxt
+      %    }
+      %  \end{pchstack}
+      %\caption{
+      %  \label{fig:ind-ow}
+      %  The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
+      %  $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
+      %  adversary gets access to this in addition to the challenge oracle $\Oenc$.
+      %}
+      %\end{figure}
 
-	  	\begin{figure}[t]
-	  		\begin{center}
-	  			\fbox{
-	  				\small
-	  				\nicoresetlinenr
-	  				\begin{minipage}[t]{3.5cm}	
-	  					\underline{{\bf Game} $\OWCPA_{\PKE}$}
-	  					\begin{nicodemus}
-	  						\item $(\pk, \sk) \gets \KG$
-                \item $\chalmssg \sample \Mspace$
-                \item $\chalctxt \sample \Enc_\pk(\chalmssg)$
-	  						\item $\advmssg \sample \adv(\pk, \chalctxt)$
-	  						\item $\pcreturn \bool{\advmssg = \chalmssg}$
-	  					\end{nicodemus}
-	  				\end{minipage}
+	  	  \begin{figure}[t]
+	  	  	\begin{center}
+	  	  		\fbox{
+	  	  			\small
+	  	  			\nicoresetlinenr
+	  	  			\begin{minipage}[t]{3.5cm}	
+	  	  				\underline{{\bf Game} $\OWCPA_{\PKE}$}
+	  	  				\begin{nicodemus}
+	  	  					\item $(\pk, \sk) \gets \KG$
+                  \item $\chalmssg \sample \Mspace$
+                  \item $\chalctxt \sample \Enc_\pk(\chalmssg)$
+	  	  					\item $\advmssg \sample \adv(\pk, \chalctxt)$
+	  	  					\item $\pcreturn \bool{\advmssg = \chalmssg}$
+	  	  				\end{nicodemus}
+	  	  			\end{minipage}
 
-	  				\pchspace
+	  	  			\pchspace
 
-	  				\begin{minipage}[t]{3.5cm}	
-	  					\underline{{\bf Game} $\INDCCA_{\PKE}$}
-	  					\begin{nicodemus}
-	  						\item $(\pk, \sk) \gets \KG$
-	  						\item $\chalbit \sample \bin$
-	  						\item $\advbit \sample \adv^{\Oenc,\Odec}(\pk)$
-	  						\item $\pcreturn \bool{\advbit = \chalbit}$
-	  					\end{nicodemus}
-	  				\end{minipage}
+	  	  			\begin{minipage}[t]{3.5cm}	
+	  	  				\underline{{\bf Game} $\INDCCA_{\PKE}$}
+	  	  				\begin{nicodemus}
+	  	  					\item $(\pk, \sk) \gets \KG$
+	  	  					\item $\chalbit \sample \bin$
+	  	  					\item $\advbit \sample \adv^{\Oenc,\Odec}(\pk)$
+	  	  					\item $\pcreturn \bool{\advbit = \chalbit}$
+	  	  				\end{nicodemus}
+	  	  			\end{minipage}
 
-	  				\pchspace
-	  				
-	  				\begin{minipage}[t]{4cm}
-	  					\underline{$\Oenc(\mssg_0, \mssg_1)$}
-	  					\begin{nicodemus}
-                \item $\pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail$ 
-                  % what's happening with the spacing?
-                \item $\chalctxt \sample \Enc_\pk(\mssg_{\chalbit})$
-                \item $\chalset \setapp \chalctxt$
-	  						\item $\pcreturn \chalctxt$
-	  					\end{nicodemus}	
-	  				\end{minipage}
+	  	  			\pchspace
+	  	  			
+	  	  			\begin{minipage}[t]{4cm}
+	  	  				\underline{$\Oenc(\mssg_0, \mssg_1)$}
+	  	  				\begin{nicodemus}
+                  \item $\pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail$ 
+                    % what's happening with the spacing?
+                  \item $\chalctxt \sample \Enc_\pk(\mssg_{\chalbit})$
+                  \item $\chalset \setapp \chalctxt$
+	  	  					\item $\pcreturn \chalctxt$
+	  	  				\end{nicodemus}	
+	  	  			\end{minipage}
 
-	  				\pchspace
+	  	  			\pchspace
 
-	  				\begin{minipage}[t]{3cm}
-	  					\underline{$\Odec(\ctxt)$}
-	  					\begin{nicodemus}
-                \item $\pcif \ctxt \in \chalset \pcthen \pcreturn \fail$
-                \item $\mssg \gets \Dec_\sk(c)$
-	  						\item $\pcreturn \mssg$
-	  					\end{nicodemus}	
-	  				\end{minipage}
-	  			}
-	  		\end{center}
-	  		\caption{\label{fig:def:IND-CCA:PKE}
-          The single-challenge \OWCPA game and multi-challenge \INDCCA
-          game for $\PKE = (\KG, \Enc, \Dec)$.
-        }
-	  	\end{figure}
+	  	  			\begin{minipage}[t]{3cm}
+	  	  				\underline{$\Odec(\ctxt)$}
+	  	  				\begin{nicodemus}
+                  \item $\pcif \ctxt \in \chalset \pcthen \pcreturn \fail$
+                  \item $\mssg \gets \Dec_\sk(c)$
+	  	  					\item $\pcreturn \mssg$
+	  	  				\end{nicodemus}	
+	  	  			\end{minipage}
+	  	  		}
+	  	  	\end{center}
+	  	  	\caption{\label{fig:def:IND-CCA:PKE}
+            The single-challenge \OWCPA game and multi-challenge \INDCCA
+            game for $\PKE = (\KG, \Enc, \Dec)$.
+          }
+	  	  \end{figure}
 
-      \begin{definition}[Distinguishing Advantage]
-        The distinguishing advantage of an adversary $\adv$ against a
-          public-key encryption scheme $\pkescheme$, under chosen ciphertext
-          attacks, is defined as
-        \begin{align*}
-          \advantage{\indcpa}{\pkescheme} &\coloneqq \abs{
-            2 \cdot \prob{\experiment{\indcpa}{\pkescheme}} - 1
-          }\, ,
-          \intertext{or, equivalently,}
-          \advantage{\indcpa}{\pkescheme} &\coloneqq \abs{
-            \prob{\experiment{\indcpa}{\pkescheme}} 
-            - \prob{\neg\experiment{\indcpa}{\pkescheme}}
-          }\, ,
-          \intertext{or, equivalently,}
-          \advantage{\indcpa}{\pkescheme} &\coloneqq \abs{
-            \condprobsample{
-              \experiment{\indcpa}{\pkescheme}
-            }{0 \sample \adv}{\chalbit = 0}
-            - \condprobsample{
-              \experiment{\indcpa}{\pkescheme}
-            }{0 \sample \adv}{\chalbit = 1}
-          }\, .
-        \end{align*}
-        where $\experiment{\indcpa}{\pkescheme}[]$ is as given in
-        \autoref{fig:ind-ow}.
-      \end{definition}
 
       \noindent
       As is easiest seen from the first of the above three equations, the
         advantage is just the probability that $\adv$ wins the game, minus the
         probability of winning based on a random guess, scaled so that the
         advantage is a value defined on the interval from $0$ to $1$,
-        where $0$ means $\adv$ has no advantage (e.g.\ if the messages are perfectly hidden), 
+        where $0$ means $\adv$ has no advantage (e.g.\ if the messages are perfectly hidden),
         and $1$ means that $\adv$ is a perfect distinguisher (the scheme is
         completely broken, or $\adv$ is unbounded).
 
+    \subsubsection{KEM Security.}
 	    We also recall the standard security definition for KEMs,
-	    \underline{Ind}istinguishability under \underline{C}hosen
-      \underline{C}iphertext \underline{A}ttacks ($\INDCCA$).
-	    
+	      \underline{Ind}istinguishability under \underline{C}hosen
+        \underline{C}iphertext \underline{A}ttacks ($\INDCCA$).
+	      
 	    \begin{definition}[\INDCCA]\label{def:indcca}
 	    	We define the \INDCCA game as in Figure~\ref{fig:def:IND-CCA}
 	    	and the \INDCCA advantage function of an adversary \AdversaryA (with binary output) against KEM as 
@@ -493,7 +508,6 @@
 	    		\Advantage_{\KEM}^{\INDCCA}(\AdversaryA)
 	    		= \left| \Pr\left[\INDCCA^{\AdversaryA}_\KEM \Rightarrow 1\right] - \frac{1}{2} \right| \enspace .
 	    	\]
-	    	
 	    	\begin{figure}[ht]
 	    		\begin{center}
 	    			\fbox{
@@ -525,36 +539,37 @@
 	    		\caption{\INDCCA game for $\KEM = (\KG, \Encaps, \Decaps)$.}
 	    		\label{fig:def:IND-CCA}
 	    	\end{figure}
-	    	
 	    \end{definition}
 
-    \subsubsection{Asymptotic versus Concrete.}
-      \hhnote{copy-pasted}
-      Adversaries are assumed to be generally quantum agents, having
-        access to as much classical and quantum memory as they need, on which
-        they can apply unitary operations and measurements as they
-        please. (We will come upon cases later where it will be beneficial to restrict this
-        assumption.) We will mostly think of these agents as being \emph{efficient} in the sense of
-        running in time polynomial in the security parameter $\secpar$, although
-        we will stick with a concrete formal treatment wherein asymptotics are
-        avoided, and the running time of reductions are instead stated directly in terms
-        of the running time of the original adversary. We may also
-        consider \emph{unbounded} adversaries; these can be thought of as running
-        in time (and space) exponential in the security parameter.
+    \subsubsection{Hash Function Security.}
 
-    \subsubsection{Kinds of reductions.}
-      We say that a reduction is \emph{simple} if it only runs the adversary once,
-        and \emph{fully black-box} if it runs the adversary from start to finish,
-        answering oracle queries along the way, and otherwise only providing its
-        input and reading its output; if, as is typically the case, the reduction
-        is both simple and fully black-box, we call it an SFBB reduction. 
+  \subsection{Asymptotic versus Concrete.}
+    \hhnote{copy-pasted}
+    Adversaries are assumed to be generally quantum agents, having
+      access to as much classical and quantum memory as they need, on which
+      they can apply unitary operations and measurements as they
+      please. (We will come upon cases later where it will be beneficial to restrict this
+      assumption.) We will mostly think of these agents as being \emph{efficient} in the sense of
+      running in time polynomial in the security parameter $\secpar$, although
+      we will stick with a concrete formal treatment wherein asymptotics are
+      avoided, and the running time of reductions are instead stated directly in terms
+      of the running time of the original adversary. We may also
+      consider \emph{unbounded} adversaries; these can be thought of as running
+      in time (and space) exponential in the security parameter.
 
-      We will later see some reductions that \emph{rewind} the adversary, and run
-        it again from a point chosen by the reduction. We model this as the usual
-        black-box access with an additional rewinding \emph{interface}, with which
-        it can essentially tell the adversary to rewind itself to a specified point
-        in its computation; we refer to it as a \emph{rewinding black-box} (RBB)
-        reduction.
+  \subsection{Reductions.}
+    We say that a reduction is \emph{simple} if it only runs the adversary once,
+      and \emph{fully black-box} if it runs the adversary from start to finish,
+      answering oracle queries along the way, and otherwise only providing its
+      input and reading its output; if, as is typically the case, the reduction
+      is both simple and fully black-box, we call it an SFBB reduction.
+
+    We will later see some reductions that \emph{rewind} the adversary, and run
+      it again from a point chosen by the reduction. We model this as the usual
+      black-box access with an additional rewinding \emph{interface}, with which
+      it can essentially tell the adversary to rewind itself to a specified point
+      in its computation; we refer to it as a \emph{rewinding black-box} (RBB)
+      reduction.
 
     \subsubsection{Game Hopping.}
       %\todoenum[Provide explanations of:]{
@@ -567,18 +582,18 @@
         paradigm of Shoup~\cite{EPRINT:Shoup04}.
         The fundamental lemma of game hopping states that the distinguishing advantage
         of an adversary can be bounded in terms of their distinguishing advantage
-        over several intermediary game ``hops''. 
+        over several intermediary game ``hops''.
 
       \begin{lemma}[Fundamental Lemma of Game Hopping]\label{lemma:game-hopping}
         For any adversary $\adv$ tasked with distinguishing $\game{0}$ from
         $\game{n}$, and for any games $\game{1}, \ldots \game{n-1}$,
         there exist adversaries $(\adv_1, \ldots, \adv_n)$ such that
-        \[ 
+        \[
           \abs{
-            \probsample{\game{0}(\adv)}{1 \sample \adv} - 
+            \probsample{\game{0}(\adv)}{1 \sample \adv} -
             \probsample{\game{n}(\adv)}{1 \sample \adv}
           } \leq \sum_{i = 1}^n \abs{
-            \probsample{\game{i-1}(\adv)}{1 \sample \adv_i} - 
+            \probsample{\game{i-1}(\adv)}{1 \sample \adv_i} -
             \probsample{\game{i}(\adv)}{1 \sample \adv_i}
           }\, .
         \]
@@ -592,7 +607,7 @@
         (In fact, the $\adv_i$ that achieve this will in essence be just copies
         of $\adv$.)
 
-      The proof is remarkably simple, reproduced here for those who haven't 
+      The proof is remarkably simple, reproduced here for those who haven't
         seen it.
 
       \begin{proof}
@@ -602,18 +617,18 @@
         \qed
       \end{proof}
 
-    %\paragraph{Quantum notation.}
-    %  %  While we only assume knowledge of basic linear algebra, this tutorial 
-    %  %    still concerns itself with several fundamentally quantum concepts. To
-    %  %    help bridge this divide, we provide a self-contained primer on quantum
-    %  %    computing theory in
-    %  %    \autoref{sec:primer}, with explanations and definitions for all
-    %  %    the quantum concepts and conventions that we will need. A summary of our
-    %  %    notation is given in \autoref{tab:notation}.
-    %  Precise definitions for our quantum-notational conventions are provided in
-    %    \autoref{sec:primer},
-    %    along with a gentle introduction to the relevant quantum concepts,
-    %    summarized in \autoref{tab:notation}.
+      %\paragraph{Quantum notation.}
+      %  %  While we only assume knowledge of basic linear algebra, this tutorial
+      %  %    still concerns itself with several fundamentally quantum concepts. To
+      %  %    help bridge this divide, we provide a self-contained primer on quantum
+      %  %    computing theory in
+      %  %    \autoref{sec:primer}, with explanations and definitions for all
+      %  %    the quantum concepts and conventions that we will need. A summary of our
+      %  %    notation is given in \autoref{tab:notation}.
+      %  Precise definitions for our quantum-notational conventions are provided in
+      %    \autoref{sec:primer},
+      %    along with a gentle introduction to the relevant quantum concepts,
+      %    summarized in \autoref{tab:notation}.
 
       \hhnote{
         Add: $\pcparse$ keyword. (Allow $\pcif \pcparse$ too? By having $\pcparse$

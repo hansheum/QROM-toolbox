@@ -89,6 +89,15 @@ The paper is organized into parts and modular `.tex` files (see `main-qrot.tex` 
 - `cryptobib/`: External bibliography database (git submodule)
 - `cryptocodeh/`: Custom cryptocode/cryptocrakz macros (git submodule from github.com/hansheum/cryptocodeh)
 
+## LaTeX Style
+
+Indentation pattern (2 spaces per level):
+- `\section`: 0 spaces
+- `\subsection`: 2 spaces
+- `\subsubsection`: 4 spaces
+- Content: 6 spaces
+- Continuation lines: +2 spaces from first line
+
 ## Notes for Development
 
 - Uses LLNCS document class
