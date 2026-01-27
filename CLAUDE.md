@@ -36,26 +36,37 @@ The main document (`main-qrot.tex`) uses conditional compilation flags to contro
 
 ### Modular Content Files
 
-The paper is organized into modular `.tex` files:
+The paper is organized into parts and modular `.tex` files (see `main-qrot.tex` for exact structure):
 
-- `qrot-header.tex`: Title, authors, and metadata
-- `qrot-introduction.tex`: Introduction section
-- `qrot-preliminaries.tex`: Preliminary definitions
-- `qrot-definitions.tex`: Introduces quantum random oracles and discusses different formalizations and general properties
+**Part I - Setting the Stage:**
+- `qrot-preface.tex`: Preface
+- `qrot-basics.tex`: Cryptographic basics (PKE, KEM definitions)
 - `qrot-primer.tex`: Primer on quantum physics and quantum computing
-- `qrot-o2h.tex`: O2H (One-way To Hiding) transformations
-- `qrot-improving-o2h.tex`: (Failed) attempts at improving O2H via CRO
-- `qrot-rewinding.tex`: Techniques related to rewinding quantum adversaries in security proofs 
-- `qrot-rewinding-revisited.tex`: Applying CRO to rewinding proofs
-- `qrot-compressed.tex`: Primer on the Compressed Random Oracle (CRO) technique
-- `qrot-consistency.tex`: Consistency analysis
-- `qrot-bre.tex`: Primer on our motivating PKE scheme and classical ROM analysis
-- `qrot-ttransform.tex`: The T-transformation
-- `qrot-handsoff.tex`: A tight but highly restricted O2H lemma using the CRO technique
-- `qrot-solutions.tex`: Solutions to exercises
-- `qrot-proofs.tex`: Quantum information-theoretical proofs of lemmas
-- `qrot-pseudocode.tex`: Defines a quantum pseudocode for use with quantum random oracles
-- `qrot-latex.tex`: LaTeX formatting macros
+- `qrot-rom.tex`: Random oracle model introduction
+
+**Part II - (Post-)Quantum Difficulties** (draft only):
+- `qrot-pke-rom.tex`: PKE in the ROM
+- `qrot-dsa-rom.tex`: Digital signatures in the ROM
+- `qrot-problems.tex`: Problems that arise in the QROM
+
+**Part III - The Tools:**
+- `qrot-o2h.tex`: O2H (One-way To Hiding) lemma
+- `qrot-compressed.tex`: Compressed Random Oracle (CRO) technique
+- `qrot-extract.tex`: Extraction techniques (draft only)
+- `qrot-adaptive.tex`: Adaptive reprogramming (draft only)
+- `qrot-rewind.tex`: Rewinding quantum adversaries (draft only)
+
+**Appendices:**
+- `qrot-pseudocode.tex`: Quantum pseudocode conventions
+- `qrot-improving-o2h.tex`: Attempts at improving O2H via CRO (draft only)
+- `qrot-handsoff.tex`: Tight O2H lemma using CRO (draft only)
+- `qrot-solutions.tex`: Exercise solutions
+- `qrot-proofs.tex`: Quantum information-theoretical proofs (draft only)
+
+**Support files:**
+- `qrot-header.tex`: Title, authors, abstract, ToC
+- `qrot-latex.tex`: Hans's LaTeX macros
+- `qrot-latex-Kat.tex`: Kathrin's LaTeX macros for FO transform
 
 ### Bibliography Management
 
@@ -73,13 +84,15 @@ The paper is organized into modular `.tex` files:
 
 ## Special Directories
 
-- `PDF/`: Contains reference papers and related research documents
-- `crakz/`: Contains TikZ code for figures (e.g., `bre-classical.tex`) and rendered figures
-- `cryptobib/`: External bibliography database for cryptography papers
+- `PDF/`: Reference papers and related research documents
+- `crakz/`: TikZ figure code and rendered PDFs
+- `cryptobib/`: External bibliography database (git submodule)
+- `cryptocodeh/`: Custom cryptocode/cryptocrakz macros (git submodule from github.com/hansheum/cryptocodeh)
 
 ## Notes for Development
 
-- The document uses the LLNCS (Lecture Notes in Computer Science) document class
-- Compilation requires multiple passes due to bibliography and cross-references
-- The continuous compilation feature in the build script uses Skim PDF viewer integration
-- Version flags in `main-qrot.tex` control which content appears in different output versions
+- Uses LLNCS document class
+- Compilation requires multiple passes (bibliography, cross-references)
+- Build script uses Skim PDF viewer for continuous compilation
+- Author comments: `\hhnote{...}` (Hans, green), `\khnote{...}` (Kathrin, purple) - only visible in draft mode
+- Git submodules: Run `git submodule update --init` if `cryptocodeh/` or `cryptobib/` are empty
