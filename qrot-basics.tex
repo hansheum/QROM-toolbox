@@ -285,8 +285,8 @@
         computational notions, the advantage is simply the probability that the adversary wins.
 
       \newcommand{\compnotion}{\pcnotionstyle{COMP}}
-      \begin{definition}[Computational Advantage]
-        The computing advantage of an adversary $\adv$ against a primitive
+      \begin{definition}[Computational Advantage]\label{def:comp-adv}
+        The computational advantage of an adversary $\adv$ against a primitive
           $\primitive$ under a computational security notion
           $\compnotion$, is its probability of winning
           the security experiment $\experiment{\compnotion}{\primitive}$:
@@ -332,11 +332,113 @@
       Note how each formula scales the advantage so that it is contained on the
         interval $[0, 1]$, matching the computational case.
 
-    \subsubsection{PKE Security.}
-      At minimum, a secure PKE scheme should hide the message being encrypted.
-        We can formalize this as ``One-Wayness under Chosen-Plaintext Attacks'',
-        or $\owcpa$.
+      \subsubsection{Goals and Powers.}
+        \hhnote{todo}
 
+    \subsubsection{PKE Security.}
+      There are many ways that one could define security for
+        public-key encryption, but a few have emerged as standard.
+
+      \paragraph{One-wayness.}
+        At minimum, a secure PKE scheme must hide the message being encrypted.
+          We can formalize this as ``One-Wayness under Chosen-Plaintext Attacks'',
+          or $\owcpa$, where ``under Chosen-Plaintext Attacks'' is simply
+          to say that anyone with access to a public key can use it to generate
+          ciphertexts for any message they wish.
+
+        The one-wayness game is shown to the left in \autoref{fig:pke-games}. As
+          you can see, the game is defined in pseudocode. With experience, you
+          will learn to skim pseudocode-games like these to quickly
+          grasp the main concepts, but in case you are new to security games,
+          here are a few things to notice:
+          \begin{itemize}
+            \item The encrypted message $\mssg$ is sampled uniformly at random 
+              at the start of the game, before the adversary is ever invoked,
+              and so the adversary can not influence the distribution that the
+              message was sampled from at all.
+              This should be considered a weakness of the notion, since less
+              adversarial power $\to$ weaker security guarantees:
+              What if some messages are known to give insecure ciphertexts?
+            \item The adversary (who is a Turing machine) is called as a subroutine exactly
+              once in a black-box manner, meaning that once they are given an input,
+              the game only continues once they halt with an output. Also
+              notice that the adversary is not given access to any oracles.
+            \item The adversary is only given a single challenge ciphertext, in
+              addition to the public key. More general security notions might
+              allow the adversary to receive many challenge ciphertexts, and maybe even
+              multiple public keys, and allow it to win if it reverses any one of them.
+          \end{itemize}
+
+        \begin{definition}[OW-CPA]
+          The one-wayness advantage $\advantage{\owcpa}{\pkescheme}$ of an
+          adversary $\adv$ against a public-key encryption scheme $\pkescheme$
+          is the computational advantage (\autoref{def:comp-adv}) of $\adv$ in the
+          $\owcpa$ game (\autoref{fig:pke-games}, left) when instantiated with the
+          scheme $\pkescheme$.
+        \end{definition}
+
+        \newcommand{\skucpa}{\pcnotionstyle{SKU}\hy\cpa}
+        One question that one might ask is, in terms of computational security
+          notions for public-key encryption, is it not more natural to define a
+          game where the adversary wins if it can compute the secret key from the public key? 
+          Well, this is a perfectly valid notion of security---let's call
+          it SKU, for ``Secret-Key Unrecoverability''. 
+          As before, since anyone can encrypt messages, 
+          the adversary has the power of Chosen-Plaintext Attacks, and so we get
+          the security notion $\skucpa$.
+
+        Notice, though, that anyone who can compute the secret key from the public
+          key, can also decrypt any ciphertext that were created using that public
+          key. This means that if an adversary $\adv$ can recover secret keys,
+          then they can also win the \owcpa\ game, whereas
+          the opposite does not seem to hold in general (since there might be
+          ways to attack a ciphertext that does not rely on knowing the secret
+          key). Hence, $\owcpa$ gives a \emph{stronger} security guarantee than
+          $\skucpa$, since if one-wayness is satisfied, then 
+          secret-key unrecoverability must also be satisfied.
+          We say that $\owcpa$ \emph{implies} $\skucpa$.
+
+        Proving implications like the above is one of the core activities of provable
+          security, so though the statement may seem trivial, let's try our hand
+          at proving it.
+
+        \begin{exercise}
+          In this exercise, you will prove that $\owcpa$ is at least as strong a
+          as $\skucpa$ by showing the implication $\owcpa \implies \skucpa$.
+          \begin{enumerate}[label=\alph*)]
+            \item Write down the pseudocode for the $\skucpa$ game.
+            \item Assume that there is an adversary $\adv$ that wins the $\skucpa$
+              game with some advantage.
+              Write down the pseudocode for a new adversary $\bdv$ (called a
+              \emph{reduction}), which, given black-box access to $\adv$,
+              is able to win the OW-CPA game with the same advantage.
+            \item Use the above to prove the following statement\footnote{
+                You will actually get an equality here rather than an inequality.
+                However, since reductions have to be proven one direction
+                at a time anyway, writing the statement as an inequality is helpful
+                for identifying at a glance which direction the reduction is
+                going: simply parse the $\leq$ as an arrow!
+              }: \emph{For every adversary $\adv$, there is a reduction $\bdv$
+              such that for any public-key encryption scheme $\pkescheme$,}
+              \[
+                \advantage{\skucpa}{\pkescheme} \leq
+                \advantage{\owcpa}{\pkescheme}[(\bdv)]\, .
+              \]
+            \item How does this statement capture the implication?
+            \item What would suffice to prove that the opposite implication does
+              not hold, i.e.\ that $\skucpa \nimplies \owcpa$?
+          \end{enumerate}
+          \emph{Hint:} In the reduction, it is imperative that $\adv$ does not \emph{notice} that
+            they are not in the real SKU-CPA game. In other words,
+            $\bdv$ should \emph{perfectly simulate} the $\owcpa$ environment for
+            $\adv$, lest $\adv$ notices that something is off and refuses to play, ruining
+            both advantages in the process.
+            (We will later see how to relax this.)
+        \end{exercise}
+
+        \hhnote{todo: write solution for a) and b)}
+
+    \paragraph{Indistinguishability.}
       \hhnote{outdated under}
 
       The standard notion of security for public-key encryption is 
@@ -433,7 +535,7 @@
 	  	  			\small
 	  	  			\nicoresetlinenr
 	  	  			\begin{minipage}[t]{3.5cm}	
-	  	  				\underline{{\bf Game} $\OWCPA_{\PKE}$}
+                \underline{{\bf Game} $\experiment{\owcpa}{\pkescheme}$}
 	  	  				\begin{nicodemus}
 	  	  					\item $(\pk, \sk) \gets \KG$
                   \item $\chalmssg \sample \Mspace$
@@ -446,7 +548,7 @@
 	  	  			\pchspace
 
 	  	  			\begin{minipage}[t]{3.5cm}	
-	  	  				\underline{{\bf Game} $\INDCCA_{\PKE}$}
+	  	  				\underline{{\bf Game} $\experiment_{\pkescheme}$}
 	  	  				\begin{nicodemus}
 	  	  					\item $(\pk, \sk) \gets \KG$
 	  	  					\item $\chalbit \sample \bin$
@@ -480,7 +582,7 @@
 	  	  			\end{minipage}
 	  	  		}
 	  	  	\end{center}
-	  	  	\caption{\label{fig:def:IND-CCA:PKE}
+	  	  	\caption{\label{fig:pke-games}
             The single-challenge \OWCPA game and multi-challenge \INDCCA
             game for $\PKE = (\KG, \Enc, \Dec)$.
           }

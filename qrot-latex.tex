@@ -2,8 +2,8 @@
 %\renewcommand{\perp}{\, \perp}
 
 %%% Merging with Kat's macros wip
-\renewcommand{\Mspace}{\red{\MSpace}}
-\renewcommand{\Rspace}{\red{\RSpace}}
+\renewcommand{\MSpace}{\red{\Mspace}}
+\renewcommand{\RSpace}{\red{\Rspace}}
 
 %%% Arrows
 \newcommand{\apply}[1]{\overset{#1}{\longrightarrow}}
@@ -147,3 +147,14 @@
   \newcommand{\Tyes}{\ensuremath{\Tpie{360}}}
   \newcommand{\Tno}{\ensuremath{\Tpie{0}}}
   \newcommand{\Tmaybe}{\Tleft}
+
+%%% Boxed exercise environment
+\usepackage{environ}
+\newcounter{exercisecounter}
+\renewenvironment{exercise}[1][]{%
+  \refstepcounter{exercisecounter}%
+  \begin{tcolorbox}[colback=white, colframe=black!50, boxrule=0.4pt, arc=0pt]
+    \textbf{Exercise \theexercisecounter\ifx\\#1\\\else\ (#1)\fi.}
+}{%
+  \end{tcolorbox}%
+}
