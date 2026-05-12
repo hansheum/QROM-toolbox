@@ -1,39 +1,50 @@
 \section{Preface}
-  \khnote{test}
   \hhnote{1st draft done}
 
   \noindent
-  So you want to prove post-quantum security in the random oracle model.
+  So you want to prove post-quantum security in the Random Oracle Model (ROM).
 
-  Proofs of security in the ROM are often conceptually
-    simple, and yet regularly achieve strong security claims with
-    near-tightness for highly efficient constructions---which is as close as
-    one gets to a holy trinity for provable security. In contrast, proofs in the
-    Quantum Random Oracle Model are often hard to parse without specialized
-    knowledge in quantum information theory, and infamously lossy.
+  Security proofs in the ROM enjoy a lot of advantages.
+  	First, they usually support strong security claims.
+  	Second, the results often achieve near-tightness, 
+  	thereby enabling highly efficient constructions.
+  	Lastly, they often are conceptually simple.
+  	This is as close as one gets to a holy trinity for provable security.
+  	In contrast, things are less simple in a world with quantum attackers --
+  	if we want our security proofs to have merit in a post-quantum scenario, 
+  	we have to revisit the ROM itself.
+  	This is because random oracles model hash functions,
+  	that is, publicly available algorithms that can be run by anyone
+  	locally on their machine.
+  	Nothing is stopping someone with a quantum computer to
+  	boot it up and run it on a superposition of inputs.
+  	If we want to accurately model quantum attackers, 
+  	our model must thus reflect such strategies. 
+  	This led to the development of the Quantum Random Oracle Model (QROM),
+  	and it seems that our choice for arguing post-quantum security
+  	is between the Standard Model and the QROM. 
+  	Proofs in the Quantum Random Oracle Model (QROM), however,
+  	can be notoriously hard to parse without specialized
+  	knowledge in quantum information theory, and they often are infamously lossy.
 
-  And yet, if we want our proofs of security to have merit in a post-quantum
-    world, it seems that our choice is between the Standard Model and the
-    QROM. This is because random oracles model hash functions, which are
-    publicly available algorithms that anyone can run locally on their machine.
-    Therefore, there is nothing stopping someone with a quantum computer to
-    boot it up and run it on a superposition of inputs. If we want to
-    accurately model quantum attackers, then, our model must allow for such
-    strategies. 
-
-  In the standard model, this is not a problem at all,
-    since then the hash functions in question is provided to the attacker
-    as-is. But if QROM proofs are lossy, then Standard Model constructions
-    that achieve the same goals as their ROM counterparts are often highly
-    inefficient in comparison (and, as every cryptographer knows, efficiency
+  In the standard model, on the other hand,
+  	superposition queries are no problem at all,
+    since the standard model provides hash functions to attackers as-is.
+    But even with a lot of the QROM proofs being lossy (so far),
+    we note that when it comes to efficiency,
+    Standard Model constructions nonetheless pale in comparison 
+    with their (Q)ROM counterparts.
+    (And, as every cryptographer knows, efficiency
     tends to trump security in the real world).
 
-  Therefore, as we inch ever closer to the looming threat of
-    cryptographically-relevant quantum computers, it is important that the
-    barrier for proving security in the QROM is lowered as much as
-    possible, so that the community may together bring our transition to a
-    post-quantum world into effect, in a safe, efficient, and (provably) secure
-    manner.
+  As we inch ever closer to a point in time where cryptographically relevant
+  	quantum computers might become more than a the looming threat,
+    we view it important to lower the barrier for security proofs in the QROM
+    as much as possible, to help the community enable the post-quantum transition
+    in a manner that is safe, efficient, and (provably) secure.
+    One of the most important questions will be if and how far we can draw
+    from the decades of experience with classical ROM proofs,
+    and how to adapt classical proof strategies to quantum attackers.
 
   \paragraph{ROM Techniques Don't Transfer \ldots}
     One of the most useful facts about security reductions in the random oracle model
