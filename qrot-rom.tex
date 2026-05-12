@@ -1,17 +1,21 @@
 % Classical lazy-sampling
 \begin{figure}[t]
   \centering
-  \begin{pchstack}[center]
-    \procedure{$\RO(x)$}{
-      \pcif \Db[x] = \bot \pcdo \Db[x] \sample \bin^m \\
-      \pcreturn \Db[x]
-    }
-  \end{pchstack}
+	\begin{minipage}[t]{5cm}
+		\underline{\oracleHeading $\RO(x)$}
+    \smallskip
+		\begin{nicodemus}
+      \item $\pcif \Db[x] = \bot :$ 
+      \item   \quad $\Db[x] \sample \bin^m$
+      \item $\pcreturn \Db[x]$
+		\end{nicodemus}	
+	\end{minipage}
   \caption{
     \label{fig:lazy-sampling}
     A lazy-sampled random oracle from $n$ to $m$ bits. 
     Here, $\Db$ is a query database. Note that the oracle is \emph{stateful},
     since the database is maintained between calls.
+    \hhnote{todo: transfer to nicodemus}
   }
 \end{figure}
 %

@@ -4,36 +4,41 @@
 			\small
 			\nicoresetlinenr
 			\begin{minipage}[t]{3.5cm}	
-        \underline{{\bf Game} $\experiment{\indcca}{\pkescheme}$}
+        \underline{\gameHeading $\game 0(\adv)$ -- $\game n(\adv)$}
+        \smallskip
 				\begin{nicodemus}
-					\item $(\pk, \sk) \gets \KG$
-					\item $\chalbit \sample \bin$
-					\item $\advbit \sample \adv^{\Oenc,\Odec}(\pk)$
-					\item $\pcreturn \bool{\advbit = \chalbit}$
+          \item $(\pk, \sk) \gets \KG()$
+					\item $\advbit \sample \adv^{\Oenc, \RO}(\pk)$
+					\item $\pcreturn \bool{\advbit = 0}$
 				\end{nicodemus}
 			\end{minipage}
 
 			\pchspace
 			
-			\begin{minipage}[t]{4cm}
-				\underline{$\Oenc(\mssg_0, \mssg_1)$}
+			\begin{minipage}[t]{3.5cm}
+				\underline{\oracleHeading $\Oenc$}
+        \smallskip
 				\begin{nicodemus}
-          \item $\pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail$ 
-            % what's happening with the spacing?
-          \item $\chalctxt \sample \Enc_\pk(\mssg_{\chalbit})$
-          \item $\chalset \setapp \chalctxt$
-					\item $\pcreturn \chalctxt$
+    		  \item $m \sample \MSpace$
+          \item $\ctxt \gets \Enc_\pk(\mssg)$
+          \item $\eK \gets \RO(\mssg)$ \pccomment{$\game 0$}
+          \item $\eK_1 \sample \KSpace$ \pccomment{$\game 1$}
+          \item $\Cspace \setapp \ctxt$
+          \item $\pcreturn (\eK_\chalbit, \ctxt)$
 				\end{nicodemus}	
 			\end{minipage}
 
 			\pchspace
 
-			\begin{minipage}[t]{3cm}
-				\underline{$\Odec(\ctxt)$}
+			\begin{minipage}[t]{4cm}
+				\underline{\oracleHeading $\RO(x)$}
+        \smallskip
 				\begin{nicodemus}
-          \item $\pcif \ctxt \in \chalset \pcthen \pcreturn \fail$
-          \item $\mssg \gets \Dec_\sk(c)$
-					\item $\pcreturn \mssg$
+          \item $c \gets \Enc_\pk(x)$ \pccomment{$\game 1$}
+          \item $\pcif c \in \CSpace : \red{\bad}$ \pccomment{$\game 1$}
+          \item $\pcif \Db[x] = \bot :$ 
+          \item   \quad $\Db[x] \sample \bin^m$
+          \item $\pcreturn \Db[x]$
 				\end{nicodemus}	
 			\end{minipage}
 		}
@@ -44,5 +49,6 @@
 \end{figure}
 
 \begin{proof}
-  proof goes here
+  $\game 0$ is the real game, and $\game 1$ is the ideal game, with an added
+  $\bad$ event.
 \end{proof}
