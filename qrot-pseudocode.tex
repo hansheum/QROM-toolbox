@@ -96,6 +96,7 @@
         Notation & Example usage & Equivalent to \\
         \midrule
         $\register$ & $\ket{\psi}_{\register}$ & Qubit register (list of qubits) \\
+        \\
         $\unitary$ & $\unitary(\inReg)$ & Apply unitary operation to register: \\
         && $\ket{x} \to \unitary \ket{x}$ \\
         $\initreg$ & $\inReg \gets \ket{x}$ & Initialize new register to a known state: \\
@@ -103,21 +104,22 @@
         $\emptyreg$ & $\ancReg \gets \emptyreg$ & Discard register (NB: Register must first \\
         && be returned to a pure state!) \\
         $\xstore$ & $\outReg \xstore f(\inReg)$ & XOR function evaluation into register: \\
-        & or $\outReg \xstore f(x)$ & $\ket{x}\ket{y} \to \ket{x}\ket{y \xor f(x)}$ \\
-        $\zstore$ & $\outReg \zstore f(\inReg)$ & Phase function evaluation:\\
-        & or $\outReg \zstore f(x)$ & $\ket{x}\ket{y} \to (-1)^{f(x) \cdot y}\ket{x}\ket{y}$ \\
+        & %or $\outReg \xstore f(x)$ 
+        & $\ket{x}\ket{y} \to \ket{x}\ket{y \xor f(x)}$ \\
+        % $\zstore$ & $\outReg \zstore f(\inReg)$ & Phase function evaluation:\\
+        % & or $\outReg \zstore f(x)$ & $\ket{x}\ket{y} \to (-1)^{f(x) \cdot y}\ket{x}\ket{y}$ \\
         $\swapreg$ & $\ancReg \swapreg \bitReg$ & Apply the $\pcalgostyle{SWAP}$ unitary on two registers: \\
         && $\ket{x}\ket{y} \to \ket{y}\ket{x}$ \\
-        $(\permute)$ & $(\register_i \permute \register_j)$ & Cyclically permute register states (via \\
-        && repeated $\pcalgostyle{SWAP}$ operations) \\
-        $\observe$ & $\pcif \observe \inReg = x \pcthen$ & Measure register in the computational \\
-        && basis and condition on the result \\
+        % $(\permute)$ & $(\register_i \permute \register_j)$ & Cyclically permute register states (via \\
+        % && repeated $\pcalgostyle{SWAP}$ operations) \\
+        % $\observe$ & $\pcif \observe \inReg = x \pcthen$ & Measure register in the computational \\
+        % && basis and condition on the result \\
         $\obstore$ & $x \obstore \inReg$ & Measure register in the computational \\
         && basis and store the result \\
         % $\obstore$ & $x \obstore \inReg$ & Measure register using measurement \\
         % & & operator $M$ \\
-        $\pcfor \pcbranch \ket{\psi} \pcof \register$ & $\pcfor \pcbranch
-        \ket{x} \pcof \inReg \pcdo$ & Let the following unitary operations be controlled \\
+        $\pcfor \pcbranch$ (value) $\pcof$ (register) $ & $\pcfor \pcbranch
+        x \pcof \inReg \pcdo$ & Let the following unitary operations be controlled \\
         && on the register's state being equal to basis state \\
         & \quad $\outReg \xstore x$ & \\ %(NB: Restrictions apply!) 
         \bottomrule
