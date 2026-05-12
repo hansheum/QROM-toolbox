@@ -1,0 +1,48 @@
+\begin{figure}[t]
+	\begin{center}
+		\fbox{
+			\small
+			\nicoresetlinenr
+			\begin{minipage}[t]{3.5cm}	
+        \underline{{\bf Game} $\experiment{\indcca}{\pkescheme}$}
+				\begin{nicodemus}
+					\item $(\pk, \sk) \gets \KG$
+					\item $\chalbit \sample \bin$
+					\item $\advbit \sample \adv^{\Oenc,\Odec}(\pk)$
+					\item $\pcreturn \bool{\advbit = \chalbit}$
+				\end{nicodemus}
+			\end{minipage}
+
+			\pchspace
+			
+			\begin{minipage}[t]{4cm}
+				\underline{$\Oenc(\mssg_0, \mssg_1)$}
+				\begin{nicodemus}
+          \item $\pcif \abs{\mssg_0} \neq \abs{\mssg_1} \pcthen \pcreturn \fail$ 
+            % what's happening with the spacing?
+          \item $\chalctxt \sample \Enc_\pk(\mssg_{\chalbit})$
+          \item $\chalset \setapp \chalctxt$
+					\item $\pcreturn \chalctxt$
+				\end{nicodemus}	
+			\end{minipage}
+
+			\pchspace
+
+			\begin{minipage}[t]{3cm}
+				\underline{$\Odec(\ctxt)$}
+				\begin{nicodemus}
+          \item $\pcif \ctxt \in \chalset \pcthen \pcreturn \fail$
+          \item $\mssg \gets \Dec_\sk(c)$
+					\item $\pcreturn \mssg$
+				\end{nicodemus}	
+			\end{minipage}
+		}
+	\end{center}
+	\caption{\label{fig:cparom-hops}
+    Game hops for \autoref{thm:cparom}.
+  }
+\end{figure}
+
+\begin{proof}
+  proof goes here
+\end{proof}
