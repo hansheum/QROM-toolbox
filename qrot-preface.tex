@@ -64,15 +64,17 @@
       analogy to classical ``lazy sampling''.
 
   \subsubsection{Outline.}
-    We start in \autoref{part:prelims} by laying the foundations, with
-      definitions for basic crypto concepts in \autoref{sec:basics}, before
-      introducing the reader to basic quantum computing concepts in \autoref{sec:primer}
-      (we only assume knowledge of basic linear algebra). Then in
-      \autoref{sec:rom} we introduce the random oracle model, and show how to
-      update the formalism to support quantum queries.
-      We will build some intuition, trying to get a
-      ``feel'' for QROs and how to (and how not to) reason about them.
+    %We start %in \autoref{part:prelims} 
+      We begin in Part 1 by laying the foundations, with
+      definitions for basic crypto concepts in \autoref{sec:basics}, and a
+      primer on quantum computing concepts in \autoref{sec:primer}.
+      In \autoref{sec:pseudocode}, we introduce a novel pseudocode notation,
+      which will be helpful in reasoning about oracles and reductions.
+      Then in \autoref{sec:rom}, we finally introduce our main objects of study,
+      the quantum random oracles. Through illustrative examples we will be
+      building intuition, aiming to get a ``feel'' for how they work.
 
+    \hhnote{update the following once the v0.1 structure is settled}
 
     \autoref{part:classical} is all about the classical case. Here, we show
       several examples of security proofs in the random oracle model, all of

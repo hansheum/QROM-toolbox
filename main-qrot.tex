@@ -2,6 +2,10 @@
   \darkfalse
   %\darktrue % triggers dark coloured pdf for late night work
 
+\newif\iffutureversion
+  %\futureversiontrue
+  \futureversionfalse
+
 \newif\ifdraftversion
   %\draftversionfalse
   \draftversiontrue
@@ -193,73 +197,66 @@
 
   % Main body
 
-  %\addcontentsline{toc}{part}{Part 1.\quad Setting The Stage}
   \input{qrot-preface}
-  \part{Setting the Stage}\label{part:prelims}
+    \clearpage
+  \addcontentsline{toc}{part}{Part 1. Classical Security}
+  %\part{Setting the Stage}\label{part:prelims}
     \input{qrot-basics}
     \clearpage
+    \input{qrot-rom}
+    \clearpage
+
+  \addcontentsline{toc}{part}{Part 2. Quantum Challenges}
+  %\part{(Post-)Quantum Difficulties}\label{part:classical}
     \input{qrot-primer}
     \clearpage
-    \input{qrot-rom}
-
-  \part{(Post-)Quantum Difficulties}\label{part:classical}
-    \ifdraftversion
-      \input{qrot-pke-rom}
-      \clearpage
+    \input{qrot-pseudocode}
+    \clearpage
+    \input{qrot-qrom}
+    \clearpage
+    \iffutureversion
       \input{qrot-dsa-rom}
       \clearpage
-      \input{qrot-problems}
     \fi
+    %\input{qrot-problems}
 
-  \part{The Tools of the Toolbox}\label{part:tools}
+  \addcontentsline{toc}{part}{Part 3. The Tools of the Toolbox}
+  %\part{The Tools of the Toolbox}\label{part:tools}
     \input{qrot-o2h}
-    \ifdraftversion
+    \iffutureversion
       \clearpage
-      \input{qrot-extract}
+      \input{qrot-extract} % with CPA -> CCA example 
       \clearpage
-      \input{qrot-adaptive}
+      \input{qrot-adaptive} % with NMA -> CMA example
       \clearpage
-      \input{qrot-rewind} % maybe leave this for v2
+      \input{qrot-rewind} % with Sigma -> NIZK example 
     \fi
     \clearpage
     \input{qrot-compressed}
 
-  \ifdraftversion
+  \iffutureversion
     %\part{Under The Rug}\label{part:proofs}
     \part{Down the Rabbit Hole}\label{part:proofs}
-    \input{qrot-proofs} % maybe leave this for v3
+    \input{qrot-proofs} % leave this for v3
     \clearpage
   \fi
 
   %\newpage
-  \addcontentsline{toc}{part}{Supplementary Material}
+  \addtocontents{toc}{\protect\vspace{1.5em}}
   \addcontentsline{toc}{section}{References}
 	\bibliographystyle{alpha}
   	%\bibliographystyle{splncs04}
   	%\bibliographystyle{plain}
   	\bibliography{./cryptobib/abbrev3,./cryptobib/crypto,./qrot.bib}
 
-  \ifsubmission
-    \clearpage
-    \newgeometry{margin=1.0in}
-    \appendix
-    \renewcommand{\thesection}{Supplementary Material \arabic{section}}
-  \else
-    \appendix
-  \fi
+  \addcontentsline{toc}{part}{Appendix}
+  \appendix
 
   \clearpage
 
   % Appendices input below
-
-  \input{qrot-pseudocode}
+  \input{qrot-pseudocode-defs}
   \clearpage
-  \ifdraftversion
-    \input{qrot-improving-o2h}
-    \clearpage
-    \input{qrot-handsoff}
-    \clearpage
-  \fi
   \input{qrot-solutions}
 
 \end{document}

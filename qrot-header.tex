@@ -1,6 +1,6 @@
 \title{
   The Quantum Random Oracle Toolbox\thanks{
-    $\pcalgostyle{v0}$ (\today)
+    $\pcalgostyle{v0.1}$ (\today)
   }
 }
 
@@ -31,26 +31,26 @@
 
 \begin{abstract}
   The Random Oracle Model (ROM) has been highly successful in bringing to life
-  cryptographic schemes that are 1) efficient and 2) provably secure, with
-  security proofs that are furthermore 3) conceptually simple, and 4) tight. 
+  cryptographic schemes that are 1) efficient and 2) tightly secure, with
+  3) conceptually simple security proofs. 
   However, a quantum attacker would clearly be able to run the primitives our
-  random oracles are modelling (such as, say, SHA3) on a \emph{quantum
+  random oracles are modelling (such as SHA3) on a \emph{quantum
   superposition} of inputs.
-  We can not in general exclude the existence of quantum attacks that employ such a
+  We can not exclude the existence of quantum attacks that employ such a
   strategy; hence, if we want to claim post-quantum security relative to a random oracle,
   we better ensure that our random oracle is \emph{quantum-accessible}.
 
   This is the Quantum Random Oracle Model (QROM).
   Unlike their classical counterparts, proofs of security in the QROM are often 
   1) conceptually challenging and 2) lossy. These issues boil down in large part
-  to three main challenges, relating to the non-applicability of three simple yet
+  to the non-applicability of three simple yet
   powerful techniques that sit at the heart of the classical random oracle
   model:
 
   \begin{enumerate}
-    \item Reprogramming: or, altering the random oracle on certain inputs
-    \item Extraction: or, learning from the inputs to the random oracle
-    \item Simulation: or, lazy-sampling a random oracle
+    \item Programming: Altering the random oracle on certain inputs
+    \item Simulation: Lazy-sampling a random oracle
+    \item Extraction: Learning the inputs to the random oracle
   \end{enumerate}
 
   In this gentle introduction to provable security in the QROM, we will survey how
@@ -59,37 +59,34 @@
 
   \begin{enumerate}
     \item The one-way to hiding lemma (for reprogramming)
-    \item Online-extractability of quantum random oracles (for extraction)
     \item The compressed-oracle technique (for simulation)
+    \item Online-extractability of quantum random oracles (for extraction)
   \end{enumerate}
 
   Along the way, we will meet popular construction paradigms like the Fujisaki--Okamoto
-  transformation and the Fiat--Shamir transformation, employed in post-quantum
-  standards including ML-KEM (Kyber) and ML-DSA (Dilithium): through examples
+  transformation and the Fiat--Shamir transformation, underlying the recent post-quantum
+  standards ML-KEM (Kyber) and ML-DSA (Dilithium): Through examples
   lifted from their proofs of post-quantum security, we will show how
-  one can apply which tool, when, and the impact of each tool on the tightness
-  of the proof.
+  and when to apply each tool, and the impact each will have on the overall
+  tightness.
 
-  We will only assume knowledge of basic linear algebra; hence,
+  We only assume knowledge of basic linear algebra; hence,
   this tutorial also serves to introduce both provable security and
   quantum physics, with ample examples and exercises throughout.   
   
   \vspace{\baselineskip}
-  \textbf{Roadmap.}
-  \em{
-    \begin{itemize}
-      \item[$\circ$] Cryptography basics
-      \item[$\checkmark$] Quantum primer
-      \item[$\checkmark$] Random oracles: definitions and intuitions
-      \item[$\circ$] How to prove classical security of public-key encryption and digital signature algorithms 
-      \item[$\circ$] The One-way To Hiding (O2H) lemma, and how to prove post-quantum PKE security
-      \item[$\circ$] The O2H zoo: When can you get tighter security proofs?
-      \item[$\circ$] The Online-Extractability technique, and how to prove post-quantum CCA security
-      \item[$\circ$] Adaptive reprogramming techniques, and how to prove post-quantum DSA security
-      \item[$\checkmark$] Compressed-oracle technique explainer
-      \item[$\to \pcalgostyle{v2}$] Rewinding techniques, and how to prove post-quantum NIZK security
-      \item[$\to \pcalgostyle{v3}$] Quantum information theory primer, and how to prove the main lemmas
-    \end{itemize}
+  \todoenum[Roadmap]{
+      \item[$\pcalgostyle{v0.1}$] Cryptography and quantum primers
+      \item[$\checkmark$] Quantum random oracles: definitions and intuitions
+      \item[$\pcalgostyle{v0.1}$] Classical security of public-key encryption, and what goes wrong
+      \item[$\pcalgostyle{v0.1}$] The One-way To Hiding (O2H) lemma, and passively post-quantum secure encryption
+      \item[$\checkmark$] The compressed-oracle technique, or how to lazy-sample quantum random oracles
+      \item[$\pcalgostyle{v0.5}$] The O2H zoo: How to get tight(er) security proofs
+      \item[$\pcalgostyle{v1.0}$] The online-extractability tool, and active security of post-quantum encryption
+      \item[$\pcalgostyle{v2.0}$] Classical security of digital signatures, and what goes wrong
+      \item[$\pcalgostyle{v2.0}$] Adaptive reprogramming, and security of post-quantum signatures
+      \item[$\pcalgostyle{v3.0}$] Measure-and-reprogram, and security of post-quantum NIZKs
+      \item[$\pcalgostyle{v4.0}$] Quantum information theory primer, and proofs of the various lemmas
   }
 
   \begin{keywords}

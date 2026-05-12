@@ -14,6 +14,10 @@
 %%% Sets and spaces
 \newcommand{\funcspace}[2]{\pcsetstyle{F}_{#1 \to #2}}
 
+%%% Functions and so on
+\newcommand{\predicate}{\mathcal{P}}
+
+
 %%% Game interface
 \renewcommand{\pcthen}{:}
 \renewcommand{\pcdo}{:}
@@ -33,7 +37,7 @@
   \newcommand{\queries}{\ensuremath{q}}
   \newcommand{\qRP}{\ensuremath{r}}
   %\newcommand{\qRO}{\queries_{\RO}}
-  \newcommand{\qRO}{\queries_{h}}
+  %\newcommand{\qRO}{\queries_{h}}
   \newcommand{\qe}{\queries_{e}}
   \newcommand{\indOenc}{\Oenc_{\ind}}
   \newcommand{\owOenc}{\Oenc_{\oneway}}
@@ -58,7 +62,7 @@
 \newcommand{\qcomp}{\register[Q]}
 
 %%% Registers
-\newcommand{\register}[1][R]{\ensuremath{\mathcal{#1}}}
+%\newcommand{\register}[1][R]{\ensuremath{\mathcal{#1}}}
 \newcommand{\advbitregister}{\hat{\register[B]}}
 
 %%% Classical objects
@@ -71,7 +75,7 @@
 \newcommand{\chalctxti}{\pcvarstyle{c_i^{*}}}
 
 %%% Gates
-\newcommand{\unitary}[1][U]{\mathsf{#1}}
+%\newcommand{\unitary}[1][U]{\mathsf{#1}}
 \newcommand{\projector}[1][P]{\mathsf{#1}}
 \newcommand{\measurement}[1][M]{\mathsf{#1}}
 \newcommand{\Xgate}{\unitary[X]}

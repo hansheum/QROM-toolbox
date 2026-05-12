@@ -1,0 +1,106 @@
+\section{Quantum Pseudocode Definitions}\label{sec:pseudocode-defs}
+  Here, we show how operations on qubit registers are defined for
+    our quantum pseudocode, as introduced in \autoref{subsec:pseudocode}.
+
+  \subsection{Operating on Registers}
+    First, we formally define for what it means for a unitary to be applied to
+    a qubit register.
+    The main idea is that, thanks to the requirement that the global state
+    $\ket{\qcomp}$ is in a well-defined pure state, we can define an operation
+    on sub-registers $\register$ of $\qcomp$ in terms of a larger operation on
+    the whole state.
+
+    \begin{definition}[Operating on registers]\label{def:apply}
+      Let $\qcomp$ be an $n$-qubit quantum memory in quantum state
+      $\ket{\qcomp}$, let the register $\register$ be an $m$-qubit
+      subsystem of $\qcomp$, and let $\unitary$ be an
+      $M \times M$ unitary matrix. 
+
+      Next, define $\unitary_{\register}$ to be the $N \times N$ unitary matrix that
+      has the effect of applying $\unitary$ on the qubits in $\register$ and the
+      identity on the qubits in $\qcomp \backslash \register$.       
+      Then, the application of $\unitary$ to the qubits in register $\register$ is
+      captured in the method $\applyU{\unitary}{\register}[\qcomp]$, defined as
+      \begin{align*}
+        \applyU{\unitary}{\register}[\qcomp] &\coloneqq \ket{\qcomp(t)}
+        \apply{\unitary_{\register}} \ket{\qcomp(t+1)}\, .
+      \end{align*}
+    \end{definition}
+
+    \noindent
+    Note how local operations affecting distant qubits through entanglement
+      is captured by $\applyU{\unitary}{\register}[\qcomp]$ 
+      being an evolution of the global (pure) state $\ket\qcomp$.
+    
+    To see that $\unitary_{\register}$ is well-defined, note that it may be
+      implemented as follows:
+      \[
+        \unitary_{\register} \coloneqq \SORTgate^\dagger([\register], [\qcomp
+        \backslash \register])\ (\unitary \otimes \idmatrix)\
+        \SORTgate([\register], [\qcomp \backslash \register])\, ,
+      \]
+      where $\SORTgate([\register], [\qcomp \backslash \register])$ is the $N
+      \times N$ unitary matrix, composed of a series of $\SWAPgate$ gates, that 
+      reorders the qubits in $\qcomp$ such that the qubits of $\register$
+      precede the qubits of $\qcomp \backslash \register$;
+      $\SORTgate^\dagger$ reverses the operation of $\SORTgate$; and 
+      $\idmatrix$ is the $2^{n-m} \times 2^{n-m}$ identity matrix.
+
+  \subsection{Sending Registers}\label{subsec:sending}
+    In order to say ``Alice sends a qubit register to Bob'', we 
+      give Alice and Bob to the disjoint subregisters
+      $\register[A]$ and $\register[B]$, respectively, 
+      of the total system $\qcomp$. 
+      Then, Alice sending register $\register[R]$ to Bob simply amounts to
+      transferring $\register[R]$ from $\register[A]$ to $\register[B]$.
+
+    \begin{definition}[Transferring a subregister]
+      Let $\register[A]$ and $\register[B]$ be non-overlapping qubit registers. A
+      subregister $\register[R]$ is said to be \emph{transferred} from
+      $\register[A]$ to $\register[B]$, denoted $\register[A]
+      \apply{\register[R]} \register[B]$, if the elements of $\register[R]$ are
+      simultaneously removed from $\register[A]$ and added to $\register[B]$:
+      \[
+        \register[A] \apply{\register[R]} \register[B]
+        \quad \Longleftrightarrow \quad 
+        \register[A] \gets \register[A] \backslash \register[R]\, , \quad \register[B] \listapp \register[R]\, .
+      \]
+    \end{definition}
+
+  \subsection{Measuring Registers}\label{sec:measurements}
+    The final piece of the puzzle is defining the measurement operation
+      $\meas{}{\register}$.
+
+    \begin{definition}[Measuring a register]\label{def:measure}
+      Let $\qcomp$ be an $n$-qubit quantum memory in pure state
+        $\ket{\qcomp}$, let the register $\register$ be an $m$-qubit
+        subsystem of $\qcomp$, and let $\measurement$ be an $m$-qubit
+        projective measurement that check the state for membership in
+        Hilbert subspaces $\{ \Sspace_i \}$.
+
+      Next, define $\measurement_{\register}$ to be the $n$-qubit
+        projective measurement that
+        has the effect of applying $\measurement$ on the qubits in $\register$ and the
+        identity on the qubits in $\qcomp \backslash \register$
+
+      Then, performing measurement $\measurement$ on the qubits in register
+        $\register$ is captured in the (probabilistic) method
+        $\meas{\measurement}{\register}[\qcomp]$ which observes
+        $\ket{\qcomp}$ under $\measurement_{\register}$. Observing outcome
+        $i$, designated by the measurement procedure returning value $m_i$,
+        is written
+      \[
+        i \sample \meas{\measurement}{\register}[\qcomp]\, ,
+      \]
+        and the post-measurement will be 
+      \[
+        \ket{\qcomp} \apply{\measurement} \ket{\qcomp}_{\Sspace_i}\, ,
+      \]
+      where $\ket{\qcomp}_{\Sspace_i}$ is the result of projecting the
+        qubits of $\register$ onto subspace $\Sspace_i$, and applying the
+        identity to the rest.
+    \end{definition}
+
+    \noindent
+    Finally, observe that the projective measurement $\measurement_{\register}$ can be
+      constructed similarly to $\unitary_{\register}$ above.
