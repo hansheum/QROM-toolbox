@@ -1,25 +1,117 @@
-\section{The Random Oracle Model}\label{sec:rom}
   % Classical lazy-sampling
   \begin{figure}[t]
     \centering
     \begin{pchstack}[center]
-      \procedure{$\RO_\ell(x)$}{
-        \pcwhile \abs{\Hlist[x]} < \ell \pcdo \\
-          \t \Hlist[x] \listapp \bin \\
-        \pcreturn \Hlist[x]\elms{\ell}
+      \procedure{$\RO(x)$}{
+        \pcif \Db[x] = \bot \pcdo \Db[x] \sample \bin^m \\
+        \pcreturn \Db[x]
       }
     \end{pchstack}
   \caption{
     \label{fig:lazy-sampling}
-    An extendable-output function (XOF) modelled as a lazy-sampled random
-    oracle. The oracle is \emph{stateful} in the sense that the list $\Hlist$
-    of sampled values is maintained between calls.
+    A lazy-sampled random oracle from $n$ to $m$ bits. 
+    Here, $\Db$ is a query database. Note that the oracle is \emph{stateful},
+    since the database is maintained between calls.
   }
   \end{figure}
 
-  \subsection{The Random Oracle Model}
+\section{The Random Oracle Model}\label{sec:rom}
+  Random oracles are nice. They are also very easy to simulate, a process known as
+    lazy-sampling, as shown in \autoref{fig:lazy-sampling}.
 
-  \ifdraftversion
+  \subsection{From a One-way PKE to an Indistinguishable KEM: The $\U$-transform}
+    The Fujisaki-Okamoto transformation~\cite{C:FujOka99}, which underlies many post-quantum
+      KEMs including the now-standardized ML-KEM (Kyber)~\cite{Kyber}, can be
+      framed as the composition of two 
+      transformations, \T and \U, as defined by Hofheinz
+      et al.~\cite{TCC:HofHovKil17} (hereafter HHK). 
+      Starting from a public-key
+      encryption scheme, the first transformation (\T) derandomizes the
+      PKE by having its randomness be derived from a hash of the message (and possibly
+      the public key), and additionally adds a re-encryption check to the
+      decryption algorithm, while the second transformation builds a KEM from a
+      deterministic PKE by sampling a uniform message, encrypting it, and
+      hashing it to produce the ephemeral key $\eK$.
+  
+    In the following, we will focus on this second transformation, $\U$,
+      and build our KEM starting with a deterministing PKE that satisfies
+      one-way security.\footnote{
+        HHK defined several variants of the \U-transform that differ from the variant discussed here
+    		in how they handle invalid ciphertexts and in what they hash into the
+        output key; our variant corresponds to \UExpMess in their notation.
+        %\hhnote{
+        %  Should we do the more general \UExpMess transform instead? Or does that
+        %  just muddy the message?
+        %}
+      } (See App.~\ref{sec:ttransform} for details on the \T-transform.)
+
+    \hhnote{
+      Leave this version without the extra re-encryption check (which also
+      matches the original \U), and define a new \U with the re-encryption check
+      when we later want CCA security.
+    }
+   
+    \begin{definition}[\U-transform]
+      To a deterministic PKE scheme $\dPKE = (\KG, \Enc, \Dec)$ and a hash
+      function $\ROkey: \MSpace \to \KSpace$,
+      we associate the KEM $\KEM \coloneqq \U[\PKE, \ROkey]$ defined in \autoref{fig:def:U-transform}.
+      \begin{figure}[ht]
+   	\begin{center}
+   		\fbox{
+   			\small
+   			\nicoresetlinenr
+   			%\begin{minipage}[t]{3.3cm}
+   			%	\underline{$\UKG()$}
+   			%	\begin{nicodemus}
+   			%		\item $(\pk, \sk) \sample \KG()$
+   			%		%\item $\rejectionSeed \sample \MSpace$
+   			%		%\item $\sk' \leftarrow (\sk, \rejectionSeed)$
+   			%		\item \pcreturn $(\pk, \sk)$
+   			%	\end{nicodemus}
+   			%\end{minipage}
+   			%
+   			%\quad
+   			
+   			\begin{minipage}[t]{3cm}
+           \underline{$\UEncaps_\pk()$}
+   				\begin{nicodemus}
+   					\item $m \sample \MSpace$
+   					\item $c \gets \Enc(\pk, m)$
+   					\item $\eK \gets \ROkey(m)$
+   					\item \pcreturn $(\eK, c)$
+   				\end{nicodemus}
+   			\end{minipage}
+   			
+   			\quad
+   			
+   			\begin{minipage}[t]{3.6cm}
+   				\underline{$\UDecaps(\sk, c)$}
+   				\begin{nicodemus}
+   					%\item Parse $\sk' := (\sk, \rejectionSeed)$
+   					\item $m' \gets \Dec(\sk, c)$
+   					\item \pcif $m' = \bot \pcthen \pcreturn \bot$
+   						%\item \pcreturn $\ROkey(\rejectionSeed, c)$
+   					\item \pcreturn $\ROkey(m')$
+   				\end{nicodemus}
+   			\end{minipage}
+   		}
+   	\end{center}
+   	\caption{
+   	  \label{fig:def:U-transform}			
+        Algorithms of $\U[\PKE, \ROkey] \eqqcolon (\KG, \UEncaps, \UDecaps)$.
+     }
+   \end{figure} 
+   \end{definition}
+  
+  \subsection{What Goes Wrong}
+    \todoenum[rough structure]{
+      \item A discussion about why the previous proofs do not yield
+        post-quantum security 
+      \item Where the proofs break down, and why they do not admit direct
+        lifting (not history-free)
+    }
+
+  \subsection{OLD BRE STUFF}
     % BRE (exchange for the U transform)
     \begin{figure}[t]
       \centering
@@ -164,7 +256,6 @@
         $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
       }
       
-      \iftutorial
       \paragraph{Interpretation.}
         Before proving the theorem, let us take a look at what the statement
           actually tells us.
@@ -245,7 +336,6 @@
           the runtime of our reduction. In this case, this is the runtime
           of the adversary itself, plus the overhead cost of lazy-sampling the
           random oracle, which we can assume is comparatively small.
-      \fi
 
       \paragraph{Proof sketch.}
         \autoref{fig:bre-classical-games} provides an overview of the game hops that
@@ -618,144 +708,4 @@
       \hhnote{
         GapCDH; lack of a search-to-decision reduction; false for e.g.\ LWE
       }
-  \fi
 
-  \newcommand{\ttransform}{\mathsf{T}}
-  \newcommand{\utransform}{\mathsf{U}}
-  \subsection{A Passively Secure KEM}
-    \todoenum[rough structure]{
-      \item Classical ROM proof of OW to IND
-      %\item Classical ROM proof of CPA to CCA
-    }
-  
-    \noindent
-    The Fujisaki-Okamoto transformation~\cite{FO}, which underlies many post-quantum
-      KEMs, including the now-standardized ML-KEM~\cite{Kyber}, is the composition of two separate
-      transformations, $\ttransform$ and $\utransform$~\cite{TCC:HofHovKil17}. Starting from a public-key
-      encryption scheme, the first transformation ($\ttransform$) derandomizes the
-      PKE by deriving its randomness from a hash of the message (and possibly
-      the public key), while the second transformation adds a final hash before
-      returning the ephemeral key.
-  
-    In the following, we will focus on the second transformation, $\utransform$,
-      and simply assume that we have a deterministing PKE to start with that
-      satisfies one-way security under plaintext-checking attacks.
-  
-    \subsection{The $\utransform$ Transformation}
-    	In this section, we recall the definition of one of the \FO-transforms that
-        were given in~\cite{TCC:HofHovKil17}, as the composition of the two
-        following transformations:
-  
-      \hhnote{
-        Could we do the more general $U^\perp$ transform instead? Or is that too
-        hard to work with?
-      }
-    	
-    	\begin{itemize}
-    		\item
-    			The de-randomizing \emph{\T-transform} that additionally adds a re-encryption check to the decryption procedure;
-    			and 
-    		\item
-    			PKE-to-KEM \emph{\U-transform}\todo{Specify variant} that derives a KEM output key \KEMoutputKey
-    			from a randomly chosen message $m$, which it encrypts using \PKE.
-    			(\cite{TCC:HofHovKil17} also defined other \U-variants that differ from the variant discussed here
-    			in how they handle invalid ciphertexts and in what they hash into the output key \KEMoutputKey.)
-    	\end{itemize} 
-    	
-    	\begin{definition}[\T-transform]
-    		To a PKE scheme $\PKE = (\KG, \Enc, \Dec)$ and a hash function $\ROrand:\MSpace \rightarrow \RSpace$,
-    		we associate the (deterministic) PKE scheme $\T[\PKE, \ROrand]$ defined in Figure~\ref{fig:def:T-transform}.
-    		
-    		\begin{figure}[t]
-    			\begin{center}
-    				\fbox{
-    					\small
-    					\nicoresetlinenr
-    					
-    					\begin{minipage}[t]{3.6cm}	
-    						\underline{ $\TEnc(pk, m)$:}
-    						\begin{nicodemus}
-    							\item $c \gets \Enc(pk, m; \ROrand(m))$
-    							\item \pcreturn $c$
-    						\end{nicodemus}
-    					\end{minipage}
-    					
-    					\quad
-    					
-    					\begin{minipage}[t]{5cm}
-    						\underline{ $\TDec(sk, c)$:}
-    						\begin{nicodemus}
-    							\item $m^\prime \gets \Enc(sk,c)$
-    							\item \pcif $m^\prime = \perp$ or $c \neq \Enc(pk, m; \ROrand(m))$
-    							\item \quad \pcreturn $\perp$
-    							\item \pcelse \pcreturn $m^\prime$
-    						\end{nicodemus}	
-    					\end{minipage}
-    				}
-    			\end{center}
-    			\caption{Algorithms of $\T[\PKE, \ROrand]=: (\KG, \TEnc, \TDec)$.}
-    			\label{fig:def:T-transform}
-    		\end{figure}
-    		
-    	\end{definition}
-    
-    	
-    	
-    	\begin{definition}[\UImpMess-transform]
-    		%
-    		To a PKE scheme $\PKE = (\KG, \Enc, \Dec)$ and a hash function \ROkey,
-    		we associate the KEM $\KEMImpMess := \UImpMess[\PKE, \ROkey]$ defined in~\ref{fig:def:U-transform}.
-    		
-    		\begin{figure}[ht]
-    			\begin{center}
-    				\fbox{
-    					\small
-    					\nicoresetlinenr
-    					\begin{minipage}[t]{3cm}
-    						\underline{$\KGImp()$}
-    						\begin{nicodemus}
-    							\item $(pk, sk) \sample \KG()$
-    							\item $\rejectionSeed \sample \MSpace$
-    							\item $\sk' \leftarrow (sk, \rejectionSeed)$
-    							\item \pcreturn $(pk, \sk')$
-    						\end{nicodemus}
-    					\end{minipage}
-    					
-    					\quad
-    					
-    					\begin{minipage}[t]{3.2cm}
-    						\underline{$\EncapsMess(pk)$}
-    						\begin{nicodemus}
-    							\item $m \sample \MSpace$
-    							\item $c \leftarrow \Enc(pk, m)$
-    							\item $\KEMoutputKey := \ROkey(m)$
-    							\item \pcreturn $(\KEMoutputKey, c)$
-    						\end{nicodemus}
-    					\end{minipage}
-    					
-    					\quad
-    					
-    					\begin{minipage}[t]{3.4cm}
-    						\underline{$\DecapsImpMess(\sk', c)$}
-    						\begin{nicodemus}
-    							\item Parse $\sk' := (sk, \rejectionSeed)$
-    							\item $m' := \Dec(sk, c)$
-    							\item \pcif $m' = \bot$
-    								\item \pcreturn $\ROkey(\rejectionSeed, c)$
-    							\item \pcreturn $\ROkey(m')$
-    						\end{nicodemus}
-    					\end{minipage}
-    				}
-    			\end{center}
-    			\caption{Algorithms of $\UImpMess[\PKE, \ROkey, \ROimp] =: (\KGImp, \EncapsMess, \DecapsImpMess)$.}
-    			\label{fig:def:U-transform}			
-    		\end{figure} 
-    	\end{definition}
-  
-    \subsection{What Goes Wrong}
-      \todoenum[rough structure]{
-        \item A discussion about why the previous proofs do not yield
-          post-quantum security 
-        \item Where the proofs break down, and why they do not admit direct
-          lifting (not history-free)
-      }

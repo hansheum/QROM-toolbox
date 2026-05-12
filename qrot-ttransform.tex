@@ -1,0 +1,40 @@
+\section{The \T-transform}\label{sec:ttransform}
+  The \T-transform is the first half of the Fujisaki--Okamoto transformation,
+    which derandomizes the PKE by hashing the message, enabling a re-encryption consistency check
+    to the decryption algorithm.
+  \begin{definition}[\T-transform]
+  	To a PKE scheme $\PKE = (\KG, \Enc, \Dec)$ and a hash function $\ROrand:\MSpace \rightarrow \RSpace$,
+  	we associate the deterministic PKE scheme $\T[\PKE, \ROrand]$ defined in Figure~\ref{fig:def:T-transform}.
+  	
+  	\begin{figure}[ht]
+  		\begin{center}
+  			\fbox{
+  				\small
+  				\nicoresetlinenr
+  				
+  				\begin{minipage}[t]{3.6cm}	
+            \underline{ $\TEnc_\pk(m):$}
+  					\begin{nicodemus}
+              \item $c \gets \Enc_\pk(m; \ROrand(m))$
+  						\item \pcreturn $c$
+  					\end{nicodemus}
+  				\end{minipage}
+  				
+  				\quad
+  				
+  				\begin{minipage}[t]{5.5cm}
+            \underline{ $\TDec_\sk(c)$:}
+  					\begin{nicodemus}
+              \item $m^\prime \gets \Dec_\sk(c)$
+              \item \pcif $m^\prime = \bot$ or $c \neq \Enc_\pk(m; \ROrand(m))$
+  						\item \quad \pcreturn $\perp$
+  						\item \pcelse \pcreturn $m^\prime$
+  					\end{nicodemus}	
+  				\end{minipage}
+  			}
+  		\end{center}
+  		\caption{Algorithms of $\T[\PKE, \ROrand]=: (\KG, \TEnc, \TDec)$.}
+  		\label{fig:def:T-transform}
+  	\end{figure}
+
+  \end{definition}

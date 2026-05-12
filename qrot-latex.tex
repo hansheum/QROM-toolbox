@@ -17,14 +17,13 @@
 %%% Functions and so on
 \newcommand{\predicate}{\mathcal{P}}
 
-
 %%% Game interface
-\renewcommand{\pcthen}{:}
-\renewcommand{\pcdo}{:}
-%\renewcommand{\chalbit}{\ensuremath{b}}
-\newcommand{\chalset}{\Cspace}
+  \renewcommand{\pcthen}{:}
+  \renewcommand{\pcdo}{:}
+  %\renewcommand{\chalbit}{\ensuremath{b}}
+  \newcommand{\chalset}{\Cspace}
 
-%%% Oracles
+%%% Random oracles
   % See cryptocodeh for \RO
   \newcommand{\ro}{\hash} % phasing out
   \renewcommand{\state}{\ensuremath{\sigma}} 
@@ -32,6 +31,9 @@
   \newcommand{\realRO}{\RO_0}
   \newcommand{\idealRO}{\RO_1}
   \newcommand{\bitRO}{\RO_{\chalbit}}
+  \newcommand{\Db}{\Dlist}
+
+%%% Game oracles
   \newcommand{\target}{\ensuremath{x^*}}
   \newcommand{\targetout}{\ensuremath{y^*}}
   \newcommand{\queries}{\ensuremath{q}}
@@ -163,3 +165,41 @@
 }{%
   \end{tcolorbox}%
 }
+
+%% KATHIE THINGS IMPORTED
+%% see qrot-latex-Kat.tex for more Kathie things
+
+% === standard FO notation
+\newcommand{\T}{\ensuremath{\mathsf{T}}\xspace}
+\newcommand{\TEnc}{\ensuremath{\Enc^{\T}}\xspace}
+\newcommand{\TDec}{\ensuremath{\Dec^{\T}}\xspace}
+
+\newcommand{\U}{\ensuremath{\mathsf{U}}\xspace}
+\newcommand{\notp}{{\not\perp}} % <- for implicit rejection
+\newcommand{\UExp}{\ensuremath{\U^\perp}\xspace}
+\newcommand{\UExpMess}{\ensuremath{\UExp_{m}}\xspace}
+\newcommand{\UImp}{\ensuremath{\U^\notp}\xspace}
+\newcommand{\UImpMess}{\ensuremath{\UImp_{m}}\xspace}
+
+\newcommand{\UKG}{\KG^{\U}}
+\newcommand{\UEncaps}{\Encaps^{\U}}
+\newcommand{\UDecaps}{\Decaps^{\U}}
+
+\newcommand{\KEMExp}{\ensuremath{\KEM^{\perp}}\xspace}
+\newcommand{\KEMExpMess}{\ensuremath{\KEMExp_m}\xspace}
+\newcommand{\KEMImp}{\ensuremath{\KEM^{\notp}}\xspace}
+\newcommand{\KEMImpMess}{\ensuremath{\KEMImp_m}\xspace}
+\newcommand{\KGExp}{\ensuremath{\KG}\xspace}
+\newcommand{\KGImp}{\ensuremath{\KG^\notp}\xspace}
+\newcommand{\EncapsMess}{\ensuremath{\Encaps_m}\xspace}
+\newcommand{\DecapsExpMess}{\ensuremath{\Decaps^\perp_m}\xspace}
+\newcommand{\DecapsImpMess}{\ensuremath{\Decaps^\notp_m}\xspace}
+
+\newcommand{\rejectionSeed}{\ensuremath{z}\xspace}
+
+\newcommand{\FO}{\ensuremath{\mathsf{FO}}\xspace}
+%\newcommand{\FOExp}{\ensuremath{\FO^{\perp}}\xspace}
+%\newcommand{\FOImp}{\ensuremath{\FO^\notp}\xspace}
+%\newcommand{\FOMess}{\ensuremath{\FO_m}\xspace}
+%\newcommand{\FOMessExp}{\ensuremath{\FOExp_m}\xspace}
+%\newcommand{\FOMessImp}{\ensuremath{\FOImp_m}\xspace}

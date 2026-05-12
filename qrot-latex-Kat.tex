@@ -1,5 +1,5 @@
 \newcommand{\PKE}{\ensuremath{\mathsf{PKE}}\xspace}
-\newcommand{\DPKE}{\ensuremath{\mathsf{DPKE}}\xspace}
+\newcommand{\dPKE}{\ensuremath{\mathsf{dPKE}}\xspace}
 \newcommand{\PG}{\ensuremath{\mathsf{PmGen}}\xspace}
 \newcommand{\KG}{\ensuremath{\mathsf{KeyGen}}\xspace}
 \newcommand{\Enc}{\ensuremath{\mathsf{Enc}}\xspace}
@@ -28,44 +28,11 @@
 \newcommand{\INDCPA}{{\ensuremath{\IND\mhyphen\CPA}}\xspace}
 \newcommand{\INDCCA}{{\ensuremath{\IND\mhyphen\CCA}}\xspace}
 
-% === standard FO notation
-\newcommand{\T}{\ensuremath{\mathsf{T}}\xspace}
-\newcommand{\TEnc}{\ensuremath{\Enc'}\xspace}
-\newcommand{\TDec}{\ensuremath{\Dec'}\xspace}
-
-\newcommand{\U}{\ensuremath{\mathsf{U}}\xspace}
-\newcommand{\notp}{{\not\perp}} % <- for implicit rejection
-%\newcommand{\UExp}{\ensuremath{\U^\perp}\xspace}
-%\newcommand{\UExpMess}{\ensuremath{\UExp_{m}}\xspace}
-\newcommand{\UImp}{\ensuremath{\U^\notp}\xspace}
-\newcommand{\UImpMess}{\ensuremath{\UImp_{m}}\xspace}
-
-%\newcommand{\KEMExp}{\ensuremath{\KEM^{\perp}}\xspace}
-%\newcommand{\KEMExpMess}{\ensuremath{\KEMExp_m}\xspace}
-\newcommand{\KEMImp}{\ensuremath{\KEM^{\notp}}\xspace}
-\newcommand{\KEMImpMess}{\ensuremath{\KEMImp_m}\xspace}
-
-%\newcommand{\KGExp}{\ensuremath{\KG}\xspace}
-\newcommand{\KGImp}{\ensuremath{\KG^\notp}\xspace}
-\newcommand{\rejectionSeed}{\ensuremath{z}\xspace}
-\newcommand{\EncapsMess}{\ensuremath{\Encaps_m}\xspace}
-%\newcommand{\DecapsExpMess}{\ensuremath{\Decaps^\perp_m}\xspace}
-\newcommand{\DecapsImpMess}{\ensuremath{\Decaps^\notp_m}\xspace}
-
-\newcommand{\FO}{\ensuremath{\mathsf{FO}}\xspace}
-%\newcommand{\FOExp}{\ensuremath{\FO^{\perp}}\xspace}
-%\newcommand{\FOImp}{\ensuremath{\FO^\notp}\xspace}
-%\newcommand{\FOMess}{\ensuremath{\FO_m}\xspace}
-%\newcommand{\FOMessExp}{\ensuremath{\FOExp_m}\xspace}
-%\newcommand{\FOMessImp}{\ensuremath{\FOImp_m}\xspace}
-
-
 % Hash functions used by FO
 \newcommand{\hashTS}[1]{\ensuremath{\mathsf{#1}}\xspace} % <- for typesetting hash functions
 \newcommand{\ROkey}{\hashTS{H}}
 \newcommand{\ROrand}{\hashTS{G}}
 \newcommand{\ROimp}{\hashTS{H'}}
-
 
 % Stuff for security definitions
 \newcommand{\AdversaryA}{\ensuremath{\mathcal{A}}\xspace}
