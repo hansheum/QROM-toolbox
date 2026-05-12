@@ -56,52 +56,81 @@
       function $\ROkey: \MSpace \to \KSpace$,
       we associate the KEM $\KEM \coloneqq \U[\PKE, \ROkey]$ defined in \autoref{fig:def:U-transform}.
       \begin{figure}[ht]
-   	\begin{center}
-   		\fbox{
-   			\small
-   			\nicoresetlinenr
-   			%\begin{minipage}[t]{3.3cm}
-   			%	\underline{$\UKG()$}
-   			%	\begin{nicodemus}
-   			%		\item $(\pk, \sk) \sample \KG()$
-   			%		%\item $\rejectionSeed \sample \MSpace$
-   			%		%\item $\sk' \leftarrow (\sk, \rejectionSeed)$
-   			%		\item \pcreturn $(\pk, \sk)$
-   			%	\end{nicodemus}
-   			%\end{minipage}
-   			%
-   			%\quad
-   			
-   			\begin{minipage}[t]{3cm}
-           \underline{$\UEncaps_\pk()$}
-   				\begin{nicodemus}
-   					\item $m \sample \MSpace$
-   					\item $c \gets \Enc(\pk, m)$
-   					\item $\eK \gets \ROkey(m)$
-   					\item \pcreturn $(\eK, c)$
-   				\end{nicodemus}
-   			\end{minipage}
-   			
-   			\quad
-   			
-   			\begin{minipage}[t]{3.6cm}
-          \underline{$\UDecaps_\sk(c)$}
-   				\begin{nicodemus}
-   					%\item Parse $\sk' := (\sk, \rejectionSeed)$
-            \item $m' \gets \Dec_\sk(c)$
-   					\item \pcif $m' = \bot \pcthen \pcreturn \bot$
-   						%\item \pcreturn $\ROkey(\rejectionSeed, c)$
-   					\item \pcreturn $\ROkey(m')$
-   				\end{nicodemus}
-   			\end{minipage}
-   		}
-   	\end{center}
-   	\caption{
-   	  \label{fig:def:U-transform}			
-        Algorithms of $\U[\PKE, \ROkey] \eqqcolon (\KG, \UEncaps, \UDecaps)$.
-     }
-   \end{figure} 
-   \end{definition}
+     	  \begin{center}
+    		  \fbox{
+    		  	\small
+    		  	\nicoresetlinenr
+    		  	%\begin{minipage}[t]{3.3cm}
+    		  	%	\underline{$\UKG()$}
+    		  	%	\begin{nicodemus}
+    		  	%		\item $(\pk, \sk) \sample \KG()$
+    		  	%		%\item $\rejectionSeed \sample \MSpace$
+    		  	%		%\item $\sk' \leftarrow (\sk, \rejectionSeed)$
+    		  	%		\item \pcreturn $(\pk, \sk)$
+    		  	%	\end{nicodemus}
+    		  	%\end{minipage}
+    		  	%
+    		  	%\quad
+    		  	
+    		  	\begin{minipage}[t]{3cm}
+              \underline{$\UEncaps_\pk()$}
+    		  		\begin{nicodemus}
+    		  			\item $m \sample \MSpace$
+    		  			\item $c \gets \Enc(\pk, m)$
+    		  			\item $\eK \gets \ROkey(m)$
+    		  			\item \pcreturn $(\eK, c)$
+    		  		\end{nicodemus}
+    		  	\end{minipage}
+    		  	
+    		  	\quad
+    		  	
+    		  	\begin{minipage}[t]{3.6cm}
+             \underline{$\UDecaps_\sk(c)$}
+    		  		\begin{nicodemus}
+    		  			%\item Parse $\sk' := (\sk, \rejectionSeed)$
+               \item $m' \gets \Dec_\sk(c)$
+    		  			\item \pcif $m' = \bot \pcthen \pcreturn \bot$
+    		  				%\item \pcreturn $\ROkey(\rejectionSeed, c)$
+    		  			\item \pcreturn $\ROkey(m')$
+    		  		\end{nicodemus}
+    		  	\end{minipage}
+    		  }
+    	  \end{center}
+    	  \caption{
+    	    \label{fig:def:U-transform}			
+           Algorithms of $\U[\PKE, \ROkey] \eqqcolon (\KG, \UEncaps, \UDecaps)$.
+        }
+      \end{figure} 
+    \end{definition}
+
+    We want to prove that if $\dPKE$ satisfies the weaker notion of one-wayness
+      (under chosen-plaintext attacks), then $\KEM$ achieves
+      the stronger notion of indistinguishability (also under chosen-plaintext
+      attacks). 
+
+    Intuitively, the reduction relies on the fact that in order to
+      distinguish, an adversary will have to call the random oracle on one of
+      the messages used to derive the ephemeral key. Since the reduction 
+      completely controls the random oracle simulation, it can simply output the
+      correct key when it is used in a query to the random oracle; the fact that $\dPKE$
+      is deterministic means that our reduction will immediately be able to
+      recognize the correct message, and this is how we are able to make the
+      reduction tight.
+
+    \begin{theorem}[OW $\to$ IND]\label{thm:cparom}
+      Let $\dPKE$ be a deterministic PKE, and let $\KEM = \U[\PKE, \RO]$, where
+      $\RO$ is a random oracle. Then for every adversary $\adv$ there is a
+      reduction $\bdv$ such that
+      \[
+        \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv)]\, .
+      \]
+    \end{theorem}
+
+    \input{qrot-proof-cparom}
+
+    \hhnote{
+      forward reference to QROM proof, CCA proof
+    }
   
   \subsection{What Goes Wrong}
     \todoenum[rough structure]{
