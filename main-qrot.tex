@@ -206,11 +206,9 @@
     \input{qrot-rom}
     \clearpage
 
-  \addcontentsline{toc}{part}{Part 2. Quantum Challenges}
+  \addcontentsline{toc}{part}{Part 2. The (Post-)Quantum Realm}
   %\part{(Post-)Quantum Difficulties}\label{part:classical}
     \input{qrot-primer}
-    \clearpage
-    \input{qrot-pseudocode}
     \clearpage
     \input{qrot-qrom}
     \clearpage
@@ -220,9 +218,13 @@
     \fi
     %\input{qrot-problems}
 
-  \addcontentsline{toc}{part}{Part 3. The Tools of the Toolbox}
+  \addcontentsline{toc}{part}{Part 3. Tools of the Toolbox}
   %\part{The Tools of the Toolbox}\label{part:tools}
     \input{qrot-o2h}
+    \clearpage
+    \input{qrot-pseudocode}
+    \clearpage
+    \input{qrot-compressed}
     \iffutureversion
       \clearpage
       \input{qrot-extract} % with CPA -> CCA example 
@@ -231,8 +233,6 @@
       \clearpage
       \input{qrot-rewind} % with Sigma -> NIZK example 
     \fi
-    \clearpage
-    \input{qrot-compressed}
 
   \iffutureversion
     %\part{Under The Rug}\label{part:proofs}
@@ -241,7 +241,7 @@
     \clearpage
   \fi
 
-  %\newpage
+  \newpage
   \addtocontents{toc}{\protect\vspace{1.5em}}
   \addcontentsline{toc}{section}{References}
 	\bibliographystyle{alpha}

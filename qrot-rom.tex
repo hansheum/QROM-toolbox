@@ -27,7 +27,7 @@
     They are also very easy to simulate, a process known as
       lazy-sampling, as shown in \autoref{fig:lazy-sampling}.
 
-  \subsection{From a One-way PKE to a Hiding KEM: The $\U$-transform}
+  \subsection{One-way PKE to Hiding KEM: The $\U$-transform}
     The Fujisaki-Okamoto transformation~\cite{C:FujOka99}, which underlies many post-quantum
       KEMs including the now-standardized ML-KEM (Kyber)~\cite{Kyber}, can be
       framed as the composition of two 
@@ -113,10 +113,15 @@
       \end{figure} 
     \end{definition}
 
-    We want to prove that if $\dPKE$ satisfies the weaker notion of one-wayness
-      (under chosen-plaintext attacks), then $\KEM$ achieves
-      the stronger notion of indistinguishability (also under chosen-plaintext
-      attacks). 
+    \noindent
+    After the \U-transform, if the original $\dPKE$ satisfied a \emph{minimal}
+      security requirement, namely that given a ciphertext, it should be hard to
+      derive the encrypted plaintext, then $\KEM$ achieves the much stronger
+      notion that given an encapsulation of one of two possible symmetric keys,
+      you should not be able to figure out which of the two keys sits inside the
+      encapsulation. In other words, if $\dPKE$ satisfies one-wayness
+      (\autoref{def:ow}), then $\KEM$ satisfies indistinguishability
+      (\autoref{def:indcpa}), captured in the following theorem.
 
     Intuitively, the reduction relies on the fact that in order to
       distinguish, an adversary will have to call the random oracle on one of
@@ -138,37 +143,76 @@
       \]
     \end{theorem}
 
-    \begin{proof}
-      Intuitively, our reduction will honestly simulate the random world of the KEM
-      indistinguishability experiment, by forwarding the one-way challenges it
-      receives from its own challenge oracle, together with a random key. 
-      The way our construction is set up, the only
-      way for $\adv$ to notice that it is not in the real-world experiment is to
-      call the random oracle on one of the messages encrypted by $\ctxt$. But $\bdv$
-      is keeping watch over the random oracle queries, deterministicly encrypting
-      each of the inputs and checking if the ciphertext matches one of the
-      challenges it has been issued; if so, it aborts the simulation and outputs a
-      winning pair $(x, \ctxt)$ before $\adv$ ever has a chance to notice the
-      difference. 
-      In other words: \emph{either} $\adv$ never calls the random oracle
-      on one of the correct queries, in which case it has zero advantage, \emph{or}
-      $\bdv$ wins.
-    
-      This would give a completely tight proof. However, $\adv$ still has one avenue
-      of attack for which this argument fails:
-      What if $\adv$ manages to correctly guess a \emph{future} challenge,
-      and calls the random oracle on that value before $\bdv$ can recognize
-      it as a challenge?
-    
-      One solution would be to let our reduction check the query database for
-      collisions every time it receives a challenge, which would again make for
-      a tight reduction. We will opt for a ``dumber'' route, however, in order to
-      demonstrate techniques that will be useful later on when we move to the
-      quantum case, namely to ``hop'' to a game that simply aborts if this case ever
-      occurs, and then show that the probability this makes the game actually abort
-      must be very small. Then we can return to our main argument, which now goes
-      through without issue.
+    \noindent
+    \paragraph{Parsing the statement.}
+      If you are now to provable security, it may be hard to see at a glance
+        how the above theorem statement connects to the intuition that ``if
+        $\dPKE$ achieves one-wayness security, then $\KEM$ achieves distinguishing
+        security'', so let us take a moment to parse the different parts of the
+        statement.
 
+      The first clue is that you have to think contrapositively: What we
+        want to prove is
+        that if $\dPKE$ is secure, then $\KEM$ is secure, but what we
+        \emph{actually} prove is that if $\KEM$ is \emph{in}secure, then $\dPKE$
+        must also be insecure. Given that we started out assuming that $\dPKE$ is
+        secure, this then leads to a contradiction, so that the positive statement
+        is proven.
+
+    \paragraph{A proof strategy.}
+      Intuitively, our reduction will honestly simulate the random world of the KEM
+        indistinguishability experiment, by forwarding the one-way challenges it
+        receives from its own challenge oracle, together with a random key. 
+        The way our construction is set up, the only
+        way for $\adv$ to notice that it is not in the real-world experiment is to
+        call the random oracle on one of the messages encrypted by $\ctxt$. But $\bdv$
+        is keeping watch over the random oracle queries, deterministicly encrypting
+        each of the inputs and checking if the ciphertext matches one of the
+        challenges it has been issued; if so, it aborts the simulation and outputs a
+        winning pair $(x, \ctxt)$ before $\adv$ ever has a chance to notice the
+        difference. 
+        In other words: \emph{either} $\adv$ never calls the random oracle
+        on one of the correct queries, in which case it has zero advantage, \emph{or}
+        $\bdv$ wins.
+      
+      This would give a completely tight proof. However, $\adv$ still has one avenue
+        of attack for which this argument fails:
+        What if $\adv$ manages to correctly guess a \emph{future} challenge,
+        and calls the random oracle on that value before $\bdv$ can recognize
+        it as a challenge?
+      
+      One solution would be to let our reduction check the query database for
+        collisions every time it receives a challenge, which would again make for
+        a tight reduction. We will opt for a ``dumber'' route, however, in order to
+        demonstrate techniques that will be useful later on when we move to the
+        quantum case, namely to ``hop'' to a game that simply aborts if this case ever
+        occurs, and then show that the probability this makes the game actually abort
+        must be very small. Then we can return to our main argument, which now goes
+        through without issue.
+
+    \paragraph{One-way to hiding.}
+      In order to (\ldots)
+        a general ``one-way to hiding lemma''. Since the reduction is so
+        simple, this may seem to only add an unnecessary level of formalism.
+        This same formalism will however turn out to be one of the most useful
+        tools we have when arguing about the quantum case.
+
+      \begin{theorem}[Classical O2H, Find]\label{thm:co2h-find}
+        let $\RO: \bin^n \to \bin^m$ be a random
+        oracle, and let $z$ be a bitstring that depends arbitrarily on $\RO$.
+        Let $\solset \subseteq \bin^n$ be a subset of inputs, and let $\RO
+        \backslash \solset$ be the punctured random oracle that is equal to $\RO$
+        on all inputs $x \not\in \solset$, but which outputs $\bot$ on all points
+        in $\solset$. Let $\find$ be the event that the random oracle ever outputs
+        $\bot$. Then for every distinguisher $\distinguisher$,
+        \[
+            \abs{\prob{1 \sample \distinguisher^{\ro}(z)}
+                - \prob{1 \sample \distinguisher^{\ro\backslash \solset}(z)}}
+              = \probsample{\distinguisher^{\ro \backslash \solset}(z)}{\find}\, .
+        \]
+      \end{theorem}
+
+    \begin{proof}[\autoref{thm:cparom}]
       The game hops are \ldots
     
       Pseudocode for our reduction is given in \autoref{fig:cparom-red}.
@@ -301,33 +345,13 @@
       forward reference to QROM proof, CCA proof
     }
 
-  \subsection{One-way to Hiding: The Classical Case}
-    We extract the main insight from the proof of \autoref{thm:cparom} into a
-      general ``one-way to hiding lemma''. Since the reduction is so
-      simple, this may seem to only add an unnecessary level of formalism.
-      This same formalism will however turn out to be one of the most useful
-      tools we have when arguing about the quantum case.
-
-    \begin{theorem}[Classical O2H, Find]\label{thm:co2h-find}
-      let $\RO: \bin^n \to \bin^m$ be a random
-      oracle, and let $z$ be a bitstring that depends arbitrarily on $\RO$.
-      Let $\solset \subseteq \bin^n$ be a subset of inputs, and let $\RO
-      \backslash \solset$ be the punctured random oracle that is equal to $\RO$
-      on all inputs $x \not\in \solset$, but which outputs $\bot$ on all points
-      in $\solset$. Let $\find$ be the event that the random oracle ever outputs
-      $\bot$. Then for every distinguisher $\distinguisher$,
-      \[
-          \abs{\prob{1 \sample \distinguisher^{\ro}(z)}
-              - \prob{1 \sample \distinguisher^{\ro\backslash \solset}(z)}}
-            = \probsample{\distinguisher^{\ro \backslash \solset}(z)}{\find}\, .
-      \]
-    \end{theorem}
-    We also define
+  \subsection{When You Have to Guess}
+    What would happen if you started from a probabilistic PKE?
+    We also define (\ldots)
 
     \begin{lemma}[O2H, Guess]
       xyz
     \end{lemma}
-    
   
   \subsection{What Goes Wrong}
     \todoenum[rough structure]{
