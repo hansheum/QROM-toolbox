@@ -2,12 +2,15 @@
 \begin{figure}[t]
   \centering
   \fbox{
-	  \begin{minipage}[t]{3cm}
+	  \begin{minipage}[t]{3.1cm}
 	  	\underline{\oracleHeading $\RO(x)$}
       \smallskip
+    	\nicoresetlinenr
 	  	\begin{nicodemus}
         \item $\pcif \Db[x] = \bot :$ 
+        \smallskip
         \item   \quad $\Db[x] \sample \bin^m$
+        \smallskip
         \item $\pcreturn \Db[x]$
 	  	\end{nicodemus}	
 	  \end{minipage}
@@ -84,22 +87,30 @@
     		  	\begin{minipage}[t]{3cm}
               \underline{$\UEncaps_\pk()$}
     		  		\begin{nicodemus}
-    		  			\item $x \sample \Xspace$
+                \smallskip
+    		  			\item $x \sample \bin^n$
+                \smallskip
     		  			\item $c \gets \Enc(\pk, x)$
+                \smallskip
     		  			\item $\eK \gets \ROkey(x)$
+                \smallskip
     		  			\item \pcreturn $(\eK, c)$
     		  		\end{nicodemus}
     		  	\end{minipage}
     		  	
     		  	\quad
     		  	
-    		  	\begin{minipage}[t]{3cm}
+    		  	\begin{minipage}[t]{2.5cm}
              \underline{$\UDecaps_\sk(c)$}
     		  		\begin{nicodemus}
+                \smallskip
     		  			%\item Parse $\sk' := (\sk, \rejectionSeed)$
-               \item $x' \gets \Dec_\sk(c)$
+                \item $x' \gets \Dec_\sk(c)$
+                \smallskip
     		  			\item \pcif $x' = \bot :$ 
+                \smallskip
                 \item   \quad \pcreturn $\bot$
+                \smallskip
     		  				%\item \pcreturn $\ROkey(\rejectionSeed, c)$
     		  			\item \pcreturn $\ROkey(x')$
     		  		\end{nicodemus}
@@ -127,19 +138,20 @@
       distinguish, an adversary will have to call the random oracle on one of
       the messages used to derive the ephemeral key. Since the reduction 
       completely controls the random oracle simulation, it can simply output the
-      correct key when it is used in a query to the random oracle; the fact that $\dPKE$
+      correct solution when it is used in a query to the random oracle. The fact that $\dPKE$
       is deterministic means that our reduction will immediately be able to
-      recognize the correct message, and this is how we are able to make the
-      reduction tight.
+      recognize it, and this is why we are able to get a tight bound in this
+      case.
 
     \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]\label{thm:cparom}
       Let $\dPKE$ be a deterministic PKE, let $\RO$ be a random oracle, 
       and let $\KEM = \U[\PKE, \RO]$.
-      Then for every adversary $\adv$ that makes at most $\qe$ calls to the
-      challenge oracle, there is a reduction $\bdv$ such that
+      Then for every adversary $\adv$ against $\KEM$, 
+      %that makes at most $\qe$ calls to the challenge oracle, 
+      there is a reduction $\bdv$ against $\dPKE$ such that
       \[
-        \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv)] +
-        \frac{\qe}{2^m}\, .
+        \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv)]\, .
+        %+ \frac{\qe}{2^m}\, .
       \]
     \end{theorem}
 
@@ -152,79 +164,158 @@
         statement.
 
       On the left hand side, we have the advantage of our adversary $\adv$.
-        The theorem quantifies over all possible attackers $\adv$, so you may
+        The theorem quantifies over all possible $\adv$, so you may
         think of this as the maximum possible distinguishing advantage against
-        $\KEM$. We then have an upper-bound on this largest-possible advantage,
+        $\KEM$. On the right, we have an upper-bound on this largest-possible advantage,
         so if the right-hand side is small, then the largest-possible
-        distinguishing advantage must also be small, which is just a different
-        way of saying that $\KEM$ is secure.
+        distinguishing advantage against $\KEM$ must also be small, which is
+        just a different way of saying that $\KEM$ is secure.
 
-      The first term on the right-hand side is the one-wayness advantage of our
+      The term on the right-hand side is the one-wayness advantage of our
         \emph{reduction} $\bdv$. The quantifiers tell us that for every $\adv$,
-        there exists a $\bdv$ that achieves this advantage. The main part of the
-        proof is then to construct such a $\bdv$.
-        The trick to understand this is to think contrapositively: What we
-        want to prove is that if $\dPKE$ is secure, then $\KEM$ is secure, but what we
-        are \emph{actually} proving here is that if $\KEM$ is \emph{in}secure, then $\dPKE$
-        must also be insecure. So instead of thinking of $\bdv$'s advantage as
-        an upper-bound on the best possible advantage of $\adv$, we are now thinking of this
-        best-possible advantage of $\adv$ as a \emph{lower-bound} on the
-        advantage of our constructed reduction $\bdv$: If the former is large,
-        then the latter must also be large (at least as long as the second term
-        is small by comparison). Since we started out with the assumption that
+        there exists a $\bdv$ (which may depend on $\adv$) that achieves this
+        advantage. The main challenge of the
+        proof is then to construct a $\bdv$ that exploits the winning
+        strategy of $\adv$ to win at its own game.
+
+      The trick to understand how this proves security is to think
+        contrapositively. Recall that what we
+        want to prove is that ``if $\dPKE$ is secure, then $\KEM$ is secure''.
+        The conrapositive statement that we are actually proving is ``if $\KEM$
+        is \emph{in}secure, then $\dPKE$ must \emph{also} be insecure''. 
+        %Combined with the starting assumption that $\dPKE$
+        %is secure, this will then give us a proof-by-contradiction that $\KEM$
+        %must also be secure. 
+        Hence, instead of thinking of $\bdv$'s advantage as
+        an upper-bound on the best-possible $\adv$ advantage, think of this
+        best-possible $\adv$ advantage as a \emph{lower-bound} on the
+        advantage an adversary $\bdv$ could achieve against $\dPKE$: If the former is large,
+        then the latter must also be large.
+        %(at least as long as the second term is small by comparison). 
+        %
+        Since we started out assuming that
         $\dPKE$ is secure, which is to say that the one-way advantage of \emph{any} $\bdv$
         must be small, this gives us our proof-by-contradiction.
 
-      The second term is an artifact of our
-        proof strategy. (We could have come up with a slightly smarter
-        reduction that avoids it, see Exercise~\ref{ex:remove-loss-term}.) 
-        We still have to ensure that this term is small for the bound
-        to be meaningful, in particular much smaller than $1$. 
-        The variable $\qe$ counts the number of challenges, that is, the number
-        of KEM encapsulations that the adversary sees. In realistic settings,
-        a single public key may issue a large number of encapsulations, so let's
-        be conservative and assume that $\qe \leq 2^{30} \approx 1$ billion. 
-        The denominator $2^m$ is the size of the output space of the random
-        oracle. Recall that the output of the random oracle will be used as a
-        symmetric key $K$, and these are typically bitstrings of length $128$.
-        If so, then the second term is upper-bounded by
-        \[
-          \frac{\qe}{2^m} \leq \frac{2^{30}}{2^{128}} = \frac{1}{2^{98}} \ll 1\, .
-        \]
-        So we're good!
+      %The second term is an artifact of our
+      %  proof strategy. (We could have come up with a slightly smarter
+      %  reduction that avoids it, see Exercise~\ref{ex:remove-loss-term}.) 
+      %  We still have to ensure that this term is small for the bound
+      %  to be meaningful, in particular much smaller than $1$. 
+      %  The variable $\qe$ counts the number of challenges, that is, the number
+      %  of KEM encapsulations that the adversary sees. In realistic settings,
+      %  a single public key may issue a large number of encapsulations, so let's
+      %  be conservative and assume that $\qe \leq 2^{30} \approx 1$ billion. 
+      %  The denominator $2^m$ is the size of the output space of the random
+      %  oracle. Recall that the output of the random oracle will be used as a
+      %  symmetric key $K$, and these are typically bitstrings of length $128$.
+      %  If so, then the second term is upper-bounded by
+      %  \[
+      %    \frac{\qe}{2^m} \leq \frac{2^{30}}{2^{128}} = \frac{1}{2^{98}} \ll 1\, .
+      %  \]
+      %  So we're good!
 
-      \hhnote{todo: make exercises play well with autoref}
 
     \paragraph{Our proof strategy.}
-      Intuitively, our reduction will honestly simulate the random world of the KEM
-        indistinguishability experiment, by forwarding the one-way challenges it
-        receives from its own challenge oracle, together with a random key. 
-        The way our construction is set up, the only
-        way for $\adv$ to notice that it is not in the real-world experiment is to
-        call the random oracle on one of the messages encrypted by $\ctxt$. But $\bdv$
-        is keeping watch over the random oracle queries, deterministicly encrypting
-        each of the inputs and checking if the ciphertext matches one of the
-        challenges it has been issued; if so, it aborts the simulation and outputs a
-        winning pair $(x, \ctxt)$ before $\adv$ ever has a chance to notice the
-        difference. 
-        In other words: \emph{either} $\adv$ never calls the random oracle
-        on one of the correct queries, in which case it has zero advantage, \emph{or}
-        $\bdv$ wins.
-      
-      This would give a completely tight proof. However, $\adv$ still has one avenue
-        of attack for which this argument fails:
-        What if $\adv$ manages to correctly guess a \emph{future} challenge,
-        and calls the random oracle on that value before $\bdv$ can recognize
-        it as a challenge?
-      
-      One solution would be to let our reduction check the query database for
-        collisions every time it receives a challenge, which would again make for
-        a tight reduction. We will opt for a ``dumber'' route, however, in order to
-        demonstrate techniques that will be useful later on when we move to the
-        quantum case, namely to ``hop'' to a game that simply aborts if this case ever
-        occurs, and then show that the probability this makes the game actually abort
-        must be very small. Then we can return to our main argument, which now goes
-        through without issue.
+      Our reduction will not be able simulate the real world of the
+        indistinguishability game, since it does not know which message the
+        challenge ciphertext encrypted, and so it can not hash it to produce the
+        correct symmetric key for $\adv$.
+        It can, however, easily simulate the random world, since here the
+        symmetric key is simply sampled uniformly.  
+
+      But in order to argue that $\adv$ can not distinguish this from the real
+        world, we need to change the game in such a way that the move from real to
+        random keys is completely hidden from view.
+        We do this by inserting an intermediary game between the real and the
+        random worlds, as shown in \autoref{fig:cparom-hops}.
+        This middle game formalizes the idea that, thanks to the \U-transform,
+        the adversary will have to call the random oracle on the correct message
+        in order to notice that it is not in the real-world experiment: If it
+        does, then a $\bad$ flag is set to true; other than this, the game
+        proceeds exactly as the real-world game. Thanks to
+        \autoref{lemma:bad}, we know that the difference between these games is
+        bounded by the probability that $\bad$ is set to true.
+
+      Now, \emph{conditioned} on $\bad$ never being set to true,
+        notice that we can exchange the real symmetric keys for a randomly
+        sampled one without the adversary ever being able to notice. 
+        Therefore, the second game hop from real to random keys is ``for free'',
+        since the two games are equal in terms of probabilities. 
+        Finally, conditioned on $\bad$ being false, this game is identical to
+        the random-world game.
+
+      We now have a game that $\bdv$ knows how to simulate. Further, the $\bad$
+        flag was chosen in such a way that the case that it is set to $\true$
+        corresponds exactly to the case that $\bdv$ finds the value that it is
+        looking for and wins the one-wayness game. 
+        In other words: \emph{either} $\adv$ never calls the
+        random oracle on one of the correct queries, in which case its view is
+        perfectly consistent with being in the real-world game, \emph{or} $\bdv$
+        wins. Pseudocode for $\bdv$ is given in \autoref{fig:cparom-red}.
+        
+      To summarize: In terms of probabilities, the difference between 
+        $\game 0$ and $\game 1$ is the probability that $\bad$ is ever set to
+        $\true$, the difference between $\game 1$ and $\game 2$ is zero, and
+        $\bdv$ employs a strategy such that its one-wayness advantage is exactly
+        the probability that $\bad$ would be set to $\true$. 
+
+    \begin{proof}[\autoref{thm:cparom}]
+      \begin{align*}
+        \advantage{\indcpa}{\KEM} 
+          &= \abs{
+            \condprob{\experiment{\indcpa}{\KEM}}{b = 0}
+            - \condprob{\experiment{\indcpa}{\KEM}}{b = 1}
+          } \\
+          &= \abs{
+            \prob{\game{0}(\adv)} - \prob{\game{3}(\adv)}
+          } \\
+          &= \abs{
+            \prob{\game{0}(\adv)} - \prob{\game{1}(\adv)}
+            + \prob{\game{1}(\adv)} - \prob{\game{2}(\adv)} 
+            + \prob{\game{2}(\adv)} - \prob{\game{3}(\adv)} 
+          } \\
+          &\leq \abs{\prob{\game{0}(\adv)} - \prob{\game{1}(\adv)}}
+            + \abs{\prob{\game{1}(\adv)} - \prob{\game{2}(\adv)}}
+            + \abs{\prob{\game{2}(\adv)} - \prob{\game{3}(\adv)}} \\
+          &\leq \prob{\bad} + 
+            \abs{
+              \prob{\game{0}(\adv)} - \condprob{\game{1}(\adv)}{\neg \bad}
+            } \\
+          &\quad + \abs{
+            \condprob{\game{1}(\adv)}{\neg \bad} - \condprob{\game{2}(\adv)}{\neg \bad}
+          } \\
+          &\quad + \abs{
+            \condprob{\game{2}(\adv)}{\neg \bad} - \prob{\game{3}(\adv)}
+          } \\
+          &= \prob{\bad} + 0 + 0 + 0 \\
+          &= \prob{\bad} = \prob{\experiment{\owcpa}{\dPKE}(\bdv)} =
+          \advantage{\owcpa}{\dPKE}(\bdv)\, .
+      \end{align*}
+    \end{proof}
+
+
+      %If this were all, then we would get a completely tight bound. 
+      %  There is still one avenue of attack available to $\adv$, however,
+      %  namely to guess the message underlying a \emph{future} challenge,
+      %  then call the random oracle on that value before $\bdv$ has a
+      %  chance of recognizing it as such. When that challenge later appears,
+      %  $\adv$ will notice that the key $K$ it is issued in the challenge does
+      %  not match the key that it had already computed.
+      %
+      %In Exercise~\ref{ex:remove-loss-term}, you are tasked with coming up with
+      %  a better reduction that also handles this case. 
+      %  %One solution would be to let our reduction check the query database for
+      %  %collisions every time it receives a challenge, which would again make for
+      %  %a tight reduction. 
+      %  %in order to demonstrate techniques that will be useful later on when we move to the
+      %  %quantum case, 
+      %  Here, we opt for a ``dumber'' route, in order to demonstrate one of our
+      %  main proof techniques,
+      %  namely to hop to a game that simply aborts if this ``bad event'' ever
+      %  occurs, and then argue that the probability this actually makes the game abort
+      %  must be small. Then we can return to our main strategy, which will now 
+      %  work without issue.
 
     \paragraph{One-way to hiding.}
       In order to (\ldots)
@@ -233,7 +324,7 @@
         This same formalism will however turn out to be one of the most useful
         tools we have when arguing about the quantum case.
 
-      \begin{theorem}[Classical O2H, Find]\label{thm:co2h-find}
+      \begin{lemma}[Classical O2H, Find]\label{thm:co2h-find}
         let $\RO: \bin^n \to \bin^m$ be a random
         oracle, and let $z$ be a bitstring that depends arbitrarily on $\RO$.
         Let $\solset \subseteq \bin^n$ be a subset of inputs, and let $\RO
@@ -246,61 +337,113 @@
                 - \prob{1 \sample \distinguisher^{\ro\backslash \solset}(z)}}
               = \probsample{\distinguisher^{\ro \backslash \solset}(z)}{\find}\, .
         \]
-      \end{theorem}
+      \end{lemma}
 
-    \begin{proof}[\autoref{thm:cparom}]
-      The game hops are \ldots
+    %%% Multi-challenge version
+    % \begin{figure}[t]
+    % 	\begin{center}
+    % 		\fbox{
+    % 			\small
+    % 			\nicoresetlinenr
+    % 			\begin{minipage}[t]{5cm}	
+    %         \underline{\gameHeading $\game 0(\adv)$ -- $\game 2(\adv)$}
+    %         \smallskip
+    % 				\begin{nicodemus}
+    %           \item $(\pk, \sk) \sample \KG()$
+    %           \smallskip
+    %           \item $\chalbit \sample \bin$
+    %           \smallskip
+    %         \item $\advbit \sample \adv^{\Oenc, \RO}(\pk)$ \pccomment{$\game 0$ -- $\game 1$}
+    %           \smallskip
+    % 				  \item $\advbit \sample \adv^{\Oenc, \puncRO}(\pk)$ \pccomment{$\game 2$ -- $\game 3$}
+    %           \smallskip
+    %           \item $\pcreturn \bool{\advbit = \chalbit}$
+    % 				\end{nicodemus}
+    % 			\end{minipage}
+    % 
+    % 			\pchspace
+    % 			
+    % 			\begin{minipage}[t]{5.5cm}
+    % 				\underline{if $\adv$ calls $\Oenc$}
+    %         \smallskip
+    % 				\begin{nicodemus}
+    %           \item $x \sample \Xspace$
+    %           \smallskip
+    %           \item \pcif $\Db[x] \neq \bot : \red{\pcabort}$ \pccomment{$\game 1$ -- $\game 3$}
+    %           \smallskip
+    %           \item $\solset \setapp x$ \pccomment{$\game 2$ -- $\game 3$}
+    %           \smallskip
+    %           \item $\ctxt \gets \Enc_\pk(x)$
+    %           \smallskip
+    %           \item $\eK \gets \RO(x)$ \pccomment{$\game 0$ -- $\game 2$}
+    %           \smallskip
+    %           \item $\eK \sample \KSpace$ \pccomment{$\game 3$}
+    %           \smallskip
+    %           \item $\pcreturn (\eK, \ctxt)$
+    % 				\end{nicodemus}	
+    % 			\end{minipage}
+    % 
+    % 			\pchspace
+    % 
+    % 			\begin{minipage}[t]{4cm}
+    % 				\underline{if $\adv$ calls $\RO(x)$}
+    %         \smallskip
+    % 				\begin{nicodemus}
+    %           \item $\pcif \Db[x] = \bot :$ 
+    %           \smallskip
+    %           \item   \quad $\Db[x] \sample \bin^m$
+    %           \smallskip
+    %           \item $\pcreturn \Db[x]$
+    % 				\end{nicodemus}	
+    %         \ \\
+    % 				\underline{if $\adv$ calls $\puncRO(x)$}
+    %         \smallskip
+    % 				\begin{nicodemus}
+    %           \item $\pcif x \in \solset : \pcreturn \bot$ 
+    %           \smallskip
+    %           \item $\pcif \Db[x] = \bot :$ 
+    %           \smallskip
+    %           \item   \quad $\Db[x] \sample \bin^m$
+    %           \smallskip
+    %           \item $\pcreturn \Db[x]$
+    % 				\end{nicodemus}	
+    % 			\end{minipage}
+    % 		}
+    % 	\end{center}
+    % 	\caption{\label{fig:cparom-red}
+    %     The game hops for \autoref{thm:cparom}.
+    %   }
+    % \end{figure}
     
-      Pseudocode for our reduction is given in \autoref{fig:cparom-red}.
-    \end{proof}
-
+    %%% Game hops, single-challenge version
     \begin{figure}[t]
     	\begin{center}
+        % Game 0
     		\fbox{
     			\small
     			\nicoresetlinenr
-    			\begin{minipage}[t]{5cm}	
-            \underline{\gameHeading $\game 0(\adv)$ -- $\game 2(\adv)$}
+    			\begin{minipage}[t]{4cm}	
+            \underline{\gameHeading $\game 0(\adv)$}
             \smallskip
     				\begin{nicodemus}
               \item $(\pk, \sk) \sample \KG()$
               \smallskip
-              \item $\chalbit \sample \bin$
+              \item $x^* \sample \bin^n$
               \smallskip
-            \item $\advbit \sample \adv^{\Oenc, \RO}(\pk)$ \pccomment{$\game 0$ -- $\game 1$}
+              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
               \smallskip
-    				  \item $\advbit \sample \adv^{\Oenc, \puncRO}(\pk)$ \pccomment{$\game 2$ -- $\game 3$}
+              \item $\eK^* \gets \RO(x^*)$ 
               \smallskip
-              \item $\pcreturn \bool{\advbit = \chalbit}$
+              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+              \smallskip
+              \item $\pcreturn \advbit$
     				\end{nicodemus}
     			\end{minipage}
     
     			\pchspace
     			
-    			\begin{minipage}[t]{5.5cm}
-    				\underline{if $\adv$ calls $\Oenc$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $x \sample \Xspace$
-              \smallskip
-              \item \pcif $\Db[x] \neq \bot : \red{\pcabort}$ \pccomment{$\game 1$ -- $\game 3$}
-              \smallskip
-              \item $\solset \setapp x$ \pccomment{$\game 2$ -- $\game 3$}
-              \smallskip
-              \item $\ctxt \gets \Enc_\pk(x)$
-              \smallskip
-              \item $\eK \gets \RO(x)$ \pccomment{$\game 0$ -- $\game 2$}
-              \smallskip
-              \item $\eK \sample \KSpace$ \pccomment{$\game 3$}
-              \smallskip
-              \item $\pcreturn (\eK, \ctxt)$
-    				\end{nicodemus}	
-    			\end{minipage}
-    
-    			\pchspace
-    
-    			\begin{minipage}[t]{4cm}
-    				\underline{if $\adv$ calls $\RO(x)$}
+    			\begin{minipage}[t]{3.8cm}
+    				\underline{\oracleHeading $\RO(x)$}
             \smallskip
     				\begin{nicodemus}
               \item $\pcif \Db[x] = \bot :$ 
@@ -309,11 +452,79 @@
               \smallskip
               \item $\pcreturn \Db[x]$
     				\end{nicodemus}	
-            \ \\
-    				\underline{if $\adv$ calls $\puncRO(x)$}
+    			\end{minipage}
+    		}
+        %% GAME 1
+    		\fbox{
+    			\small
+    			\nicoresetlinenr
+    			\begin{minipage}[t]{4cm}	
+            \underline{\gameHeading $\game 1(\adv)$}
             \smallskip
     				\begin{nicodemus}
-              \item $\pcif x \in \solset : \pcreturn \bot$ 
+              \item $(\pk, \sk) \sample \KG()$
+              \smallskip
+              \item $x^* \sample \bin^n$
+              \smallskip
+              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+              \smallskip
+              \item $\eK^* \gets \RO(x^*)$ 
+              \smallskip
+              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+              \smallskip
+              \item $\pcreturn \advbit$
+    				\end{nicodemus}
+    			\end{minipage}
+    
+    			\pchspace
+    			
+    			\begin{minipage}[t]{3.8cm}
+    				\underline{\oracleHeading $\RO(x)$}
+            \smallskip
+    				\begin{nicodemus}
+              \item \fbox{$\ctxt \gets \Enc_\pk(x)$}
+              %\smallskip
+              \item \fbox{$\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$} 
+              \smallskip
+              \item $\pcif \Db[x] = \bot :$ 
+              \smallskip
+              \item   \quad $\Db[x] \sample \bin^m$
+              \smallskip
+              \item $\pcreturn \Db[x]$
+    				\end{nicodemus}	
+    			\end{minipage}
+    		}
+        % GAME 2
+    		\fbox{
+    			\small
+    			\nicoresetlinenr
+    			\begin{minipage}[t]{4cm}	
+            \underline{\gameHeading $\game 2(\adv)$}
+            \smallskip
+    				\begin{nicodemus}
+              \item $(\pk, \sk) \sample \KG()$
+              \smallskip
+              \item $x^* \sample \bin^n$
+              \smallskip
+              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+              \smallskip
+              \item \fbox{$\eK^* \sample \Kspace$}
+              \smallskip
+              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+              \smallskip
+              \item $\pcreturn \advbit$
+    				\end{nicodemus}
+    			\end{minipage}
+    
+    			\pchspace
+    			
+    			\begin{minipage}[t]{3.8cm}
+    				\underline{\oracleHeading $\RO(x)$}
+            \smallskip
+    				\begin{nicodemus}
+              \item $\ctxt \gets \Enc_\pk(x)$
+              \smallskip
+              \item $\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$
               \smallskip
               \item $\pcif \Db[x] = \bot :$ 
               \smallskip
@@ -324,11 +535,13 @@
     			\end{minipage}
     		}
     	\end{center}
-    	\caption{\label{fig:cparom-red}
-        The game hops for \autoref{thm:cparom}.
+    	\caption{\label{fig:cparom-hops}
+        The game hops in the proof of \autoref{thm:cparom}.
+        Boxes highlight the changes made between each game.
       }
     \end{figure}
-    
+
+    %%% Reduction
     \begin{figure}[bt]
     	\begin{center}
     		\fbox{
@@ -338,35 +551,28 @@
             \underline{\redHeading $\bdv(\pk)$}
             \smallskip
     				\begin{nicodemus}
-    					\item $\advbit \sample \adv^{\Oenc, \RO}(\pk)$
+    					\item $\advbit \sample \adv^{\RO}(\pk)$
+              \smallskip
     					\item $\pcreturn \bot$
     				\end{nicodemus}
     			\end{minipage}
     
     			\pchspace
     			
-    			\begin{minipage}[t]{3cm}
-    				\underline{if $\adv$ calls $\Oenc$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $\ctxt \gets \Oenc_{\bdv}$
-              \item $\eK_1 \sample \KSpace$ 
-              \item $\Cspace \setapp \ctxt$
-              \item $\pcreturn (\eK_1, \ctxt)$
-    				\end{nicodemus}	
-    			\end{minipage}
-    
-    			\pchspace
-    
-    			\begin{minipage}[t]{3cm}
+    			\begin{minipage}[t]{4.5cm}
     				\underline{if $\adv$ calls $\RO(x)$}
             \smallskip
     				\begin{nicodemus}
               \item $c \gets \Enc_\pk(x)$ 
+              \smallskip
               \item $\pcif c \in \CSpace :$
-              \item   \quad $\green{\pcoutput (c, x)}$
+              \smallskip
+              \item   \quad \green{\pcabort and \pcoutput $(c, x)$}
+              \smallskip
               \item $\pcif \Db[x] = \bot :$ 
+              \smallskip
               \item   \quad $\Db[x] \sample \bin^m$
+              \smallskip
               \item $\pcreturn \Db[x]$
     				\end{nicodemus}	
     			\end{minipage}
@@ -377,10 +583,12 @@
       }
     \end{figure}
 
+
     \hhnote{
       forward reference to QROM proof, CCA proof
     }
 
+    \hhnote{todo: make exercises play well with autoref}
     \begin{exercise}\label{ex:remove-loss-term}
       Write an alternative reduction that gives the same bound as in
       \autoref{thm:cparom}, except without the extra term $\nicefrac{\qe}{2^m}$
@@ -394,6 +602,23 @@
     \begin{lemma}[O2H, Guess]
       xyz
     \end{lemma}
+
+    \begin{theorem}[$\PKE$ is OW $\implies$ $\KEM$ is IND]\label{thm:cparom-lossy}
+      Let $\PKE$ be a PKE, let $\RO$ be a random oracle, 
+      and let $\KEM = \U[\PKE, \RO]$.
+      Then for every adversary $\adv$ against $\KEM$ that makes at most $\qh$
+      calls to the random oracle, 
+      %that makes at most $\qe$ calls to the challenge oracle, 
+      there is a reduction $\bdv$ against $\dPKE$ such that
+      \[
+        \advantage{\indcpa}{\KEM} \leq \qh \cdot \advantage{\owcpa}{\dPKE}[(\bdv)]\, .
+        %+ \frac{\qe}{2^m}\, .
+      \]
+    \end{theorem}
+
+    \begin{exercise}\label{ex:cparom-lossy}
+      Prove \autoref{thm:cparom}.
+    \end{exercise}
   
   \subsection{What Goes Wrong}
     \todoenum[rough structure]{

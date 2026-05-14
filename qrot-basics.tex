@@ -115,6 +115,75 @@
     %  but it may change its state $\samplestate$ as part of its processing
     %  (code-snippet taken from \autoref{fig:IND-SOA}).
 
+  \subsection{Expressing Security as Games}
+    \newcommand{\primitive}{\pcalgostyle{P}}
+    \subsubsection{Experiments and Advantages.}
+      Security is defined in terms of a security game, or \emph{experiment},
+        $\experiment{}{}[]$, such that if a player (or \emph{adversary}) $\adv$
+        wins the game when it is instanstiated with some primitive $\pcalgostyle{P}$
+        (in which case $\experiment{}{\primitive}$ outputs $1$), then we say that
+        $\adv$ broke the security of $\primitive$.
+        If there exists an efficient adversary (i.e., an attack algorithm) that wins the game with 
+        significant \emph{advantage}, then we say that $\primitive$ is broken.
+
+      How advantages are defined depends on what kind of security notion we are talking
+        about. Most security notions we care about fall into one of two
+        categories: \emph{computational}, in which case the adversary is tasked with
+        recovering some secret value, and \emph{distinguishing}, in which case
+        the adversary should distinguish between two known cases. In the case of
+        computational notions, the advantage is simply the probability that the adversary wins.
+
+      \newcommand{\compnotion}{\pcnotionstyle{COMP}}
+      \begin{definition}[Computational Advantage]\label{def:comp-adv}
+        The computational advantage of an adversary $\adv$ against a primitive
+          $\primitive$ under a computational security notion
+          $\compnotion$, is its probability of winning
+          the security experiment $\experiment{\compnotion}{\primitive}$:
+          \[
+            \advantage{\compnotion}{\primitive} \coloneqq
+            \prob{\experiment{\compnotion}{\primitive}}\, .
+          \]
+      \end{definition}
+
+      For distinguishing notions, the adversary can win with probability
+        $\half$ by simply making a uniform guess, and so we scale the
+        advantage to instead be how much \emph{better} the adversary can do than
+        a simple guess. There are several, equivalent ways to do this, and it will 
+        sometimes be useful to switch between them.
+
+      \newcommand{\distnotion}{\pcnotionstyle{DIST}}
+      \begin{definition}[Distinguishing Advantage]
+        The distinguishing advantage of an adversary $\adv$ against a primitive
+        $\primitive$ under a distinguishing security notion
+        $\pcnotionstyle{DIST}$, is defined as:
+        \begin{align*}
+          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
+            2 \cdot \prob{\experiment{\distnotion}{\primitive}} - 1
+          }\, ,
+          \intertext{or, equivalently,}
+          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
+            \prob{\experiment{\distnotion}{\primitive}}
+            - \prob{\neg\experiment{\distnotion}{\primitive}}
+          }\, ,
+          \intertext{or, equivalently,}
+          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
+            \condprobsample{
+              \experiment{\distnotion}{\primitive}
+            }{0 \sample \adv}{\chalbit = 0}
+            - \condprobsample{
+              \experiment{\distnotion}{\primitive}
+            }{0 \sample \adv}{\chalbit = 1}
+          }\, .
+        \end{align*}
+      \end{definition}
+
+      \noindent
+      Note how each formula scales the advantage so that it is contained on the
+        interval $[0, 1]$, matching the computational case.
+
+      \subsubsection{Goals and Powers.}
+        \hhnote{todo}
+
   \subsection{Cryptographic Primitives}
     We next introduce the main cryptographic schemes we will be concerned with:
       public-key encryption, key-encapsulation mechanisms, digital signatures,
@@ -265,75 +334,6 @@
         as hash functions are precisely the objects that we will model as
         random oracles in \autoref{sec:rom}.
         %will  but let us first discuss how we define security in general.
-
-  \subsection{Security Notions}
-    \newcommand{\primitive}{\pcalgostyle{P}}
-    \subsubsection{Experiments and Advantages.}
-      Security is defined in terms of a security game, or \emph{experiment},
-        $\experiment{}{}[]$, such that if a player (or \emph{adversary}) $\adv$
-        wins the game when it is instanstiated with some primitive $\pcalgostyle{P}$
-        (in which case $\experiment{}{\primitive}$ outputs $1$), then we say that
-        $\adv$ broke the security of $\primitive$.
-        If there exists an efficient adversary (i.e., an attack algorithm) that wins the game with 
-        significant \emph{advantage}, then we say that $\primitive$ is broken.
-
-      How advantages are defined depends on what kind of security notion we are talking
-        about. Most security notions we care about fall into one of two
-        categories: \emph{computational}, in which case the adversary is tasked with
-        recovering some secret value, and \emph{distinguishing}, in which case
-        the adversary should distinguish between two known cases. In the case of
-        computational notions, the advantage is simply the probability that the adversary wins.
-
-      \newcommand{\compnotion}{\pcnotionstyle{COMP}}
-      \begin{definition}[Computational Advantage]\label{def:comp-adv}
-        The computational advantage of an adversary $\adv$ against a primitive
-          $\primitive$ under a computational security notion
-          $\compnotion$, is its probability of winning
-          the security experiment $\experiment{\compnotion}{\primitive}$:
-          \[
-            \advantage{\compnotion}{\primitive} \coloneqq
-            \prob{\experiment{\compnotion}{\primitive}}\, .
-          \]
-      \end{definition}
-
-      For distinguishing notions, the adversary can win with probability
-        $\half$ by simply making a uniform guess, and so we scale the
-        advantage to instead be how much \emph{better} the adversary can do than
-        a simple guess. There are several, equivalent ways to do this, and it will 
-        sometimes be useful to switch between them.
-
-      \newcommand{\distnotion}{\pcnotionstyle{DIST}}
-      \begin{definition}[Distinguishing Advantage]
-        The distinguishing advantage of an adversary $\adv$ against a primitive
-        $\primitive$ under a distinguishing security notion
-        $\pcnotionstyle{DIST}$, is defined as:
-        \begin{align*}
-          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
-            2 \cdot \prob{\experiment{\distnotion}{\primitive}} - 1
-          }\, ,
-          \intertext{or, equivalently,}
-          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
-            \prob{\experiment{\distnotion}{\primitive}}
-            - \prob{\neg\experiment{\distnotion}{\primitive}}
-          }\, ,
-          \intertext{or, equivalently,}
-          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
-            \condprobsample{
-              \experiment{\distnotion}{\primitive}
-            }{0 \sample \adv}{\chalbit = 0}
-            - \condprobsample{
-              \experiment{\distnotion}{\primitive}
-            }{0 \sample \adv}{\chalbit = 1}
-          }\, .
-        \end{align*}
-      \end{definition}
-
-      \noindent
-      Note how each formula scales the advantage so that it is contained on the
-        interval $[0, 1]$, matching the computational case.
-
-      \subsubsection{Goals and Powers.}
-        \hhnote{todo}
 
     \subsubsection{PKE Security.}
       There are many ways that one could define security for
@@ -743,5 +743,12 @@
 
     \subsubsection{Bad Events.}
       \hhnote{
-        Add identical-until-bad lemma?
+        Add identical-until-bad lemma
       }
+      \hhnote{
+        Nice way to phrase the puncturing oracle later as just quantumly
+        checking for bad events
+      }
+      \begin{lemma}[Equal-until-bad]\label{lemma:bad}
+        todo
+      \end{lemma}
