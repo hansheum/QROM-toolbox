@@ -132,7 +132,7 @@
       recognize the correct message, and this is how we are able to make the
       reduction tight.
 
-    \begin{theorem}[OW $\to$ IND]\label{thm:cparom}
+    \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]\label{thm:cparom}
       Let $\dPKE$ be a deterministic PKE, let $\RO$ be a random oracle, 
       and let $\KEM = \U[\PKE, \RO]$.
       Then for every adversary $\adv$ that makes at most $\qh$ calls to the
@@ -145,19 +145,39 @@
 
     \noindent
     \paragraph{Parsing the statement.}
-      If you are now to provable security, it may be hard to see at a glance
-        how the above theorem statement connects to the intuition that ``if
+      If you are new to security reductions, it may be hard to see at a glance
+        how the theorem statement connects to the intuition that ``if
         $\dPKE$ achieves one-wayness security, then $\KEM$ achieves distinguishing
         security'', so let us take a moment to parse the different parts of the
         statement.
 
-      The first clue is that you have to think contrapositively: What we
-        want to prove is
-        that if $\dPKE$ is secure, then $\KEM$ is secure, but what we
-        \emph{actually} prove is that if $\KEM$ is \emph{in}secure, then $\dPKE$
-        must also be insecure. Given that we started out assuming that $\dPKE$ is
-        secure, this then leads to a contradiction, so that the positive statement
-        is proven.
+      On the left hand side, we have the advantage of our adversary $\adv$.
+        The theorem quantifies over all possible attackers $\adv$, so you may
+        think of this as the maximum possible distinguishing advantage against
+        $\KEM$. We then have an upper-bound on this largest-possible advantage,
+        so if the right-hand side is small, then the largest-possible
+        distinguishing advantage must also be small, which is just a different
+        way of saying that $\KEM$ is secure.
+
+      The first term on the right-hand side is the one-wayness advantage of our
+        \emph{reduction} $\bdv$. The quantifiers tell us that for every $\adv$,
+        there exists a $\bdv$ that achieves this advantage. The main part of the
+        proof is then to construct such a $\bdv$.
+        The trick to understand this is to think contrapositively: What we
+        want to prove is that if $\dPKE$ is secure, then $\KEM$ is secure, but what we
+        are \emph{actually} proving here is that if $\KEM$ is \emph{in}secure, then $\dPKE$
+        must also be insecure. So instead of thinking of $\bdv$'s advantage as
+        an upper-bound on the best possible advantage of $\adv$, we are now thinking of this
+        best-possible advantage of $\adv$ as a \emph{lower-bound} on the
+        advantage of our constructed reduction $\bdv$: If the former is large,
+        then the latter must also be large (at least as long as the second term
+        is small by comparison). Since we started out with the assumption that
+        $\dPKE$ is secure, which is to say that the one-way advantage of \emph{any} $\bdv$
+        must be small, this gives us our proof-by-contradiction.
+
+      The second term is a purely statistical loss, and is an artifact of our
+        proof strategy. We still have to ensure that this term is small for the bound
+        to be meaningful.
 
     \paragraph{A proof strategy.}
       Intuitively, our reduction will honestly simulate the random world of the KEM

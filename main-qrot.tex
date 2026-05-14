@@ -222,10 +222,10 @@
   %\part{The Tools of the Toolbox}\label{part:tools}
     \input{qrot-o2h}
     \clearpage
-    \input{qrot-pseudocode}
-    \clearpage
-    \input{qrot-compressed}
     \iffutureversion
+      \input{qrot-pseudocode}
+      \clearpage
+      \input{qrot-compressed}
       \clearpage
       \input{qrot-extract} % with CPA -> CCA example 
       \clearpage
@@ -255,8 +255,10 @@
   \clearpage
 
   % Appendices input below
-  \input{qrot-pseudocode-defs}
-  \clearpage
+  \iffutureversion
+    \input{qrot-pseudocode-defs}
+    \clearpage
+  \fi
   \input{qrot-ttransform}
   \clearpage
   \input{qrot-solutions}
