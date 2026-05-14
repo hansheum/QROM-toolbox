@@ -38,7 +38,7 @@
     tends to trump security in the real world).
 
   As we inch ever closer to a point in time where cryptographically relevant
-  	quantum computers might become more than a the looming threat,
+  	quantum computers might become more than a looming threat,
     we view it important to lower the barrier for security proofs in the QROM
     as much as possible, to help the community enable the post-quantum transition
     in a manner that is safe, efficient, and (provably) secure.
@@ -47,32 +47,49 @@
     and how to adapt classical proof strategies to quantum attackers.
 
   \paragraph{ROM Techniques Don't Transfer \ldots}
-    One of the most useful facts about security reductions in the random oracle model
-      is that anyone can efficiently \emph{simulate} a random oracle, simply by
-      drawing the random outputs one-at-a-time and storing them in an
-      appropriate list. This technique, known as \emph{lazy sampling}, allows
-      the reduction to not only implement the oracle efficiently, but also to
-      see what input values the adversary is interested in, \emph{and}
-      adaptively reprogram the oracle on inputs of its choice.
+    As we will see through the proceedings of the tutorial,
+      one of the most useful facts about the random oracle model
+      is that anyone (including a security reduction)
+      can efficiently \emph{simulate} a random oracle,
+      simply by drawing its outputs upon request, one-at-a-time,
+      and then storing them in an appropriate list for book-keeping.
+      This technique, known as \emph{lazy sampling}, allows
+      the reduction to implement the oracle efficiently.
+      It also allows the reduction to see what input values the adversary is interested in.
+      This property sometimes is called \emph{preimage awareness}.
+      As we will see, preimage awareness will be very useful in security reductions
+      because it gives the reduction valuable insights into the attacker's strategies.
+      What's more, the random oracle allows the reduction to 
+      \emph{adaptively reprogram} it on inputs of the reduction's choice.
+      As we will see, adaptive reprogramming will also be very useful in security reductions
+      because it gives the reduction the power to trick the attacker into behaviour
+      that helps with relating security to the underlying hardness assumption.
       Indeed, much of the strength of the random oracle model lies in exactly
       these capabilities.
 
     None of this transfers directly to the case of quantum-accessible oracles.
-      To see why, consider an adversary that queries the oracle on a
-      superposition of all possible inputs at once: the simulator would have to
-      store an exponentially large list of input values in order process just
-      this single query!
+      As just one example, think of lazy sampling and consider an adversary
+      that queries the oracle on a superposition of all possible inputs all at once:
+      to sample, respond on-the-fly and book-keep,
+      the simulator would afterwards have to store an exponentially large list of input values!
 
   \paragraph{\ldots But the Concepts Do.}
-    And yet, the past decade has seen the development of techniques that
-      recover most of these capabilities, albeit at a loss. Prime among these
-      techniques are the various One-Way to Hiding (O2H) lemmas, which allow
-      for careful reprogramming of the quantum random oracle (as well as
-      limited extraction of the input values); Quantum Online-Extractability
-      (QOE), which as the name suggests allows for on-the-fly extraction of oracle inputs;
-      and the Compressed Random Oracle (CRO) technique, which allows one to
-      efficiently simulate a quantum random oracle, in direct
-      analogy to classical ``lazy sampling''.
+    And yet, during the past decade the community has developed a plethora of techniques
+      that recover most of these capabilities even in the presence of quantum attackers
+      (albeit at a loss).
+      Prime among these techniques are
+      \begin{itemize}
+      	\item the various \emph{One-Way to Hiding} (O2H) lemmas,
+      		which allow for careful reprogramming of random oracle outputs as well as a
+      		somewhat limited awareness of query inputs; 
+      	
+      	\item the Compressed Random Oracle (CRO) technique,
+      		which allows one to efficiently simulate a quantum random oracle,
+      		in direct analogy to classical ``lazy sampling'', and 	
+      	\item Quantum Online-Extractability (QOE),
+      		which -- as the name suggests -- allows for on-the-fly extraction of oracle inputs.
+      	\item 
+      \end{itemize}
 
   \subsubsection{Outline.}
     %We start %in \autoref{part:prelims} 
