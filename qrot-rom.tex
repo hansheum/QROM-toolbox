@@ -135,11 +135,11 @@
     \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]\label{thm:cparom}
       Let $\dPKE$ be a deterministic PKE, let $\RO$ be a random oracle, 
       and let $\KEM = \U[\PKE, \RO]$.
-      Then for every adversary $\adv$ that makes at most $\qh$ calls to the
-      random oracle, there is a reduction $\bdv$ such that
+      Then for every adversary $\adv$ that makes at most $\qe$ calls to the
+      challenge oracle, there is a reduction $\bdv$ such that
       \[
         \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv)] +
-        \frac{\qh}{2^m}\, .
+        \frac{\qe}{2^m}\, .
       \]
     \end{theorem}
 
@@ -175,11 +175,27 @@
         $\dPKE$ is secure, which is to say that the one-way advantage of \emph{any} $\bdv$
         must be small, this gives us our proof-by-contradiction.
 
-      The second term is a purely statistical loss, and is an artifact of our
-        proof strategy. We still have to ensure that this term is small for the bound
-        to be meaningful.
+      The second term is an artifact of our
+        proof strategy. (We could have come up with a slightly smarter
+        reduction that avoids it, see Exercise~\ref{ex:remove-loss-term}.) 
+        We still have to ensure that this term is small for the bound
+        to be meaningful, in particular much smaller than $1$. 
+        The variable $\qe$ counts the number of challenges, that is, the number
+        of KEM encapsulations that the adversary sees. In realistic settings,
+        a single public key may issue a large number of encapsulations, so let's
+        be conservative and assume that $\qe \leq 2^{30} \approx 1$ billion. 
+        The denominator $2^m$ is the size of the output space of the random
+        oracle. Recall that the output of the random oracle will be used as a
+        symmetric key $K$, and these are typically bitstrings of length $128$.
+        If so, then the second term is upper-bounded by
+        \[
+          \frac{\qe}{2^m} \leq \frac{2^{30}}{2^{128}} = \frac{1}{2^{98}} \ll 1\, .
+        \]
+        So we're good!
 
-    \paragraph{A proof strategy.}
+      \hhnote{todo: make exercises play well with autoref}
+
+    \paragraph{Our proof strategy.}
       Intuitively, our reduction will honestly simulate the random world of the KEM
         indistinguishability experiment, by forwarding the one-way challenges it
         receives from its own challenge oracle, together with a random key. 
@@ -313,7 +329,7 @@
       }
     \end{figure}
     
-    \begin{figure}[t]
+    \begin{figure}[bt]
     	\begin{center}
     		\fbox{
     			\small
@@ -364,6 +380,12 @@
     \hhnote{
       forward reference to QROM proof, CCA proof
     }
+
+    \begin{exercise}\label{ex:remove-loss-term}
+      Write an alternative reduction that gives the same bound as in
+      \autoref{thm:cparom}, except without the extra term $\nicefrac{\qe}{2^m}$
+      in the upper bound.
+    \end{exercise}
 
   \subsection{When You Have to Guess}
     What would happen if you started from a probabilistic PKE?
