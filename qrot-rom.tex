@@ -242,8 +242,6 @@
         sampled one without the adversary ever being able to notice. 
         Therefore, the second game hop from real to random keys is ``for free'',
         since the two games are equal in terms of probabilities. 
-        Finally, conditioned on $\bad$ being false, this game is identical to
-        the random-world game.
 
       We now have a game that $\bdv$ knows how to simulate. Further, the $\bad$
         flag was chosen in such a way that the case that it is set to $\true$
@@ -253,12 +251,21 @@
         random oracle on one of the correct queries, in which case its view is
         perfectly consistent with being in the real-world game, \emph{or} $\bdv$
         wins. Pseudocode for $\bdv$ is given in \autoref{fig:cparom-red}.
+
+      Finally, we remove the check for a $\bad$ event again, which gives us a
+        game that is exactly equivalent to the random-world $\indcpa$ game. 
+        Since we are already conditioning on $\bad$ being false, this change is
+        also for free.
         
       To summarize: In terms of probabilities, the difference between 
         $\game 0$ and $\game 1$ is the probability that $\bad$ is ever set to
-        $\true$, the difference between $\game 1$ and $\game 2$ is zero, and
-        $\bdv$ employs a strategy such that its one-wayness advantage is exactly
+        $\true$, the difference between $\game 1$ and $\game 2$ is zero.
+        $\bdv$ simulates $\game 2$, employing a strategy such that its
+        one-wayness advantage is exactly
         the probability that $\bad$ would be set to $\true$. 
+        Finally, the difference between $\game 2$ and $\game 3$ is zero
+        conditioned on $\neg \bad$, the latter
+        being equal to the random-world game.
 
     \begin{proof}[\autoref{thm:cparom}]
       \begin{align*}
@@ -338,82 +345,6 @@
               = \probsample{\distinguisher^{\ro \backslash \solset}(z)}{\find}\, .
         \]
       \end{lemma}
-
-    %%% Multi-challenge version
-    % \begin{figure}[t]
-    % 	\begin{center}
-    % 		\fbox{
-    % 			\small
-    % 			\nicoresetlinenr
-    % 			\begin{minipage}[t]{5cm}	
-    %         \underline{\gameHeading $\game 0(\adv)$ -- $\game 2(\adv)$}
-    %         \smallskip
-    % 				\begin{nicodemus}
-    %           \item $(\pk, \sk) \sample \KG()$
-    %           \smallskip
-    %           \item $\chalbit \sample \bin$
-    %           \smallskip
-    %         \item $\advbit \sample \adv^{\Oenc, \RO}(\pk)$ \pccomment{$\game 0$ -- $\game 1$}
-    %           \smallskip
-    % 				  \item $\advbit \sample \adv^{\Oenc, \puncRO}(\pk)$ \pccomment{$\game 2$ -- $\game 3$}
-    %           \smallskip
-    %           \item $\pcreturn \bool{\advbit = \chalbit}$
-    % 				\end{nicodemus}
-    % 			\end{minipage}
-    % 
-    % 			\pchspace
-    % 			
-    % 			\begin{minipage}[t]{5.5cm}
-    % 				\underline{if $\adv$ calls $\Oenc$}
-    %         \smallskip
-    % 				\begin{nicodemus}
-    %           \item $x \sample \Xspace$
-    %           \smallskip
-    %           \item \pcif $\Db[x] \neq \bot : \red{\pcabort}$ \pccomment{$\game 1$ -- $\game 3$}
-    %           \smallskip
-    %           \item $\solset \setapp x$ \pccomment{$\game 2$ -- $\game 3$}
-    %           \smallskip
-    %           \item $\ctxt \gets \Enc_\pk(x)$
-    %           \smallskip
-    %           \item $\eK \gets \RO(x)$ \pccomment{$\game 0$ -- $\game 2$}
-    %           \smallskip
-    %           \item $\eK \sample \KSpace$ \pccomment{$\game 3$}
-    %           \smallskip
-    %           \item $\pcreturn (\eK, \ctxt)$
-    % 				\end{nicodemus}	
-    % 			\end{minipage}
-    % 
-    % 			\pchspace
-    % 
-    % 			\begin{minipage}[t]{4cm}
-    % 				\underline{if $\adv$ calls $\RO(x)$}
-    %         \smallskip
-    % 				\begin{nicodemus}
-    %           \item $\pcif \Db[x] = \bot :$ 
-    %           \smallskip
-    %           \item   \quad $\Db[x] \sample \bin^m$
-    %           \smallskip
-    %           \item $\pcreturn \Db[x]$
-    % 				\end{nicodemus}	
-    %         \ \\
-    % 				\underline{if $\adv$ calls $\puncRO(x)$}
-    %         \smallskip
-    % 				\begin{nicodemus}
-    %           \item $\pcif x \in \solset : \pcreturn \bot$ 
-    %           \smallskip
-    %           \item $\pcif \Db[x] = \bot :$ 
-    %           \smallskip
-    %           \item   \quad $\Db[x] \sample \bin^m$
-    %           \smallskip
-    %           \item $\pcreturn \Db[x]$
-    % 				\end{nicodemus}	
-    % 			\end{minipage}
-    % 		}
-    % 	\end{center}
-    % 	\caption{\label{fig:cparom-red}
-    %     The game hops for \autoref{thm:cparom}.
-    %   }
-    % \end{figure}
     
     %%% Game hops, single-challenge version
     \begin{figure}[t]
@@ -534,10 +465,46 @@
     				\end{nicodemus}	
     			\end{minipage}
     		}
+        % GAME 3
+    		\fbox{
+    			\small
+    			\nicoresetlinenr
+    			\begin{minipage}[t]{4cm}	
+            \underline{\gameHeading $\game 3(\adv)$}
+            \smallskip
+    				\begin{nicodemus}
+              \item $(\pk, \sk) \sample \KG()$
+              \smallskip
+              \item $x^* \sample \bin^n$
+              \smallskip
+              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+              \smallskip
+              \item $\eK^* \sample \Kspace$
+              \smallskip
+              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+              \smallskip
+              \item $\pcreturn \advbit$
+    				\end{nicodemus}
+    			\end{minipage}
+    
+    			\pchspace
+    			
+    			\begin{minipage}[t]{3.8cm}
+    				\underline{\oracleHeading $\RO(x)$}
+            \smallskip
+    				\begin{nicodemus}
+              \item $\pcif \Db[x] = \bot :$ 
+              \smallskip
+              \item   \quad $\Db[x] \sample \bin^m$
+              \smallskip
+              \item $\pcreturn \Db[x]$
+    				\end{nicodemus}	
+    			\end{minipage}
+    		}
     	\end{center}
     	\caption{\label{fig:cparom-hops}
         The game hops in the proof of \autoref{thm:cparom}.
-        Boxes highlight the changes made between each game.
+        Boxes highlight the lines of code that were added between each game.
       }
     \end{figure}
 
