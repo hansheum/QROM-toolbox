@@ -72,6 +72,10 @@
       that queries the oracle on a superposition of all possible inputs all at once:
       to sample, respond on-the-fly and book-keep,
       the simulator would afterwards have to store an exponentially large list of input values!
+      Besides the challenges surrounding storage, there's more --
+      if the simulator already committed to all oracle output values
+      just to be able to respond to the first query,
+      then how would there be any room left for programming certain oracle outputs according to the reduction's needs?
 
   \paragraph{\ldots But the Concepts Do.}
     And yet, during the past decade the community has developed a plethora of techniques
@@ -92,9 +96,10 @@
 
   \subsubsection{Outline.}
     %We start %in \autoref{part:prelims} 
-      We begin in Part 1 by laying the foundations, with
-      definitions for basic crypto concepts in \autoref{sec:basics}, and a
-      primer on quantum computing concepts in \autoref{sec:primer}.
+      We begin by laying some of the foundations,
+      with definitions for basic cryptographic concepts in \autoref{sec:basics},
+      a brief recap of the ROM in \autoref{sec:rom} \khnote{Label defined multiple times $\rightarrow$ wrong number},
+      and a primer on quantum computing concepts in \autoref{sec:primer}.
       In \autoref{sec:pseudocode}, we introduce a novel pseudocode notation,
       which will be helpful in reasoning about oracles and reductions.
       Then in \autoref{sec:rom}, we finally introduce our main objects of study,
@@ -103,7 +108,7 @@
 
     \hhnote{update the following once the v0.1 structure is settled}
 
-    \autoref{part:classical} is all about the classical case. Here, we show
+    \autoref{part:classical}\khnote{Undefined} is all about the classical case. Here, we show
       several examples of security proofs in the random oracle model, all of
       which are conceptually simple and yield (relatively) tight security.
       The examples are lifted from the security proofs of two important
