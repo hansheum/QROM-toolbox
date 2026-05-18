@@ -18,3 +18,5 @@ cryptobib/
 *.fdb_latexmk
 *.fls
 *.synctex.gz
+main-qrot.bcf
+main-qrot.run.xml
