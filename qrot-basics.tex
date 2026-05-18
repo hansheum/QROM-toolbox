@@ -7,30 +7,43 @@
 
   \subsection{Sets, Lists and Probabilities}
     Let us start by defining some notation.
-      We will take the natural numbers $\NN$ to include $0$, and for $n \in \NN$, we
-      will use $[n]$ to denote the set $\{0, \dots, n-1\}$. We will also use
+      We will take the natural numbers $\NN$ to include $0$, and for $n \in \NN$,
+      we will use $[n]$ to denote the set $\{0, \dots, n-1\}$.
+      \khnote{I'd have expected the convention $\{1, \dots, n\}$,
+      	I think that's more common in crypto.
+      	For  $\{0, \dots, n-1\}$, I'd usually write $\mathbb{Z}_n$.
+      }
+      We will also use
       capital letters to denote powers of two, such as $N = 2^n$ (and $NM =
-      2^{n+m}$).
+      2^{n+m}$).\khnote{Why? I would simply write $2^n$.}
 
-    Functions are defined over bitstrings unless otherwise noted, and the set
+    Functions are defined over bitstrings unless noted otherwise, and the set
       of all functions from the set of $m$-length bitsrings $\bin^m$ to the
       set of $n$-length $\bin^n$ bitstrings is denoted $\funcspace{m}{n}$.
-      The $n$-by-$n$ identity matrix is denoted $\idmatrix[n]$, where we'll
-      drop the subscript whenever dimension is clear from context.
+      \khnote{I'd try to avoid compact notation where possible.
+      	Maybe we can write $\mathsf{Bitstringmaps} (m,n)$
+      	or $\mathsf{Maps} (\bin^m,\bin^n)$
+      	or $\{f: \bin^m \rightarrow \bin^n\}$ instead?
+      }
+      The $n$-by-$n$ identity matrix is denoted $\idmatrix[n]$.
+      We'll drop the subscript whenever dimension is clear from context.
 
     For a bitstring $x\in\{0,1\}^*$, we let $\card{x}$ denote its length;
       for a finite set $\Xspace$, we let $\card{\Xspace}$ denote its
       cardinality; and likewise for lists.
       For a list $\Xlist$, $\Xlist[i]$ retrieves its $i$th element,
-      and two lists $\Xlist$ and $\Ylist$ may be combined by concatination to form
-      a new list $\Zlist = \Xlist \concat \Ylist$. It will at times be useful
-      to treat bitstrings as lists of binary values.
+      and two lists $\Xlist$ and $\Ylist$ may be combined by concatenation to form
+      a new list $\Zlist = \Xlist \concat \Ylist$.
+      It will at times be useful to treat bitstrings as lists of binary values.
 
     Deterministic assignment to a (classical) variable is denoted $x \gets y$;
       uniform sampling from a set $\Xspace$ (and assignment of the result to
       $x$) is denoted $x \sample \Xspace$. Likewise, assignment of outputs from
       deterministic resp.\ probabilistic algorithms $X$, $Y$
       is denoted $x \gets X(\cdot)$ and $y \sample Y(\cdot)$, respectively.
+      \khnote{I'd suggest $:=$ for deterministic assignment,
+      	then we have $\gets$ free for "probabilistic (but not necessarily uniform)".
+      }
 
     We use $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
       to denote the conditional probability of $\mathsf{Event}$ occurring
@@ -80,6 +93,12 @@
       registers before operating on them. Hence, we do not make a
       distinction between classical and quantum oracle access 
       in our notation, writing $A^\Oracle$ for either case. 
+      \khnote{I'd move the quantum oracle part to the quantum section --
+      	we didn't explain qubits, registers, unitaries.... yet.
+      	We could place a pointer here that points to the respective section.
+      	(The only people who can parse this are the people who
+      	already know these concepts and thus wouldn't need the paragraph in the first place.)
+      }
 
     In \autoref{subsec:pseudocode}, we define a quantum pseudocode that allows
       us to talk about general quantum oracles, which we apply to quantum random
@@ -117,69 +136,158 @@
 
   \subsection{Expressing Security as Games}
     \newcommand{\primitive}{\pcalgostyle{P}}
-    \subsubsection{Experiments and Advantages.}
-      Security is defined in terms of a security game, or \emph{experiment},
-        $\experiment{}{}[]$, such that if a player (or \emph{adversary}) $\adv$
-        wins the game when it is instanstiated with some primitive $\pcalgostyle{P}$
-        (in which case $\experiment{}{\primitive}$ outputs $1$), then we say that
-        $\adv$ broke the security of $\primitive$.
-        If there exists an efficient adversary (i.e., an attack algorithm) that wins the game with 
-        significant \emph{advantage}, then we say that $\primitive$ is broken.
-
-      How advantages are defined depends on what kind of security notion we are talking
-        about. Most security notions we care about fall into one of two
-        categories: \emph{computational}, in which case the adversary is tasked with
-        recovering some secret value, and \emph{distinguishing}, in which case
-        the adversary should distinguish between two known cases. In the case of
-        computational notions, the advantage is simply the probability that the adversary wins.
-
-      \newcommand{\compnotion}{\pcnotionstyle{COMP}}
-      \begin{definition}[Computational Advantage]\label{def:comp-adv}
-        The computational advantage of an adversary $\adv$ against a primitive
-          $\primitive$ under a computational security notion
-          $\compnotion$, is its probability of winning
-          the security experiment $\experiment{\compnotion}{\primitive}$:
-          \[
-            \advantage{\compnotion}{\primitive} \coloneqq
-            \prob{\experiment{\compnotion}{\primitive}}\, .
-          \]
-      \end{definition}
-
-      For distinguishing notions, the adversary can win with probability
-        $\half$ by simply making a uniform guess, and so we scale the
-        advantage to instead be how much \emph{better} the adversary can do than
-        a simple guess. There are several, equivalent ways to do this, and it will 
+    
+    This subsection revisits the game-based approach to provable security.
+    Feel free to skip it if you are familiar with how game-based security proofs work.
+    
+    \subsubsection{Security Experiments.}
+    	Security is defined in terms of a \emph{security experiment},
+      	often also called \emph{security game}.
+      	You can envision these as experiments that challenge a player (or \emph{adversary})
+      	to break security of a cryptographic construction (or \emph{primitive}),
+      	where the experiment itself will capture what "breaking" means in the specific context.
+      	%
+      	More formally, we will model the "player"/"adversary" as an algorithm $\adv$.
+      	\khnote{I'd usually use $\mathcal{A}$, but that's a matter of taste.}
+      	The security experiment is a program $\experiment{}{}[]$ that interacts with $\adv$
+      	by running it as a black-box subroutine.
+      	$\experiment{}{}[]$ will use  $\adv$ as a \emph{black-box}
+      	because we do not want to make any assumptions about $\adv$'s potential attack strategies,
+      	so that we can confidently say that our security experiment considered
+      	\emph{any} kind of attack that aimed to break the formalized security goal.
+      	At the end, experiment $\experiment{}{}[]$  will finish by outputting a bit
+      	that depends on the interaction with $\adv$, to indicate if $\adv$ managed to break security.
+      	%      	
+      	Any experiment is defined to express security of a certain primitive $\pcalgostyle{P}$,
+      	like, e.g., public-key encryption (PKE).
+      	Thus, part of the experiment's code uses the algorithms of the primitive $\pcalgostyle{P}$
+      	whose security we want to express.
+      	E.g., we might want to write an experiment to express that encryptions of a PKE scheme \PKE
+      	are ``one-way'', i.e., that they are hard to invert without the secret key.
+      	To express this, the ``one-way'' experiment \owcpa would encrypt a plaintext message \chalmssg into a ciphertext \chalctxt,
+      	hand the result \chalctxt to $\adv$,
+      	have $\adv$ guess the original plaintext \chalmssg by outputting a message \advmssg,
+      	and return 1 if $\adv$'s guess was right, so if $\advmssg = \chalmssg$.
+      	We formalize this example in pseudocode in \autoref{fig:example-game}.
+      	
+      	Since this definition is intended to be \emph{generic},
+      	meaning it can capture this type of security for \emph{any} kind of PKE scheme,
+      	the experiment's template uses abstract placeholders for the specifics of \PKE, like
+      	\KG for the key generation, \Enc for the encryption algorithm,
+      	and \Mspace for the space of messages that \PKE can encrypt.
+      	If we want to express security of, say, ElGamal encryption, we would fill in the specifics of ElGamal at the respective places.
+      	For any experiment, filled in with the specific algorithms of a concrete primitive $\primitive$,
+      	we will write $\experiment{}{\primitive}$.
+      	We will say that adversary $\adv$ wins the security experiment $\experiment{}{}[]$ for a specific construction of primitive $\pcalgostyle{P}$
+        if $\experiment{}{\primitive}$ outputs $1$.
+        We will denote this event by $\experiment{}{\primitive} \Rightarrow 1$.
+        In that case, we will also say that adversary $\adv$ broke the $\experiment{}{}[]$ security of primitive $\primitive$.
+        
+        \begin{figure}[h]
+        	\begin{center}
+        		\fbox{
+        			\small
+        			\nicoresetlinenr
+        			\begin{minipage}[t]{3.5cm}	
+        				\underline{{\bf Game} $\experiment{\owcpa}{\pkescheme}$}
+        				\begin{nicodemus}
+        					\item $(\pk, \sk) \gets \KG$
+        					\item $\chalmssg \sample \Mspace$
+        					\item $\chalctxt \sample \Enc_\pk(\chalmssg)$
+        					\item $\advmssg \sample \adv(\pk, \chalctxt)$
+        					\item $\pcreturn \bool{\advmssg = \chalmssg}$
+        				\end{nicodemus}
+        			\end{minipage}
+        		}
+        	\end{center}
+        	\caption{\label{fig:example-game}
+        		Example for a security experiment:
+        		The one-way (\owcpa) experiment for a PKE scheme with key generation $\KG$,
+        		encryption algorithm $\Enc$, and message space $\Mspace$.
+        	}
+        \end{figure}
+        
+        \khnote{I noted that we're mixing "Game" and $\experiment{}{}[]$ a lot.
+        	I would pick either/or and commit to that.
+        	Personally, I prefer the notation "{\bf Game} $\OWCPA_{\pkescheme}^\mathcal{A}$",
+        	but I won't mope as long as everything is consistent.
+        }
+        
+      \subsubsection{Advantages.}
+        Intuitively, a primitive $\primitive$ is ``broken'' if there exists an ``efficient'' adversary (i.e., an ``efficient'' attack algorithm)
+	    that wins the game with a ``significant'' probability,
+	    and it is ``secure'' if no such adversary exists.
+	    (You could think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
+	    	if we increase the construction's parameters, like, e.g., the key length.
+	    	Similarly, you could think of ``significant'' probabilities as probabilities that do not speed-run towards 0
+	    	upon parameter increase.)
+	    In practice, however, cryptographic designs need to make concrete parameter choices,
+	    and such asymptotic notions do not necessarily help with assessing how secure the concrete design is, in practice.
+	    We will thus follow the \emph{concrete} security approach, 
+        expressing security via explicit bounds that relate the adversary’s resources to its probability of success.
+        We will capture the adversary’s probability of success as \emph{advantages},
+        e.g., as the probability that an an attacker can find the original message \chalmssg belonging to a ciphertext \chalctxt.
+        How the specific advantages are defined depends on what kind of security notion we are talking about.
+        The security notions we care about all fall into one of two categories:
+        
+        \newcommand{\findnotion}{\pcnotionstyle{FIND}}
+        \newcommand{\distnotion}{\pcnotionstyle{DIST}}  
+        
+        \begin{itemize}
+        	\item \emph{finding},
+        		
+        		\khnote{Replaced "computational" with "finding" because distinguishing problems are also "computational" in the sense that they're not information-theoretic.}
+        		in which case the adversary is tasked with finding some secret value
+        		(like our ciphertext inversion example)
+        		and the advantages will usually be written in the form
+        		\[
+	        		\advantage{\findnotion}{\primitive} \coloneqq
+	        		\prob{\experiment{\findnotion}{\primitive} \Rightarrow 1}\, ;
+        		\]
+        	
+        	\item \emph{distinguishing},
+	        	in which case the adversary is taked with distinguishing between two scenarios.
+        		(E.g., the adversary might need to distinguish a real encryption from a ciphertext that was chosen uniformly at random.)
+        		Here, the expected output of $\adv$ is a bit, to indicate its guess with which scenario it interacted.
+        \end{itemize}
+        
+        For distinguishing notions, any adversary could always win with probability
+        $\half$ by simply making a uniform guess.
+        Thus, we rather want to quantify how much \emph{better} the adversary can do
+        than with a simple random guess.
+        There are several, equivalent ways to do this, and it will 
         sometimes be useful to switch between them.
-
-      \newcommand{\distnotion}{\pcnotionstyle{DIST}}
-      \begin{definition}[Distinguishing Advantage]
-        The distinguishing advantage of an adversary $\adv$ against a primitive
-        $\primitive$ under a distinguishing security notion
-        $\pcnotionstyle{DIST}$, is defined as:
+        Distinguishing advantages will sometimes come in the form 
         \begin{align*}
-          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
-            2 \cdot \prob{\experiment{\distnotion}{\primitive}} - 1
-          }\, ,
-          \intertext{or, equivalently,}
-          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
-            \prob{\experiment{\distnotion}{\primitive}}
-            - \prob{\neg\experiment{\distnotion}{\primitive}}
-          }\, ,
-          \intertext{or, equivalently,}
-          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
-            \condprobsample{
-              \experiment{\distnotion}{\primitive}
-            }{0 \sample \adv}{\chalbit = 0}
-            - \condprobsample{
-              \experiment{\distnotion}{\primitive}
-            }{0 \sample \adv}{\chalbit = 1}
-          }\, .
+        	\advantage{\distnotion}{\primitive} &\coloneqq \abs{
+        		2 \cdot \prob{\experiment{\distnotion}{\primitive} \Rightarrow 1} - 1
+        	}\, ,
+        	\intertext{where the game internally tosses a coin to determine with which of the two to-be-distinguished scenarios the adversary will interact.
+        		Equivalently, you could split the experiment into the two to-be-distinguished scenarios.
+        		To do so, you can capture the outcome of the coin toss as a ``challenge bit'' $b$, condition the experiment on $b$,
+        		and quantifying how much more (un)likely it is that $\adv$ outputs 1 in the one setting than the other,
+        		by setting
+        	}
+        	\advantage{\distnotion}{\primitive} &\coloneqq \abs{
+        		\condprobsample{
+        			\experiment{\distnotion}{\primitive}
+        		}{1 \sample \adv}{\chalbit = 0}
+        		- \condprobsample{
+        			\experiment{\distnotion}{\primitive}
+        		}{1 \sample \adv}{\chalbit = 1}
+        	}\, .
         \end{align*}
-      \end{definition}
 
       \noindent
-      Note how each formula scales the advantage so that it is contained on the
-        interval $[0, 1]$, matching the computational case.
+      Note how both formulas scale the advantage so that it lives in the
+      interval $[0, 1]$, matching the ``finding'' case.
+      
+      \khnote{I noticed that you abbreviated the prob by writing $\prob{\experiment{X}{\primitive}}$,
+      	but $\experiment{X}{\primitive}$ is not really an event.
+      	I'm more used to denoting the prob of the event that the experiment \emph{outputs 1},
+      	by writing $\prob{\experiment{X}{\primitive}} \Rightarrow 1$.
+      	I changed it above, but not in the remainder of the file.
+      }
 
       \subsubsection{Goals and Powers.}
         \hhnote{todo}
@@ -372,7 +480,7 @@
         \begin{definition}[OW-CPA]
           The one-wayness advantage $\advantage{\owcpa}{\pkescheme}$ of an
           adversary $\adv$ against a public-key encryption scheme $\pkescheme$
-          is the computational advantage (\autoref{def:comp-adv}) of $\adv$ in the
+          is the "find" advantage (\autoref{def:find-adv}) of $\adv$ in the
           $\owcpa$ game (\autoref{fig:pke-games}, left) when instantiated with the
           scheme $\pkescheme$.
         \end{definition}
@@ -647,6 +755,10 @@
 
   \subsection{Asymptotic versus Concrete.}
     \hhnote{copy-pasted}
+    \khnote{
+    	I put a rephrasing of this into the introductory game-based section, since this is where we introduce advantages.
+    	Given that we only use concrete bounds, I'm tempted to suggest removal of the whole subsection.
+    }
     Adversaries are assumed to be generally quantum agents, having
       access to as much classical and quantum memory as they need, on which
       they can apply unitary operations and measurements as they
