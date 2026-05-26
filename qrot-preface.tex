@@ -1,7 +1,4 @@
 \section{Preface}
-  \hhnote{1st draft done}
-
-  \noindent
   So you want to prove post-quantum security in the Random Oracle Model (ROM).
 
   Security proofs in the ROM enjoy a lot of advantages.
@@ -23,7 +20,8 @@
   	This led to the development of the Quantum Random Oracle Model (QROM),
   	and it seems that our choice for arguing post-quantum security
   	is between the Standard Model and the QROM. 
-  	Proofs in the Quantum Random Oracle Model (QROM), however,
+  	Proofs in the %Quantum Random Oracle Model 
+    QROM, however,
   	can be notoriously hard to parse without specialized
   	knowledge in quantum information theory, and they often are infamously lossy.
 
@@ -60,15 +58,18 @@
       As we will see, preimage awareness will be very useful in security reductions
       because it gives the reduction valuable insights into the attacker's strategies.
       What's more, the random oracle allows the reduction to 
-      \emph{adaptively reprogram} it on inputs of the reduction's choice.
-      As we will see, adaptive reprogramming will also be very useful in security reductions
-      because it gives the reduction the power to trick the attacker into behaviour
+      \emph{adaptively reprogram} it on inputs of the reduction's choice,
+      %As we will see, adaptive reprogramming will also be very useful in security reductions
+      %because it 
+      %% (Too many "As we will see"s --H)
+      allowing the reduction %the power 
+      to trick the attacker into behaviour
       that helps with relating security to the underlying hardness assumption.
       Indeed, much of the strength of the random oracle model lies in exactly
       these capabilities.
 
     None of this transfers directly to the case of quantum-accessible oracles.
-      As just one example, think of lazy sampling and consider an adversary
+      As just one example, think of lazy sampling, and consider an adversary
       that queries the oracle on a superposition of all possible inputs all at once:
       to sample, respond on-the-fly and book-keep,
       the simulator would afterwards have to store an exponentially large list of input values!
@@ -77,7 +78,7 @@
       just to be able to respond to the first query,
       then how would there be any room left for programming certain oracle outputs according to the reduction's needs?
 
-  \paragraph{\ldots But the Concepts Do.}
+  \paragraph{\ldots\ But the Concepts Do.}
     And yet, during the past decade the community has developed a plethora of techniques
       that recover most of these capabilities even in the presence of quantum attackers
       (albeit at a loss).
@@ -86,11 +87,10 @@
       	\item the various \emph{One-Way to Hiding} (O2H) lemmas,
       		which allow for careful reprogramming of random oracle outputs as well as a
       		somewhat limited awareness of query inputs; 
-      	
-      	\item the Compressed Random Oracle (CRO) technique,
-      		which allows one to efficiently simulate a quantum random oracle,
+        \item the \emph{Compressed Random Oracle} (CRO) technique,
+      		a procedure with which one can efficiently simulate a quantum random oracle,
       		in direct analogy to classical ``lazy sampling'', and 	
-      	\item Quantum Online-Extractability (QOE),
+        \item \emph{Quantum Online-Extractability} (QOE),
       		which -- as the name suggests -- allows for on-the-fly extraction of oracle inputs.
       \end{itemize}
 
