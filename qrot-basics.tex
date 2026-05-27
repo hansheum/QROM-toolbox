@@ -43,7 +43,8 @@
     \item Conditional probability when running $\mathsf{Code}$ is denoted 
       $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
     \item $\bool{\mathsf{Condition}}$: the predicate that
-      returns $\true$ iff $\mathsf{Condition}$ is true
+      returns $1$ if $\mathsf{Condition}$ is true and $0$ otherwise. (Let's use
+      bit values for $\true$ and $\false$.)
     \item Algorithms are classical or quantum Turing machines (although we use
       the circuit model for quantum algorithms). \done
     \item Oracle algorithms exist. Oracles often have unbounded resources.
@@ -168,6 +169,10 @@
     }
     
     \subsubsection{Security Games.}
+    \newcommand{\examplegame}{\ensuremath{\mathsf{Game}}}
+    \newcommand{\goalpow}{\pcnotionstyle{GOAL\hy POWER}}
+    \newcommand{\ownma}{\pcnotionstyle{OW\hy NMA}}
+    \newcommand{\indnma}{\pcnotionstyle{IND\hy NMA}}
     	Security is defined in terms of a \emph{security game}.
       	You can envision these as a game in which a player (or \emph{adversary})
       	is challenged to break security of a cryptographic construction (or \emph{primitive}),
@@ -175,66 +180,121 @@
       	%
       	More formally, we will model the ``player''/``adversary'' as an
         algorithm $\adv$.\footnote{
-          Technically speaking, $\adv$ is assumed to be a probabilistic (or quantum) Turing machine.
+          In technical terms, $\adv$ is assumed to be a probabilistic (or quantum) Turing machine.
         }
       	%\khnote{I'd usually use $\mathcal{A}$, but that's a matter of taste.}
         %% Done. --H
-      	The security game is a program, usually written in pseudocode, %$\experiment{}{}[]$ 
-        that interacts with $\adv$ by running it as a black-box subroutine.
-        \hhnote{cont}
-      	$\experiment{}{}[]$ will use  $\adv$ as a \emph{black-box}
-      	because we do not want to make any assumptions about $\adv$'s potential attack strategies,
-      	so that we can confidently say that our security experiment considered
+        A security game $\examplegame$ is a program, usually written in pseudocode, %$\experiment{}{}[]$ 
+        that interacts with $\adv$ by running it as a black-box subroutine; see
+        \autoref{fig:example-game} for an example.
+        $\examplegame$ will use  $\adv$ as a \emph{black-box}, meaning it can
+        only provide inputs to and receive outputs from $\adv$,
+      	because we do not want to make any assumptions about $\adv$'s potential
+        attack strategies. This way, we can confidently say that our security experiment considered
       	\emph{any} kind of attack that aimed to break the formalized security goal.
-      	At the end, experiment $\experiment{}{}[]$  will finish by outputting a bit
+      	At the end, $\examplegame$  will finish by outputting a bit
       	that depends on the interaction with $\adv$, to indicate if $\adv$ managed to break security.
 
-      	Any experiment is defined to express security of a certain primitive $\pcalgostyle{P}$,
-      	like, e.g., public-key encryption (PKE).
-      	Thus, part of the experiment's code uses the algorithms of the primitive $\pcalgostyle{P}$
-      	whose security we want to express.
+      Any security game is defined to express security of some primitive
+        $\primitive$, for example a particular public-key encryption (PKE) scheme.
+      	Thus, part of the experiment's code uses the algorithms of the primitive
+        $\primitive$ whose security we want to express.
       	E.g., we might want to write an experiment to express that encryptions of a PKE scheme \PKE
-      	are ``one-way'', i.e., that they are hard to invert without the secret key.
-      	To express this, the ``one-way'' experiment \owcpa would encrypt a plaintext message \chalmssg into a ciphertext \chalctxt,
-      	hand the result \chalctxt to $\adv$,
-      	have $\adv$ guess the original plaintext \chalmssg by outputting a message \advmssg,
-      	and return 1 if $\adv$'s guess was right, so if $\advmssg = \chalmssg$.
-      	We formalize this example in pseudocode in \autoref{fig:example-game}.
-      	
-      	Since this definition is intended to be \emph{generic},
+      	are ``one-way'' in the sense that they are hard to invert without the secret key.
+      	To express this, the ``one-wayness under chosen-plaintext attacks'' game
+        \owcpa\ would encrypt a random plaintext message \chalmssg into a ciphertext \chalctxt,
+      	hand \chalctxt to $\adv$,
+      	have $\adv$ output a guess \advmssg,
+        and return 1 if $\adv$ guessed the correct encrypted message (so if $\advmssg =
+        \chalmssg$). This is the example formalized in \autoref{fig:example-game}.
+
+      Security games are typically named by the convention that the letters
+        preceding the hyphen defines a security \emph{goal} that we would like our 
+        primitive \primitive to achieve, and the letters after the hyphen lists the
+        attack \emph{power} of the adversaries with respect to which it will
+        achieve that security goal: so $\goalpow$. In the example of $\owcpa$, the
+        \emph{goal} is the one-wayness of encryption, while the adversary's \emph{power} is
+        chosen plaintext attacks (CPA), i.e.\ the power to generate encryptions
+        at will of any message it likes. Since this example deals with public-key
+        encryption, this power is given for free, and so this is the minimal
+        power that the adversary can have for a well-defined notion of PKE
+        security. For other primitives the adversary
+        could have less attack power: consider for example symmetric
+        encryption, where you need to know the secret key to encrypt.
+        The weakest notion for symmetric encryption might then be
+        called \ownma, for ``no message attack''.
+
+      Since this definition of security is intended to be \emph{generic},
       	meaning it can capture this type of security for \emph{any} kind of PKE scheme,
-      	the experiment's template uses abstract placeholders for the specifics of \PKE, like
+      	the game's template uses abstract placeholders for the specifics of \PKE, like
       	\KG for the key generation, \Enc for the encryption algorithm,
       	and \Mspace for the space of messages that \PKE can encrypt.
-      	If we want to express security of, say, ElGamal encryption, we would fill in the specifics of ElGamal at the respective places.
-      	For any experiment, filled in with the specific algorithms of a concrete primitive $\primitive$,
-      	we will write $\experiment{}{\primitive}$.
-      	We will say that adversary $\adv$ wins the security experiment $\experiment{}{}[]$ for a specific construction of primitive $\pcalgostyle{P}$
-        if $\experiment{}{\primitive}$ outputs $1$.
-        We will denote this event by $\experiment{}{\primitive} \Rightarrow 1$.
-        In that case, we will also say that adversary $\adv$ broke the $\experiment{}{}[]$ security of primitive $\primitive$.
+      	If we want to express security of, say, ElGamal encryption, we would
+        fill in the specifics of ElGamal at the respective places.
+      	For any security game filled in with the specific algorithms of a concrete primitive $\primitive$,
+      	we will write $\experiment{Game}{\primitive}$.
+      	We will say that adversary $\adv$ wins the game $\experiment{Game}{}[]$
+        for a specific construction of primitive $\pcalgostyle{P}$
+        if $\experiment{Game}{\primitive}$ outputs $1$.
+        We will denote this event by $\experiment{Game}{\primitive} \Rightarrow 1$.
+        In that case, we will also say that adversary $\adv$ broke the
+        $\experiment{Game}{}[]$ security of primitive $\primitive$.
         
-        \begin{figure}[h]
+      What do we mean when we say that a notion such as \ownma would be ``weak''? Well,
+        in general the \emph{strength} of the notion scales with how ``easy'' it
+        would be for a sufficiently strong adversary to win the game:
+        A security notion with a simpler \emph{goal}, such as guessing
+        which of two known messages are encrypted (this is known as
+        \emph{indistinguishability}, or \ind) is stronger than one with a more complex
+        goal, such as recovering the full message from scratch like in the above
+        example: We have lowered the bar for what counts as ``breaking'' the scheme, so if
+        no adversary can win at the easier game, then
+        there certainly aren't any adversaries that can win at the harder one
+        either. Hence, claiming security under an easier-to-break goal gives a
+        \emph{stronger} statement. 
+
+      The other lever with which we can control the
+        strength of a security notion is of course the attack power given to the
+        adversary: more power means a stronger security notion. For
+        example, consider again the case of symmetric encryption: we could give
+        the adversary the power of chosen-plaintext attacks by simply
+        \emph{providing} it with encryptions of its choosing whenever it asks.
+        The claim that the game \emph{still} can not be won by any adversary is
+        stronger than claiming that it can not be won without this ability.
+
+      So: \ownma is a weaker notion of security than \owcpa, with \indcpa
+        stronger still. Meanwhile, \owcpa and \indnma would in general be
+        \emph{incomparable} in terms of strength: A symmetric encryption scheme
+        might be secure with respect to one notion while being
+        completely broken in terms of the other.\footnote{
+          It is a fun game to try to come up with schemes that exemplify this
+          behaviour, and with a little creative thinking you may be able to come
+          up with some yourself.
+        }
+      	
+        \begin{figure}[t]
         	\begin{center}
         		\fbox{
         			\small
         			\nicoresetlinenr
         			\begin{minipage}[t]{3.5cm}	
         				\underline{{\bf Game} $\experiment{\owcpa}{\pkescheme}$}
+                \smallskip
         				\begin{nicodemus}
         					\item $(\pk, \sk) \gets \KG$
         					\item $\chalmssg \sample \Mspace$
-        					\item $\chalctxt \sample \Enc_\pk(\chalmssg)$
-        					\item $\advmssg \sample \adv(\pk, \chalctxt)$
+        					\item $\chalctxt \gets \Enc_\pk(\chalmssg)$
+        					\item $\advmssg \gets \adv(\pk, \chalctxt)$
         					\item $\pcreturn \bool{\advmssg = \chalmssg}$
         				\end{nicodemus}
         			\end{minipage}
         		}
         	\end{center}
         	\caption{\label{fig:example-game}
-        		Example for a security experiment:
-        		The one-way (\owcpa) experiment for a PKE scheme with key generation $\KG$,
-        		encryption algorithm $\Enc$, and message space $\Mspace$.
+        		Example for a security game:
+        		The ``one-wayness under chosen plaintext attacks'' (\owcpa) game for
+            a PKE scheme with key generation $\KG$,
+        		encryption algorithm $\Enc$, and supported message space $\Mspace$.
         	}
         \end{figure}
         
@@ -243,9 +303,18 @@
         	Personally, I prefer the notation "{\bf Game} $\OWCPA_{\pkescheme}^\mathcal{A}$",
         	but I won't mope as long as everything is consistent.
         }
+        \hhnote{
+          Changed to this style, except with the adversary still as ``input''. Open to
+          changing my mind about that (I think usually the input would be
+          reserved for the security parameter in asymptotic notions?), but I
+          feel like it might be useful to have the superscript available for
+          e.g.\ bit values in game hops.
+        }
         
       \subsubsection{Advantages.}
-        Intuitively, a primitive $\primitive$ is ``broken'' if there exists an ``efficient'' adversary (i.e., an ``efficient'' attack algorithm)
+        \hhnote{continuing from here}
+        Intuitively, a primitive $\primitive$ is ``broken'' if there exists an
+        ``efficient'' adversary (i.e., an ``efficient'' attack algorithm)
 	    that wins the game with a ``significant'' probability,
 	    and it is ``secure'' if no such adversary exists.
 	    (You could think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically

@@ -22,6 +22,11 @@
 %%% Adversaries
 \renewcommand{\pcadvstyle}[1]{\mathcal{#1}}
 
+%%% Games and advantages
+  \renewcommand{\pcnotionstyle}[1]{\ensuremath{\mathsf{#1}}\xspace}
+  \renewcommandx*{\experiment}[3][3=(\adv)]{\ensuremath{\pcalgostyle{#1}_{\pcadvantagesubstyle{#2}}#3}}
+  %% Example usage: \experiment{\indcpa}{\pkescheme}[(\bdv)]
+
 %%% Game interface
   \renewcommand{\pcthen}{:}
   \renewcommand{\pcdo}{:}
