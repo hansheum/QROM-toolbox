@@ -1,117 +1,142 @@
 \section{Basic Cryptography Concepts}\label{sec:basics}
-  \todoenum[rough structure]{
-    \item PKE and KEM: Definitions, OW vs IND, CPA vs CCA
-    \item Signatures (and NIZKs?): Definition, EU-CMA
-    \item Game hopping
+  %\todoenum[rough structure]{
+  %  \item PKE and KEM: Definitions, OW vs IND, CPA vs CCA
+  %  \item Signatures (and NIZKs?): Definition, EU-CMA
+  %  \item Game hopping
+  %}
+  \hhnote{
+    The first two subsections read much more like the preliminaries to a
+    research article than part of a tutorial. Rework into the text
+    when the topics naturally appear? 
+    Could also keep a list of notation in an appendix rather than up-front.
+  }
+  \hhnote{
+    Commenting out for now; here's a list of things that should be introduced/mentioned.
+  }
+  \todoenum[Notation and conventions (\done $=$ introduced)]{
+    \item The natural numbers start at $1$.
+    \item $[n] = \{1, \ldots, n\}$
+    \item Functions are over bitstrings
+    \item Set of all functions from $\bin^n$ to $\bin^m$: Use
+    %\begin{itemize}
+      %\item $\funcspace{m}{n}$ ?
+      %\item $\mathsf{Bitstringmaps} (m,n)$ ?
+      %\item $\mathsf{Maps} (\bin^m,\bin^n)$ ?
+      %\item 
+        $\{f: \bin^m \rightarrow \bin^n\}$ ?
+    %\end{itemize}
+    \item $n \times n$ identity matrix: $\idmatrix[n]$ (or $\idmatrix[]$ when the
+      context is clear).
+    \item $\abs{x}$ is bitstring length, $\abs{\Xspace}$ is set cardinality;
+      likewise for lists
+    \item The $i$th list element is written $\Xlist(i)$
+    \item Lists may be combined by concatenation: $\Xlist\ \concat \Ylist$
+    \item It will at times be useful to treat bitstrings as lists of binary
+      values
+    \item Assignment and sampling:
+    \begin{itemize}
+      \item $x \assign y$ for deterministic assignment of a value or from a
+        deterministic algorithm
+      \item $x \gets X(\cdot)$ for probabilistic assignment from algorithm or distribution
+      \item $x \sample \Xspace$ for uniform sampling from set
+    \end{itemize}
+    \item Conditional probability when running $\mathsf{Code}$ is denoted 
+      $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
+    \item $\bool{\mathsf{Condition}}$: the predicate that
+      returns $\true$ iff $\mathsf{Condition}$ is true
+    \item Algorithms are classical or quantum Turing machines (although we use
+      the circuit model for quantum algorithms). \done
+    \item Oracle algorithms exist. Oracles often have unbounded resources.
+    \item Stateless, deterministic oracles implement a function, in which case
+      we may refer to it by $\Oracle_f$
   }
 
-  \subsection{Sets, Lists and Probabilities}
-    Let us start by defining some notation.
-      We will take the natural numbers $\NN$ to include $0$, and for $n \in \NN$,
-      we will use $[n]$ to denote the set $\{0, \dots, n-1\}$.
-      \khnote{I'd have expected the convention $\{1, \dots, n\}$,
-      	I think that's more common in crypto.
-      	For  $\{0, \dots, n-1\}$, I'd usually write $\mathbb{Z}_n$.
-      }
-      We will also use
-      capital letters to denote powers of two, such as $N = 2^n$ (and $NM =
-      2^{n+m}$).\khnote{Why? I would simply write $2^n$.}
+  %\subsection{Sets, Lists and Probabilities}
+    %\hhnote{
+    %  Note to self: Avoid the common $N = 2^n$ shorthand; just write $2^n$ instead
+    %}
+    %Let us start by defining some notation.
+    %  We will take the natural numbers $\NN$ to be the set of positive integers
+    %  (excluding $0$), and for $n \in \NN$,
+    %  we will use $[n]$ to denote the set $\{1, \dots, n\}$.
+    %  %\khnote{I'd have expected the convention $\{1, \dots, n\}$,
+    %  %	I think that's more common in crypto.
+    %  %	For  $\{0, \dots, n-1\}$, I'd usually write $\mathbb{Z}_n$.
+    %  %}
+    %  %\hhnote{let's do that}
+    %  %
+    %  %We will also use
+    %  %  capital letters to denote powers of two, such as $N = 2^n$ (and $NM =
+    %  %  2^{n+m}$).\khnote{Why? I would simply write $2^n$.}
 
-    Functions are defined over bitstrings unless noted otherwise, and the set
-      of all functions from the set of $m$-length bitsrings $\bin^m$ to the
-      set of $n$-length $\bin^n$ bitstrings is denoted $\funcspace{m}{n}$.
-      \khnote{I'd try to avoid compact notation where possible.
-      	Maybe we can write $\mathsf{Bitstringmaps} (m,n)$
-      	or $\mathsf{Maps} (\bin^m,\bin^n)$
-      	or $\{f: \bin^m \rightarrow \bin^n\}$ instead?
-      }
-      The $n$-by-$n$ identity matrix is denoted $\idmatrix[n]$.
-      We'll drop the subscript whenever dimension is clear from context.
+    %Functions are defined over bitstrings unless noted otherwise, and the set
+    %  of all functions from the set of $m$-length bitsrings $\bin^m$ to the
+    %  set of $n$-length $\bin^n$ bitstrings is denoted $\funcspace{m}{n}$.
+    %  \khnote{I'd try to avoid compact notation where possible.
+    %  	Maybe we can write $\mathsf{Bitstringmaps} (m,n)$
+    %  	or $\mathsf{Maps} (\bin^m,\bin^n)$
+    %  	or $\{f: \bin^m \rightarrow \bin^n\}$ instead?
+    %  }
+    %  \hhnote{
+    %    Hmm. Will try out a little and see which one best expresses ``draw
+    %    a random function'' in pseudocode.
+    %  }
+    %  The $n$-by-$n$ identity matrix is denoted $\idmatrix[n]$.
+    %  We'll drop the subscript and just write $\idmatrix[]$ whenever the dimension
+    %  is clear from context.
 
-    For a bitstring $x\in\{0,1\}^*$, we let $\card{x}$ denote its length;
-      for a finite set $\Xspace$, we let $\card{\Xspace}$ denote its
-      cardinality; and likewise for lists.
-      For a list $\Xlist$, $\Xlist[i]$ retrieves its $i$th element,
-      and two lists $\Xlist$ and $\Ylist$ may be combined by concatenation to form
-      a new list $\Zlist = \Xlist \concat \Ylist$.
-      It will at times be useful to treat bitstrings as lists of binary values.
+    %For a bitstring $x\in\{0,1\}^*$, we let $\card{x}$ denote its length.
+    %  For a finite set $\Xspace$, we let $\card{\Xspace}$ denote its
+    %  cardinality; and likewise for lists.
+    %  For a list $\Xlist$, $\Xlist(i)$ retrieves its $i$th element,
+    %  and two lists $\Xlist$ and $\Ylist$ may be combined by concatenation to form
+    %  a new list $\Zlist = \Xlist \concat \Ylist$.
+    %  It will at times be useful to treat bitstrings as lists of binary values.
+    %\hhnote{
+    %  Still unsure what the best notation is for lists, if we want to keep
+    %  the $\Dlist[x]$ specific to the database formalism 
+    %  (though $\Xlist(i)$ seems to work for now).
+    %}
 
-    Deterministic assignment to a (classical) variable is denoted $x \gets y$;
-      uniform sampling from a set $\Xspace$ (and assignment of the result to
-      $x$) is denoted $x \sample \Xspace$. Likewise, assignment of outputs from
-      deterministic resp.\ probabilistic algorithms $X$, $Y$
-      is denoted $x \gets X(\cdot)$ and $y \sample Y(\cdot)$, respectively.
-      \khnote{I'd suggest $:=$ for deterministic assignment,
-      	then we have $\gets$ free for "probabilistic (but not necessarily uniform)".
-      }
+    %Deterministic assignment to a (classical) variable is denoted $x \assign y$,
+    %  and uniform sampling from a set $\Xspace$ (and assignment of the result to
+    %  $x$) is denoted $x \draw \Xspace$. Likewise, assignment of outputs from
+    %  deterministic resp.\ probabilistic algorithms $X$, $Y$
+    %  is denoted $x \assign X(\cdot)$ and $y \receive Y(\cdot)$, respectively.
+    %  %\khnote{I'd suggest $:=$ for deterministic assignment,
+    %  %	then we have $\gets$ free for "probabilistic (but not necessarily uniform)".
+    %  %}
 
-    We use $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
-      to denote the conditional probability of $\mathsf{Event}$ occurring
-      when $\mathsf{Code}$ is executed, conditioned on $\mathsf{Condition}$
-      (where the probability is taken over the random coins of
-      $\mathsf{Code}$).
-      We omit $\mathsf{Code}$ when it is clear from context and
-      $\mathsf{Condition}$ when it is not needed. 
+    %We use $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
+    %  to denote the conditional probability of $\mathsf{Event}$ occurring
+    %  when $\mathsf{Code}$ is executed, conditioned on $\mathsf{Condition}$
+    %  (where the probability is taken over the random coins of
+    %  $\mathsf{Code}$).
+    %  We omit $\mathsf{Code}$ when it is clear from context and
+    %  $\mathsf{Condition}$ when it is not needed. 
 
-    Finally, we use $\bool{\mathsf{Condition}}$ to denote the predicate that
-      returns $\true$ whenever $\mathsf{Condition}$ is true, and $\false$ otherwise.
+    %Finally, we use $\bool{\mathsf{Condition}}$ to denote the predicate that
+    %  returns $\true$ whenever $\mathsf{Condition}$ is true, and $\false$ otherwise.
 
-  \subsection{Algorithms and Oracles}
-    Algorithms are assumed to be either classical~\cite{Turing36} or quantum~\cite{Deutsch85} 
-      Turing machines, although we will follow the convention of
-      expressing quantum algorithms as quantum circuits~\cite{Yao93}.
-      %which of the two we are talking about will usually be clear from context.
-      An \emph{oracle} algorithm is an algorithm $A$ that additionally has black-box access to
-      some oracle $\Oracle$, meaning it can only call the oracle on some input
-      and receive its output; this is written $A^\Oracle$. For $A$ to query the
-      oracle on some input and receive a corresponding output only takes up a
-      single time step in the execution of the Turing machine.
+  %\subsection{Algorithms and Oracles}
+    %Algorithms are assumed to be either classical~\cite{Turing36} or quantum~\cite{Deutsch85} 
+    %  Turing machines, although we will follow the convention of
+    %  expressing quantum algorithms as quantum circuits~\cite{Yao93}.
+    %  %which of the two we are talking about will usually be clear from context.
+    %  An \emph{oracle} algorithm is an algorithm $A$ that additionally has black-box access to
+    %  some oracle $\Oracle$, meaning it can only call the oracle on some input
+    %  and receive its output; this is written $A^\Oracle$. For $A$ to query the
+    %  oracle on some input and receive a corresponding output only takes up a
+    %  single time step in the execution of the Turing machine.
 
-    Unlike algorithms, oracles are typically not limited to bounded resources.
-      Classical oracles take a classical value $x$ as input and return some
-      value $y$, and can be deterministic (repeat queries return the same value) or
-      probabilistic (the output depends on randomness internal to the oracle);
-      in either case we write $y \gets \Oracle(x)$.
-      Oracles can furthermore be either stateful (queries are remembered) or
-      stateless. Clearly, stateless, deterministic oracles implement a function,
-      and we may denote an oracle implementing the function $f$ as $\Oracle_f$.
-
-    Quantum(-accessible) oracles\footnote{
-      Some works distinguish between quantum-\emph{accessible} oracles,
-      which evaluate a function on a superposition of inputs, and
-      \emph{quantum} oracles, which apply some quantum operation on the input
-      registers.
-      We do not distinguish between these two kinds of oracle, and rather view
-      the former as a special case of the latter.
-      } are oracles that instead take a set of \emph{qubit registers} as input,
-      apply some operation on them, before returning the registers to the
-      querying party. The operation applied may be probabilistic in nature and
-      may include measurements (which has the effect of transforming pure
-      quantum states into mixed states, though it will often be required to be unitary.
-      For quantum oracle algorithms, we will take a classical oracle to be a
-      quantum oracle that performs a computational-basis measurement on the
-      registers before operating on them. Hence, we do not make a
-      distinction between classical and quantum oracle access 
-      in our notation, writing $A^\Oracle$ for either case. 
-      \khnote{I'd move the quantum oracle part to the quantum section --
-      	we didn't explain qubits, registers, unitaries.... yet.
-      	We could place a pointer here that points to the respective section.
-      	(The only people who can parse this are the people who
-      	already know these concepts and thus wouldn't need the paragraph in the first place.)
-      }
-
-    In \autoref{subsec:pseudocode}, we define a quantum pseudocode that allows
-      us to talk about general quantum oracles, which we apply to quantum random
-      oracles in \autoref{sec:rom}. For now, we note that an oracle that
-      evaluates a function $f$ on superpositions of inputs is
-      usually defined as the quantum oracle $\Oracle_f$ that applies the
-      unitary operation
-      \[
-        \ket{x,y} \to \ket{x,y \xor f(x)}\, ,
-      \]
-      where $\ket{x,y}$ are the computational basis states of the qubit
-      registers input to the oracle. (In case this notation is
-      unfamiliar to you, \autoref{sec:primer} provides a gentle introduction.)
+    %Unlike algorithms, oracles are typically not limited to bounded resources.
+    %  Classical oracles take a classical value $x$ as input and return some
+    %  value $y$, and can be deterministic (repeat queries return the same value) or
+    %  probabilistic (the output depends on randomness internal to the oracle);
+    %  in either case we write $y \gets \Oracle(x)$.
+    %  Oracles can furthermore be either stateful (queries are remembered) or
+    %  stateless. Clearly, stateless, deterministic oracles implement a function,
+    %  and we may denote an oracle implementing the function $f$ as $\Oracle_f$.
 
     %% MORE FROM SOA SOK
     %We use code-based experiments, where by convention all sets, lists,
@@ -135,29 +160,35 @@
     %  (code-snippet taken from \autoref{fig:IND-SOA}).
 
   \subsection{Expressing Security as Games}
-    \newcommand{\primitive}{\pcalgostyle{P}}
-    
     This subsection revisits the game-based approach to provable security.
-    Feel free to skip it if you are familiar with how game-based security proofs work.
+      Feel free to skip it if you are familiar with how game-based security proofs work.
+
+    \hhnote{
+      Let's just skip using the word ``experiment'' entirely. 
+    }
     
-    \subsubsection{Security Experiments.}
-    	Security is defined in terms of a \emph{security experiment},
-      	often also called \emph{security game}.
-      	You can envision these as experiments that challenge a player (or \emph{adversary})
-      	to break security of a cryptographic construction (or \emph{primitive}),
-      	where the experiment itself will capture what "breaking" means in the specific context.
+    \subsubsection{Security Games.}
+    	Security is defined in terms of a \emph{security game}.
+      	You can envision these as a game in which a player (or \emph{adversary})
+      	is challenged to break security of a cryptographic construction (or \emph{primitive}),
+      	where the win conditions of the game captures what ``breaking'' means in the specific context.
       	%
-      	More formally, we will model the "player"/"adversary" as an algorithm $\adv$.
-      	\khnote{I'd usually use $\mathcal{A}$, but that's a matter of taste.}
-      	The security experiment is a program $\experiment{}{}[]$ that interacts with $\adv$
-      	by running it as a black-box subroutine.
+      	More formally, we will model the ``player''/``adversary'' as an
+        algorithm $\adv$.\footnote{
+          Technically speaking, $\adv$ is assumed to be a probabilistic (or quantum) Turing machine.
+        }
+      	%\khnote{I'd usually use $\mathcal{A}$, but that's a matter of taste.}
+        %% Done. --H
+      	The security game is a program, usually written in pseudocode, %$\experiment{}{}[]$ 
+        that interacts with $\adv$ by running it as a black-box subroutine.
+        \hhnote{cont}
       	$\experiment{}{}[]$ will use  $\adv$ as a \emph{black-box}
       	because we do not want to make any assumptions about $\adv$'s potential attack strategies,
       	so that we can confidently say that our security experiment considered
       	\emph{any} kind of attack that aimed to break the formalized security goal.
       	At the end, experiment $\experiment{}{}[]$  will finish by outputting a bit
       	that depends on the interaction with $\adv$, to indicate if $\adv$ managed to break security.
-      	%      	
+
       	Any experiment is defined to express security of a certain primitive $\pcalgostyle{P}$,
       	like, e.g., public-key encryption (PKE).
       	Thus, part of the experiment's code uses the algorithms of the primitive $\pcalgostyle{P}$

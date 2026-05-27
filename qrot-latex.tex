@@ -7,6 +7,7 @@
 \newcommand{\rand}{\red{\rnd}}
 
 %%% Arrows
+\newcommand{\assign}{\ensuremath{\coloneqq}} % for deterministic assignment
 \newcommand{\apply}[1]{\overset{#1}{\longrightarrow}}
 \newcommand{\applyleft}[1]{\overset{#1}{\longleftarrow}}
 \newcommand{\applyleftright}[1]{\overset{#1}{\longleftrightarrow}}
@@ -16,6 +17,10 @@
 
 %%% Functions and so on
 \newcommand{\predicate}{\mathcal{P}}
+\newcommand{\primitive}{\pcalgostyle{P}}
+
+%%% Adversaries
+\renewcommand{\pcadvstyle}[1]{\mathcal{#1}}
 
 %%% Game interface
   \renewcommand{\pcthen}{:}

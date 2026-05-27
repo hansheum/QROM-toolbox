@@ -34,8 +34,8 @@
     The Fujisaki-Okamoto transformation~\cite{C:FujOka99}, which underlies many post-quantum
       KEMs including the now-standardized ML-KEM (Kyber)~\cite{Kyber}, can be
       framed as the composition of two 
-      transformations, \T and \U, as defined by Hofheinz
-      et al.~\cite{TCC:HofHovKil17} (hereafter HHK). 
+      transformations, \T and \U~\cite{TCC:HofHovKil17}.
+      %, as defined by Hofheinz et al. (hereafter HHK). 
       Starting from a public-key
       encryption scheme, the first transformation (\T) derandomizes the
       PKE by having its randomness be derived from a hash of the message (and possibly
@@ -44,18 +44,40 @@
       deterministic PKE by sampling a uniform message, encrypting it, and
       hashing it to produce the ephemeral key $\eK$.
   
-    In the following, we will focus on this second transformation, $\U$,
-      and build our KEM that satisfies indistinguishability (sometimes known as
-      ``hiding''), starting with a deterministing PKE that satisfies
+    We will focus on this second transformation, $\U$,
+      and build a KEM that satisfies indistinguishability (``hiding''),
+      from a deterministing PKE that satisfies
       one-way security.\footnote{
-        HHK defined several variants of the \U-transform that differ from the variant discussed here
+        Hofheinz et al.\ defined several variants of the
+        \U-transform that differ from the variant discussed here
     		in how they handle invalid ciphertexts and in what they hash into the
-        output key; our variant corresponds to \UExpMess in their notation.
+        output key; our variant corresponds to \UExpMess in their notation.~\cite{TCC:HofHovKil17}
         %\hhnote{
         %  Should we do the more general \UExpMess transform instead? Or does that
         %  just muddy the message?
         %}
-      } (See App.~\ref{sec:ttransform} for details on the \T-transform.)
+      } 
+
+    One-way security under Chosen Plaintext Attacks, or OW-CPA, is really a minimal security
+      requirement for PKE schemes: The goal of One-Wayness (OW) simply says that
+      given a ciphertext, it should be hard to recover the plaintext, and the
+      power of Chosen Plaintext Attacks (CPA), the ability to encrypt any
+      message under the key you are targetting, are of course ever-present when
+      encryption is public.\footnote{
+        For symmetric encryption schemes, the even weaker notion 
+        ``one-wayness under no message attack'' (OW-NMA) is still 
+        meaningful, but such a notion would not make any sense for PKE schemes.
+      }
+
+    After the \U-transform, 
+      then $\KEM$ achieves the much stronger
+      notion that given an encapsulation of one of two possible symmetric keys,
+      you should not be able to figure out which of the two keys sits inside the
+      encapsulation. In other words, if $\dPKE$ satisfies one-wayness
+      (\autoref{def:ow}), then $\KEM$ satisfies indistinguishability
+      (\autoref{def:indcpa}), captured in the following theorem.
+
+      (Details on the \T-transform are given in App.~\ref{sec:ttransform}.)
 
     \hhnote{
       Leave this version without the extra re-encryption check (which also
@@ -125,15 +147,6 @@
     \end{definition}
 
     \noindent
-    After the \U-transform, if the original $\dPKE$ satisfied a \emph{minimal}
-      security requirement, namely that given a ciphertext, it should be hard to
-      derive the encrypted plaintext, then $\KEM$ achieves the much stronger
-      notion that given an encapsulation of one of two possible symmetric keys,
-      you should not be able to figure out which of the two keys sits inside the
-      encapsulation. In other words, if $\dPKE$ satisfies one-wayness
-      (\autoref{def:ow}), then $\KEM$ satisfies indistinguishability
-      (\autoref{def:indcpa}), captured in the following theorem.
-
     Intuitively, the reduction relies on the fact that in order to
       distinguish, an adversary will have to call the random oracle on one of
       the messages used to derive the ephemeral key. Since the reduction 

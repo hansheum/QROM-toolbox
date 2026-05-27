@@ -1,4 +1,43 @@
-\section{The Quantum Random Oracle Model}\label{sec:rom}
+\section{The Quantum Random Oracle Model}\label{sec:qrom}
+  \subsection{Extra Preliminaries}
+    \hhnote{dumped from \autoref{sec:basics} (old preliminaries)}
+    Quantum(-accessible) oracles\footnote{
+      Some works distinguish between quantum-\emph{accessible} oracles,
+      which evaluate a function on a superposition of inputs, and
+      \emph{quantum} oracles, which apply some quantum operation on the input
+      registers.
+      We do not distinguish between these two kinds of oracle, and rather view
+      the former as a special case of the latter.
+      } are oracles that instead take a set of \emph{qubit registers} as input,
+      apply some operation on them, before returning the registers to the
+      querying party. The operation applied may be probabilistic in nature and
+      may include measurements (which has the effect of transforming pure
+      quantum states into mixed states, though it will often be required to be
+      unitary).
+      For quantum oracle algorithms, we will take a classical oracle to be a
+      quantum oracle that performs a computational-basis measurement on the
+      registers before operating on them. Hence, we do not make a
+      distinction between classical and quantum oracle access 
+      in our notation, writing $A^\Oracle$ for either case. 
+      \khnote{I'd move the quantum oracle part to the quantum section --
+      	we didn't explain qubits, registers, unitaries.... yet.
+      	We could place a pointer here that points to the respective section.
+      	(The only people who can parse this are the people who
+      	already know these concepts and thus wouldn't need the paragraph in the first place.)
+      }
+
+    In \autoref{subsec:pseudocode}, we define a quantum pseudocode that allows
+      us to talk about general quantum oracles, which we apply to quantum random
+      oracles in \autoref{sec:rom}. For now, we note that an oracle that
+      evaluates a function $f$ on superpositions of inputs is
+      usually defined as the quantum oracle $\Oracle_f$ that applies the
+      unitary operation
+      \[
+        \ket{x,y} \to \ket{x,y \xor f(x)}\, ,
+      \]
+      where $\ket{x,y}$ are the computational basis states of the qubit
+      registers input to the oracle. (In case this notation is
+      unfamiliar to you, \autoref{sec:primer} provides a gentle introduction.)
   \subsection{What Is a Quantum Random Oracle?}\label{sec:defs}
     A classical oracle for a function $f$ is a black-box procedure $\Oracle_f$
       such that, given input $x$, it returns $f(x)$ in such a way that no
