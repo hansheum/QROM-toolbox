@@ -21,13 +21,17 @@
 \renewcommand{\pcadvstyle}[1]{\mathcal{#1}}
 
 %%% Games and advantages
-  \renewcommand{\pcnotionstyle}[1]{\ensuremath{\mathsf{#1}}\xspace}
+  \renewcommand{\pcnotionstyle}[1]{\ensuremath{\mathsf{#1}}}
   \renewcommandx*{\experiment}[3][3=(\adv)]{\ensuremath{\pcalgostyle{#1}_{\pcadvantagesubstyle{#2}}#3}}
   %% Example usage: \experiment{\indcpa}{\pkescheme}[(\bdv)]
+  \newcommand{\examplegame}{\ensuremath{\mathsf{Game}}}
 
 %%% Notions
-  \newcommand{\findnotion}{\pcnotionstyle{FIND}}
-  \newcommand{\distnotion}{\pcnotionstyle{DIST}}  
+  \newcommand{\findnotion}{\pcnotionstyle{FIND}\xspace}
+  \newcommand{\distnotion}{\pcnotionstyle{DIST}\xspace}  
+  \newcommand{\goalpow}{\pcnotionstyle{GOAL\hy POWER}\xspace}
+  \newcommand{\ownma}{\pcnotionstyle{OW\hy NMA}\xspace}
+  \newcommand{\indnma}{\pcnotionstyle{IND\hy NMA}\xspace}
 
 %%% Game interface
   \renewcommand{\pcthen}{:}

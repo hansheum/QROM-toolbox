@@ -37,48 +37,13 @@
       transformations, \T and \U~\cite{TCC:HofHovKil17}.
       %, as defined by Hofheinz et al. (hereafter HHK). 
       Starting from a public-key
-      encryption scheme, the first transformation (\T) derandomizes the
+      encryption scheme, the first transformation \T derandomizes the
       PKE by having its randomness be derived from a hash of the message (and possibly
       the public key), and additionally adds a re-encryption check to the
-      decryption algorithm, while the second transformation builds a KEM from a
+      decryption algorithm, while the second transformation \U builds a KEM from a
       deterministic PKE by sampling a uniform message, encrypting it, and
-      hashing it to produce the ephemeral key $\eK$.
+      hashing it to produce the symmetric key $\eK$.
   
-    We will focus on this second transformation, $\U$,
-      and build a KEM that satisfies indistinguishability (``hiding''),
-      from a deterministing PKE that satisfies
-      one-way security.\footnote{
-        Hofheinz et al.\ defined several variants of the
-        \U-transform that differ from the variant discussed here
-    		in how they handle invalid ciphertexts and in what they hash into the
-        output key; our variant corresponds to \UExpMess in their notation.~\cite{TCC:HofHovKil17}
-        %\hhnote{
-        %  Should we do the more general \UExpMess transform instead? Or does that
-        %  just muddy the message?
-        %}
-      } 
-
-    One-way security under Chosen Plaintext Attacks, or OW-CPA, is really a minimal security
-      requirement for PKE schemes: The goal of One-Wayness (OW) simply says that
-      given a ciphertext, it should be hard to recover the plaintext, and the
-      power of Chosen Plaintext Attacks (CPA), the ability to encrypt any
-      message under the key you are targetting, are of course ever-present when
-      encryption is public.\footnote{
-        For symmetric encryption schemes, the even weaker notion 
-        ``one-wayness under no message attack'' (OW-NMA) is still 
-        meaningful, but such a notion would not make any sense for PKE schemes.
-      }
-
-    After the \U-transform, 
-      then $\KEM$ achieves the much stronger
-      notion that given an encapsulation of one of two possible symmetric keys,
-      you should not be able to figure out which of the two keys sits inside the
-      encapsulation. In other words, if $\dPKE$ satisfies one-wayness
-      (\autoref{def:ow}), then $\KEM$ satisfies indistinguishability
-      (\autoref{def:indcpa}), captured in the following theorem.
-
-      (Details on the \T-transform are given in App.~\ref{sec:ttransform}.)
-
     \hhnote{
       Leave this version without the extra re-encryption check (which also
       matches the original \U), and define a new \U with the re-encryption check
@@ -147,25 +112,73 @@
     \end{definition}
 
     \noindent
-    Intuitively, the reduction relies on the fact that in order to
+    We will use the \U-transformation as our running example,
+      using it to build a KEM that satisfies indistinguishability
+      from a deterministing PKE that satisfies
+      one-wayness.\footnote{
+        When Hofheinz et al.\ first modularized the FO transform into
+        its \T and \U components, they defined several variants of the
+        \U-transform that differ from the variant discussed here
+    		in how they handle invalid ciphertexts and in what they hash into the
+        output key; our variant corresponds to \UExpMess in their notation.~\cite{TCC:HofHovKil17}
+        %\hhnote{
+        %  Should we do the more general \UExpMess transform instead? Or does that
+        %  just muddy the message?
+        %}
+      } (Details on the \T-transform are given in App.~\ref{sec:ttransform}.)
+
+    As explained in \autoref{sec:basics}, One-way security under Chosen
+      Plaintext Attacks, or \owcpa, is really a minimal security
+      requirement for PKE schemes: The goal of One-Wayness (OW) simply says that
+      given a ciphertext, it should be hard to recover the plaintext, and the
+      power of Chosen Plaintext Attacks (CPA), the ability to encrypt any
+      message under the key you are targetting, are of course ever-present when
+      encryption is public.
+      What we want is the much stronger security requirement of
+      \emph{indistinguishability}, that even when two candidate messages are
+      known, an adversary is not able to figure out which of the two is
+      encrypted. Since our public key scheme is deterministic, it actually
+      \emph{cannot} achieve this notion of security: With two candidate messages
+      known, an adversary can simply re-encrypt both messages and check which of
+      the two yields the challenge ciphertext!
+      And yet, taking the deterministic PKE scheme through the \U-transform
+      will give us a \KEM achieves \emph{does} achieve indistingishability.
+
+    The central object that allows us to cross the wide chasm
+      between one-wayness and indistinguishability, is precisely the
+      \emph{random oracle}.
+      Intuitively, the security reduction relies on the fact that in order to
       distinguish, an adversary will have to call the random oracle on one of
-      the messages used to derive the ephemeral key. Since the reduction 
-      completely controls the random oracle simulation, it can simply output the
-      correct solution when it is used in a query to the random oracle. The fact that $\dPKE$
-      is deterministic means that our reduction will immediately be able to
-      recognize it, and this is why we are able to get a tight bound in this
-      case.
+      the messages used to derive the ephemeral key. Since we
+      fully control the simulation of the random oracle, we can simply output the
+      correct solution when it is used in a query to the random oracle. The fact
+      that $\dPKE$ is deterministic means that our reduction will immediately be
+      able to recognize the correct solution; this fact allows us to get
+      a tight bound in this case. (Otherwise we would have to guess which of the
+      calls to the random oracle contained the solution we are looking for,
+      which would incur a tightness loss related to the probability that
+      we guess correctly.)
+
+    To summarize, if $\dPKE$ satisfies one-wayness
+      (\autoref{def:ow}), then $\KEM$ satisfies indistinguishability
+      (\autoref{def:indcpa}), captured in the following theorem.
+
+    \hhnote{
+      Defs for OW-CPA and IND-CPA still todo in \autoref{sec:basics}.
+    }
 
     \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]\label{thm:cparom}
-      Let $\dPKE$ be a deterministic PKE, let $\RO$ be a random oracle, 
-      and let $\KEM = \U[\PKE, \RO]$.
+      Let \dPKE be a deterministic PKE scheme, let \RO be a random oracle, 
+      and let $\KEM$ be the KEM given by $\U[\PKE, \RO]$.
       Then for every adversary $\adv$ against $\KEM$, 
       %that makes at most $\qe$ calls to the challenge oracle, 
-      there is a reduction $\bdv$ against $\dPKE$ such that
+      there is an adversary $\bdv$ against $\dPKE$ such that
       \[
         \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv)]\, .
         %+ \frac{\qe}{2^m}\, .
       \]
+      The adversary $\bdv$ runs in the same time as $\adv$, plus the (small) overhead
+      of lazy-sampling a random oracle.
     \end{theorem}
 
     \noindent
@@ -176,39 +189,42 @@
         security'', so let us take a moment to parse the different parts of the
         statement.
 
-      On the left hand side, we have the advantage of our adversary $\adv$.
+      On the left-hand side of the main inequality, we have the distinguishing
+        advantage of our given adversary $\adv$.
         The theorem quantifies over all possible $\adv$, so you may
         think of this as the maximum possible distinguishing advantage against
-        $\KEM$. On the right, we have an upper-bound on this largest-possible advantage,
-        so if the right-hand side is small, then the largest-possible
-        distinguishing advantage against $\KEM$ must also be small, which is
-        just a different way of saying that $\KEM$ is secure.
+        the construction. On the right-hand side, we have an upper-bound on this
+        largest-possible distinguishing advantage. Hence,
+        if the right-hand side is small, then the largest-possible
+        distinguishing advantage against $\KEM$ must also be small. This is
+        just a different way of saying that $\KEM$ is indistinguishable.
+        The term on the right-hand side is the one-wayness advantage of our
+        \emph{constructed} adversary $\bdv$. Note the quantifiers: the theorem
+        statement says that ``for every (given) $\adv$, there exists a
+        (constructed) $\bdv$''. Hence, while we have no way of knowing the inner
+        workings of the given adversary $\adv$, we are free to construct $\bdv$ to our
+        liking. 
 
-      The term on the right-hand side is the one-wayness advantage of our
-        \emph{reduction} $\bdv$. The quantifiers tell us that for every $\adv$,
-        there exists a $\bdv$ (which may depend on $\adv$) that achieves this
-        advantage. The main challenge of the
-        proof is then to construct a $\bdv$ that exploits the winning
-        strategy of $\adv$ to win at its own game.
-
-      The trick to understand how this proves security is to think
+      The trick to understand how this ``proves security'' is to think
         contrapositively. Recall that what we
         want to prove is that ``if $\dPKE$ is secure, then $\KEM$ is secure''.
         The conrapositive statement that we are actually proving is ``if $\KEM$
         is \emph{in}secure, then $\dPKE$ must \emph{also} be insecure''. 
-        %Combined with the starting assumption that $\dPKE$
-        %is secure, this will then give us a proof-by-contradiction that $\KEM$
-        %must also be secure. 
         Hence, instead of thinking of $\bdv$'s advantage as
         an upper-bound on the best-possible $\adv$ advantage, think of this
         best-possible $\adv$ advantage as a \emph{lower-bound} on the
-        advantage an adversary $\bdv$ could achieve against $\dPKE$: If the former is large,
-        then the latter must also be large.
-        %(at least as long as the second term is small by comparison). 
-        %
-        Since we started out assuming that
-        $\dPKE$ is secure, which is to say that the one-way advantage of \emph{any} $\bdv$
-        must be small, this gives us our proof-by-contradiction.
+        advantage an adversary $\bdv$ could achieve against $\dPKE$: If the
+        former is large (\KEM is broken),
+        then the latter must also be large (\dPKE is broken).
+        Since we started out assuming that $\dPKE$ is secure, 
+        %which is to say that the one-way advantage of \emph{any} $\bdv$ must be small, 
+        this gives us our proof-by-contradiction.
+
+      The main challenge of the
+        proof is then to construct a $\bdv$ that exploits the winning
+        strategy of $\adv$ in such a way that if $\adv$ \emph{would} win at the
+        indistinguishability game, then what \emph{actually} happens is that
+        $\bdv$ wins at the one-wayness game (at least with high probability).
 
       %The second term is an artifact of our
       %  proof strategy. (We could have come up with a slightly smarter
@@ -228,11 +244,19 @@
       %  \]
       %  So we're good!
 
+    \crakzfigcode{bre-classical}{
+      Proof outline for \autoref{thm:cparom}. NB: Stolen from old BRE stuff;
+      adapt.
+      Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
+      the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
+      $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
+    }
 
-    \paragraph{Our proof strategy.}
-      Our reduction will not be able simulate the real world of the
+    \begin{proof}[\autoref{thm:cparom}]
+      Our constructed adversary $\bdv$ will not be able simulate the real world of the
         indistinguishability game, since it does not know which message the
-        challenge ciphertext encrypted, and so it can not hash it to produce the
+        challenge ciphertext it recieved encrypted (that's what it's trying to
+        figure out); hence, it can not hash the message to produce the
         correct symmetric key for $\adv$.
         It can, however, easily simulate the random world, since here the
         symmetric key is simply sampled uniformly.  
@@ -240,21 +264,252 @@
       But in order to argue that $\adv$ can not distinguish this from the real
         world, we need to change the game in such a way that the move from real to
         random keys is completely hidden from view.
-        We do this by inserting an intermediary game between the real and the
-        random worlds, as shown in \autoref{fig:cparom-hops}.
-        This middle game formalizes the idea that, thanks to the \U-transform,
+        We do this by inserting two intermediary games between the real-world and the
+        random-world games, as shown in \autoref{fig:cparom-hops}.
+        These middle games formalize the idea that, thanks to the \U-transform,
         the adversary will have to call the random oracle on the correct message
-        in order to notice that it is not in the real-world experiment: If it
-        does, then a $\bad$ flag is set to true; other than this, the game
-        proceeds exactly as the real-world game. Thanks to
-        \autoref{lemma:bad}, we know that the difference between these games is
-        bounded by the probability that $\bad$ is set to true.
-
-      Now, \emph{conditioned} on $\bad$ never being set to true,
-        notice that we can exchange the real symmetric keys for a randomly
+        in order to notice that it is not in the real world: If it
+        does, then a $\bad$ flag is set to true. Assuming the $\bad$ flag is
+        never set to true, the game proceeds exactly as the real-world game, and
+        thanks to \autoref{lemma:bad}, we know that the difference between these
+        games is bounded by the probability that $\bad$ is set to true.
+        Then, \emph{conditioned} on $\bad$ never being set to true,
+        we can exchange the real symmetric key for a randomly
         sampled one without the adversary ever being able to notice. 
-        Therefore, the second game hop from real to random keys is ``for free'',
-        since the two games are equal in terms of probabilities. 
+        %Therefore, the second game hop from real to random keys is ``for free'',
+        %since the two games are equal in terms of probabilities. 
+
+      %%% Game hops, single-challenge version
+      \begin{figure}[t]
+      	\begin{center}
+          % Game 0
+      		\fbox{
+      			\small
+      			\nicoresetlinenr
+      			\begin{minipage}[t]{4cm}	
+              \underline{\gameHeading $\game 0(\adv)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $(\pk, \sk) \sample \KG()$
+                \smallskip
+                \item $x^* \sample \bin^n$
+                \smallskip
+                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \smallskip
+                \item $\eK^* \gets \RO(x^*)$ 
+                \smallskip
+                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \smallskip
+                \item $\pcreturn \advbit$
+      				\end{nicodemus}
+      			\end{minipage}
+      
+      			\pchspace
+      			
+      			\begin{minipage}[t]{3.8cm}
+      				\underline{\oracleHeading $\RO(x)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $\pcif \Db[x] = \bot :$ 
+                \smallskip
+                \item   \quad $\Db[x] \sample \bin^m$
+                \smallskip
+                \item $\pcreturn \Db[x]$
+      				\end{nicodemus}	
+      			\end{minipage}
+      		}
+          %% GAME 1
+      		\fbox{
+      			\small
+      			\nicoresetlinenr
+      			\begin{minipage}[t]{4cm}	
+              \underline{\gameHeading $\game 1(\adv)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $(\pk, \sk) \sample \KG()$
+                \smallskip
+                \item $x^* \sample \bin^n$
+                \smallskip
+                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \smallskip
+                \item $\eK^* \gets \RO(x^*)$ 
+                \smallskip
+                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \smallskip
+                \item $\pcreturn \advbit$
+      				\end{nicodemus}
+      			\end{minipage}
+      
+      			\pchspace
+      			
+      			\begin{minipage}[t]{3.8cm}
+      				\underline{\oracleHeading $\RO(x)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item \fbox{$\ctxt \gets \Enc_\pk(x)$}
+                %\smallskip
+                \item \fbox{$\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$} 
+                \smallskip
+                \item $\pcif \Db[x] = \bot :$ 
+                \smallskip
+                \item   \quad $\Db[x] \sample \bin^m$
+                \smallskip
+                \item $\pcreturn \Db[x]$
+      				\end{nicodemus}	
+      			\end{minipage}
+      		}
+          % GAME 2
+      		\fbox{
+      			\small
+      			\nicoresetlinenr
+      			\begin{minipage}[t]{4cm}	
+              \underline{\gameHeading $\game 2(\adv)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $(\pk, \sk) \sample \KG()$
+                \smallskip
+                \item $x^* \sample \bin^n$
+                \smallskip
+                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \smallskip
+                \item \fbox{$\eK^* \sample \Kspace$}
+                \smallskip
+                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \smallskip
+                \item $\pcreturn \advbit$
+      				\end{nicodemus}
+      			\end{minipage}
+      
+      			\pchspace
+      			
+      			\begin{minipage}[t]{3.8cm}
+      				\underline{\oracleHeading $\RO(x)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $\ctxt \gets \Enc_\pk(x)$
+                \smallskip
+                \item $\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$
+                \smallskip
+                \item $\pcif \Db[x] = \bot :$ 
+                \smallskip
+                \item   \quad $\Db[x] \sample \bin^m$
+                \smallskip
+                \item $\pcreturn \Db[x]$
+      				\end{nicodemus}	
+      			\end{minipage}
+      		}
+          % GAME 3
+      		\fbox{
+      			\small
+      			\nicoresetlinenr
+      			\begin{minipage}[t]{4cm}	
+              \underline{\gameHeading $\game 3(\adv)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $(\pk, \sk) \sample \KG()$
+                \smallskip
+                \item $x^* \sample \bin^n$
+                \smallskip
+                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \smallskip
+                \item $\eK^* \sample \Kspace$
+                \smallskip
+                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \smallskip
+                \item $\pcreturn \advbit$
+      				\end{nicodemus}
+      			\end{minipage}
+      
+      			\pchspace
+      			
+      			\begin{minipage}[t]{3.8cm}
+      				\underline{\oracleHeading $\RO(x)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $\pcif \Db[x] = \bot :$ 
+                \smallskip
+                \item   \quad $\Db[x] \sample \bin^m$
+                \smallskip
+                \item $\pcreturn \Db[x]$
+      				\end{nicodemus}	
+      			\end{minipage}
+      		}
+      	\end{center}
+      	\caption{\label{fig:cparom-hops}
+          The game hops in the proof of \autoref{thm:cparom}.
+          Boxes highlight the lines of code that were added between each game.
+        }
+      \end{figure}
+
+      To make this formal, start by recalling the distinguishing advantage of
+        the given adversary $\adv$. We will use the ``difference'' version of
+        distinguishing advantages, as
+        it fits more cleanly with the ``game hopping'' style of proof.
+        \[
+        	\advantage{\indcpa}{\KEM} = \abs{
+        		\condprobsample{
+        			\experiment{\indcpa}{\KEM}
+        		}{1 \gets \adv}{\chalbit = 0}
+        		- \condprobsample{
+        			\experiment{\indcpa}{\KEM}
+        		}{1 \gets \adv}{\chalbit = 1}
+        	}\, .
+        \]
+        The game $\game 0$ is just the real-world ($\chalbit=0$) $\indcpa$ game, with the
+        construction of \KEM written out explicitly, together with a lazy-sampled
+        random oracle. Similarly, $\game 3$ is just the random-world
+        ($\chalbit=1$) $\indcpa$ game with the \KEM construction explicit. We
+        can therefore write
+        \[
+        	\advantage{\indcpa}{\KEM} = \abs{
+        		\probsample{
+              \game{0}(\adv)
+        		}{1 \gets \adv}
+        		- \probsample{
+              \game{3}(\adv)
+        		}{1 \gets \adv}
+        	}\, .
+        \]
+        We are of course always free to ``add zero'' by adding and subtracting
+        the same term, so this is equal to:
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &= 
+            |\probsample{
+              \game{0}(\adv) 
+        		}{1 \gets \adv} \\
+            &\qquad - \probsample{
+              \game{1}(\adv)
+        		}{1 \gets \adv}
+        		+ \probsample{
+              \game{1}(\adv)
+        		}{1 \gets \adv} \\
+            &\qquad - \probsample{
+              \game{2}(\adv)
+        		}{1 \gets \adv}
+        		+ \probsample{
+              \game{2}(\adv)
+        		}{1 \gets \adv} \\
+            &\qquad - \probsample{
+              \game{3}(\adv)
+        		}{1 \gets \adv}|\, .
+        \end{align*}
+        Now, use the triangle inequality to split the absolute value into three absolute values:
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &\leq 
+            \abs{\probsample{ \game{0}(\adv) }{1 \gets \adv} 
+              - \probsample{ \game{1}(\adv) }{1 \gets \adv}} \\
+            &\quad + \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv} 
+              - \probsample{ \game{2}(\adv) }{1 \gets \adv}} \\
+            &\quad + \abs{\probsample{ \game{2}(\adv) }{1 \gets \adv} 
+              - \probsample{ \game{3}(\adv) }{1 \gets \adv}}\, .
+        \end{align*}
+        This looks a lot like three distinguishing advantages, just between
+        adjacent games rather than between the two games $\game 0$ and $\game 3$
+        that we started with. Let us analyze each in turn.
+
+      The 
+
+      \hhnote{cont}
 
       We now have a game that $\bdv$ knows how to simulate. Further, the $\bad$
         flag was chosen in such a way that the case that it is set to $\true$
@@ -280,7 +535,6 @@
         conditioned on $\neg \bad$, the latter
         being equal to the random-world game.
 
-    \begin{proof}[\autoref{thm:cparom}]
       \begin{align*}
         \advantage{\indcpa}{\KEM} 
           &= \abs{
@@ -359,167 +613,6 @@
         \]
       \end{lemma}
     
-    %%% Game hops, single-challenge version
-    \begin{figure}[t]
-    	\begin{center}
-        % Game 0
-    		\fbox{
-    			\small
-    			\nicoresetlinenr
-    			\begin{minipage}[t]{4cm}	
-            \underline{\gameHeading $\game 0(\adv)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $(\pk, \sk) \sample \KG()$
-              \smallskip
-              \item $x^* \sample \bin^n$
-              \smallskip
-              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
-              \smallskip
-              \item $\eK^* \gets \RO(x^*)$ 
-              \smallskip
-              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
-              \smallskip
-              \item $\pcreturn \advbit$
-    				\end{nicodemus}
-    			\end{minipage}
-    
-    			\pchspace
-    			
-    			\begin{minipage}[t]{3.8cm}
-    				\underline{\oracleHeading $\RO(x)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $\pcif \Db[x] = \bot :$ 
-              \smallskip
-              \item   \quad $\Db[x] \sample \bin^m$
-              \smallskip
-              \item $\pcreturn \Db[x]$
-    				\end{nicodemus}	
-    			\end{minipage}
-    		}
-        %% GAME 1
-    		\fbox{
-    			\small
-    			\nicoresetlinenr
-    			\begin{minipage}[t]{4cm}	
-            \underline{\gameHeading $\game 1(\adv)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $(\pk, \sk) \sample \KG()$
-              \smallskip
-              \item $x^* \sample \bin^n$
-              \smallskip
-              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
-              \smallskip
-              \item $\eK^* \gets \RO(x^*)$ 
-              \smallskip
-              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
-              \smallskip
-              \item $\pcreturn \advbit$
-    				\end{nicodemus}
-    			\end{minipage}
-    
-    			\pchspace
-    			
-    			\begin{minipage}[t]{3.8cm}
-    				\underline{\oracleHeading $\RO(x)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item \fbox{$\ctxt \gets \Enc_\pk(x)$}
-              %\smallskip
-              \item \fbox{$\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$} 
-              \smallskip
-              \item $\pcif \Db[x] = \bot :$ 
-              \smallskip
-              \item   \quad $\Db[x] \sample \bin^m$
-              \smallskip
-              \item $\pcreturn \Db[x]$
-    				\end{nicodemus}	
-    			\end{minipage}
-    		}
-        % GAME 2
-    		\fbox{
-    			\small
-    			\nicoresetlinenr
-    			\begin{minipage}[t]{4cm}	
-            \underline{\gameHeading $\game 2(\adv)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $(\pk, \sk) \sample \KG()$
-              \smallskip
-              \item $x^* \sample \bin^n$
-              \smallskip
-              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
-              \smallskip
-              \item \fbox{$\eK^* \sample \Kspace$}
-              \smallskip
-              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
-              \smallskip
-              \item $\pcreturn \advbit$
-    				\end{nicodemus}
-    			\end{minipage}
-    
-    			\pchspace
-    			
-    			\begin{minipage}[t]{3.8cm}
-    				\underline{\oracleHeading $\RO(x)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $\ctxt \gets \Enc_\pk(x)$
-              \smallskip
-              \item $\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$
-              \smallskip
-              \item $\pcif \Db[x] = \bot :$ 
-              \smallskip
-              \item   \quad $\Db[x] \sample \bin^m$
-              \smallskip
-              \item $\pcreturn \Db[x]$
-    				\end{nicodemus}	
-    			\end{minipage}
-    		}
-        % GAME 3
-    		\fbox{
-    			\small
-    			\nicoresetlinenr
-    			\begin{minipage}[t]{4cm}	
-            \underline{\gameHeading $\game 3(\adv)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $(\pk, \sk) \sample \KG()$
-              \smallskip
-              \item $x^* \sample \bin^n$
-              \smallskip
-              \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
-              \smallskip
-              \item $\eK^* \sample \Kspace$
-              \smallskip
-              \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
-              \smallskip
-              \item $\pcreturn \advbit$
-    				\end{nicodemus}
-    			\end{minipage}
-    
-    			\pchspace
-    			
-    			\begin{minipage}[t]{3.8cm}
-    				\underline{\oracleHeading $\RO(x)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $\pcif \Db[x] = \bot :$ 
-              \smallskip
-              \item   \quad $\Db[x] \sample \bin^m$
-              \smallskip
-              \item $\pcreturn \Db[x]$
-    				\end{nicodemus}	
-    			\end{minipage}
-    		}
-    	\end{center}
-    	\caption{\label{fig:cparom-hops}
-        The game hops in the proof of \autoref{thm:cparom}.
-        Boxes highlight the lines of code that were added between each game.
-      }
-    \end{figure}
 
     %%% Reduction
     \begin{figure}[bt]

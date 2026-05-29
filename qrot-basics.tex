@@ -169,10 +169,6 @@
     }
     
     \subsubsection{Security Games.}
-    \newcommand{\examplegame}{\ensuremath{\mathsf{Game}}}
-    \newcommand{\goalpow}{\pcnotionstyle{GOAL\hy POWER}}
-    \newcommand{\ownma}{\pcnotionstyle{OW\hy NMA}}
-    \newcommand{\indnma}{\pcnotionstyle{IND\hy NMA}}
     	Security is defined in terms of a \emph{security game}.
       	You can envision these as a game in which a player (or \emph{adversary})
       	is challenged to break security of a cryptographic construction (or \emph{primitive}),
@@ -202,7 +198,7 @@
       	E.g., we might want to write an experiment to express that encryptions of a PKE scheme \PKE
       	are ``one-way'' in the sense that they are hard to invert without the secret key.
       	To express this, the ``one-wayness under chosen-plaintext attacks'' game
-        \owcpa\ would encrypt a random plaintext message \chalmssg into a ciphertext \chalctxt,
+        \owcpa would encrypt a random plaintext message \chalmssg into a ciphertext \chalctxt,
       	hand \chalctxt to $\adv$,
       	have $\adv$ output a guess \advmssg,
         and return 1 if $\adv$ guessed the correct encrypted message (so if $\advmssg =
@@ -383,8 +379,8 @@
           Here, the game internally tosses a coin to determine which of the
           two to-be-distinguished worlds the adversary will be interacting
           with, and the game outputs $1$ if the adversary guessed the correct
-          world. Note how scaling the advantage by a factor $2$ and subtracting $1$
-          makes the advantage scale between $0$ (for strategies that are no
+          world. Note how scaling by a factor $2$ and subtracting $1$
+          makes the advantage a value that runs between $0$ (for strategies that are no
           better than guessing) to $1$ (for strategies that always win),
           matching the ``finding'' case.
 
@@ -398,12 +394,27 @@
           	\advantage{\distnotion}{\primitive} &\coloneqq \abs{
           		\condprobsample{
           			\experiment{\distnotion}{\primitive}
-          		}{1 \sample \adv}{\chalbit = 0}
+          		}{1 \gets \adv}{\chalbit = 0}
           		- \condprobsample{
           			\experiment{\distnotion}{\primitive}
-          		}{1 \sample \adv}{\chalbit = 1}
+          		}{1 \gets \adv}{\chalbit = 1}
           	}\, .
           \]
+
+
+      \hhnote{
+        Instead define 
+        $
+          \advantage{\distnotion}{\primitive} &\coloneqq \abs{
+        		\probsample{
+              \distnotion_\primitive^0(\adv)
+        		}{1 \gets \adv}
+        		- \probsample{
+              \distnotion_\primitive^1(\adv)
+        		}{1 \gets \adv}
+        	}
+        $?
+      }
 
       \noindent
       We again get a formula that scales from $0$ to $1$: If $\adv$ always
@@ -630,7 +641,7 @@
         Notice, though, that anyone who can compute the secret key from the public
           key, can also decrypt any ciphertext that were created using that public
           key. This means that if an adversary $\adv$ can recover secret keys,
-          then they can also win the \owcpa\ game, whereas
+          then they can also win the \owcpa game, whereas
           the opposite does not seem to hold in general (since there might be
           ways to attack a ciphertext that does not rely on knowing the secret
           key). Hence, $\owcpa$ gives a \emph{stronger} security guarantee than
@@ -884,24 +895,6 @@
 	    \end{definition}
 
     \subsubsection{Hash Function Security.}
-
-  \subsection{Asymptotic versus Concrete.}
-    \hhnote{copy-pasted}
-    \khnote{
-    	I put a rephrasing of this into the introductory game-based section, since this is where we introduce advantages.
-    	Given that we only use concrete bounds, I'm tempted to suggest removal of the whole subsection.
-    }
-    Adversaries are assumed to be generally quantum agents, having
-      access to as much classical and quantum memory as they need, on which
-      they can apply unitary operations and measurements as they
-      please. (We will come upon cases later where it will be beneficial to restrict this
-      assumption.) We will mostly think of these agents as being \emph{efficient} in the sense of
-      running in time polynomial in the security parameter $\secpar$, although
-      we will stick with a concrete formal treatment wherein asymptotics are
-      avoided, and the running time of reductions are instead stated directly in terms
-      of the running time of the original adversary. We may also
-      consider \emph{unbounded} adversaries; these can be thought of as running
-      in time (and space) exponential in the security parameter.
 
   \subsection{Reductions.}
     We say that a reduction is \emph{simple} if it only runs the adversary once,
