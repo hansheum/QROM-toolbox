@@ -244,15 +244,19 @@
       %  \]
       %  So we're good!
 
-    \crakzfigcode{bre-classical}{
-      Proof outline for \autoref{thm:cparom}. NB: Stolen from old BRE stuff;
-      adapt.
-      Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
-      the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
-      $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
+    \crakzfigcode{cparom-hops-illustrated}{
+      Proof outline for \autoref{thm:cparom}. The arrows show the changes
+      incurred by each game hop, and the braces show the difference in
+      win probabilities between each game.
+      %Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
+      %the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
+      %$\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
     }
 
     \begin{proof}[\autoref{thm:cparom}]
+      \hhnote{
+        todo: migrate games from counting-from-zero to counting-from-one
+      }
       Our constructed adversary $\bdv$ will not be able simulate the real world of the
         indistinguishability game, since it does not know which message the
         challenge ciphertext it recieved encrypted (that's what it's trying to
@@ -282,47 +286,13 @@
       %%% Game hops, single-challenge version
       \begin{figure}[t]
       	\begin{center}
-          % Game 0
+      	\resizebox{\textwidth}{!}{%
+      	\begin{tabular}{@{}c@{\hspace{0em}}c@{}}
+          % TOP LEFT: Game 1
       		\fbox{
       			\small
       			\nicoresetlinenr
-      			\begin{minipage}[t]{4cm}	
-              \underline{\gameHeading $\game 0(\adv)$}
-              \smallskip
-      				\begin{nicodemus}
-                \item $(\pk, \sk) \sample \KG()$
-                \smallskip
-                \item $x^* \sample \bin^n$
-                \smallskip
-                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
-                \smallskip
-                \item $\eK^* \gets \RO(x^*)$ 
-                \smallskip
-                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
-                \smallskip
-                \item $\pcreturn \advbit$
-      				\end{nicodemus}
-      			\end{minipage}
-      
-      			\pchspace
-      			
-      			\begin{minipage}[t]{3.8cm}
-      				\underline{\oracleHeading $\RO(x)$}
-              \smallskip
-      				\begin{nicodemus}
-                \item $\pcif \Db[x] = \bot :$ 
-                \smallskip
-                \item   \quad $\Db[x] \sample \bin^m$
-                \smallskip
-                \item $\pcreturn \Db[x]$
-      				\end{nicodemus}	
-      			\end{minipage}
-      		}
-          %% GAME 1
-      		\fbox{
-      			\small
-      			\nicoresetlinenr
-      			\begin{minipage}[t]{4cm}	
+            \begin{minipage}[t][3.3cm]{4cm}	
               \underline{\gameHeading $\game 1(\adv)$}
               \smallskip
       				\begin{nicodemus}
@@ -340,8 +310,77 @@
       				\end{nicodemus}
       			\end{minipage}
       
-      			\pchspace
-      			
+            \begin{minipage}[t]{3.8cm}
+      				\underline{\oracleHeading $\RO(x)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $\pcif \Db[x] = \bot :$ 
+                \smallskip
+                \item   \quad $\Db[x] \sample \bin^m$
+                \smallskip
+                \item $\pcreturn \Db[x]$
+      				\end{nicodemus}	
+      			\end{minipage}
+      		}
+          &
+          %% TOP RIGHT: Game 4
+      		\fbox{
+      			\small
+      			\nicoresetlinenr
+            \begin{minipage}[t][3.3cm]{4cm}	
+              \underline{\gameHeading $\game 4(\adv)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $(\pk, \sk) \sample \KG()$
+                \smallskip
+                \item $x^* \sample \bin^n$
+                \smallskip
+                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \smallskip
+                \item \dbox{$\eK^* \sample \Kspace$}
+                \smallskip
+                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \smallskip
+                \item $\pcreturn \advbit$
+      				\end{nicodemus}
+      			\end{minipage}
+      
+      			\begin{minipage}[t]{3.8cm}
+      				\underline{\oracleHeading $\RO(x)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $\pcif \Db[x] = \bot :$ 
+                \smallskip
+                \item   \quad $\Db[x] \sample \bin^m$
+                \smallskip
+                \item $\pcreturn \Db[x]$
+      				\end{nicodemus}	
+      			\end{minipage}
+      		}
+          \\[2ex]
+          % BOTTOM LEFT: Game 2
+      		\fbox{
+      			\small
+      			\nicoresetlinenr
+            \begin{minipage}[t][3.4cm]{4cm}	
+              \underline{\gameHeading $\game 2(\adv)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $(\pk, \sk) \sample \KG()$
+                \smallskip
+                \item $x^* \sample \bin^n$
+                \smallskip
+                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \smallskip
+                \item $\eK^* \gets \RO(x^*)$ 
+                \smallskip
+                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \smallskip
+                \item $\pcreturn \advbit$
+                \smallskip
+      				\end{nicodemus}
+      			\end{minipage}
+      
       			\begin{minipage}[t]{3.8cm}
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
@@ -358,12 +397,13 @@
       				\end{nicodemus}	
       			\end{minipage}
       		}
-          % GAME 2
+          &
+          % BOTTOM RIGHT: Game 3
       		\fbox{
       			\small
       			\nicoresetlinenr
-      			\begin{minipage}[t]{4cm}	
-              \underline{\gameHeading $\game 2(\adv)$}
+            \begin{minipage}[t][3.4cm]{4cm}	
+              \underline{\gameHeading $\game 3(\adv)$}
               \smallskip
       				\begin{nicodemus}
                 \item $(\pk, \sk) \sample \KG()$
@@ -380,8 +420,6 @@
       				\end{nicodemus}
       			\end{minipage}
       
-      			\pchspace
-      			
       			\begin{minipage}[t]{3.8cm}
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
@@ -398,46 +436,16 @@
       				\end{nicodemus}	
       			\end{minipage}
       		}
-          % GAME 3
-      		\fbox{
-      			\small
-      			\nicoresetlinenr
-      			\begin{minipage}[t]{4cm}	
-              \underline{\gameHeading $\game 3(\adv)$}
-              \smallskip
-      				\begin{nicodemus}
-                \item $(\pk, \sk) \sample \KG()$
-                \smallskip
-                \item $x^* \sample \bin^n$
-                \smallskip
-                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
-                \smallskip
-                \item $\eK^* \sample \Kspace$
-                \smallskip
-                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
-                \smallskip
-                \item $\pcreturn \advbit$
-      				\end{nicodemus}
-      			\end{minipage}
-      
-      			\pchspace
-      			
-      			\begin{minipage}[t]{3.8cm}
-      				\underline{\oracleHeading $\RO(x)$}
-              \smallskip
-      				\begin{nicodemus}
-                \item $\pcif \Db[x] = \bot :$ 
-                \smallskip
-                \item   \quad $\Db[x] \sample \bin^m$
-                \smallskip
-                \item $\pcreturn \Db[x]$
-      				\end{nicodemus}	
-      			\end{minipage}
-      		}
+      	\end{tabular}%
+      	}
       	\end{center}
       	\caption{\label{fig:cparom-hops}
-          The game hops in the proof of \autoref{thm:cparom}.
-          Boxes highlight the lines of code that were added between each game.
+          The game hops in the proof of \autoref{thm:cparom}, ordered to match
+          \autoref{fig:cparom-hops-illustrated}.
+          The dashed box highlights the difference between the real-world game
+          $\game 1$ and
+          the random-world game $\game 4$, and the solid boxes highlight lines of code
+          that were changed between successive game hops.
         }
       \end{figure}
 
