@@ -2,8 +2,6 @@
 %\renewcommand{\perp}{\, \perp}
 
 %%% Merging with Kat's macros wip
-%\renewcommand{\MSpace}{\red{\Mspace}}
-%\renewcommand{\RSpace}{\red{\Rspace}}
 \newcommand{\rand}{\red{\rnd}}
 
 %%% Arrows
@@ -26,6 +24,10 @@
   \renewcommand{\pcnotionstyle}[1]{\ensuremath{\mathsf{#1}}\xspace}
   \renewcommandx*{\experiment}[3][3=(\adv)]{\ensuremath{\pcalgostyle{#1}_{\pcadvantagesubstyle{#2}}#3}}
   %% Example usage: \experiment{\indcpa}{\pkescheme}[(\bdv)]
+
+%%% Notions
+  \newcommand{\findnotion}{\pcnotionstyle{FIND}}
+  \newcommand{\distnotion}{\pcnotionstyle{DIST}}  
 
 %%% Game interface
   \renewcommand{\pcthen}{:}

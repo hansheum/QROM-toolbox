@@ -240,37 +240,42 @@
         In that case, we will also say that adversary $\adv$ broke the
         $\experiment{Game}{}[]$ security of primitive $\primitive$.
         
-      What do we mean when we say that a notion such as \ownma would be ``weak''? Well,
-        in general the \emph{strength} of the notion scales with how ``easy'' it
-        would be for a sufficiently strong adversary to win the game:
-        A security notion with a simpler \emph{goal}, such as guessing
-        which of two known messages are encrypted (this is known as
-        \emph{indistinguishability}, or \ind) is stronger than one with a more complex
-        goal, such as recovering the full message from scratch like in the above
-        example: We have lowered the bar for what counts as ``breaking'' the scheme, so if
-        no adversary can win at the easier game, then
-        there certainly aren't any adversaries that can win at the harder one
-        either. Hence, claiming security under an easier-to-break goal gives a
-        \emph{stronger} statement. 
+      \paragraph{The Strength of a Security Notion.}
+        What do we mean when we say that a notion such as \ownma would be ``weak''? Well,
+          in general the \emph{strength} of the notion scales with how ``easy'' it
+          would be for a sufficiently strong adversary to win the game:
+          A security notion with a simpler \emph{goal}, such as guessing
+          which of two known messages are encrypted (this is known as
+          \emph{indistinguishability}, or \ind) is stronger than one with a more complex
+          goal, such as recovering the full message from scratch like in the above
+          example: We have lowered the bar for what counts as ``breaking'' the scheme, so if
+          no adversary can win at the easier game, then
+          there certainly aren't any adversaries that can win at the harder one
+          either. Hence, claiming security under an easier-to-break goal gives a
+          \emph{stronger} statement. 
 
-      The other lever with which we can control the
-        strength of a security notion is of course the attack power given to the
-        adversary: more power means a stronger security notion. For
-        example, consider again the case of symmetric encryption: we could give
-        the adversary the power of chosen-plaintext attacks by simply
-        \emph{providing} it with encryptions of its choosing whenever it asks.
-        The claim that the game \emph{still} can not be won by any adversary is
-        stronger than claiming that it can not be won without this ability.
+        The other lever with which we can control the
+          strength of a security notion is of course the attack power given to the
+          adversary: more power means a stronger security notion. For
+          example, consider again the case of symmetric encryption: we could give
+          the adversary the power of chosen-plaintext attacks by simply
+          \emph{providing} it with encryptions of its choosing whenever it asks.
+          The claim that the game \emph{still} can not be won by any adversary is
+          stronger than claiming that it can not be won without this ability.
 
-      So: \ownma is a weaker notion of security than \owcpa, with \indcpa
-        stronger still. Meanwhile, \owcpa and \indnma would in general be
-        \emph{incomparable} in terms of strength: A symmetric encryption scheme
-        might be secure with respect to one notion while being
-        completely broken in terms of the other.\footnote{
-          It is a fun game to try to come up with schemes that exemplify this
-          behaviour, and with a little creative thinking you may be able to come
-          up with some yourself.
-        }
+        So: \ownma is a weaker notion of security than \owcpa, with \indcpa
+          stronger still. Meanwhile, \owcpa and \indnma would in general be
+          \emph{incomparable} in terms of strength: A symmetric encryption scheme
+          might be secure with respect to one notion while being
+          completely broken in terms of the other.\footnote{
+            It is a fun puzzle to try to come up with encryption schemes that exemplify this
+            behaviour (secure under one notion, insecure under the other);
+            a little creative thinking should allow you to find some. (Hint:
+            As a starting point, assume that you have an encryption scheme that
+            is secure under both notions, then think
+            about how you could alter it so that it ``breaks'' under one notion
+            but not under the other.)
+          }
       	
         \begin{figure}[t]
         	\begin{center}
@@ -305,82 +310,106 @@
         }
         \hhnote{
           Changed to this style, except with the adversary still as ``input''. Open to
-          changing my mind about that (I think usually the input would be
+          changing my mind about that (I think usually the input slot would be
           reserved for the security parameter in asymptotic notions?), but I
           feel like it might be useful to have the superscript available for
           e.g.\ bit values in game hops.
         }
         
       \subsubsection{Advantages.}
-        \hhnote{continuing from here}
         Intuitively, a primitive $\primitive$ is ``broken'' if there exists an
-        ``efficient'' adversary (i.e., an ``efficient'' attack algorithm)
-	    that wins the game with a ``significant'' probability,
-	    and it is ``secure'' if no such adversary exists.
-	    (You could think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
-	    	if we increase the construction's parameters, like, e.g., the key length.
-	    	Similarly, you could think of ``significant'' probabilities as probabilities that do not speed-run towards 0
-	    	upon parameter increase.)
-	    In practice, however, cryptographic designs need to make concrete parameter choices,
-	    and such asymptotic notions do not necessarily help with assessing how secure the concrete design is, in practice.
-	    We will thus follow the \emph{concrete} security approach, 
-        expressing security via explicit bounds that relate the adversary’s resources to its probability of success.
-        We will capture the adversary’s probability of success as \emph{advantages},
-        e.g., as the probability that an an attacker can find the original message \chalmssg belonging to a ciphertext \chalctxt.
-        How the specific advantages are defined depends on what kind of security notion we are talking about.
-        The security notions we care about all fall into one of two categories:
-        
-        \newcommand{\findnotion}{\pcnotionstyle{FIND}}
-        \newcommand{\distnotion}{\pcnotionstyle{DIST}}  
+          ``efficient'' adversary (i.e., an ``efficient'' attack algorithm)
+	        that wins the game with a ``significant'' probability,
+	        and it is ``secure'' if no such adversary exists.
+	        (You could think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
+	    	  if we increase the construction's parameters, like, e.g., the key length.
+	    	  Similarly, you could think of ``significant'' probabilities as probabilities that do not speed-run towards 0
+	    	  upon parameter increase.)
+
+        Under the paradigm of \emph{asymptotic security}, one would identify
+          ``efficient'' with ``scales as a polynomial in the security
+          parameter'', with similar definitions for ``significant''
+          probabilities. In practice, however, cryptographic designs need to
+          make concrete parameter choices,
+	        and such asymptotic notions do not necessarily help with assessing how secure the concrete design is in practice.
+	        We will thus follow the \emph{concrete security} approach, 
+          expressing security via explicit bounds that relate the adversary’s
+          resources to its probability of successfully breaking our scheme.
+          This success probability is captured by the notion of an \emph{advantage},
+          which could for example be the probability that an attacker can find the original
+          message \chalmssg belonging to a ciphertext \chalctxt.
+          
+        How the advantages are defined depends on what kind of security
+          notion we are talking about.
+          The security notions we care about all fall into one of two categories:
         
         \begin{itemize}
-        	\item \emph{finding},
-        		
-        		\khnote{Replaced "computational" with "finding" because distinguishing problems are also "computational" in the sense that they're not information-theoretic.}
+        	\item \emph{Finding},
+        		%\khnote{
+            %  Replaced "computational" with "finding" because distinguishing
+            %  problems are also "computational" in the sense that they're not
+            %  information-theoretic.
+            %} % makes sense
         		in which case the adversary is tasked with finding some secret value
-        		(like our ciphertext inversion example)
-        		and the advantages will usually be written in the form
+        		(like our ciphertext inversion example). Here, 
+        		advantages will usually be taken to simply be the win probability:
         		\[
 	        		\advantage{\findnotion}{\primitive} \coloneqq
-	        		\prob{\experiment{\findnotion}{\primitive} \Rightarrow 1}\, ;
+	        		\prob{\experiment{\findnotion}{\primitive} \Rightarrow 1}\, .
         		\]
-        	
-        	\item \emph{distinguishing},
-	        	in which case the adversary is taked with distinguishing between two scenarios.
-        		(E.g., the adversary might need to distinguish a real encryption from a ciphertext that was chosen uniformly at random.)
-        		Here, the expected output of $\adv$ is a bit, to indicate its guess with which scenario it interacted.
+        	\item \emph{Distinguishing},
+	        	in which case the adversary is tasked with distinguishing between two scenarios.
+        		(E.g., the adversary might need to distinguish a real encryption
+            from a ciphertext that was chosen uniformly at random.)
+        		Here, the expected output of $\adv$ is a bit, to indicate its guess
+            about which scenario (or ``world'') it interacted with.
         \end{itemize}
         
-        For distinguishing notions, any adversary could always win with probability
-        $\half$ by simply making a uniform guess.
-        Thus, we rather want to quantify how much \emph{better} the adversary can do
-        than with a simple random guess.
-        There are several, equivalent ways to do this, and it will 
-        sometimes be useful to switch between them.
-        Distinguishing advantages will sometimes come in the form 
-        \begin{align*}
-        	\advantage{\distnotion}{\primitive} &\coloneqq \abs{
-        		2 \cdot \prob{\experiment{\distnotion}{\primitive} \Rightarrow 1} - 1
-        	}\, ,
-        	\intertext{where the game internally tosses a coin to determine with which of the two to-be-distinguished scenarios the adversary will interact.
-        		Equivalently, you could split the experiment into the two to-be-distinguished scenarios.
-        		To do so, you can capture the outcome of the coin toss as a ``challenge bit'' $b$, condition the experiment on $b$,
-        		and quantifying how much more (un)likely it is that $\adv$ outputs 1 in the one setting than the other,
-        		by setting
-        	}
-        	\advantage{\distnotion}{\primitive} &\coloneqq \abs{
-        		\condprobsample{
-        			\experiment{\distnotion}{\primitive}
-        		}{1 \sample \adv}{\chalbit = 0}
-        		- \condprobsample{
-        			\experiment{\distnotion}{\primitive}
-        		}{1 \sample \adv}{\chalbit = 1}
-        	}\, .
-        \end{align*}
+        \noindent
+        In ``distinguishing'' notions, any adversary can win with probability
+          $\half$ by simply making a random guess (since it will be in each of the
+          two worlds with equal probability).
+          Thus, we would like the adversary's \emph{advantage} to capture how much
+          \emph{better} the adversary can do than randomly guessing.
+          There are several, equivalent ways to do this, and it will 
+          sometimes be useful to switch between them.
+
+        One standard way of defining distinguishing advantages is the following:
+          \[
+          	\advantage{\distnotion}{\primitive} \coloneqq \abs{
+          		2 \cdot \prob{\experiment{\distnotion}{\primitive} \Rightarrow 1} - 1
+          	}\, .
+          \]
+          Here, the game internally tosses a coin to determine which of the
+          two to-be-distinguished worlds the adversary will be interacting
+          with, and the game outputs $1$ if the adversary guessed the correct
+          world. Note how scaling the advantage by a factor $2$ and subtracting $1$
+          makes the advantage scale between $0$ (for strategies that are no
+          better than guessing) to $1$ (for strategies that always win),
+          matching the ``finding'' case.
+
+        Equivalently, you could split the experiment into the two
+          to-be-distinguished scenarios.
+          To do so, you can capture the outcome of the coin toss as a
+          ``challenge bit'' $b$, condition the experiment on $b$,
+          and quantifying how much more (un)likely it is that $\adv$ outputs $1$
+          in the one setting than the other:
+          \[
+          	\advantage{\distnotion}{\primitive} &\coloneqq \abs{
+          		\condprobsample{
+          			\experiment{\distnotion}{\primitive}
+          		}{1 \sample \adv}{\chalbit = 0}
+          		- \condprobsample{
+          			\experiment{\distnotion}{\primitive}
+          		}{1 \sample \adv}{\chalbit = 1}
+          	}\, .
+          \]
 
       \noindent
-      Note how both formulas scale the advantage so that it lives in the
-      interval $[0, 1]$, matching the ``finding'' case.
+      We again get a formula that scales from $0$ to $1$: If $\adv$ always
+        guesses, then the two probabilities are equal, and the advantage is $0$;
+        while if it always guesses correctly, then one of the two probabilities is
+        $0$ and the other one is $1$, making for an advantage of $1$.
       
       \khnote{I noticed that you abbreviated the prob by writing $\prob{\experiment{X}{\primitive}}$,
       	but $\experiment{X}{\primitive}$ is not really an event.
@@ -388,9 +417,12 @@
       	by writing $\prob{\experiment{X}{\primitive}} \Rightarrow 1$.
       	I changed it above, but not in the remainder of the file.
       }
-
-      \subsubsection{Goals and Powers.}
-        \hhnote{todo}
+      \hhnote{
+        Duly noted. The (perhaps unstated) convention I had been using was that
+        distinguishing games output a truth value $\true$/$\false$, so that the 
+        games could be treated as a predicate; but I agree that talking about
+        bit values is simpler, so moving to this convention.
+      }
 
   \subsection{Cryptographic Primitives}
     We next introduce the main cryptographic schemes we will be concerned with:
