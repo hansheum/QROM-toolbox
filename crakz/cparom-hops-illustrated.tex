@@ -7,7 +7,7 @@
   % NB: Changed from counting-from-zero to counting-from-one
   \node[game] (G0) at (0,0) {$\game{1} = \indcpa^0$};
   \node[game] (G1) at (0,-4.5) {$\game{2}$};
-  \node[game] (G2) at (6,-4.5) {$\game{3}$};
+  \node[game] (G2) at (6,-4.5) {$\game{3}$ / $\bdv$};
   \node[game] (G3) at (6,0) {$\game{4} = \indcpa^1$};
   
   % Draw transitions with labels
@@ -21,17 +21,17 @@
   \draw[decorate, decoration={brace, amplitude=5pt, mirror}] 
       ([xshift=-8pt]G0.south west) -- ([xshift=-8pt]G1.north west) 
       node[midway, left=10pt, align=right]
-      {$\leq \prob{\bad}$};
+      {$= 0$};
 
     % Lower
   \draw[decorate, decoration={brace, amplitude=5pt, mirror}] 
       ([yshift=-8pt]G1.south east) -- ([yshift=-8pt]G2.south west) 
-      node[midway, below=10pt] {$=0$ if $\neg \bad$};
+      node[midway, below=10pt] {$\leq \prob{\bad}$}; %($=0$ if $\neg \bad$)};
 
     % Right
   \draw[decorate, decoration={brace, amplitude=5pt}] 
       ([xshift=8pt]G3.south east) -- ([xshift=8pt]G2.north east) 
-      node[midway, right=10pt, align=left] {$=0$ if $\neg \bad$};
+      node[midway, right=10pt, align=left] {$=0$}; %if $\neg \bad$
 
     % Upper
   \draw[decorate, decoration={brace, amplitude=5pt}] 

@@ -142,7 +142,7 @@
       known, an adversary can simply re-encrypt both messages and check which of
       the two yields the challenge ciphertext!
       And yet, taking the deterministic PKE scheme through the \U-transform
-      will give us a \KEM achieves \emph{does} achieve indistingishability.
+      will give us a \KEM that \emph{does} achieve indistinguishability.
 
     The central object that allows us to cross the wide chasm
       between one-wayness and indistinguishability, is precisely the
@@ -167,9 +167,10 @@
       Defs for OW-CPA and IND-CPA still todo in \autoref{sec:basics}.
     }
 
-    \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]\label{thm:cparom}
+    \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]
+      \label{thm:cparom}
       Let \dPKE be a deterministic PKE scheme, let \RO be a random oracle, 
-      and let $\KEM$ be the KEM given by $\U[\PKE, \RO]$.
+      and let $\KEM$ be the KEM given by $\U[\dPKE, \RO]$.
       Then for every adversary $\adv$ against $\KEM$, 
       %that makes at most $\qe$ calls to the challenge oracle, 
       there is an adversary $\bdv$ against $\dPKE$ such that
@@ -177,12 +178,12 @@
         \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv)]\, .
         %+ \frac{\qe}{2^m}\, .
       \]
-      The adversary $\bdv$ runs in the same time as $\adv$, plus the (small) overhead
-      of lazy-sampling a random oracle.
+      The adversary $\bdv$ runs in the same time as $\adv$, plus the %(relatively small) 
+      overhead of lazy-sampling a random oracle.
     \end{theorem}
 
     \noindent
-    \paragraph{Parsing the statement.}
+    \paragraph{Parsing the Statement.}
       If you are new to security reductions, it may be hard to see at a glance
         how the theorem statement connects to the intuition that ``if
         $\dPKE$ achieves one-wayness security, then $\KEM$ achieves distinguishing
@@ -253,10 +254,7 @@
       %$\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
     }
 
-    \begin{proof}[\autoref{thm:cparom}]
-      \hhnote{
-        todo: migrate games from counting-from-zero to counting-from-one
-      }
+    \begin{proof} %[\autoref{thm:cparom}]
       Our constructed adversary $\bdv$ will not be able simulate the real world of the
         indistinguishability game, since it does not know which message the
         challenge ciphertext it recieved encrypted (that's what it's trying to
@@ -296,15 +294,15 @@
               \underline{\gameHeading $\game 1(\adv)$}
               \smallskip
       				\begin{nicodemus}
-                \item $(\pk, \sk) \sample \KG()$
+                \item $(\pk, \sk) \gets \KG()$
                 \smallskip
                 \item $x^* \sample \bin^n$
                 \smallskip
-                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \item $\ctxt^* \assign \Enc_{\pk}(x^*)$
                 \smallskip
                 \item $\eK^* \gets \RO(x^*)$ 
                 \smallskip
-                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
                 \smallskip
                 \item $\pcreturn \advbit$
       				\end{nicodemus}
@@ -331,15 +329,15 @@
               \underline{\gameHeading $\game 4(\adv)$}
               \smallskip
       				\begin{nicodemus}
-                \item $(\pk, \sk) \sample \KG()$
+                \item $(\pk, \sk) \gets \KG()$
                 \smallskip
                 \item $x^* \sample \bin^n$
                 \smallskip
-                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \item $\ctxt^* \assign \Enc_{\pk}(x^*)$
                 \smallskip
                 \item \dbox{$\eK^* \sample \Kspace$}
                 \smallskip
-                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
                 \smallskip
                 \item $\pcreturn \advbit$
       				\end{nicodemus}
@@ -362,19 +360,21 @@
       		\fbox{
       			\small
       			\nicoresetlinenr
-            \begin{minipage}[t][3.4cm]{4cm}	
+            \begin{minipage}[t][3.9cm]{4cm}	
               \underline{\gameHeading $\game 2(\adv)$}
               \smallskip
       				\begin{nicodemus}
-                \item $(\pk, \sk) \sample \KG()$
+                \item \fbox{$\bad \assign \false$}
+                \smallskip
+                \item $(\pk, \sk) \gets \KG()$
                 \smallskip
                 \item $x^* \sample \bin^n$
                 \smallskip
-                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \item $\ctxt^* \assign \Enc_{\pk}(x^*)$
                 \smallskip
                 \item $\eK^* \gets \RO(x^*)$ 
                 \smallskip
-                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
                 \smallskip
                 \item $\pcreturn \advbit$
                 \smallskip
@@ -385,9 +385,9 @@
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
       				\begin{nicodemus}
-                \item \fbox{$\ctxt \gets \Enc_\pk(x)$}
+                \item \fbox{$\ctxt \assign \Enc_\pk(x)$}
                 %\smallskip
-                \item \fbox{$\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$} 
+                \item \fbox{$\pcif \ctxt = \ctxt^* : \red{\bad \gets \true}$} 
                 \smallskip
                 \item $\pcif \Db[x] = \bot :$ 
                 \smallskip
@@ -402,19 +402,21 @@
       		\fbox{
       			\small
       			\nicoresetlinenr
-            \begin{minipage}[t][3.4cm]{4cm}	
+            \begin{minipage}[t][3.9cm]{4cm}	
               \underline{\gameHeading $\game 3(\adv)$}
               \smallskip
       				\begin{nicodemus}
-                \item $(\pk, \sk) \sample \KG()$
+                \item $\bad \assign \false$
+                \smallskip
+                \item $(\pk, \sk) \gets \KG()$
                 \smallskip
                 \item $x^* \sample \bin^n$
                 \smallskip
-                \item $\ctxt^* \gets \Enc_{\pk}(x^*)$
+                \item $\ctxt^* \assign \Enc_{\pk}(x^*)$
                 \smallskip
                 \item \fbox{$\eK^* \sample \Kspace$}
                 \smallskip
-                \item $\advbit \sample \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
+                \item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
                 \smallskip
                 \item $\pcreturn \advbit$
       				\end{nicodemus}
@@ -424,9 +426,9 @@
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
       				\begin{nicodemus}
-                \item $\ctxt \gets \Enc_\pk(x)$
+                \item $\ctxt \assign \Enc_\pk(x)$
                 \smallskip
-                \item $\pcif \ctxt = \ctxt^* : \red{\bad} \gets \true$
+                \item $\pcif \ctxt = \ctxt^* : \red{\bad \gets \true}$
                 \smallskip
                 \item $\pcif \Db[x] = \bot :$ 
                 \smallskip
@@ -443,9 +445,10 @@
           The game hops in the proof of \autoref{thm:cparom}, ordered to match
           \autoref{fig:cparom-hops-illustrated}.
           The dashed box highlights the difference between the real-world game
-          $\game 1$ and
-          the random-world game $\game 4$, and the solid boxes highlight lines of code
-          that were changed between successive game hops.
+          $\game 1$ and the random-world game $\game 4$, and the solid boxes
+          highlight lines of code that were changed between successive game
+          hops. Highlighted in \red{red} is the $\bad$ flag being set to
+          $\true$.
         }
       \end{figure}
 
@@ -479,156 +482,157 @@
         \begin{align*}
           \advantage{\indcpa}{\KEM} &= |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
             &\qquad - \probsample{ \game{2}(\adv) }{1 \gets \adv} + \probsample{ \game{2}(\adv) }{1 \gets \adv} \\
+            &\qquad - \probsample{ \game{3}(\adv) }{1 \gets \adv} + \probsample{ \game{3}(\adv) }{1 \gets \adv} \\
             &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
         \end{align*}
-        The only difference between the $\game 1$ and $\game 4$ is the
-        introduction of the $\bad$ event. Let us make it explicit by
-        factoring it out, using the law of total probability.
-        \begin{align*}
-          \advantage{\indcpa}{\KEM} &= 
-            |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
-            &\qquad + \probsample{\game{2}(\adv)}{\bad} \left( 
-              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\bad}
-              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\bad} \right) \\
-            &\qquad + \left(1 - \probsample{\game{2}(\adv)}{\bad} \right) \left( 
-              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
-              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad} \right) \\
-            &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
-        \end{align*}
-        Since probabilities are positive numbers smaller than or equal to $1$, this
-        expression can be simplified significantly by throwing away a few terms,
-        corresponding to cases we don't really care about such as whether 
-        the adversary wins the game after $\bad$ is set to true.
-        \begin{align*}
-          \advantage{\indcpa}{\KEM} &\leq |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
-            &\qquad + \probsample{\game{2}(\adv)}{\bad} \\
-            &\qquad - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
-              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad} \\
-            &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
-        \end{align*}
-        Next, add $\game 3$ by ``adding zero'' again, this time with $\neg
-        \bad$ already baked in. 
-        \begin{align*}
-          \advantage{\indcpa}{\KEM} &\leq |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
-            &\qquad + \probsample{\game{2}(\adv)}{\bad} \\
-            &\qquad - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
-              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad} \\
-            &\qquad - \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}
-              + \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad} \\
-            &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
-        \end{align*}
-        Then use the triangle inequality to split this absolute value into three
-        absolute values. Notice that with a little cosmetic reordering, we 
-        get something that looks a lot like three distinguishing advantages:
+        The ``fundamental lemma of game hopping'' is simply the idea that we can  
+        now group terms and apply the triangle inequality to get $n-1$
+        distinguishing advantages (or ``hops'') across $n$ games:
         \begin{align*}
           \advantage{\indcpa}{\KEM} &\leq 
-            \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv}
-              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}} \\
-            &\qquad + \abs{\condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
-              - \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}} \\
-            &\qquad + \abs{\condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}
-              - \probsample{ \game{4}(\adv) }{1 \gets \adv}} \\
-            &\qquad + \probsample{\game{2}(\adv)}{\bad}\, .
+            \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv} 
+              - \probsample{ \game{2}(\adv) }{1 \gets \adv}} \\
+            &\qquad + \abs{\probsample{ \game{2}(\adv) }{1 \gets \adv} 
+              - \probsample{ \game{3}(\adv) }{1 \gets \adv}} \\
+            &\qquad + \abs{\probsample{ \game{3}(\adv) }{1 \gets \adv}
+              - \probsample{ \game{4}(\adv) }{1 \gets \adv}}\, .
         \end{align*}
-        Let us analyze each term in turn. The first absolute value is clearly
-          zero, since the only difference the game introduced was a $\bad$ flag
-          being set to true which $\adv$ never sees, and which therefore can not
-          affect its behaviour relative to $\game 0$:
-        \[
-          \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv}
-              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}} = 0\, .
-        \]
-        The second term represents the probability that the adversary notices
-        that we are exchanging the real key for a random key, unrelated to the
-        challenge encapsulation $\chalctxt$, but \emph{conditioned}  
-        on $\bad$ not being set to $\true$. Since the PKE scheme is
-        deterministic, this implies that the random oracle was never called with
-        the correct underlying message $x^*$, which in turn implies that $K^*$
-        looks completely random to $\adv$, whether or not it was actually the
-        real key. Therefore, this difference is \emph{also} zero.
-        \[
-          \abs{\probsample{ \game{2}(\adv) }{1 \gets \adv}
-              - \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}} = 0\, .
-        \]
-        The final difference is similar to the first one, with the only
-        difference between $\game 3$ and $\game 4$ being the removal of a flag
-        that is invisible to the adversary, and therefore unable to affect its
-        behaviour.
-        \[
-          \abs{\probsample{ \game{3}(\adv) }{1 \gets \adv}
-              - \condprobsample{ \game{4}(\adv) }{1 \gets \adv}{\neg\bad}} = 0\, .
-        \]
-        Thus we end up with the following, much simpler bound:
-        \[
-          \advantage{\indcpa}{\KEM} &\leq \probsample{\game{2}(\adv)}{\bad}\, .
-        \]
-        Since the probability of $\bad$ being set to $\true$ is equal in both $\game 2$ and
-        $\game 3$ (since random oracles are perfectly preimage-hiding),
-        we might as well write
-        \[
-          \advantage{\indcpa}{\KEM} &\leq \probsample{\game{3}(\adv)}{\bad}\, .
-        \]
-        We now have a bound in terms of a game that $\bdv$ knows how to simulate.
-        Further, the $\bad$ flag was chosen in such a way that the case that it
-        is set to $\true$ corresponds exactly to the case that $\bdv$ finds the
-        value that it is looking for and wins the one-wayness game. 
+        In this case, the only difference between $\game 1$ and $\game 2$ is 
+        introduction of a $\bad$ flag, which is completely hidden from view from
+        the adversary and therefore cannot affect its behaviour. As a result, the
+        first difference evaluates to $0$. Since the same is true for 
+        $\game 3$ vs.\ $\game 4$, we actually have:
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &\leq 
+            \abs{\probsample{ \game{2}(\adv) }{1 \gets \adv} 
+              - \probsample{ \game{3}(\adv) }{1 \gets \adv}}\, . 
+        \end{align*}
+        Let us use the law of total probability (and the triangle inequality
+        again) to split into two distinguishing advantages, one for
+        the case that $\bad$ is set to $\true$ and one for the case that $\bad$
+        remains $\false$.
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &\leq 
+            \abs{ \probsample{ \game{2}(\adv) }{1 \gets \adv \land \neg \bad} 
+              - \probsample{ \game{3}(\adv) }{1 \gets \adv \land \neg \bad}} \\
+            &\qquad + \abs{ \probsample{ \game{2}(\adv) }{1 \gets \adv \land \bad} 
+              - \probsample{ \game{3}(\adv) }{1 \gets \adv \land \bad}}\, .
+        \end{align*}
+        These distinguishing advantages represent the probability that the adversary notices
+        that we are exchanging the real key for a random key. Notice that
+        $\dPKE$ being deterministic and correct imposes a one-to-one
+        correspondence between messages and ciphertexts. This means that if $\bad$ 
+        is never set to $\true$, then re-encryption never yielded $\chalctxt$,
+        which in turn implies that the random oracle was never called on $x^*$. 
+        Thanks to the uniform nature of random oracles, this means that 
+        both real and random $\eK^*$ will look completely random from the
+        point of view of $\adv$. Hence, the two probabilities 
+        $\probsample{ \game{2}(\adv) }{1 \gets \adv \land \neg \bad}$
+        and
+        $\probsample{ \game{3}(\adv) }{1 \gets \adv \land \neg \bad}$
+        are equal, and the $\neg \bad$ part of the distinguishing advantage is
+        zero:
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &\leq 
+            \abs{ \probsample{ \game{2}(\adv) }{1 \gets \adv \land \bad} 
+              - \probsample{ \game{3}(\adv) }{1 \gets \adv \land \bad}}\, . 
+        \end{align*}
+        We have reached the crux of the matter: The distinguishing
+        advantage of $\adv$ can be characterized as the difference in its
+        probability of outputting $1$ \emph{and} in calling the random oracle on
+        the correct $x^*$. But notice that 1) up until the point that $\bad$ is set to
+        $\true$, $\eK^*$ will look completely random to $\adv$, and 2) \emph{after}
+        $\bad$ is set to $\true$, an adversary would easily be able to
+        distinguish, e.g.\ by using $\dPKE$ to
+        re-encrypt $x^*$ and confirm that it gives the correct
+        $\chalctxt$, then comparing $\eK^*$ against $\RO(x^*)$.
+        We therefore lose nothing of significance if we simply bound this
+        distinguishing advantage by the probability that $\bad$ is set to $\true$.
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &\leq 
+            \probsample{ \game{2}(\adv) }{\bad} 
+              = \probsample{ \game{3}(\adv) }{\bad}\, ,
+        \end{align*}
+        where, again, the latter equality holds due to the view of $\adv$ being equal
+        in both games up until the point that $\bad$ is set to $\true$, since
+        random oracles are perfectly preimage-hiding.
 
-        \hhnote{cont}
+      We now have a bound in terms of $\game 3$ only, which is a game that a
+        one-wayness adversary $\bdv$ can simulate while injecting its own
+        challenge ciphertext into the simulation. 
+        Further, the $\bad$ flag was chosen in such a way that the case that
+        $\bad$ is set to $\true$ corresponds exactly to the case that $\bdv$
+        finds the challenge message $x^*$ required to win the one-wayness game.
+        Since the quantifiers in the theorem statement only requires that for
+        every $\adv$, there \emph{exists} a $\bdv$ that achieves the stated
+        bound, we are free to construct such a $\bdv$ explicitly;
+        one solution is shown in pseudocode in \autoref{fig:cparom-red}.
 
-        In other words: \emph{either} $\adv$ never calls the
-        random oracle on one of the correct queries, in which case its view is
-        perfectly consistent with being in the real-world game, \emph{or} $\bdv$
-        wins. Pseudocode for $\bdv$ is given in \autoref{fig:cparom-red}.
+      %%% Reduction
+      \begin{figure}[t]
+      	\begin{center}
+      		\fbox{
+      			\small
+      			\nicoresetlinenr
+      			\begin{minipage}[t]{3.7cm}	
+              \underline{\redHeading $\bdv(\pk, \chalctxt)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $\eK^* \sample \Kspace$
+                \smallskip
+      					\item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \chalctxt)$
+                \smallskip
+      					\item $\pcreturn \bot$
+      				\end{nicodemus}
+      			\end{minipage}
+      
+      			\begin{minipage}[t]{5cm}
+      				\underline{if $\adv$ calls $\RO(x)$}
+              \smallskip
+      				\begin{nicodemus}
+                \item $c \assign \Enc_\pk(x)$ 
+                \smallskip
+                \item \pcif $c = \chalctxt :$ \green{\pcabort and \pcoutput $x$}
+                \smallskip
+                \item $\pcif \Db[x] = \bot :$ 
+                \smallskip
+                \item   \quad $\Db[x] \sample \bin^m$
+                \smallskip
+                \item $\pcreturn \Db[x]$
+      				\end{nicodemus}	
+      			\end{minipage}
+      		}
+      	\end{center}
+      	\caption{\label{fig:cparom-red}
+          Pseudocode for the constructed adversary $\bdv$.
+          Highlighted in green is the point at which $\bdv$ will win at the
+          one-wayness game. 
+        }
+      \end{figure}
 
-      Finally, we remove the check for a $\bad$ event again, which gives us a
-        game that is exactly equivalent to the random-world $\indcpa$ game. 
-        Since we are already conditioning on $\bad$ being false, this change is
-        also for free.
-        
-      To summarize: In terms of probabilities, the difference between 
-        $\game 0$ and $\game 1$ is the probability that $\bad$ is ever set to
-        $\true$, the difference between $\game 1$ and $\game 2$ is zero.
-        $\bdv$ simulates $\game 2$, employing a strategy such that its
-        one-wayness advantage is exactly
-        the probability that $\bad$ would be set to $\true$. 
-        Finally, the difference between $\game 2$ and $\game 3$ is zero
-        conditioned on $\neg \bad$, the latter
-        being equal to the random-world game.
-
-      \begin{align*}
-        \advantage{\indcpa}{\KEM} 
-          &= \abs{
-            \condprob{\experiment{\indcpa}{\KEM}}{b = 0}
-            - \condprob{\experiment{\indcpa}{\KEM}}{b = 1}
-          } \\
-          &= \abs{
-            \prob{\game{0}(\adv)} - \prob{\game{3}(\adv)}
-          } \\
-          &= \abs{
-            \prob{\game{0}(\adv)} - \prob{\game{1}(\adv)}
-            + \prob{\game{1}(\adv)} - \prob{\game{2}(\adv)} 
-            + \prob{\game{2}(\adv)} - \prob{\game{3}(\adv)} 
-          } \\
-          &\leq \abs{\prob{\game{0}(\adv)} - \prob{\game{1}(\adv)}}
-            + \abs{\prob{\game{1}(\adv)} - \prob{\game{2}(\adv)}}
-            + \abs{\prob{\game{2}(\adv)} - \prob{\game{3}(\adv)}} \\
-          &\leq \prob{\bad} + 
-            \abs{
-              \prob{\game{0}(\adv)} - \condprob{\game{1}(\adv)}{\neg \bad}
-            } \\
-          &\quad + \abs{
-            \condprob{\game{1}(\adv)}{\neg \bad} - \condprob{\game{2}(\adv)}{\neg \bad}
-          } \\
-          &\quad + \abs{
-            \condprob{\game{2}(\adv)}{\neg \bad} - \prob{\game{3}(\adv)}
-          } \\
-          &= \prob{\bad} + 0 + 0 + 0 \\
-          &= \prob{\bad} = \prob{\experiment{\owcpa}{\dPKE}(\bdv)} =
-          \advantage{\owcpa}{\dPKE}(\bdv)\, .
-      \end{align*}
+      To summarize: \emph{Either} $\adv$ never calls the
+        random oracle on the correct $x^*$ ($\bad = \false$), 
+        in which case the view of $\adv$ is
+        perfectly consistent with being in the real-world game, \emph{or else} it
+        called $\RO$ on $x^*$ ($\bad = \true$), in which case our constructed
+        adversary $\bdv$ given in \autoref{fig:cparom-red} wins at the one-wayness
+        game. This allows us to conclude that, regardless of the attack strategy
+        employed by the given adversary $\adv$, our constructed adversary $\bdv$
+        wins the one-wayness game with advantage
+      \[
+        \advantage{\owcpa}{\dPKE}[(\bdv)] =
+          \probsample{\game{3}(\adv)}{\bad}\, ,
+      \]
+      so that
+      \[
+        \advantage{\indcpa}{\KEM} \leq 
+        \advantage{\owcpa}{\dPKE}[(\bdv)]\, . 
+      \]
+      \qed
     \end{proof}
 
 
+    %% IN CASE OF MULTI-CHAL VERSION
       %If this were all, then we would get a completely tight bound. 
       %  There is still one avenue of attack available to $\adv$, however,
       %  namely to guess the message underlying a \emph{future} challenge,
@@ -651,71 +655,38 @@
       %  must be small. Then we can return to our main strategy, which will now 
       %  work without issue.
 
-    \paragraph{One-way to hiding.}
-      In order to (\ldots)
-        a general ``one-way to hiding lemma''. Since the reduction is so
-        simple, this may seem to only add an unnecessary level of formalism.
-        This same formalism will however turn out to be one of the most useful
-        tools we have when arguing about the quantum case.
+    \subsection{Three Helpful Lemmas}
+      The proof of \autoref{thm:cparom} applies a few proof techniques that are
+      common enough to warrant extracting as lemmas on their own.
 
-      \begin{lemma}[Classical O2H, Find]\label{thm:co2h-find}
-        let $\RO: \bin^n \to \bin^m$ be a random
-        oracle, and let $z$ be a bitstring that depends arbitrarily on $\RO$.
-        Let $\solset \subseteq \bin^n$ be a subset of inputs, and let $\RO
-        \backslash \solset$ be the punctured random oracle that is equal to $\RO$
-        on all inputs $x \not\in \solset$, but which outputs $\bot$ on all points
-        in $\solset$. Let $\find$ be the event that the random oracle ever outputs
-        $\bot$. Then for every distinguisher $\distinguisher$,
-        \[
-            \abs{\prob{1 \sample \distinguisher^{\ro}(z)}
-                - \prob{1 \sample \distinguisher^{\ro\backslash \solset}(z)}}
-              = \probsample{\distinguisher^{\ro \backslash \solset}(z)}{\find}\, .
-        \]
-      \end{lemma}
+      \subsubsection{Game-hopping.}
+        Also known as ``the fundamental lemma of game-hopping''.
+
+      \subsubsection{Equivalent-until-bad.}
+        As illustrated.
+
+      \subsubsection{One-way to Hiding.}
+        In order to (\ldots)
+          a general ``one-way to hiding lemma''. Since the reduction is so
+          simple, this may seem to only add an unnecessary level of formalism.
+          This same formalism will however turn out to be one of the most useful
+          tools we have when arguing about the quantum case.
+
+        \begin{lemma}[Classical O2H, Find]\label{thm:co2h-find}
+          let $\RO: \bin^n \to \bin^m$ be a random
+          oracle, and let $z$ be a bitstring that depends arbitrarily on $\RO$.
+          Let $\solset \subseteq \bin^n$ be a subset of inputs, and let $\RO
+          \backslash \solset$ be the punctured random oracle that is equal to $\RO$
+          on all inputs $x \not\in \solset$, but which outputs $\bot$ on all points
+          in $\solset$. Let $\find$ be the event that the random oracle ever outputs
+          $\bot$. Then for every distinguisher $\distinguisher$,
+          \[
+              \abs{\prob{1 \sample \distinguisher^{\ro}(z)}
+                  - \prob{1 \sample \distinguisher^{\ro\backslash \solset}(z)}}
+                = \probsample{\distinguisher^{\ro \backslash \solset}(z)}{\find}\, .
+          \]
+        \end{lemma}
     
-
-    %%% Reduction
-    \begin{figure}[bt]
-    	\begin{center}
-    		\fbox{
-    			\small
-    			\nicoresetlinenr
-    			\begin{minipage}[t]{3cm}	
-            \underline{\redHeading $\bdv(\pk)$}
-            \smallskip
-    				\begin{nicodemus}
-    					\item $\advbit \sample \adv^{\RO}(\pk)$
-              \smallskip
-    					\item $\pcreturn \bot$
-    				\end{nicodemus}
-    			\end{minipage}
-    
-    			\pchspace
-    			
-    			\begin{minipage}[t]{4.5cm}
-    				\underline{if $\adv$ calls $\RO(x)$}
-            \smallskip
-    				\begin{nicodemus}
-              \item $c \gets \Enc_\pk(x)$ 
-              \smallskip
-              \item $\pcif c \in \CSpace :$
-              \smallskip
-              \item   \quad \green{\pcabort and \pcoutput $(c, x)$}
-              \smallskip
-              \item $\pcif \Db[x] = \bot :$ 
-              \smallskip
-              \item   \quad $\Db[x] \sample \bin^m$
-              \smallskip
-              \item $\pcreturn \Db[x]$
-    				\end{nicodemus}	
-    			\end{minipage}
-    		}
-    	\end{center}
-    	\caption{\label{fig:cparom-red}
-        The reduction $\bdv$ for \autoref{thm:cparom}.
-      }
-    \end{figure}
-
 
     \hhnote{
       forward reference to QROM proof, CCA proof
