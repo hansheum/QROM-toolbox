@@ -463,66 +463,118 @@
         		}{1 \gets \adv}{\chalbit = 1}
         	}\, .
         \]
-        The game $\game 0$ is just the real-world ($\chalbit=0$) $\indcpa$ game, with the
+        The game $\game 1$ is just the real-world ($\chalbit=0$) $\indcpa$ game, with the
         construction of \KEM written out explicitly, together with a lazy-sampled
         random oracle. Similarly, $\game 3$ is just the random-world
         ($\chalbit=1$) $\indcpa$ game with the \KEM construction explicit. We
         can therefore write
         \[
         	\advantage{\indcpa}{\KEM} = \abs{
-        		\probsample{
-              \game{0}(\adv)
-        		}{1 \gets \adv}
-        		- \probsample{
-              \game{3}(\adv)
-        		}{1 \gets \adv}
+        		\probsample{ \game{1}(\adv) }{1 \gets \adv}
+        		- \probsample{ \game{4}(\adv) }{1 \gets \adv}
         	}\, .
         \]
         We are of course always free to ``add zero'' by adding and subtracting
         the same term, so this is equal to:
         \begin{align*}
-          \advantage{\indcpa}{\KEM} &= 
-            |\probsample{
-              \game{0}(\adv) 
-        		}{1 \gets \adv} \\
-            &\qquad - \probsample{
-              \game{1}(\adv)
-        		}{1 \gets \adv}
-        		+ \probsample{
-              \game{1}(\adv)
-        		}{1 \gets \adv} \\
-            &\qquad - \probsample{
-              \game{2}(\adv)
-        		}{1 \gets \adv}
-        		+ \probsample{
-              \game{2}(\adv)
-        		}{1 \gets \adv} \\
-            &\qquad - \probsample{
-              \game{3}(\adv)
-        		}{1 \gets \adv}|\, .
+          \advantage{\indcpa}{\KEM} &= |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
+            &\qquad - \probsample{ \game{2}(\adv) }{1 \gets \adv} + \probsample{ \game{2}(\adv) }{1 \gets \adv} \\
+            &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
         \end{align*}
-        Now, use the triangle inequality to split the absolute value into three absolute values:
+        The only difference between the $\game 1$ and $\game 4$ is the
+        introduction of the $\bad$ event. Let us make it explicit by
+        factoring it out, using the law of total probability.
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &= 
+            |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
+            &\qquad + \probsample{\game{2}(\adv)}{\bad} \left( 
+              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\bad}
+              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\bad} \right) \\
+            &\qquad + \left(1 - \probsample{\game{2}(\adv)}{\bad} \right) \left( 
+              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
+              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad} \right) \\
+            &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
+        \end{align*}
+        Since probabilities are positive numbers smaller than or equal to $1$, this
+        expression can be simplified significantly by throwing away a few terms,
+        corresponding to cases we don't really care about such as whether 
+        the adversary wins the game after $\bad$ is set to true.
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &\leq |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
+            &\qquad + \probsample{\game{2}(\adv)}{\bad} \\
+            &\qquad - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
+              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad} \\
+            &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
+        \end{align*}
+        Next, add $\game 3$ by ``adding zero'' again, this time with $\neg
+        \bad$ already baked in. 
+        \begin{align*}
+          \advantage{\indcpa}{\KEM} &\leq |\probsample{ \game{1}(\adv) }{1 \gets \adv} \\
+            &\qquad + \probsample{\game{2}(\adv)}{\bad} \\
+            &\qquad - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
+              + \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad} \\
+            &\qquad - \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}
+              + \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad} \\
+            &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
+        \end{align*}
+        Then use the triangle inequality to split this absolute value into three
+        absolute values. Notice that with a little cosmetic reordering, we 
+        get something that looks a lot like three distinguishing advantages:
         \begin{align*}
           \advantage{\indcpa}{\KEM} &\leq 
-            \abs{\probsample{ \game{0}(\adv) }{1 \gets \adv} 
-              - \probsample{ \game{1}(\adv) }{1 \gets \adv}} \\
-            &\quad + \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv} 
-              - \probsample{ \game{2}(\adv) }{1 \gets \adv}} \\
-            &\quad + \abs{\probsample{ \game{2}(\adv) }{1 \gets \adv} 
-              - \probsample{ \game{3}(\adv) }{1 \gets \adv}}\, .
+            \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv}
+              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}} \\
+            &\qquad + \abs{\condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}
+              - \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}} \\
+            &\qquad + \abs{\condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}
+              - \probsample{ \game{4}(\adv) }{1 \gets \adv}} \\
+            &\qquad + \probsample{\game{2}(\adv)}{\bad}\, .
         \end{align*}
-        This looks a lot like three distinguishing advantages, just between
-        adjacent games rather than between the two games $\game 0$ and $\game 3$
-        that we started with. Let us analyze each in turn.
+        Let us analyze each term in turn. The first absolute value is clearly
+          zero, since the only difference the game introduced was a $\bad$ flag
+          being set to true which $\adv$ never sees, and which therefore can not
+          affect its behaviour relative to $\game 0$:
+        \[
+          \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv}
+              - \condprobsample{ \game{2}(\adv) }{1 \gets \adv}{\neg\bad}} = 0\, .
+        \]
+        The second term represents the probability that the adversary notices
+        that we are exchanging the real key for a random key, unrelated to the
+        challenge encapsulation $\chalctxt$, but \emph{conditioned}  
+        on $\bad$ not being set to $\true$. Since the PKE scheme is
+        deterministic, this implies that the random oracle was never called with
+        the correct underlying message $x^*$, which in turn implies that $K^*$
+        looks completely random to $\adv$, whether or not it was actually the
+        real key. Therefore, this difference is \emph{also} zero.
+        \[
+          \abs{\probsample{ \game{2}(\adv) }{1 \gets \adv}
+              - \condprobsample{ \game{3}(\adv) }{1 \gets \adv}{\neg\bad}} = 0\, .
+        \]
+        The final difference is similar to the first one, with the only
+        difference between $\game 3$ and $\game 4$ being the removal of a flag
+        that is invisible to the adversary, and therefore unable to affect its
+        behaviour.
+        \[
+          \abs{\probsample{ \game{3}(\adv) }{1 \gets \adv}
+              - \condprobsample{ \game{4}(\adv) }{1 \gets \adv}{\neg\bad}} = 0\, .
+        \]
+        Thus we end up with the following, much simpler bound:
+        \[
+          \advantage{\indcpa}{\KEM} &\leq \probsample{\game{2}(\adv)}{\bad}\, .
+        \]
+        Since the probability of $\bad$ being set to $\true$ is equal in both $\game 2$ and
+        $\game 3$ (since random oracles are perfectly preimage-hiding),
+        we might as well write
+        \[
+          \advantage{\indcpa}{\KEM} &\leq \probsample{\game{3}(\adv)}{\bad}\, .
+        \]
+        We now have a bound in terms of a game that $\bdv$ knows how to simulate.
+        Further, the $\bad$ flag was chosen in such a way that the case that it
+        is set to $\true$ corresponds exactly to the case that $\bdv$ finds the
+        value that it is looking for and wins the one-wayness game. 
 
-      The 
+        \hhnote{cont}
 
-      \hhnote{cont}
-
-      We now have a game that $\bdv$ knows how to simulate. Further, the $\bad$
-        flag was chosen in such a way that the case that it is set to $\true$
-        corresponds exactly to the case that $\bdv$ finds the value that it is
-        looking for and wins the one-wayness game. 
         In other words: \emph{either} $\adv$ never calls the
         random oracle on one of the correct queries, in which case its view is
         perfectly consistent with being in the real-world game, \emph{or} $\bdv$
