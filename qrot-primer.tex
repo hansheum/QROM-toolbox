@@ -25,7 +25,7 @@
     inserted at points in the text where you should be able to use them to test
     your understanding of the material presented so far. 
     Solutions for some (but not all) of the exercises are provided in
-    \autoref{sec:solutions}.
+    \cref{sec:solutions}.
 
   \subsection{Quantum Physics and the Dirac Notation}
     In general, quantum states are complex-valued vectors in Hilbert space,
@@ -407,7 +407,7 @@
     unchanged by the operation.\footnote{
       In particular, this means that this operation would not
       be well-defined if qubit $i$ and/or $j$ were entangled with any other
-      qubits; we will remedy this issue in \autoref{subsec:pseudocode}.
+      qubits; we will remedy this issue in \cref{subsec:pseudocode}.
     }
 
   \subsection{Unitary Operations}\label{sec:unitaries}
@@ -428,13 +428,13 @@
       Prove that requiring operations to be norm-preserving is equivalent to
       restricting the set of legal operations to those that can be represented
       by a unitary matrix.
-      (See \autoref{sec:solutions:unitarity} for the solution.)
+      (See \cref{sec:solutions:unitarity} for the solution.)
     \end{exercise}
 
     \noindent
     We will use (sans-serif) capital roman letters to refer to quantum operations, in
       reference to their matrix representation.
-      %(see \autoref{tab:notation} for a summary of our notational conventions). 
+      %(see \cref{tab:notation} for a summary of our notational conventions). 
       Whenever what qubit(s) the
       operation is being applied to is not clear from context, we provide
       their indices as subscript, so for example $\unitary_i$ for a
@@ -486,13 +486,13 @@
         \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
         \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
       \]
-      Compare with the truth table from \autoref{ex:truthtable}. What has changed?
+      Compare with the truth table from \cref{ex:truthtable}. What has changed?
     \end{exercise}
 
     \begin{exercise}
       Give the computational-basis matrix representation of the unitary
       that has the same effect on the
-      Hadamard basis states (given in \autoref{ex:HadamardBasis}) as
+      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
       $\CXgate$ has on the computational basis. What should we call this
       unitary, following the conventions introduced so far?
     \end{exercise}
@@ -683,13 +683,13 @@
         state, which is precisely what we wanted to abstract away to begin with.
         \ifdraftversion % for future version with the ``Under The Rug'' part
           Nonetheless, density matrices are invaluable to quantum information-theoretical
-          analyses, and we will meet them again in \autoref{sec:proofs}. 
+          analyses, and we will meet them again in \cref{sec:proofs}. 
         \fi
       }
 
   \subsection{Measurements}
     But before we present our quantum pseudocode in
-      \autoref{subsec:pseudocode}, we have
+      \cref{subsec:pseudocode}, we have
       to talk about measurements. We mentioned earlier that measurements
       constitute an exception to the rule that any operation performed on a
       quantum state must be unitary. But if observing a quantum state is not a
@@ -812,7 +812,7 @@
           \projector_{0b0} = \ket{000}\bra{000} + \ket{010}\bra{010}\, ,
         \] 
         and show that $\projector_{0b0}$ and $\projector_{00b}$ are non-orthogonal,
-        where $\projector_{00b}$ is as given in \autoref{ex:projector}.
+        where $\projector_{00b}$ is as given in \cref{ex:projector}.
       \end{exercise}
 
       \noindent
@@ -848,7 +848,7 @@
 
       \begin{exercise}
         Provide a set of projectors such that, when taken
-        together with $\projector_{00b}$ from \autoref{ex:projector}, the set
+        together with $\projector_{00b}$ from \cref{ex:projector}, the set
         is orthogonal and complete.
       \end{exercise}
 
@@ -1005,7 +1005,7 @@
           Show that interpreting the $\Xgate$ (a.k.a. ``NOT'') gate as a
           measurement operator leads to
           the possible outcomes $\ket{+}$ and $\ket{-}$ (where these are as
-          defined in \autoref{ex:HadamardBasis}). 
+          defined in \cref{ex:HadamardBasis}). 
           What are the values of $m_+$ and $m_-$?
         \end{exercise}
 

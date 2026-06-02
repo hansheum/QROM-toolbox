@@ -1,4 +1,5 @@
-\section{Basic Cryptography Concepts}\label{sec:basics}
+%\section{Basic Cryptography Concepts}\label{sec:basics}
+\section{Foundations of Provable Security}\label{sec:basics}
   %\todoenum[rough structure]{
   %  \item PKE and KEM: Definitions, OW vs IND, CPA vs CCA
   %  \item Signatures (and NIZKs?): Definition, EU-CMA
@@ -158,7 +159,7 @@
     %  the algorithm $\mssgsamp$ takes as state $\samplestate$ and
     %  as input the value $\dist$ and outputs $\mssg$,
     %  but it may change its state $\samplestate$ as part of its processing
-    %  (code-snippet taken from \autoref{fig:IND-SOA}).
+    %  (code-snippet taken from \cref{fig:IND-SOA}).
 
   \subsection{Expressing Security as Games}
     This subsection revisits the game-based approach to provable security.
@@ -182,7 +183,7 @@
         %% Done. --H
         A security game $\examplegame$ is a program, usually written in pseudocode, %$\experiment{}{}[]$ 
         that interacts with $\adv$ by running it as a black-box subroutine; see
-        \autoref{fig:example-game} for an example.
+        \cref{fig:example-game} for an example.
         $\examplegame$ will use  $\adv$ as a \emph{black-box}, meaning it can
         only provide inputs to and receive outputs from $\adv$,
       	because we do not want to make any assumptions about $\adv$'s potential
@@ -202,7 +203,7 @@
       	hand \chalctxt to $\adv$,
       	have $\adv$ output a guess \advmssg,
         and return 1 if $\adv$ guessed the correct encrypted message (so if $\advmssg =
-        \chalmssg$). This is the example formalized in \autoref{fig:example-game}.
+        \chalmssg$). This is the example formalized in \cref{fig:example-game}.
 
       Security games are typically named by the convention that the letters
         preceding the hyphen defines a security \emph{goal} that we would like our 
@@ -583,7 +584,7 @@
         shortly, though it is perhaps easy to see that a uniformly random
         function should satisfy both (for large enough $m$). This is relevant,
         as hash functions are precisely the objects that we will model as
-        random oracles in \autoref{sec:rom}.
+        random oracles in \cref{sec:rom}.
         %will  but let us first discuss how we define security in general.
 
     \subsubsection{PKE Security.}
@@ -597,7 +598,7 @@
           to say that anyone with access to a public key can use it to generate
           ciphertexts for any message they wish.
 
-        The one-wayness game is shown to the left in \autoref{fig:pke-games}. As
+        The one-wayness game is shown to the left in \cref{fig:pke-games}. As
           you can see, the game is defined in pseudocode. With experience, you
           will learn to skim pseudocode-games like these to quickly
           grasp the main concepts, but in case you are new to security games,
@@ -623,8 +624,8 @@
         \begin{definition}[OW-CPA]
           The one-wayness advantage $\advantage{\owcpa}{\pkescheme}$ of an
           adversary $\adv$ against a public-key encryption scheme $\pkescheme$
-          is the "find" advantage (\autoref{def:find-adv}) of $\adv$ in the
-          $\owcpa$ game (\autoref{fig:pke-games}, left) when instantiated with the
+          is the "find" advantage (\cref{def:find-adv}) of $\adv$ in the
+          $\owcpa$ game (\cref{fig:pke-games}, left) when instantiated with the
           scheme $\pkescheme$.
         \end{definition}
 
@@ -702,7 +703,7 @@
         have to be provided via an encryption oracle.)
         % Eh, it gets this anyway, by letting m0 = m1, making the point moot.
 
-      On the left of \autoref{fig:ind-ow} is the experiment
+      On the left of \cref{fig:ind-ow} is the experiment
         defining our (single-user) $\indcpa$ security notion. The game starts by sampling
         parameters $\params$, a keypair
         $(\pk,\sk)$, and a challenge bit $\chalbit$, before handing the public
@@ -711,14 +712,14 @@
 
       At some point, the adversary decides on two equal-length messages
         $\mssg_0$ and $\mssg_1$, and call its \emph{challenge encryption} oracle $\Oenc$
-        (\autoref{fig:ind-ow}, middle). This oracle then provides an honest
+        (\cref{fig:ind-ow}, middle). This oracle then provides an honest
         encryption of the message $\mssg_{\chalbit}$ and returns a challenge
         ciphertext $\chalctxt$. If the adversary ever calls
         the challenge oracle on messages of differing lengths, then it returns the
         special ``fail'' symbol $\fail$ instead; this is due to the
         assertion that a scheme should be considered
         secure even if ciphertexts leak information about message lengths.
-        In fact, you may notice from \autoref{fig:bre} that
+        In fact, you may notice from \cref{fig:bre} that
         our BRE scheme leaks the message length exactly, since $\demctxt$
         must necessarily have the same length as $\mssg$.
 
@@ -961,13 +962,13 @@
       %  %    still concerns itself with several fundamentally quantum concepts. To
       %  %    help bridge this divide, we provide a self-contained primer on quantum
       %  %    computing theory in
-      %  %    \autoref{sec:primer}, with explanations and definitions for all
+      %  %    \cref{sec:primer}, with explanations and definitions for all
       %  %    the quantum concepts and conventions that we will need. A summary of our
-      %  %    notation is given in \autoref{tab:notation}.
+      %  %    notation is given in \cref{tab:notation}.
       %  Precise definitions for our quantum-notational conventions are provided in
-      %    \autoref{sec:primer},
+      %    \cref{sec:primer},
       %    along with a gentle introduction to the relevant quantum concepts,
-      %    summarized in \autoref{tab:notation}.
+      %    summarized in \cref{tab:notation}.
 
       \hhnote{
         Add: $\pcparse$ keyword. (Allow $\pcif \pcparse$ too? By having $\pcparse$

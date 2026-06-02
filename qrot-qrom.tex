@@ -1,6 +1,6 @@
 \section{The Quantum Random Oracle Model}\label{sec:qrom}
   \subsection{Extra Preliminaries}
-    \hhnote{dumped from \autoref{sec:basics} (old preliminaries)}
+    \hhnote{dumped from \cref{sec:basics} (old preliminaries)}
     Quantum(-accessible) oracles\footnote{
       Some works distinguish between quantum-\emph{accessible} oracles,
       which evaluate a function on a superposition of inputs, and
@@ -26,9 +26,9 @@
       	already know these concepts and thus wouldn't need the paragraph in the first place.)
       }
 
-    In \autoref{subsec:pseudocode}, we define a quantum pseudocode that allows
+    In \cref{subsec:pseudocode}, we define a quantum pseudocode that allows
       us to talk about general quantum oracles, which we apply to quantum random
-      oracles in \autoref{sec:rom}. For now, we note that an oracle that
+      oracles in \cref{sec:rom}. For now, we note that an oracle that
       evaluates a function $f$ on superpositions of inputs is
       usually defined as the quantum oracle $\Oracle_f$ that applies the
       unitary operation
@@ -37,7 +37,7 @@
       \]
       where $\ket{x,y}$ are the computational basis states of the qubit
       registers input to the oracle. (In case this notation is
-      unfamiliar to you, \autoref{sec:primer} provides a gentle introduction.)
+      unfamiliar to you, \cref{sec:primer} provides a gentle introduction.)
   \subsection{What Is a Quantum Random Oracle?}\label{sec:defs}
     A classical oracle for a function $f$ is a black-box procedure $\Oracle_f$
       such that, given input $x$, it returns $f(x)$ in such a way that no
@@ -61,7 +61,7 @@
       collection of qubits over to the oracle, collected in the input and output
       registers $(\inputreg, \outputreg)$, and that the oracle then applies the
       $\unitary_f$ to the registers before shipping them back
-      (see \autoref{fig:query} for an illustration).\footnote{
+      (see \cref{fig:query} for an illustration).\footnote{
         If any of this terminology confuses you, then this would be a good time
         to have a read through the quantum primer found in \aref{sec:primer}!
       } 
@@ -215,13 +215,13 @@
 
     Random oracles are typically treated as fully black-box, or ``monolithic'',
       meaning that we don't assume anything about their inner workings other
-      than that it satisfies \autoref{def:qro}. Still, it is
+      than that it satisfies \cref{def:qro}. Still, it is
       instructive to see how a quantum random oracle \emph{could} be
       implemented. Following are several possible implementations, which turn
       out to all be equivalent~\cite{C:Zhandry19}.
 
     \paragraph{Standard oracles.}
-      This ``standard'' oracle, shown to the left in \autoref{fig:qros}, is the
+      This ``standard'' oracle, shown to the left in \cref{fig:qros}, is the
         oracle that simply implements our
         intuition from the start of the section: It first 
         draws a function $f$ from $\bin^n$ to $\bin^m$ uniformly at random, storing
@@ -230,7 +230,7 @@
         function oracle $\Oracle_f$.
 
     \paragraph{Phase oracles.}
-      The ``phase'' oracle, shown in the middle of \autoref{fig:qros}, operates
+      The ``phase'' oracle, shown in the middle of \cref{fig:qros}, operates
         exactly like the standard oracle, except that it
         performs a phase operation on the output register rather than an xor.
         It therefore provides a different interface to the adversary, and
@@ -245,7 +245,7 @@
         function at the outset, one can exploit the randomness inherent to
         quantum physics and simply provide a uniform superposition of
         \emph{all} functions from $\bin^n$ to $\bin^m$. This ``superposition''
-        oracle, shown to the right in \autoref{fig:qros}, is just as
+        oracle, shown to the right in \cref{fig:qros}, is just as
         (in)efficiently implemented, and is completely indistinguishable from a
         standard oracle from the point of view of the adversary. 
 
@@ -282,7 +282,7 @@
         anything about how to deal with large superpositions over inputs, for
         example. To get there, and to see that what we end up with really is a
         faithful simulation, we will first need to lay some more groundwork. 
-        \autoref{sec:compressed} is dedicated to this.
+        \cref{sec:compressed} is dedicated to this.
         
   \subsection{Domain-Separating Quantum Random Oracles}
     Sometimes, a construction uses more than one random oracle, which are

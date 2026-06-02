@@ -10,7 +10,7 @@
   }
   We finally have everything we need to define our quantum pseudocode. 
     Our goal is to construct a well-defined pseudocode rich enough 
-    to draw interaction diagrams like the one in \autoref{fig:aliceandbob},
+    to draw interaction diagrams like the one in \cref{fig:aliceandbob},
     with local operations agnostic to the global state of the
     system and any existing entanglement between its parts.
     Rather than quantum states, the central objects of our pseudocode will be
@@ -82,10 +82,10 @@
         %Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
         % Unitary/measurement operators & Roman (uc., sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M}$ \\
         % Apply unitary to register & $\pcalgostyle{Apply}$(unitary : register)
-        % & $\applyU{U}{\register}$ & \autoref{def:apply} \\ 
-        % %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \autoref{def:}) \\ 
+        % & $\applyU{U}{\register}$ & \cref{def:apply} \\ 
+        % %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \cref{def:}) \\ 
         % Measure register & $\pcalgostyle{Meas}$(projector : register) & $x
-        % \sample \meas{\measurement}{\register}$ & \autoref{def:measure} \\ 
+        % \sample \meas{\measurement}{\register}$ & \cref{def:measure} \\ 
         % \bottomrule
       \end{tabular}
     \end{table}
@@ -266,7 +266,7 @@
       \]
       which removes the subregister $\register[R]$ from $\register[A]$ and adds
       it to $\register[B]$. 
-      %(See \autoref{subsec:sending} for a formal
+      %(See \cref{subsec:sending} for a formal
       %definition.)
 
   \subsubsection{Operating on Registers.}
@@ -317,7 +317,7 @@
     \noindent
     The above notation should hopefully be intuitively clear, though coming up
       with a precise definitions takes a little extra work; you can find this in
-      \autoref{sec:pseudocode}. 
+      \cref{sec:pseudocode}. 
 
     To showcase the utility of our pseudocode, we can now restate the Born
       rule in a very compact form.

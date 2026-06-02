@@ -95,20 +95,20 @@
       \end{itemize}
 
   \subsubsection{Outline.}
-    %We start %in \autoref{part:prelims} 
+    %We start %in \cref{part:prelims} 
       We begin by laying some of the foundations,
-      with definitions for basic cryptographic concepts in \autoref{sec:basics},
-      a brief recap of the ROM in \autoref{sec:rom} 
-      and a primer on quantum computing concepts in \autoref{sec:primer}.
-      In \autoref{sec:pseudocode}, we introduce a novel pseudocode notation,
+      with definitions for basic cryptographic concepts in \cref{sec:basics},
+      a brief recap of the ROM in \cref{sec:rom} 
+      and a primer on quantum computing concepts in \cref{sec:primer}.
+      In \cref{sec:pseudocode}, we introduce a novel pseudocode notation,
       which will be helpful in reasoning about oracles and reductions.
-      Then in \autoref{sec:rom}, we finally introduce our main objects of study,
+      Then in \cref{sec:rom}, we finally introduce our main objects of study,
       the quantum random oracles. Through illustrative examples we will be
       building intuition, aiming to get a ``feel'' for how they work.
 
     \hhnote{outdated below; update once the v0.1 structure is settled}
 
-    \autoref{part:classical}\khnote{Undefined} is all about the classical case. Here, we show
+    \cref{part:classical}\khnote{Undefined} is all about the classical case. Here, we show
       several examples of security proofs in the random oracle model, all of
       which are conceptually simple and yield (relatively) tight security.
       The examples are lifted from the security proofs of two important
@@ -118,29 +118,29 @@
       transforms an interactive zero-knowledge protocol into a non-interactive
       signature scheme). 
 
-    We meet these examples again in \autoref{part:tools}, where we use
+    We meet these examples again in \cref{part:tools}, where we use
       them to showcase the tools as we introduce them by showing that security
       holds also in the QROM, though usually with a security loss compared to the
       classical case, with the particular security loss depending on the tool used.
-      \autoref{sec:o2h} is all about the One-way To Hiding (O2H) lemma, and its many variants: 
+      \cref{sec:o2h} is all about the One-way To Hiding (O2H) lemma, and its many variants: 
       how to use it to reprogram quantum random oracles, when to employ which
       version, and the impact of each version on the tightness of the proof. 
       Our running example here
       will be the second half of the FO transformation, known as the U-transform,
       and showing that if we start with a one-way secure (OW-CPA) deterministic PKE, we
       get an indistinguishable KEM secure against passive attacks (IND-CPA). 
-      In \autoref{sec:extract}, we introduce the technique of
+      In \cref{sec:extract}, we introduce the technique of
       Quantum Online-Extraction (QOE), and show how it can be used to prove
       that the U-transform \emph{also} upgrades to security against active attacks
       (IND-CCA).
-      In \autoref{sec:adaptive}, we show how reprogramming can be made
+      In \cref{sec:adaptive}, we show how reprogramming can be made
       \emph{adaptive}, meaning that the reprogramming may now happen
       on-the-fly, on points that may (in full or in part) depend on
       adversarially-chosen input values. We use this to show
       how to go from a passively-secure Non-Interactive Zero-Knowledge (NIZK)
       protocol (such as constructed from a sigma protocol via the FS
       transformation) to an actively-secure signature scheme (EUF-CMA).
-      Then, in \autoref{sec:compressed}, we delve into the details of 
+      Then, in \cref{sec:compressed}, we delve into the details of 
       Compressed Random Oracles (CROs), and show how one might implement the
       technique to provide an efficient yet exact simulation of a quantum
       random oracle.
@@ -149,7 +149,7 @@
       intuitive explanations for all its moving parts, with several examples
       showing how queries are processed.
     \ifdraftversion
-      Finally, in \autoref{sec:rewind}, we show how to lift rewinding arguments
+      Finally, in \cref{sec:rewind}, we show how to lift rewinding arguments
       from the ROM to the QROM, with the central example being how the FS
       transformation transforms a kind of interactive zero-knowledge protocol known
       as a sigma protocol, to a NIZK.
@@ -157,14 +157,14 @@
     \fi
 
     \ifdraftversion
-    \autoref{part:proofs} is all about \emph{constructing the tools
+    \cref{part:proofs} is all about \emph{constructing the tools
       themselves}, which requires a deeper dive into the world of quantum
       information theory.
       \hhnote{and so on and so forth; leave for version 3}
     \fi
 
     The appendices contain extra material, including some more formal
-      definitions in \autoref{sec:pseudocode}, and solutions to select
-      exercises in \autoref{sec:solutions}.
+      definitions in \cref{sec:pseudocode}, and solutions to select
+      exercises in \cref{sec:solutions}.
 
     \hhnote{fix ``Sect.'' vs ``App.''}

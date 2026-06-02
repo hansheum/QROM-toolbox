@@ -89,8 +89,6 @@
   \pagestyle{headings}
 \fi
 
-\usepackage{apxproof} % MSM temporarily loaded to allow easy migration to appendix...
-
 \usepackage[svgnames,table]{xcolor}
 \ifdraftversion
   \usepackage{changes} % also loads todonotes
@@ -166,24 +164,37 @@
 
 \newcommand{\pagehack}{\ifsubmission\clearpage\fi}
 
-%% TO-DO: Finalize fix, and move to cryptocodeh
-% Autoref names, to redefine: renewcommand with the format: \<env>autorefname
-%\renewcommand{\sectionautorefname}{Section}
-\renewcommand{\sectionautorefname}{Sect.}
-\renewcommand{\subsectionautorefname}{\sectionautorefname}
-\renewcommand{\subsubsectionautorefname}{\sectionautorefname}
-\renewcommand{\figureautorefname}{Fig.}
-\renewcommand{\theoremautorefname}{Thm.}
-\newcommand{\definitionautorefname}{Def.}
-\newcommand{\corollaryautorefname}{Cor.}
-\newcommand{\openproblemautorefname}{Open Problem}
-\providecommand{\appendixautorefname}{Appendix}
-% Autoref fix for appendix and multi-references
+%% Cross-referencing via cleveref (migrated from autoref).
+% IMPORTANT: cleveref must load AFTER hyperref, which is pulled in by
+% orcidlink above. llncs defines its theorem-like environments with
+% \spnewtheorem (not \newtheorem), each with its own counter, so cleveref
+% cannot auto-name them: every environment needs an explicit \crefname.
+% Names are kept capitalized (matching the old *autorefname abbreviations),
+% with \Crefname identical, so \cref and \Cref render the same.
+\usepackage[nameinlink]{cleveref}
+\crefname{section}{Sect.}{Sect.}            \Crefname{section}{Sect.}{Sect.}
+\crefname{subsection}{Sect.}{Sect.}         \Crefname{subsection}{Sect.}{Sect.}
+\crefname{subsubsection}{Sect.}{Sect.}      \Crefname{subsubsection}{Sect.}{Sect.}
+\crefname{part}{Part}{Parts}                \Crefname{part}{Part}{Parts}
+\crefname{figure}{Fig.}{Figs.}              \Crefname{figure}{Fig.}{Figs.}
+\crefname{table}{Table}{Tables}             \Crefname{table}{Table}{Tables}
+\crefname{theorem}{Thm.}{Thms.}             \Crefname{theorem}{Thm.}{Thms.}
+\crefname{lemma}{Lemma}{Lemmas}             \Crefname{lemma}{Lemma}{Lemmas}
+\crefname{definition}{Def.}{Defs.}          \Crefname{definition}{Def.}{Defs.}
+\crefname{corollary}{Cor.}{Cors.}           \Crefname{corollary}{Cor.}{Cors.}
+\crefname{example}{Example}{Examples}       \Crefname{example}{Example}{Examples}
+% NB: the custom boxed exercise env (qrot-latex.tex) steps "exercisecounter".
+\crefname{exercisecounter}{Exercise}{Exercises} \Crefname{exercisecounter}{Exercise}{Exercises}
+% Appendix reference helper (hyperref-based; appendix-specific "App." name).
 \newcommand{\aref}[1]{\hyperref[#1]{App.~\ref*{#1}}}
-\newcommand{\multiref}[2]{\autoref{#1}--\ref{#2}} 
+% Range helper, now via cleveref (e.g. "Sects. 3 to 5").
+\newcommand{\multiref}[2]{\crefrange{#1}{#2}}
 
-% [WIP] autoref fix for correct appendix sectioning
-% https://tex.stackexchange.com/questions/149807/autoref-subsections-in-appendix
+% cryptocode + cleveref fix (cryptocode docs "8.3 Hyperref"). Superset of
+% \pcfixhyperref: also adds \cref formats for pseudocode line numbers
+% ("line 5" / "lines 3 to 7"). Installs an \AtBeginDocument hook, so it
+% MUST be called here in the preamble, not after \begin{document}.
+\pcfixcleveref
 
 % \newcommand{\defer}[1]{Appendix~\ref{#1}}   %full version
 \newcommand{\defer}[1]{\ref{#1}}              %submission
@@ -192,7 +203,6 @@
 
 \begin{document}
 \let\cleardoublepage\clearpage
-\pcfixhyperref % As per cryptocode documentation, "8.3 Hyperref"
 
   \input{qrot-header}  % maketitle, abstract, ToC
 

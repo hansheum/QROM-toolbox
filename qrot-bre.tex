@@ -66,7 +66,7 @@
       but using the OTP significantly simplifies our analyses.
     } 
 
-  The algorithms of $\brescheme$ are specified in \autoref{fig:bre}. The public parameter
+  The algorithms of $\brescheme$ are specified in \cref{fig:bre}. The public parameter
     generation algorithm $\brepm$ and the keypair generation algorithm $\brekg$
     are inherited from the underlying KEM, while the encryption algorithm
     $\breenc$ and the decryption algorithm $\bredec$ are as outlined above: When
@@ -121,7 +121,7 @@
     \newcommand{\kemRed}{\bdv}
     \begin{theorem}\label{thm:bre-classical}
       Let $\kemscheme$ be a key encapsulation mechanism, let $\brescheme$ be the
-      public-key encryption scheme defined in \autoref{fig:bre}, and let $\RO$ be a random oracle. 
+      public-key encryption scheme defined in \cref{fig:bre}, and let $\RO$ be a random oracle. 
       Then there is a SFBB reduction $\kemRed$ against $\kemscheme$ 
       for every adversary $\pkeEve$ against $\pkescheme$ making at most $\qRO$
       calls to the random oracle, such that
@@ -137,9 +137,9 @@
     \end{theorem}
 
     \crakzfigcode{bre-classical}{
-      Proof outline for \autoref{thm:bre-classical}.
+      Proof outline for \cref{thm:bre-classical}.
       Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
-      the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
+      the game $\experiment{\indcpa}{\pkescheme}[]$ (\cref{fig:ind-ow}) instantiated with challenge bit
       $\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
     }
     
@@ -213,7 +213,7 @@
         easily simulate a random oracle for $\pkeEve$ by so-called
         ``lazy-sampling'', in which $\kemRed$ just samples random values for
         each new oracle call, and then stores them in a list to ensure
-        consistency between calls, as explained in \autoref{sec:prelim}. 
+        consistency between calls, as explained in \cref{sec:prelim}. 
         We could alternatively give $\kemRed$ access
         to a random oracle as well, and let it simply forward the oracle calls
         (once we move to the quantum random oracle model, this will be the
@@ -225,8 +225,8 @@
         random oracle, which we can assume is comparatively small.
 
     \paragraph{Proof sketch.}
-      \autoref{fig:bre-classical-games} provides an overview of the game hops that
-        make up the proof of \autoref{thm:bre-classical}.
+      \cref{fig:bre-classical-games} provides an overview of the game hops that
+        make up the proof of \cref{thm:bre-classical}.
         For the first game hop, note how $\game{0}$ and $\game{1}$ are identical,
         except for the real symmetric key being exchanged for a random one. This
         is reminiscent of the IND-CPA experiment for KEMs, in which the
@@ -299,7 +299,7 @@
     \caption{
       \label{fig:bre-classical-games}
       The games $\game{0}$ to $\game{3}$ in the proof of
-      \autoref{thm:bre-classical}.
+      \cref{thm:bre-classical}.
     }
     \end{figure}
 
@@ -312,12 +312,12 @@
 
       \fi
       The proof proceeds over three game hops, outlined in
-        \autoref{fig:bre-classical}: 
+        \cref{fig:bre-classical}: 
       \begin{itemize}
         \item $\game{0}$ is identical to the ``left-world'' $\indcpa$ game,
-          i.e.\ $\experiment{\indcpa}{\pkescheme}[]$ from \autoref{fig:ind-ow}
+          i.e.\ $\experiment{\indcpa}{\pkescheme}[]$ from \cref{fig:ind-ow}
           when instantiated with the challenge bit $\chalbit = 0$, where we have
-          also ``unrolled'' the BRE construction given in \autoref{fig:bre} (as
+          also ``unrolled'' the BRE construction given in \cref{fig:bre} (as
           well as explicitly lazy-sampling the random oracle).
         \item $\game{1}$ is the same as $\game{0}$, except that the symmetric key
           $\demkey$ output by $\kemenc$ is overwritten by an independent value,
@@ -339,7 +339,7 @@
       \end{itemize}
 
       \noindent
-      We analyze the game hops using \autoref{lemma:game-hopping}:
+      We analyze the game hops using \cref{lemma:game-hopping}:
       \begin{align*}
         \advantage{\indcpa}{\brescheme}[(\pkeEve)] &\coloneqq 
           \abs{
@@ -455,9 +455,9 @@
       \end{figure}
 
       The pseudocode for $\kemRed_0$ is given in
-        \autoref{fig:bre-classical-red} (for $b=0$). 
+        \cref{fig:bre-classical-red} (for $b=0$). 
         Let $\chalkeyi$ denote the symmetric key encapsulated in the $i$th
-        challenge issued to $\kemRed_0$ (see \autoref{fig:ind-ow}).
+        challenge issued to $\kemRed_0$ (see \cref{fig:ind-ow}).
         Then $\kemRed_0$ gains the following advantage:
       %
       \begin{align*}
@@ -523,10 +523,10 @@
     \end{proof}
 
     \begin{exercise}
-      Write an alternative proof that improves on \autoref{thm:bre-classical} by
+      Write an alternative proof that improves on \cref{thm:bre-classical} by
         avoiding the factor $2$ tightness loss. 
         (Hint: Think about how you can make the pseudocode of
-        \autoref{fig:bre-classical-red} work over a single game hop.)
+        \cref{fig:bre-classical-red} work over a single game hop.)
     \end{exercise}
 
   \subsection{A Tight Reduction with Plaintext Checking}
@@ -541,7 +541,7 @@
       if the bad event would triggered in $\game 1$ and $\game 2$.
 
     One way to do this is to provide the reduction with a
-      \emph{plaintext-checking oracle}, shown in \autoref{fig:pca}. This oracle
+      \emph{plaintext-checking oracle}, shown in \cref{fig:pca}. This oracle
       takes a tuple $(\demkey, \ctxt)$ as input, and returns $\true$ if $\ctxt$
       encapsulates $\demkey$, and $\false$ otherwise. Crucially (and unlike
       the case of a CCA decryption oracle), there is no restriction on calling the
@@ -569,7 +569,7 @@
 
     \begin{theorem}\label{thm:bre-pca}
       Let $\kemscheme$ be a key encapsulation mechanism, let $\brescheme$ be the
-      public-key encryption scheme defined in \autoref{fig:bre}, and let $\RO$ be a random oracle. 
+      public-key encryption scheme defined in \cref{fig:bre}, and let $\RO$ be a random oracle. 
       Then there is a SFBB reduction $\kemRed$ against $\kemscheme$ 
       for every adversary $\pkeEve$ against $\pkescheme$ satisfying
       \[
@@ -587,8 +587,8 @@
     \let\kemRed\undefined
 
     \begin{exercise}
-      Write a formal proof for \autoref{thm:bre-pca}, following the structure of
-      the proof of \autoref{thm:bre-classical}.
+      Write a formal proof for \cref{thm:bre-pca}, following the structure of
+      the proof of \cref{thm:bre-classical}.
     \end{exercise}
 
   \subsubsection{What the PCA oracle assumes.}

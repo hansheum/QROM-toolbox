@@ -28,7 +28,7 @@
 
   \subsection{Simulating Random Oracles}
     They are also very easy to simulate, a process known as
-      lazy-sampling, as shown in \autoref{fig:lazy-sampling}.
+      lazy-sampling, as shown in \cref{fig:lazy-sampling}.
 
   \subsection{One-way PKE to Hiding KEM: The $\U$-transform}
     The Fujisaki-Okamoto transformation~\cite{C:FujOka99}, which underlies many post-quantum
@@ -53,7 +53,7 @@
     \begin{definition}[\U-transform]
       To a deterministic PKE scheme $\dPKE = (\KG, \Enc, \Dec)$ and a hash
       function $\ROkey: \MSpace \to \KSpace$,
-      we associate the KEM $\KEM \coloneqq \U[\PKE, \ROkey]$ defined in \autoref{fig:def:U-transform}.
+      we associate the KEM $\KEM \coloneqq \U[\PKE, \ROkey]$ defined in \cref{fig:def:U-transform}.
       \begin{figure}[ht]
      	  \begin{center}
     		  \fbox{
@@ -127,7 +127,7 @@
         %}
       } (Details on the \T-transform are given in App.~\ref{sec:ttransform}.)
 
-    As explained in \autoref{sec:basics}, One-way security under Chosen
+    As explained in \cref{sec:basics}, One-way security under Chosen
       Plaintext Attacks, or \owcpa, is really a minimal security
       requirement for PKE schemes: The goal of One-Wayness (OW) simply says that
       given a ciphertext, it should be hard to recover the plaintext, and the
@@ -160,11 +160,11 @@
       we guess correctly.)
 
     To summarize, if $\dPKE$ satisfies one-wayness
-      (\autoref{def:ow}), then $\KEM$ satisfies indistinguishability
-      (\autoref{def:indcpa}), captured in the following theorem.
+      (\cref{def:ow}), then $\KEM$ satisfies indistinguishability
+      (\cref{def:indcpa}), captured in the following theorem.
 
     \hhnote{
-      Defs for OW-CPA and IND-CPA still todo in \autoref{sec:basics}.
+      Defs for OW-CPA and IND-CPA still todo in \cref{sec:basics}.
     }
 
     \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]
@@ -246,15 +246,15 @@
       %  So we're good!
 
     \crakzfigcode{cparom-hops-illustrated}{
-      Proof outline for \autoref{thm:cparom}. The arrows show the changes
+      Proof outline for \cref{thm:cparom}. The arrows show the changes
       incurred by each game hop, and the braces show the difference in
       win probabilities between each game.
       %Here, $\indcpa_0$ resp.\ $\indcpa_1$ is shorthand for
-      %the game $\experiment{\indcpa}{\pkescheme}[]$ (\autoref{fig:ind-ow}) instantiated with challenge bit
+      %the game $\experiment{\indcpa}{\pkescheme}[]$ (\cref{fig:ind-ow}) instantiated with challenge bit
       %$\chalbit = 0$ (left world) resp.\ $\chalbit = 1$ (right world).
     }
 
-    \begin{proof} %[\autoref{thm:cparom}]
+    \begin{proof} %[\cref{thm:cparom}]
       Our constructed adversary $\bdv$ will not be able simulate the real world of the
         indistinguishability game, since it does not know which message the
         challenge ciphertext it recieved encrypted (that's what it's trying to
@@ -267,13 +267,13 @@
         world, we need to change the game in such a way that the move from real to
         random keys is completely hidden from view.
         We do this by inserting two intermediary games between the real-world and the
-        random-world games, as shown in \autoref{fig:cparom-hops}.
+        random-world games, as shown in \cref{fig:cparom-hops}.
         These middle games formalize the idea that, thanks to the \U-transform,
         the adversary will have to call the random oracle on the correct message
         in order to notice that it is not in the real world: If it
         does, then a $\bad$ flag is set to true. Assuming the $\bad$ flag is
         never set to true, the game proceeds exactly as the real-world game, and
-        thanks to \autoref{lemma:bad}, we know that the difference between these
+        thanks to \cref{lemma:bad}, we know that the difference between these
         games is bounded by the probability that $\bad$ is set to true.
         Then, \emph{conditioned} on $\bad$ never being set to true,
         we can exchange the real symmetric key for a randomly
@@ -290,7 +290,7 @@
       		\fbox{
       			\small
       			\nicoresetlinenr
-            \begin{minipage}[t][3.4cm]{4cm}	
+            \begin{minipage}[t][3.4cm]{5cm}	
               \underline{\gameHeading $\game 1(\adv)$}
               \smallskip
       				\begin{nicodemus}
@@ -308,7 +308,7 @@
       				\end{nicodemus}
       			\end{minipage}
       
-            \begin{minipage}[t]{3.8cm}
+            \begin{minipage}[t]{3.6cm}
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
       				\begin{nicodemus}
@@ -325,7 +325,7 @@
       		\fbox{
       			\small
       			\nicoresetlinenr
-            \begin{minipage}[t][3.4cm]{4cm}	
+            \begin{minipage}[t][3.4cm]{4.2cm}	
               \underline{\gameHeading $\game 4(\adv)$}
               \smallskip
       				\begin{nicodemus}
@@ -335,7 +335,7 @@
                 \smallskip
                 \item $\ctxt^* \assign \Enc_{\pk}(x^*)$
                 \smallskip
-                \item \dbox{$\eK^* \sample \Kspace$}
+                \item \dbox{$\eK^* \sample \bin^m$}
                 \smallskip
                 \item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
                 \smallskip
@@ -343,10 +343,15 @@
       				\end{nicodemus}
       			\end{minipage}
       
-      			\begin{minipage}[t]{3.8cm}
+      			\begin{minipage}[t]{3.6cm}
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
       				\begin{nicodemus}
+                \item \sout{$\ctxt \assign \Enc_\pk(x)$}
+                \smallskip
+                \item \sout{$\pcif \ctxt = \ctxt^* :$}
+                \item \quad \sout{$\red{\bad \assign \true}$}
+                \smallskip
                 \item $\pcif \Db[x] = \bot :$ 
                 \smallskip
                 \item   \quad $\Db[x] \sample \bin^m$
@@ -360,7 +365,7 @@
       		\fbox{
       			\small
       			\nicoresetlinenr
-            \begin{minipage}[t][3.9cm]{4cm}	
+            \begin{minipage}[t][4.2cm]{5cm}	
               \underline{\gameHeading $\game 2(\adv)$}
               \smallskip
       				\begin{nicodemus}
@@ -372,7 +377,7 @@
                 \smallskip
                 \item $\ctxt^* \assign \Enc_{\pk}(x^*)$
                 \smallskip
-                \item $\eK^* \gets \RO(x^*)$ 
+                \item \sout{$\eK^* \gets \RO(x^*)$} \fbox{$\eK^* \sample \bin^m$}
                 \smallskip
                 \item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
                 \smallskip
@@ -381,13 +386,14 @@
       				\end{nicodemus}
       			\end{minipage}
       
-      			\begin{minipage}[t]{3.8cm}
+      			\begin{minipage}[t]{3.6cm}
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
       				\begin{nicodemus}
                 \item \fbox{$\ctxt \assign \Enc_\pk(x)$}
-                %\smallskip
-                \item \fbox{$\pcif \ctxt = \ctxt^* : \red{\bad \gets \true}$} 
+                \item \fbox{$\pcif \ctxt = \ctxt^* :$} 
+                \item \quad \fbox{$\red{\bad \assign \true}$} 
+                \item \quad \fbox{$\Db[x] \assign \eK^*$} 
                 \smallskip
                 \item $\pcif \Db[x] = \bot :$ 
                 \smallskip
@@ -402,7 +408,7 @@
       		\fbox{
       			\small
       			\nicoresetlinenr
-            \begin{minipage}[t][3.9cm]{4cm}	
+            \begin{minipage}[t][4.2cm]{4.2cm}	
               \underline{\gameHeading $\game 3(\adv)$}
               \smallskip
       				\begin{nicodemus}
@@ -414,7 +420,7 @@
                 \smallskip
                 \item $\ctxt^* \assign \Enc_{\pk}(x^*)$
                 \smallskip
-                \item \fbox{$\eK^* \sample \Kspace$}
+                \item $\eK^* \sample \bin^m$
                 \smallskip
                 \item $\advbit \gets \adv^{\RO}(\pk, \eK^*, \ctxt^*)$ 
                 \smallskip
@@ -422,13 +428,15 @@
       				\end{nicodemus}
       			\end{minipage}
       
-      			\begin{minipage}[t]{3.8cm}
+      			\begin{minipage}[t]{3.6cm}
       				\underline{\oracleHeading $\RO(x)$}
               \smallskip
       				\begin{nicodemus}
                 \item $\ctxt \assign \Enc_\pk(x)$
                 \smallskip
-                \item $\pcif \ctxt = \ctxt^* : \red{\bad \gets \true}$
+                \item $\pcif \ctxt = \ctxt^* :$
+                \item \quad $\red{\bad \assign \true}$
+                \item \quad \sout{$\Db[x] \assign \eK^*$} 
                 \smallskip
                 \item $\pcif \Db[x] = \bot :$ 
                 \smallskip
@@ -442,13 +450,15 @@
       	}
       	\end{center}
       	\caption{\label{fig:cparom-hops}
-          The game hops in the proof of \autoref{thm:cparom}, ordered to match
-          \autoref{fig:cparom-hops-illustrated}.
-          The dashed box highlights the difference between the real-world game
-          $\game 1$ and the random-world game $\game 4$, and the solid boxes
-          highlight lines of code that were changed between successive game
-          hops. Highlighted in \red{red} is the $\bad$ flag being set to
-          $\true$.
+          The game hops in the proof of \cref{thm:cparom}, ordered
+          counterclockwise in correspondence to
+          \cref{fig:cparom-hops-illustrated}.
+          The dashed box highlights the difference between the real-world
+          and the random-world indistinguishability games, the solid boxes
+          highlight lines of code that were added between successive games, and
+          strike-outs highlight lines of codes that were removed between games.
+          Highlighted in \red{red} is the ``bad event'', represented by the flag
+          $\bad$ being set to $\true$.
         }
       \end{figure}
 
@@ -566,7 +576,7 @@
         Since the quantifiers in the theorem statement only requires that for
         every $\adv$, there \emph{exists} a $\bdv$ that achieves the stated
         bound, we are free to construct such a $\bdv$ explicitly;
-        one solution is shown in pseudocode in \autoref{fig:cparom-red}.
+        one solution is shown in pseudocode in \cref{fig:cparom-red}.
 
       %%% Reduction
       \begin{figure}[t]
@@ -615,7 +625,7 @@
         in which case the view of $\adv$ is
         perfectly consistent with being in the real-world game, \emph{or else} it
         called $\RO$ on $x^*$ ($\bad = \true$), in which case our constructed
-        adversary $\bdv$ given in \autoref{fig:cparom-red} wins at the one-wayness
+        adversary $\bdv$ given in \cref{fig:cparom-red} wins at the one-wayness
         game. This allows us to conclude that, regardless of the attack strategy
         employed by the given adversary $\adv$, our constructed adversary $\bdv$
         wins the one-wayness game with advantage
@@ -656,7 +666,7 @@
       %  work without issue.
 
     \subsection{Three Helpful Lemmas}
-      The proof of \autoref{thm:cparom} applies a few proof techniques that are
+      The proof of \cref{thm:cparom} applies a few proof techniques that are
       common enough to warrant extracting as lemmas on their own.
 
       \subsubsection{Game-hopping.}
@@ -695,7 +705,7 @@
     \hhnote{todo: make exercises play well with autoref}
     \begin{exercise}\label{ex:remove-loss-term}
       Write an alternative reduction that gives the same bound as in
-      \autoref{thm:cparom}, except without the extra term $\nicefrac{\qe}{2^m}$
+      \cref{thm:cparom}, except without the extra term $\nicefrac{\qe}{2^m}$
       in the upper bound.
     \end{exercise}
 
@@ -721,7 +731,7 @@
     \end{theorem}
 
     \begin{exercise}\label{ex:cparom-lossy}
-      Prove \autoref{thm:cparom}.
+      Prove \cref{thm:cparom}.
     \end{exercise}
   
   \subsection{What Goes Wrong}

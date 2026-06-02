@@ -331,7 +331,7 @@
       \end{theorem}
 
   \subsection{But How Do They Work?}
-    What is the effect of the operations listed in \autoref{def:compressed-ros}? Let's explore!
+    What is the effect of the operations listed in \cref{def:compressed-ros}? Let's explore!
 
     \paragraph{Classical queries.}
       As a first sanity check, consider the result of performing the
@@ -391,7 +391,7 @@
         problem, since if the querying party then by chance observes exactly
         this branch, and then queries the compressed oracle again on the same
         input, the database would not ``know'' that it was supposed give the same
-        value back, leading to an inconsistency. However, \autoref{thm:perfect}
+        value back, leading to an inconsistency. However, \cref{thm:perfect}
         tells us that simulation is perfect, so \emph{something} will have
         to ensure consistency in this case. We will return to the question
         of how at the end of this section, though I urge you to work it out
@@ -607,7 +607,7 @@
 
       For simplicity, let's consider the case that $m=1$, and
         calculate the exact state after each operation. In
-        \autoref{sec:defining-cros}, we saw that the first three operations
+        \cref{sec:defining-cros}, we saw that the first three operations
         of the compressed oracle lead to the following state:
       \[
         \sum_{\forall \hat{y} \in [2^m]}
@@ -793,7 +793,7 @@
         \end{enumerate}
         Now, let the extractor $\extractor$ simulate the random oracle for
           $\adv$ as a compressed random oracle. As stated in
-          \autoref{thm:perfect}, the simulation will be perfect, and
+          \cref{thm:perfect}, the simulation will be perfect, and
           so we are guaranteed that with the same probability, $\adv$ will
           output tuples as before. 
 
