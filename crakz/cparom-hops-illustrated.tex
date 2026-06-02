@@ -6,14 +6,22 @@
   % Define positions
   % NB: Changed from counting-from-zero to counting-from-one
   \node[game] (G0) at (0,0) {$\game{1} = \indcpa^0$};
-  \node[game] (G1) at (0,-4.5) {$\game{2}$};
-  \node[game] (G2) at (6,-4.5) {$\game{3}$ / $\bdv$};
-  \node[game] (G3) at (6,0) {$\game{4} = \indcpa^1$};
+  \node[game] (G1) at (0,-5) {$\game{2}$};
+  \node[game] (G2) at (6.2,-5) {$\game{3}$ / $\bdv$};
+  \node[game] (G3) at (6.2,0) {$\game{4} = \indcpa^1$};
   
   % Draw transitions with labels
-  \draw[transition] (G0) -- (G1) node[midway, above, label, sloped] {add $\bad$ event};
-  \draw[transition] (G1) -- (G2) node[midway, below, label] {$K$ real $\to$ $K$ random};
-  \draw[transition] (G2) -- (G3) node[midway, below, label, sloped] {remove $\bad$ event};
+  \draw[transition] (G0) -- (G1) 
+    node[midway, above, sloped] {program $K^*$ into $\RO(x^*)$}
+    node[midway, below, sloped] {add $\bad$ flag};
+
+  \draw[transition] (G1) -- (G2) 
+    node[midway, above] {remove programming}
+    node[midway, below] {($K^*$ real $\to$ random)};
+
+  \draw[transition] (G2) -- (G3) 
+    node[midway, below, sloped] {remove $\bad$ flag};
+
   \draw[transition, dashed] (G0) -- (G3); 
   
   % Braces
