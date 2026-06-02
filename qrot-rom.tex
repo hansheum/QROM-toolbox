@@ -30,7 +30,7 @@
     They are also very easy to simulate, a process known as
       lazy-sampling, as shown in \cref{fig:lazy-sampling}.
 
-  \subsection{One-way PKE to Hiding KEM: The $\U$-transform}
+  \subsection{From a One-way PKE to a Hiding KEM: The $\U$-transform}
     The Fujisaki-Okamoto transformation~\cite{C:FujOka99}, which underlies many post-quantum
       KEMs including the now-standardized ML-KEM (Kyber)~\cite{Kyber}, can be
       framed as the composition of two 
@@ -665,7 +665,7 @@
       %  must be small. Then we can return to our main strategy, which will now 
       %  work without issue.
 
-    \subsection{Three Helpful Lemmas}
+    \subsection{Three Helpful Lemmas}\label{sec:equbad}
       The proof of \cref{thm:cparom} applies a few proof techniques that are
       common enough to warrant extracting as lemmas on their own.
 
@@ -674,6 +674,12 @@
 
       \subsubsection{Equivalent-until-bad.}
         As illustrated.
+
+        %% Restatable Lemma usage: 
+        %% \begin{restatable}[Header]{environment type}{thm-restate reference string}\label{cref label}
+        \begin{restatable}[Equivalent-until-bad]{lemma}{equbad}\label{lemma:equbad}
+          xyz
+        \end{restatable}
 
       \subsubsection{One-way to Hiding.}
         In order to (\ldots)
@@ -741,3 +747,86 @@
       \item Where the proofs break down, and why they do not admit direct
         lifting (not history-free)
     }
+
+    \subsubsection{Game Hopping.}
+      \hhnote{
+        copy-pasted from \autoref{sec:basics}
+      }
+      %\todoenum[Provide explanations of:]{
+      %  \item Basic background on game hopping and advantages, stuff like
+      %    difference vs.\ times two minus 1, with or
+      %    without absolute values, the fundamental lemma of game hopping.
+      %  \item Maybe write something about asymptotic vs.\ concrete security.
+      %}
+      For our security proofs, we will be working in the game-hopping
+        paradigm of Shoup~\cite{EPRINT:Shoup04}.
+        The fundamental lemma of game hopping states that the distinguishing advantage
+        of an adversary can be bounded in terms of their distinguishing advantage
+        over several intermediary game ``hops''.
+
+      \begin{lemma}[Fundamental Lemma of Game Hopping]\label{lemma:game-hopping}
+        For any adversary $\adv$ tasked with distinguishing $\game{0}$ from
+        $\game{n}$, and for any games $\game{1}, \ldots \game{n-1}$,
+        there exist adversaries $(\adv_1, \ldots, \adv_n)$ such that
+        \[
+          \abs{
+            \probsample{\game{0}(\adv)}{1 \sample \adv} -
+            \probsample{\game{n}(\adv)}{1 \sample \adv}
+          } \leq \sum_{i = 1}^n \abs{
+            \probsample{\game{i-1}(\adv)}{1 \sample \adv_i} -
+            \probsample{\game{i}(\adv)}{1 \sample \adv_i}
+          }\, .
+        \]
+      \end{lemma}
+
+      \noindent
+      The lemma states that, if $\adv$ were able to distinguish, then
+        at least one of $\adv_1, \ldots, \adv_n$ must be able to
+        distinguish too---and vice versa, that if none of the $\adv_i$ are able to
+        distinguish, then neither is $\adv$.
+        (In fact, the $\adv_i$ that achieve this will in essence be just copies
+        of $\adv$.)
+
+      The proof is remarkably simple, reproduced here for those who haven't
+        seen it.
+
+      \begin{proof}
+        For all $i$ from $1$ to $n-1$, insert $0 = \probsample{\game{i}(\adv_i)}{1 \sample \adv_i} -
+        \probsample{\game{i}(\adv_i)}{1 \sample \adv_i}$ into the absolute value
+        on the left hand side, then apply the union bound.
+        \qed
+      \end{proof}
+
+      %\paragraph{Quantum notation.}
+      %  %  While we only assume knowledge of basic linear algebra, this tutorial
+      %  %    still concerns itself with several fundamentally quantum concepts. To
+      %  %    help bridge this divide, we provide a self-contained primer on quantum
+      %  %    computing theory in
+      %  %    \cref{sec:primer}, with explanations and definitions for all
+      %  %    the quantum concepts and conventions that we will need. A summary of our
+      %  %    notation is given in \cref{tab:notation}.
+      %  Precise definitions for our quantum-notational conventions are provided in
+      %    \cref{sec:primer},
+      %    along with a gentle introduction to the relevant quantum concepts,
+      %    summarized in \cref{tab:notation}.
+
+      \hhnote{
+        Add: $\pcparse$ keyword. (Allow $\pcif \pcparse$ too? By having $\pcparse$
+        return a boolean value? Hmm, tricky.) And: $\red\bad$ abort convention.
+      }
+      \hhnote{
+        Add: Adversaries are always assumed to halt in due time, even when the
+        environment fails to match their expectation.
+      }
+
+    \subsubsection{Bad Events.}
+      \hhnote{
+        Add identical-until-bad lemma
+      }
+      \hhnote{
+        Nice way to phrase the puncturing oracle later as just quantumly
+        checking for bad events
+      }
+      \begin{lemma}[Equal-until-bad]\label{lemma:bad}
+        todo
+      \end{lemma}

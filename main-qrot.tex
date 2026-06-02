@@ -106,6 +106,14 @@
   \usepackage{nicefrac}
   \usepackage{braket}
 
+% thm-restate: lets a lemma/theorem be stated once (in a \begin{restatable}
+% block) and replayed verbatim with the SAME number elsewhere (e.g. an
+% appendix) via a generated \<macro>* command. Works directly on llncs's
+% \spnewtheorem environments; no \declaretheorem redefinition needed.
+% Loaded before cryptocode so amsthm (pulled in by thmtools) precedes it;
+% hyperref/cleveref still load later, as cleveref requires.
+\usepackage{thmtools,thm-restate}
+
 \input{./cryptocodeh/cryptocodeh}
 \input{./cryptocodeh/cryptocrakz}
 \graphicspath{{../figures/}}
@@ -185,6 +193,8 @@
 \crefname{example}{Example}{Examples}       \Crefname{example}{Example}{Examples}
 % NB: the custom boxed exercise env (qrot-latex.tex) steps "exercisecounter".
 \crefname{exercisecounter}{Exercise}{Exercises} \Crefname{exercisecounter}{Exercise}{Exercises}
+% \cpageref wording: "p. 17" / "pp. 17--19" instead of "page"/"pages".
+\crefname{page}{p.}{pp.}                     \Crefname{page}{P.}{Pp.}
 % Appendix reference helper (hyperref-based; appendix-specific "App." name).
 \newcommand{\aref}[1]{\hyperref[#1]{App.~\ref*{#1}}}
 % Range helper, now via cleveref (e.g. "Sects. 3 to 5").
@@ -266,6 +276,8 @@
   \clearpage
 
   % Appendices input below
+  \input{qrot-toolbox}
+  \clearpage
   \iffutureversion
     \input{qrot-pseudocode-defs}
     \clearpage

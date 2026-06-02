@@ -1,0 +1,40 @@
+\section{The Toolbox}
+  Here we collect the various tools introduced over the course of the tutorial.
+
+  \begin{table}[h!]
+    \centering
+    \caption{
+      The QROM toolbox TEST. Security Parameter column shows what you need to
+      reach $128$-bit security for $\epsilon \leq 2^{-\secpar}$ and $q \leq 2^{80}$.
+    }
+    \label{tab:toolbox}
+    \small
+    \begin{tabular}{@{}lccc@{}}
+      \toprule
+      Tool                  & Tightness   & Security Parameter & Statement \\
+      \midrule
+      \addlinespace
+      \multicolumn{4}{@{}l}{\textit{Classical}} \\
+      Equivalent-until-bad  & \textit{tight}           & $\secpar = 128$ & \cref{lemma:equbad} (\cpageref{sec:equbad}) \\
+      %\midrule
+      \addlinespace
+      \multicolumn{4}{@{}l}{\textit{Programming}} \\
+      O2H (Find)            & $2\sqrt{(q+1)\cdot\epsilon}$ & $\secpar = 338$  & \cref{sec:o2h-find}  \\
+      O2H (Guess)           & $2q\sqrt{\epsilon}$ & $\secpar = 418$           & \cref{sec:o2h-guess} \\
+      \addlinespace
+      \multicolumn{4}{@{}l}{\textit{Simulation}} \\
+      Compressed oracle     & \textit{tight}  & $\secpar = 128$                  & \cref{sec:cro}       \\
+      \addlinespace
+      \multicolumn{4}{@{}l}{\textit{Extraction}} \\
+      Zhandry's extraction  & $\epsilon + \frac{1}{\sqrt{2^m}}$?  &  ? & \cref{sec:qoe} \\
+      Online extraction     & (scheme-dependent)  &  ?          & \cref{sec:qoe}       \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+
+  \subsection{Programming Tools}
+    \equbad* % Equivalent-until-bad restatement
+
+  \subsection{Simulation Tools}
+
+  \subsection{Extraction Tools}
