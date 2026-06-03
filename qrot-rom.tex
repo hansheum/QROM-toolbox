@@ -2,7 +2,7 @@
 \begin{figure}[t]
   \centering
   \fbox{
-    \begin{minipage}[t][1.8cm]{4.8cm}
+    \begin{minipage}[t][1.3cm]{4.8cm}
 	  	\underline{\initHeading $\RO$}
       \smallskip
     	\nicoresetlinenr
@@ -16,14 +16,13 @@
 	  \begin{minipage}[t]{2.3cm}
 	  	\underline{\oracleHeading $\RO(x)$}
       \smallskip
-    	\nicoresetlinenr
 	  	\begin{nicodemus}
         \item $\pcreturn f(x)$
 	  	\end{nicodemus}	
 	  \end{minipage}
   }
   \fbox{
-    \begin{minipage}[t][1.8cm]{2.3cm}
+    \begin{minipage}[t][1.3cm]{2.3cm}
 	  	\underline{\initHeading $\RO$}
       \smallskip
     	\nicoresetlinenr
@@ -34,14 +33,11 @@
 	  	\end{nicodemus}	
 	  \end{minipage}
 
-	  \begin{minipage}[t]{3.1cm}
+	  \begin{minipage}[t]{4.7cm}
 	  	\underline{\oracleHeading $\RO(x)$}
       \smallskip
-    	\nicoresetlinenr
 	  	\begin{nicodemus}
-        \item $\pcif \Db[x] = \bot :$ 
-        \smallskip
-        \item   \quad $\Db[x] \sample \bin^m$
+        \item $\pcif \Db[x] = \bot : \Db[x] \sample \bin^m$
         \smallskip
         \item $\pcreturn \Db[x]$
 	  	\end{nicodemus}	
@@ -120,10 +116,53 @@
       outputs. How many times will we have to evaluate $f$ before we will likely
       have found a collision?
 
-    Let us calculate.
+    \newcommand{\collisions}{\pcalgostyle{coll}}
+    Let us calculate. First, let $\bool{f(x_1) = f(x_2)}$ be the predicate that
+      takes the value $1$ if $f(x_1) = f(x_2)$, and $0$ otherwise.
+      Fix $x_1$, and let $x_2$ be chosen at random. Since there are $2^m$
+      possible outputs, and each input were assigned a uniformly
+      random output, the probability that $\bool{f(x_1) = f(x_2)} = 1$
+      is exactly $2^{-m}$. Hence, the expectation value is also
+      \[
+        \expect{\bool{f(x_i) = f(x_j)}} = 2^{-m}\, .
+      \]
+      Now, let $\collisions_q$ be the expected number of
+      collisions observed after $q$ evaluations of $f$ on different inputs.
+      \[
+        \collisions_q = \expect{\sum_{i < j}\, \bool{f(x_i) = f(x_j)}}\, ,
+      \]
+      where $i$ and $j$ run from $1$ to $q$, and summing over $i < j$ to 
+      avoid double-counting the pairs. A useful fact about expectation values is
+      that they are linear, so this may be rewritten
+      \[
+        \collisions_q = \sum_{i < j}\expect{\bool{f(x_i) = f(x_j)}} 
+          = \sum_{i<j} \frac{1}{2^m} = \frac{q(q-1)}{2} \cdot \frac{1}{2^m} 
+          \approx \frac{q^2}{2^{m}}\, .
+      \]
+      We want to know how large $q$ must be before $\collisions_q \approx 1$.
+      Now that we have an explicit formula, we find our answer by solving for
+      $q$ and insert for $m = 256$:
+      \[
+        \collisions_q \approx 1 
+        \Longleftrightarrow q \approx \sqrt{2^m} 
+        \Longleftrightarrow q \approx \sqrt{2^{256}} = 2^{128}\, .
+      \]
+      So despite the astronomical number of collisions, we would still 
+      have to evaluate a random function with length-$256$ outputs on roughly
+      $2^{128}$ input values before we would ever be expected to find one,
+      which is well beyond the capabilities of any realistic computer.
+
+    Incidentally, the somewhat unintuitive fact that the expected number of
+      collisions grows as the \emph{square} of the number of items
+      is sometimes known as the ``birthday paradox'', so named because 
+      of the surprising fact that, assuming everyone are assigned birthdays at
+      random, it only takes a room of $23$ people before the
+      probability that two of them shares a birthday exceeds $50\%$.
       
   \subsection{Monolithic Random Oracles}
-    The assumption we just made, that
+    The idealization we just made, treating the hash function as a uniformly
+      random function, turned out to be very useful in analyzing the effort
+      required to find a collision.
 
     but they're big
 
