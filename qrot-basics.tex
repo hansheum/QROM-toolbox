@@ -14,7 +14,7 @@
   \hhnote{
     Commenting out for now; here's a list of things that should be introduced/mentioned.
   }
-  \todoenum[Notation and conventions (\done $=$ introduced)]{
+  \todoenum[Notation and conventions]{
     \item The natural numbers start at $1$.
     \item $[n] = \{1, \ldots, n\}$
     \item Functions are over bitstrings
@@ -24,7 +24,7 @@
       %\item $\mathsf{Bitstringmaps} (m,n)$ ?
       %\item $\mathsf{Maps} (\bin^m,\bin^n)$ ?
       %\item 
-        $\{f: \bin^m \rightarrow \bin^n\}$ ?
+        $\{f: \bin^n \rightarrow \bin^m\}$ ?
     %\end{itemize}
     \item $n \times n$ identity matrix: $\idmatrix[n]$ (or $\idmatrix[]$ when the
       context is clear).
@@ -47,10 +47,13 @@
       returns $1$ if $\mathsf{Condition}$ is true and $0$ otherwise. (Let's use
       bit values for $\true$ and $\false$.)
     \item Algorithms are classical or quantum Turing machines (although we use
-      the circuit model for quantum algorithms). \done
+      the circuit model for quantum algorithms).
     \item Oracle algorithms exist. Oracles often have unbounded resources.
     \item Stateless, deterministic oracles implement a function, in which case
       we may refer to it by $\Oracle_f$
+    \item In pseudocode, functions that return no output instead output $\done$
+    \item States and statefulness (such as for multi-stage adversaries and random oracle
+      simulations) can probably be left implicit by the notation
   }
 
   %\subsection{Sets, Lists and Probabilities}
@@ -436,7 +439,7 @@
         bit values is simpler, so moving to this convention.
       }
 
-  \subsection{Cryptographic Primitives}
+  \subsection{Cryptographic Primitives}\label{sec:basics:primitives}
     We next introduce the main cryptographic schemes we will be concerned with:
       public-key encryption, key-encapsulation mechanisms, digital signatures,
       and, of course, hash functions. 
@@ -895,7 +898,20 @@
 	    	\end{figure}
 	    \end{definition}
 
-    \subsubsection{Hash Function Security.}
+    \subsubsection{Hash Functions.}
+      \hhnote{
+        NB: copy-pasted from \cref{sec:rom}, which leads to some duplicated
+        text; rewrite.
+      }
+      A hash function is can be thought of as an algorithm that
+        takes an input of any length and outputs a short, fixed-length
+        ``fingerprint'' of the input, such that re-evaluating the hash function on
+        the same input produces the same fingerprint. They are, in other words,
+        \emph{deterministic}.
+
+      For a hash function to be suitable for cryptographic purposes, the
+        fingerprints it produces should be random-looking, and it should be hard
+        to find two inputs with the same fingerprint. 
 
   \subsection{Reductions.}
     We say that a reduction is \emph{simple} if it only runs the adversary once,

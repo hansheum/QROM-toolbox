@@ -1,7 +1,39 @@
-% Classical lazy-sampling
+% Monolithic vs Lazy-sampled RO
 \begin{figure}[t]
   \centering
   \fbox{
+    \begin{minipage}[t][1.8cm]{4.8cm}
+	  	\underline{\initHeading $\RO$}
+      \smallskip
+    	\nicoresetlinenr
+	  	\begin{nicodemus}
+        \item $f \sample \{f: \bin^n \rightarrow \bin^m\}$ 
+        \smallskip
+        \item $\pcreturn \done$
+	  	\end{nicodemus}	
+	  \end{minipage}
+
+	  \begin{minipage}[t]{2.3cm}
+	  	\underline{\oracleHeading $\RO(x)$}
+      \smallskip
+    	\nicoresetlinenr
+	  	\begin{nicodemus}
+        \item $\pcreturn f(x)$
+	  	\end{nicodemus}	
+	  \end{minipage}
+  }
+  \fbox{
+    \begin{minipage}[t][1.8cm]{2.3cm}
+	  	\underline{\initHeading $\RO$}
+      \smallskip
+    	\nicoresetlinenr
+	  	\begin{nicodemus}
+        \item $\Db \assign (\emptystring, \emptystring)$ 
+        \smallskip
+        \item $\pcreturn \done$
+	  	\end{nicodemus}	
+	  \end{minipage}
+
 	  \begin{minipage}[t]{3.1cm}
 	  	\underline{\oracleHeading $\RO(x)$}
       \smallskip
@@ -17,16 +49,85 @@
   }
   \caption{
     \label{fig:lazy-sampling}
-    A lazy-sampled random oracle from $n$ to $m$ bits. 
-    Here, $\Db$ is a query database. Note that the oracle is \emph{stateful},
-    since the database is maintained between calls.
+    Left: A monolithic random oracle, sampling and storing a function $f$
+    from $n$ to $m$ bits uniformly at random, then answering oracle calls by
+    evaluating the $f$ on the input. Since $f$ is uniformly random, it is generally
+    incompressible, so we have no choice but to store it as a truth table of size 
+    (length of input-output pair) $\times$ (number of inputs),
+    giving a memory requirement of $(n+m) \cdot 2^n$ bits. Even if we limit the input
+    length $n$ to $128$ bits, storing $f$ would be well beyond the capability of any
+    realistic computer. \\
+    Right: A lazy-sampled random oracle, maintaining a
+    query database $\Db$ of input/output tuples $(x,\RO(x))$. 
+    Note how the size of the database grows as
+    $(n+m) \cdot q$ bits, where $q$ is the number of calls to $\RO$ with
+    differening inputs.
   }
 \end{figure}
 %
 \section{The Random Oracle Model}\label{sec:rom}
-  Random oracles are nice. 
+  In this chapter, we will introduce the concept of the random oracle. Then we
+    will introduce the \U-transform, which is the second half of the Fujisaki--Okamoto
+    transformation, and, as a first security proof, 
+    prove that if we have a deterministic PKE scheme
+    that achieves one-way security, taking it through the \U-transform gives us
+    a KEM that achieves indistinguishability. This proof will teach us several useful
+    tricks, foreshadowing the QROM tools that will be introduced in \cref{sec:o2h}.
 
-  \subsection{Simulating Random Oracles}
+  \subsection{Modelling Hash Functions as a Random Function}
+    As explained in \cref{sec:basics:primitives}, a hash function is 
+      a deterministic algorithm that takes arbitrary-length inputs and produces
+      a fixed-length ``fingerprint'' of that input, such that re-evaluating the hash function on
+      the same input produces the same fingerprint. 
+      
+    But is a hash function really a \emph{function}? Well, since hash functions can take arbitrary-length
+      inputs, they can at least not be \emph{finite} functions. Rather, it is
+      helpful to think of hash functions as an infinite \emph{collection} of finite
+      functions $\{f_n\}$, with one $f_n$ for each possible input length $n$. 
+      Let us for the sake of simplicity specialize to one such $f_n$.
+      If the hash function produces fingerprints of (fixed) length $m$, then
+      this is a function from the set $\bin^n$ to $\bin^m$, which is much
+      simpler to reason about, and we can always go back to the full picture by
+      considering the collection $\{f_n\}$ instead.
+
+    We mentioned that cryptographic hash function should produce
+      random-looking fingerprints, and it should be hard
+      to find two inputs with the same fingerprint,
+      even though such collisions will definitely \emph{exist} whenever $n$ is
+      larger than $m$ (which it usually is), by the pigeonhole principle.
+
+    Indeed, there might be quite a lot of collisions. Consider the
+      case of hashing a 10MB picture: then $n$ is $80$ million (since there are
+      $8$ bits in a byte), while a typical choice for the output length $m$
+      might be $256$. This leads to a
+      truly astronomical number of colliding input values: the pigeonhole
+      principle tells us that at least one of the hash function's $2^m$ possible
+      output values will map to at least 
+      \[
+        \frac{2^n}{2^m} = \frac{2^{80{,}000{,}000}}{2^{256}} = 2^{79{,}999{,}744}
+      \]
+      different input values. For comparison, the
+      number of atoms in the observable universe is estimated to be
+      around $10^{80} \approx 2^{266}$.
+
+    And yet, actually \emph{finding} even a single such collision can be very
+      hard. To see this, let us assume that the hash function is a function
+      $f$ drawn uniformly at random from the set of all functions from $\bin^n$ to
+      $\bin^m$. Then we are guaranteed that there is no internal structure that
+      can be exploited to find collisions, and no special inputs that have a
+      higher probability of colliding. Hence, we have no choice but to
+      evaluate the function on different inputs until we find two colliding
+      outputs. How many times will we have to evaluate $f$ before we will likely
+      have found a collision?
+
+    Let us calculate.
+      
+  \subsection{Monolithic Random Oracles}
+    The assumption we just made, that
+
+    but they're big
+
+  \subsection{Simulation via Lazy-Sampling}
     They are also very easy to simulate, a process known as
       lazy-sampling, as shown in \cref{fig:lazy-sampling}.
 
