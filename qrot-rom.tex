@@ -70,7 +70,7 @@
     a KEM that achieves indistinguishability. This proof will teach us several useful
     tricks, foreshadowing the QROM tools that will be introduced in \cref{sec:o2h}.
 
-  \subsection{Modelling Hash Functions as a Random Function}
+  \subsection{Modelling Hash Functions as Random}
     As explained in \cref{sec:basics:primitives}, a hash function is 
       a deterministic algorithm that takes arbitrary-length inputs and produces
       a fixed-length ``fingerprint'' of that input, such that re-evaluating the hash function on
@@ -160,11 +160,48 @@
       probability that two of them shares a birthday exceeds $50\%$.
       
   \subsection{Monolithic Random Oracles}
-    The idealization we just made, treating the hash function as a uniformly
+    The idealization that we just made, treating the hash function as a uniformly
       random function, turned out to be very useful in analyzing the effort
-      required to find a collision.
+      required to find a collision: the no-structure guarantee that comes with
+      drawing the function at random enabled us to explicitly calculate how many
+      evaluations are required in expectation.
+      This same no-structure guarantee, however, also means that there is no way
+      to store a truly random function more efficiently than to simply keep a
+      truth table with all the input
+      and output values. For a function from $n$ to $m$ bits, one such
+      input-output pair will take up $n+m$ bits of memory, and there will be
+      one such pairs for every possible input, so the total memory
+      requirement for storing $f$ would be $(n+m) \cdot 2^n$. If $n$ is larger
+      than $40$, this is already in the terabytes range, and $n$ larger than $60$ is
+      beyond the capabilities of even the world's largest supercomputers.
 
-    but they're big
+    As we will see, hash function are very useful primitives when building
+      cryptography. However, we want our cryptography to have
+      \emph{efficient} algorithms, and as we just saw, taking the hash function
+      to be truly random would make any algorithm that uses it highly
+      inefficient. Even just \emph{assuming} a random function for the sake of a
+      security proof would not work,
+      since we need to be able to reason about attackers that are themselves
+      guaranteed to be efficient, meaning they do not have access to
+      exponentially large resources like time and memory.
+      Hence, under such an assumption, the attacker would not even be able to
+      \emph{run} cryptography that internally evaluates hash functions, much
+      less break it.
+
+    In such situations, the standard theoretical-computer-science solution is to
+      instead provide the function as an \emph{oracle}. Imagine a giant computer
+      that lives in the sky, which has as much resources as it needs to store
+      and evaluate random functions. Everyone in the world are given access
+      to this \emph{random oracle}, so that they can evaluate $f(x)$ by sending
+      $x$ to the oracle and receiving the evaluation of $x$ in return.
+      Crucially, given the same input $x$, everyone will see the same value for
+      $f(x)$, which means that the random oracle can be used as a perfectly
+      secure hash function.
+
+    This is shown in pseudocode on the left of \autoref{fig:lazy-sampling}: the
+      ``Initialize'' method initialzes our random oracle $\RO$ by sampling $f$
+      uniformly at random from the set of all functions from $n$ to $m$ bits, 
+      and the ``Oracle'' method 
 
   \subsection{Simulation via Lazy-Sampling}
     They are also very easy to simulate, a process known as
