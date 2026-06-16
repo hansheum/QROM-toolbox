@@ -1,12 +1,17 @@
-\title{
-  The Quantum Random Oracle Toolbox: A Tutorial\thanks{
-    $\pcalgostyle{v0.1}$ (\today)
-  }
-}
-
-\titlerunning{
-    The Quantum Random Oracle Toolbox
-}
+%\title{
+%  The Quantum Random Oracle Toolbox: A Tutorial\thanks{
+%    \texttt{v0.0} (\today)
+%  }
+%}
+%
+%\titlerunning{
+%    The Quantum Random Oracle Toolbox
+%}
+\title{The Quantum Random Oracle Toolbox\\ %[1ex]
+       {\Large\normalfont\itshape A Tutorial}\ \thanks{
+        \texttt{v0.0} (\today)
+       }}
+\titlerunning{The Quantum Random Oracle Toolbox}
 
 \author{
   Hans Heum \orcidlink{0000-0003-0527-2999} \and
@@ -73,28 +78,28 @@
   We only assume knowledge of basic linear algebra; hence,
   this tutorial also serves to introduce both provable security and
   quantum physics, with ample examples and exercises throughout.   
-  
-  \vspace{\baselineskip}
-  \todoenum[Roadmap]{
-      \item[$\pcalgostyle{v0.1}$] Cryptography and quantum primers
-      \item[$\pcalgostyle{v0.1}$] Quantum random oracles: definitions and intuitions
-      \item[$\pcalgostyle{v0.1}$] Proof example in the classical ROM: PKE-to-KEM
-      \item[$\pcalgostyle{v0.1}$] The One-way to Hiding (O2H) lemma, and PKE-to-KEM in the QROM
-      \item[$\pcalgostyle{v0.2}$] A quantum pseudocode for oracles and reductions
-      \item[$\pcalgostyle{v0.2}$] The Compressed-oracle technique: How to lazy-sample quantum random oracles
-      \item[$\pcalgostyle{v0.3}$] The Online-extractability tool, and how to prove CCA security 
-      \item[$\pcalgostyle{v0.4}$] Proof example in the classical ROM: CMA-secure digital signatures from NIZKs
-      \item[$\pcalgostyle{v0.4}$] Adaptive O2H, and digital signatures in the QROM
-      \item[$\pcalgostyle{v1.0}$] The O2H zoo: When and how you can get tighter security 
-      \item[$\pcalgostyle{v2.0}$] Measure-and-reprogram: Post-quantum NIZKs from sigma protocols
-      \item[$\pcalgostyle{v3.0}$] Primer on quantum information theory, and how the tools were derived
-  }
 
-  \begin{keywords}
-    Post-Quantum Security \textperiodcentered~
-    Quantum Random Oracles \textperiodcentered~
-    Tutorial 
-  \end{keywords}
+  \vspace{\baselineskip}
+  \textbf{Roadmap.}\par\smallskip\noindent
+  \begin{description}[font=\ttfamily, labelwidth=3.2em, leftmargin=!, labelsep=1.2em, itemsep=0pt]
+    \item[v0.1] Primers on provable security, quantum computing, and the random oracle model;
+      the One-way To Hiding (O2H) lemma; OW-to-IND with the U-transform  
+    \item[v0.2] Quantum oracle pseudocode; the compressed-oracle technique
+    \item[v0.3] Online extractability; CPA-to-CCA with the U-transform
+    \item[v0.4] Adaptive reprogramming via the GHHM ``resampling lemma'' and the
+      ``fixed-permutation'' O2H lemma; taking digital signatures from NMA to CMA security 
+    \item[v0.5] The O2H Zoo: SC-O2H, DS-O2H, MRM, MRE, and how
+      they compare in tightness and applicability
+    \item[v1.0] Measure-and-reprogram; the Fiat-Shamir transformation
+    \item[v2.0] Primer on quantum information theory; distance measures; how 
+      the tools were derived
+  \end{description}
+
+  %\begin{keywords}
+  %  Post-Quantum Security \textperiodcentered~
+  %  Quantum Random Oracles \textperiodcentered~
+  %  Tutorial 
+  %\end{keywords}
 \end{abstract}
 
 \newpage
