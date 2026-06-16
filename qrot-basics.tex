@@ -914,15 +914,138 @@
         to find two inputs with the same fingerprint. 
 
   \subsection{Reductions.}
-    We say that a reduction is \emph{simple} if it only runs the adversary once,
-      and \emph{fully black-box} if it runs the adversary from start to finish,
-      answering oracle queries along the way, and otherwise only providing its
-      input and reading its output; if, as is typically the case, the reduction
-      is both simple and fully black-box, we call it an SFBB reduction.
+    The main tool we have in proving security is that of a \emph{security
+      reduction} (\ldots)
+    
+    \hhnote{skip the following?}
 
-    We will later see some reductions that \emph{rewind} the adversary, and run
-      it again from a point chosen by the reduction. We model this as the usual
-      black-box access with an additional rewinding \emph{interface}, with which
-      it can essentially tell the adversary to rewind itself to a specified point
-      in its computation; we refer to it as a \emph{rewinding black-box} (RBB)
-      reduction.
+    We say that a reduction is \emph{simple} if it only runs the adversary once,
+      and \emph{fully black-box} if it only accesses the adversary and
+      cryptographic primitives in black-box ways,
+      running the adversary from start to finish without tampering with its
+      internal workings, answering oracle queries along the way, and otherwise
+      only providing its input and reading its output.
+      %; if, as is typically the case, the reduction is both simple and fully
+      %black-box, we call it an SFBB reduction.
+      In contrast, a reduction might for example \emph{rewind} an adversary,
+      running it several times to figure out how it \emph{would} behave given
+      different inputs; such a reduction would not be considered simple.
+      Generally speaking, simple, fully black-box reductions are preferred, as
+      they are more general and easier to work with, but such reductions are not
+      always possible to construct.
+
+    Since simple, fully black-box reductions only access the adversary in a
+      black-box manner, they do not depend on the specific workings of the
+      adversary, and may therefore be quantified before it.
+
+    %We will later see some reductions that \emph{rewind} the adversary, and run
+    %  it again from a point chosen by the reduction. We model this as the usual
+    %  black-box access with an additional rewinding \emph{interface}, with which
+    %  it can essentially tell the adversary to rewind itself to a specified point
+    %  in its computation; we refer to it as a \emph{rewinding black-box} (RBB)
+    %  reduction.
+
+    \hhnote{TRIVIAL REDUCTION EXAMPLE TO SHOW THE FRAMEWORK: IND $\to$ OW}
+
+    If, given a ciphertext, you have the ability to break encryption and recover the
+      underlying plaintext, then you can also distinguish which of two
+      ciphertexts were encrypted. When talking about reductions between security
+      notions, we usually state the contrapositive: that
+      ``\emph{indistinguishability} (the inability to distinguish) implies
+      \emph{one-wayness} (the inability to recover plaintexts)''. 
+
+    Let us prove this simple fact as a demonstration of how
+      we usually construct security reductions.
+
+    \begin{theorem}[IND $\To$ OW]\label{thm:ind-ow-red}
+      Let $\pkescheme$ be any public-key encryption scheme. Then there exists a
+      simple, fully black-box reduction $\bdv$, such that for every adversary $\adv$,
+      \[
+        \advantage{\owcpa}{\pkescheme} \leq
+        \advantage{\indcpa}{\pkescheme}[(\bdv^{\adv})]\, ,
+      \]
+      where $\bdv$ runs in the same time as $\adv$.
+    \end{theorem}
+
+    \paragraph{Parsing the Statement.}
+      \hhnote{cut-and-pasted from the next section}
+      If you are new to security reductions, it may be hard to see at a glance
+        how the theorem statement connects to the intuition that ``if
+        $\dPKE$ achieves one-wayness security, then $\KEM$ achieves distinguishing
+        security'', so let us take a moment to parse the different parts of the
+        statement.
+
+      On the left-hand side of the main inequality, we have the distinguishing
+        advantage of our given adversary $\adv$.
+        The theorem quantifies over all possible $\adv$, so you may
+        think of this as the maximum possible distinguishing advantage against
+        the construction. On the right-hand side, we have an upper-bound on this
+        largest-possible distinguishing advantage. Hence,
+        if the right-hand side is small, then the largest-possible
+        distinguishing advantage against $\KEM$ must also be small. This is
+        just a different way of saying that $\KEM$ is indistinguishable.
+        The term on the right-hand side is the one-wayness advantage of our
+        \emph{constructed} adversary $\bdv$. Note the quantifiers: the theorem
+        statement says that ``for every (given) $\adv$, there exists a
+        (constructed) $\bdv$''. Hence, while we have no way of knowing the inner
+        workings of the given adversary $\adv$, we are free to construct $\bdv$ to our
+        liking. 
+
+      The trick to understand how this ``proves security'' is to think
+        contrapositively. Recall that what we
+        want to prove is that ``if $\dPKE$ is secure, then $\KEM$ is secure''.
+        The conrapositive statement that we are actually proving is ``if $\KEM$
+        is \emph{in}secure, then $\dPKE$ must \emph{also} be insecure''. 
+        Hence, instead of thinking of $\bdv$'s advantage as
+        an upper-bound on the best-possible $\adv$ advantage, think of this
+        best-possible $\adv$ advantage as a \emph{lower-bound} on the
+        advantage an adversary $\bdv$ could achieve against $\dPKE$: If the
+        former is large (\KEM is broken),
+        then the latter must also be large (\dPKE is broken).
+        Since we started out assuming that $\dPKE$ is secure, 
+        %which is to say that the one-way advantage of \emph{any} $\bdv$ must be small, 
+        this gives us our proof-by-contradiction.
+
+
+    \hhnote{
+      might be helpful to the SFBB framework to show explicitly that $\bdv$ gets
+      oracle access to $\adv$ in the theorem statement itself
+    }
+
+	  \begin{figure}[t]
+	  	\begin{center}
+	  		\fbox{
+	  			\small
+	  			\nicoresetlinenr
+	  			\begin{minipage}[t]{4.5cm}	
+            \underline{{\bf Reduction} $\bdv^{\Oenc, \adv}(\pk)$}
+            \smallskip
+	  				\begin{nicodemus}
+              \item $\mssg_0, \mssg_1 \gets \bin^n$
+              \item $c^* \leftarrow \Oenc(\mssg_0, \mssg_1)$
+	  					\item $\advmssg \leftarrow \adv(\pk, c^*)$ 
+              \item $\pcif \advmssg \not\in \{\mssg_0, \mssg_1\} : \pcreturn 0$
+              \item $\pcelse \pcreturn \bool{\advmssg = \mssg_1}$
+	  				\end{nicodemus}
+	  			\end{minipage}
+	  		}
+	  	\end{center}
+	  	\caption{
+	  	  \label{fig:ind-ow-red}
+        The reduction $\bdv$, simulating the $\owcpa$ game for $\adv$ in such a
+        way that if $\adv$ wins, then $\bdv$ wins.
+      }
+	  \end{figure}
+
+    \hhnote{
+      the way I wrote the reduction now, it has $50\%$ chance of winning
+      in the event that $\adv$ failed to recover the correct message (by
+      returning $0$ rather than $\bot$),  
+      so that the inequality, which is useful to keep around for a sense of
+      ``direction'', is actually warranted.
+    }
+
+    \begin{proof}
+      See \autoref{fig:ind-ow-red} \ldots
+      \qed
+    \end{proof}

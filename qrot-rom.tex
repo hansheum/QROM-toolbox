@@ -359,68 +359,11 @@
       overhead of lazy-sampling a random oracle.
     \end{theorem}
 
-    \noindent
-    \paragraph{Parsing the Statement.}
-      If you are new to security reductions, it may be hard to see at a glance
-        how the theorem statement connects to the intuition that ``if
-        $\dPKE$ achieves one-wayness security, then $\KEM$ achieves distinguishing
-        security'', so let us take a moment to parse the different parts of the
-        statement.
-
-      On the left-hand side of the main inequality, we have the distinguishing
-        advantage of our given adversary $\adv$.
-        The theorem quantifies over all possible $\adv$, so you may
-        think of this as the maximum possible distinguishing advantage against
-        the construction. On the right-hand side, we have an upper-bound on this
-        largest-possible distinguishing advantage. Hence,
-        if the right-hand side is small, then the largest-possible
-        distinguishing advantage against $\KEM$ must also be small. This is
-        just a different way of saying that $\KEM$ is indistinguishable.
-        The term on the right-hand side is the one-wayness advantage of our
-        \emph{constructed} adversary $\bdv$. Note the quantifiers: the theorem
-        statement says that ``for every (given) $\adv$, there exists a
-        (constructed) $\bdv$''. Hence, while we have no way of knowing the inner
-        workings of the given adversary $\adv$, we are free to construct $\bdv$ to our
-        liking. 
-
-      The trick to understand how this ``proves security'' is to think
-        contrapositively. Recall that what we
-        want to prove is that ``if $\dPKE$ is secure, then $\KEM$ is secure''.
-        The conrapositive statement that we are actually proving is ``if $\KEM$
-        is \emph{in}secure, then $\dPKE$ must \emph{also} be insecure''. 
-        Hence, instead of thinking of $\bdv$'s advantage as
-        an upper-bound on the best-possible $\adv$ advantage, think of this
-        best-possible $\adv$ advantage as a \emph{lower-bound} on the
-        advantage an adversary $\bdv$ could achieve against $\dPKE$: If the
-        former is large (\KEM is broken),
-        then the latter must also be large (\dPKE is broken).
-        Since we started out assuming that $\dPKE$ is secure, 
-        %which is to say that the one-way advantage of \emph{any} $\bdv$ must be small, 
-        this gives us our proof-by-contradiction.
-
-      The main challenge of the
-        proof is then to construct a $\bdv$ that exploits the winning
-        strategy of $\adv$ in such a way that if $\adv$ \emph{would} win at the
-        indistinguishability game, then what \emph{actually} happens is that
-        $\bdv$ wins at the one-wayness game (at least with high probability).
-
-      %The second term is an artifact of our
-      %  proof strategy. (We could have come up with a slightly smarter
-      %  reduction that avoids it, see Exercise~\ref{ex:remove-loss-term}.) 
-      %  We still have to ensure that this term is small for the bound
-      %  to be meaningful, in particular much smaller than $1$. 
-      %  The variable $\qe$ counts the number of challenges, that is, the number
-      %  of KEM encapsulations that the adversary sees. In realistic settings,
-      %  a single public key may issue a large number of encapsulations, so let's
-      %  be conservative and assume that $\qe \leq 2^{30} \approx 1$ billion. 
-      %  The denominator $2^m$ is the size of the output space of the random
-      %  oracle. Recall that the output of the random oracle will be used as a
-      %  symmetric key $K$, and these are typically bitstrings of length $128$.
-      %  If so, then the second term is upper-bounded by
-      %  \[
-      %    \frac{\qe}{2^m} \leq \frac{2^{30}}{2^{128}} = \frac{1}{2^{98}} \ll 1\, .
-      %  \]
-      %  So we're good!
+    The main challenge of the
+      proof is to construct a $\bdv$ that exploits the winning
+      strategy of $\adv$ in such a way that if $\adv$ \emph{would} win at the
+      indistinguishability game, then what \emph{actually} happens is that
+      $\bdv$ wins at the one-wayness game (at least with high probability).
 
     \crakzfigcode{cparom-hops-illustrated}{
       Proof outline for \cref{thm:cparom}. The arrows show the changes
