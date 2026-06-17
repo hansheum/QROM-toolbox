@@ -337,11 +337,11 @@
       \end{figure} 
     \end{definition}
   
-    \hhnote{
-      Leave this version without the extra re-encryption check (which also
-      matches the original \U), and define a new \U with the re-encryption check
-      when we later want CCA security.
-    }
+    %\hhnote{
+    %  Leave this version without the extra re-encryption check (which also
+    %  matches the original \U), and define a new \U with the re-encryption check
+    %  when we later want CCA security.
+    %}
 
     As explained in \cref{sec:basics}, One-way security under Chosen
       Plaintext Attacks, or \owcpa, is really a minimal security
@@ -995,162 +995,172 @@
     \end{exercise}
   
   \subsection{One-way to Hiding}\label{sec:C-O2H}
-    \autoref{thm:cparom} may be about a specific construction (the
-      \U-transform), but the take-away message is quite general: If a reduction
-      has control over the random oracle, and is able to recognize the correct
-      answer when it sees it, we can use the random oracle to tightly reduce
-      security from relying on a stronger distinguishing-style assumption, to
-      instead rely on a weaker one-wayness assumption. 
-      %If the reduction further has the ability to
-      %recognize the correct answer when it sees it, this can be done tightly;
-      %otherwise, the reduction will come with a loss factor $q$.
-      We can generalize this observation in the following ``one-way to hiding'' lemma.\footnote{
-        ``Hiding'' is another name for indistinguishability-style
-        security, most often seen in the context of commitment schemes, which
-        are usually required to be both ``hiding'' and ``binding''.
-      }
-      %One for the case that the reduction can \emph{find} the value it
-      %Is looking for, and one for the case that it has no choice but to \emph{guess}.
-
-    \begin{restatable}[Find-O2H, classical]{lemma}{cOWHfindsingle}\label{lemma:co2h-find-single}
-      Let $\RO$, $\GO: \bin^n \to \bin^m$ be random
-      oracles such that for every $x \neq x^*$, $\RO(x) = \GO(x)$, whereas
-      $\RO(x^*)$ and $\GO(x^*)$ are independently uniform. 
-      Let $z$ be a value that depends arbitrarily on $\RO$, $\GO$, and $x^*$.
-      Let $\indfunc^*$ be an indicator oracle that on input $x$
-      returns $1$ if $x = x^*$, and otherwise returns $0$. 
-
-      Then there is a simple, fully black-box extractor $\extractor$,
-      such that for every distinguisher $\distinguisher$,
-      \[
-          \abs{\prob{1 \gets \distinguisher^{\RO}(z)}
-              - \prob{1 \gets \distinguisher^{\GO}(z)}}
-            \leq \probsample{x \gets \extractor^{\distinguisher, \indfunc^*}(z)}{x = x^*}\, .
-      \]
-    \end{restatable}
-
-    It may not be clear at a glance how this lemma relates to the proof of
-      \autoref{thm:cparom}. After all, there there was only one random oracle in
-      play, while \cref{lemma:co2h-find-single} has two. Also,
-      \autoref{thm:cparom} speaks of an adversary and a reduction, while
-      \cref{lemma:co2h-find-single} has a distinguisher and an extractors. How
-      do they connect?
-
-    To see the connection, note how the difference between $\game 2$ and $\game 3$
-      is contained to the oracle interface only. In fact, the random oracle
-      in $\game 2$ and the random oracle in $\game 3$ behave identically
-      relative to $\adv$'s input,
-      \emph{except} on the input value $x^*$, where it returns an independently
-      uniform value instead of the expected $\eK^*$. 
-      If we let the random oracle in $\game 2$ be identified with $\RO$, and the
-      random oracle in $\game 3$ be $\GO$, and further let $z = (\pk, \eK^*,
-      \ctxt^*)$, then we can identify $\distinguisher$ with $\adv$, and things
-      start to line up:
-      \[
-        \abs{\probsample{\game{2}(\adv)}{1 \gets \adv}
-          - \probsample{\game{3}(\adv)}{1 \gets \adv}}
-        = \abs{\prob{1 \gets \distinguisher^{\RO}(z)}
-          - \prob{1 \gets \distinguisher^{\GO}(z)}}\, .
-      \]
-
-    As for the extractor, it is given in \cref{fig:co2h-extractor}. It should
-      look familiar: aside from the use of the ``indicator oracle'' $\indfunc^*$, it is an
-      almost exact adaptation of $\bdv$ from \cref{fig:cparom-red}.
-      The indicator oracle is simply a formalization of the statement that ``the
-      extractor is able to recognize the correct value''; we provide this
-      ability in oracle form to make sure that our formalization 
-      only gives the extractor the ability to recognize correct values, 
-      such that it can be applied to any situation where this is the case. For
-      example, in our case the $\indfunc^*$ oracle can be locally computed from
-      the input $z$, via the same re-encryption trick employed by $\bdv$.
-      %and not accidentally give it an enhanced ability to find $x^*$ directly.
-
-      %%% Extractor
-      \begin{figure}[t]
-      	\begin{center}
-      		\fbox{
-      			\small
-      			\nicoresetlinenr
-      			\begin{minipage}[t]{3.5cm}	
-              \underline{\extHeading $\extractor^{\distinguisher, \indfunc^*}(z)$}
-              \smallskip
-      				\begin{nicodemus}
-      					\item $\advbit \gets \distinguisher^{\RO}(z)$
-                \smallskip
-      					\item $\pcoutput \bot$
-      				\end{nicodemus}
-      			\end{minipage}
-      
-      			\begin{minipage}[t]{5cm}
-      				\underline{if $\distinguisher$ calls $\RO(x)$}
-              \smallskip
-      				\begin{nicodemus}
-                \item \pcif $\indfunc^*(x) = 1 :$ 
-                \smallskip
-                \item   \quad \pcabort and \pcoutput $x$
-                \smallskip
-                \item $\pcif \Db[x] = \bot :$ 
-                \smallskip
-                \item   \quad $\Db[x] \sample \bin^m$
-                \smallskip
-                \item $\pcreturn \Db[x]$
-      				\end{nicodemus}	
-      			\end{minipage}
-      		}
-      	\end{center}
-      	\caption{\label{fig:co2h-extractor}
-          The extractor $\extractor$ of \cref{lemma:co2h-find-single}.
-          Here, the extractor $\extractor$ simulates $\RO$ for the distinguisher
-          $\distinguisher$; the extractor might of course just as well provide a
-          simulation of $\GO$.
+    \paragraph{Find-O2H.}
+      \autoref{thm:cparom} may be about a specific construction (the
+        \U-transform), but the take-away message is quite general: If a reduction
+        has control over the random oracle, and is able to recognize the correct
+        answer when it sees it, we can use the random oracle to tightly reduce
+        security from relying on a stronger distinguishing-style assumption, to
+        instead rely on a weaker one-wayness assumption. 
+        %If the reduction further has the ability to
+        %recognize the correct answer when it sees it, this can be done tightly;
+        %otherwise, the reduction will come with a loss factor $q$.
+        We can generalize this observation in the following ``one-way to hiding'' lemma.\footnote{
+          ``Hiding'' is another name for indistinguishability-style
+          security, most often seen in the context of commitment schemes, which
+          are usually required to be both ``hiding'' and ``binding''.
         }
-      \end{figure}
+        %One for the case that the reduction can \emph{find} the value it
+        %Is looking for, and one for the case that it has no choice but to \emph{guess}.
 
-    Taken together, we can now provide simpler proof of the crucial hop
-      from $\game 2$ to $\game 3$ in \cref{thm:cparom}, by identifying $\adv$
-      with $\distinguisher$, applying \cref{lemma:co2h-find-single} to get the
-      bound
-      \[
-        \abs{\probsample{\game{2}(\adv)}{1 \gets \adv}
-          - \probsample{\game{3}(\adv)}{1 \gets \adv}}
-        \leq \probsample{x \gets \extractor^{\distinguisher, \indfunc^*}(z)}{x = x^*}\, ,
-      \]
-      then let our reduction $\bdv$ instead simulate the environment for
-      $\extractor$ by sampling $\eK^*$, setting $z = (\pk, \eK^*, \ctxt^*)$, 
-      use the re-encryption trick to respond to $\indfunc^*$ queries, and output
-      whatever value $\extractor$ outputs once it halts.
+      \begin{restatable}[Find-O2H, classical]{lemma}{cOWHfindsingle}\label{lemma:co2h-find-single}
+        Let $\RO$, $\GO: \bin^n \to \bin^m$ be random
+        oracles such that for every $x \neq x^*$, $\RO(x) = \GO(x)$, whereas
+        $\RO(x^*)$ and $\GO(x^*)$ are independently uniform. 
+        Let $z$ be a value that depends arbitrarily on $\RO$, $\GO$, and $x^*$.
+        Let $\indfunc^*$ be an indicator oracle that on input $x$
+        returns $1$ if $x = x^*$, and otherwise returns $0$. 
 
-    We can likewise define a ``Guess-O2H'' lemma, in correspondence with the guessing
-      strategy of \cref{thm:cparom-guess}. Here the extractor is not given
-      access to an indicator oracle, making the lemma applicable to situations
-      where the reduction does not have the ability to recognize the correct
-      answer. Hence, Guess-O2H has a higher level of applicability than Find-O2H, at the
-      cost of sacrificing tightness.
+        Then there is a simple, fully black-box extractor $\extractor$,
+        such that for every distinguisher $\distinguisher$,
+        \[
+            \abs{\prob{1 \gets \distinguisher^{\RO}(z)}
+                - \prob{1 \gets \distinguisher^{\GO}(z)}}
+              \leq \probsample{x \gets \extractor^{\distinguisher, \indfunc^*}(z)}{x = x^*}\, .
+        \]
+      \end{restatable}
 
-    \begin{restatable}[Guess-O2H, classical]{lemma}{cOWHguesssingle}\label{lemma:co2h-guess-single}
-      Let $\RO$, $\GO: \bin^n \to \bin^m$ be random
-      oracles such that for every $x \neq x^*$, $\RO(x) = \GO(x)$, whereas
-      $\RO(x^*)$ and $\GO(x^*)$ are independently uniform. 
-      Let $z$ be a value that depends arbitrarily on $\RO$, $\GO$, and $x^*$.
+      It may not be clear at a glance how this lemma relates to the proof of
+        \autoref{thm:cparom}. After all, there there was only one random oracle in
+        play, while \cref{lemma:co2h-find-single} has two. Also,
+        \autoref{thm:cparom} speaks of an adversary and a reduction, while
+        \cref{lemma:co2h-find-single} has a distinguisher and an extractors. How
+        do they connect?
 
-      Then there is a simple, fully black-box extractor $\extractor$,
-      such that for every distinguisher $\distinguisher$ that makes at most $q$
-      calls to its random oracle,
-      \[
-          \abs{\prob{1 \gets \distinguisher^{\RO}(z)}
-              - \prob{1 \gets \distinguisher^{\GO}(z)}}
-            \leq q \cdot \probsample{x \gets \extractor^{\distinguisher}(z)}{x = x^*}\, .
-      \]
-    \end{restatable}
+      To see the connection, note how the difference between $\game 2$ and $\game 3$
+        is contained to the oracle interface only. In fact, the random oracle
+        in $\game 2$ and the random oracle in $\game 3$ behave identically
+        relative to $\adv$'s input,
+        \emph{except} on the input value $x^*$, where it returns an independently
+        uniform value instead of the expected $\eK^*$. 
+        If we let the random oracle in $\game 2$ be identified with $\RO$, and the
+        random oracle in $\game 3$ be $\GO$, and further let $z = (\pk, \eK^*,
+        \ctxt^*)$, then we can identify $\distinguisher$ with $\adv$, and things
+        start to line up:
+        \[
+          \abs{\probsample{\game{2}(\adv)}{1 \gets \adv}
+            - \probsample{\game{3}(\adv)}{1 \gets \adv}}
+          = \abs{\prob{1 \gets \distinguisher^{\RO}(z)}
+            - \prob{1 \gets \distinguisher^{\GO}(z)}}\, .
+        \]
 
-    \begin{exercise}\label{ex:cparom-lossy}
-      Give an alternative, simpler proof of \cref{thm:cparom-guess} by
-      referencing \cref{lemma:co2h-guess-single}. \\
-      \emph{
-        Hint: Let $\extractor$ do the heavy lifting; the reduction $\bdv$ only
-        needs to provide $\extractor$ with its expected input.
-      }
-    \end{exercise}
+      As for the extractor, it is given in \cref{fig:co2h-extractor}. It should
+        look familiar: aside from the use of the ``indicator oracle'' $\indfunc^*$, it is an
+        almost exact adaptation of $\bdv$ from \cref{fig:cparom-red}.
+        The indicator oracle is simply a formalization of the statement that ``the
+        extractor is able to recognize the correct value''; we provide this
+        ability in oracle form to make sure that our formalization 
+        only gives the extractor the ability to recognize correct values, 
+        such that it can be applied to any situation where this is the case. For
+        example, in our case the $\indfunc^*$ oracle can be locally computed from
+        the input $z$, via the same re-encryption trick employed by $\bdv$.
+        %and not accidentally give it an enhanced ability to find $x^*$ directly.
+
+        %%% Extractor
+        \begin{figure}[t]
+        	\begin{center}
+        		\fbox{
+        			\small
+        			\nicoresetlinenr
+        			\begin{minipage}[t]{3.5cm}	
+                \underline{\extHeading $\extractor^{\distinguisher, \indfunc^*}(z)$}
+                \smallskip
+        				\begin{nicodemus}
+        					\item $\advbit \gets \distinguisher^{\RO}(z)$
+                  \smallskip
+        					\item $\pcoutput \bot$
+        				\end{nicodemus}
+        			\end{minipage}
+        
+        			\begin{minipage}[t]{5cm}
+        				\underline{if $\distinguisher$ calls $\RO(x)$}
+                \smallskip
+        				\begin{nicodemus}
+                  \item \pcif $\indfunc^*(x) = 1 :$ 
+                  \smallskip
+                  \item   \quad \pcabort and \pcoutput $x$
+                  \smallskip
+                  \item $\pcif \Db[x] = \bot :$ 
+                  \smallskip
+                  \item   \quad $\Db[x] \sample \bin^m$
+                  \smallskip
+                  \item $\pcreturn \Db[x]$
+        				\end{nicodemus}	
+        			\end{minipage}
+        		}
+        	\end{center}
+        	\caption{\label{fig:co2h-extractor}
+            The extractor $\extractor$ of \cref{lemma:co2h-find-single}.
+            Here, the extractor $\extractor$ simulates $\RO$ for the distinguisher
+            $\distinguisher$; the extractor might of course just as well provide a
+            simulation of $\GO$.
+          }
+        \end{figure}
+
+      Taken together, we can now provide simpler proof of the crucial hop
+        from $\game 2$ to $\game 3$ in \cref{thm:cparom}, by identifying $\adv$
+        with $\distinguisher$, applying \cref{lemma:co2h-find-single} to get the
+        bound
+        \[
+          \abs{\probsample{\game{2}(\adv)}{1 \gets \adv}
+            - \probsample{\game{3}(\adv)}{1 \gets \adv}}
+          \leq \probsample{x \gets \extractor^{\distinguisher, \indfunc^*}(z)}{x = x^*}\, ,
+        \]
+        then let our reduction $\bdv$ instead simulate the environment for
+        $\extractor$ by sampling $\eK^*$, setting $z = (\pk, \eK^*, \ctxt^*)$, 
+        use the re-encryption trick to respond to $\indfunc^*$ queries, and output
+        whatever value $\extractor$ outputs once it halts. Thus,
+        \[
+          \probsample{x \gets \extractor^{\distinguisher, \indfunc^*}(z)}{x = x^*}
+          = \probsample{x \gets \bdv^{\adv, \extractor}(\pk, \ctxt^*)}{x = x^*}
+          = \advantage{\owcpa}{\KEM}[(\bdv)]\, ,
+        \]
+        and the theorem is proven.
+
+    \paragraph{Guess-O2H.}
+      We can likewise define a ``Guess-O2H'' lemma, in correspondence with the guessing
+        strategy of \cref{thm:cparom-guess}. Here the extractor is not given
+        access to an indicator oracle, making the lemma applicable to situations
+        where the reduction does not have the ability to recognize the correct
+        answer. Hence, Guess-O2H has a higher level of applicability than Find-O2H, at the
+        cost of sacrificing tightness.
+
+      \begin{restatable}[Guess-O2H, classical]{lemma}{cOWHguesssingle}\label{lemma:co2h-guess-single}
+        Let $\RO$, $\GO: \bin^n \to \bin^m$ be random
+        oracles such that for every $x \neq x^*$, $\RO(x) = \GO(x)$, whereas
+        $\RO(x^*)$ and $\GO(x^*)$ are independently uniform. 
+        Let $z$ be a value that depends arbitrarily on $\RO$, $\GO$, and $x^*$.
+
+        Then there is a simple, fully black-box extractor $\extractor$,
+        such that for every distinguisher $\distinguisher$ that makes at most $q$
+        calls to its random oracle,
+        \[
+            \abs{\prob{1 \gets \distinguisher^{\RO}(z)}
+                - \prob{1 \gets \distinguisher^{\GO}(z)}}
+              \leq q \cdot \probsample{x \gets \extractor^{\distinguisher}(z)}{x = x^*}\, .
+        \]
+      \end{restatable}
+
+      \begin{exercise}\label{ex:cparom-lossy}
+        Give a simpler proof of \cref{thm:cparom-guess} by
+        referencing \cref{lemma:co2h-guess-single}. \\
+        \emph{
+          Hint: Let $\extractor$ do the heavy lifting -- no need to even specify
+          how $\extractor$ works, it is enough that the lemma states that it exists; 
+          all that is left for $\bdv$ to do is to provide $\extractor$ with its
+          expected environment.
+        }
+      \end{exercise}
 
     %\subsubsection{Multi-point O2H.}
     %  The above lemmas (\ldots)
@@ -1184,21 +1194,40 @@
 
   \subsection{The Post-Quantum Setting -- What Breaks?}
     Having seen the proofs of \cref{thm:cparom} and \cref{thm:cparom-guess}, 
-      \cref{lemma:co2h-find-single}
-      and \cref{lemma:co2h-guess-single} may seem
-      almost too trivial to bother writing down. After all \ldots 
+      %\cref{lemma:co2h-find-single} and \cref{lemma:co2h-guess-single} 
+      the above ``O2H lemmas'' may seem
+      almost too trivial to bother writing down. After all, the extractors in the
+      lemmas do little more than lazy-sample a random oracle, then either return
+      the correct value when input (if the extractor is able to
+      recognize it), or output one of the queries at random (if not).
+      With the analysis being a near-trivial manipulation of
+      conditional probabilities, it is not clear that the modularity gained 
+      outweighs the cost of switching mental models from the behaviour of adversaries
+      between games, to distinguishers trying to tell oracles apart.
 
-    However, the same is certainly not true for \ldots
-      where this very same formalism will turn out to be among the most useful
-      tools we have. In fact, quantum O2H lemmas show up everywhere in QROM
-      security proofs. We will meet our first quantum O2H
-      lemmas in \cref{sec:o2h}, where we will use them to upgrade
+    However, the same can certainly not be said for \emph{quantum} random
+      oracles, since now, the input to the oracle can be a quantum superposition
+      of any number of values at once. How does one recognize the correct input value
+      in such a case? Is the ``bad'' event we used in our analysis
+      even well-defined? Can you even \emph{guess}, given that the no-cloning
+      theorem bars you from copying down the input states?
+
+    This is where the very same O2H formalism that we introduced above earns its
+      keep. In fact, the O2H lemmas turns out to be one the most useful toolkits
+      we have, and they show up everywhere in the QROM literature. 
+      This is because they successfully shove the tricky quantum part of the analysis
+      ``under the rug'', allowing non-quantum cryptographers to design their post-quantum
+      game hops without having to worry that they are making a quantum fool of
+      themselves. (Or at least worry \emph{less}.)
+
+    We will meet our first quantum O2H
+      lemmas in \cref{sec:o2h}, where we will apply them to lift
       \cref{thm:cparom} and \cref{thm:cparom-guess} to the post-quantum
-      setting.
+      setting. But before then, it is about time we brushed up on our quantum. 
 
-    \todoenum[rough structure]{
-      \item A discussion about why the previous proofs do not yield
-        post-quantum security 
-      \item Where the proofs break down, and why they do not admit direct
-        lifting (not history-free)
-    }
+    %\todoenum[rough structure]{
+    %  \item A discussion about why the previous proofs do not yield
+    %    post-quantum security 
+    %  \item Where the proofs break down, and why they do not admit direct
+    %    lifting (not history-free)
+    %}
