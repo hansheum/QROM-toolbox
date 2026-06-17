@@ -43,6 +43,7 @@
     \end{itemize}
     \item Conditional probability when running $\mathsf{Code}$ is denoted 
       $\condprobsample{\mathsf{Code}}{\mathsf{Event}}{\mathsf{Condition}}$
+    \item and the same for expectations
     \item $\bool{\mathsf{Condition}}$: the predicate that
       returns $1$ if $\mathsf{Condition}$ is true and $0$ otherwise. (Let's use
       bit values for $\true$ and $\false$.)
@@ -657,42 +658,6 @@
           security, so though the statement may seem trivial, let's try our hand
           at proving it.
 
-        \begin{exercise}
-          In this exercise, you will prove that $\owcpa$ is at least as strong a
-          as $\skucpa$ by showing the implication $\owcpa \implies \skucpa$.
-          \begin{enumerate}[label=\alph*)]
-            \item Write down the pseudocode for the $\skucpa$ game.
-            \item Assume that there is an adversary $\adv$ that wins the $\skucpa$
-              game with some advantage.
-              Write down the pseudocode for a new adversary $\bdv$ (called a
-              \emph{reduction}), which, given black-box access to $\adv$,
-              is able to win the OW-CPA game with the same advantage.
-            \item Use the above to prove the following statement\footnote{
-                You will actually get an equality here rather than an inequality.
-                However, since reductions have to be proven one direction
-                at a time anyway, writing the statement as an inequality is helpful
-                for identifying at a glance which direction the reduction is
-                going: simply parse the $\leq$ as an arrow!
-              }: \emph{For every adversary $\adv$, there is a reduction $\bdv$
-              such that for any public-key encryption scheme $\pkescheme$,}
-              \[
-                \advantage{\skucpa}{\pkescheme} \leq
-                \advantage{\owcpa}{\pkescheme}[(\bdv)]\, .
-              \]
-            \item How does this statement capture the implication?
-            \item What would suffice to prove that the opposite implication does
-              not hold, i.e.\ that $\skucpa \nimplies \owcpa$?
-          \end{enumerate}
-          \emph{Hint:} In the reduction, it is imperative that $\adv$ does not \emph{notice} that
-            they are not in the real SKU-CPA game. In other words,
-            $\bdv$ should \emph{perfectly simulate} the $\owcpa$ environment for
-            $\adv$, lest $\adv$ notices that something is off and refuses to play, ruining
-            both advantages in the process.
-            (We will later see how to relax this.)
-        \end{exercise}
-
-        \hhnote{todo: write solution for a) and b)}
-
     \paragraph{Indistinguishability.}
       \hhnote{outdated under}
 
@@ -1046,6 +1011,46 @@
     }
 
     \begin{proof}
-      See \autoref{fig:ind-ow-red} \ldots
+      The reduction is given in \autoref{fig:ind-ow-red}. It simulates \ldots
       \qed
     \end{proof}
+
+    \noindent
+    Your turn.
+
+    \begin{exercise}
+      In this exercise, you will prove that $\owcpa$ is at least as strong a
+      as $\skucpa$ by showing the implication $\owcpa \implies \skucpa$.
+      \begin{enumerate}[label=\alph*)]
+        \item Write down the pseudocode for the $\skucpa$ game.
+        \item Assume that there is an adversary $\adv$ that wins the $\skucpa$
+          game with some advantage.
+          Write down the pseudocode for a new adversary $\bdv$ (called a
+          \emph{reduction}), which, given black-box access to $\adv$,
+          is able to win the OW-CPA game with the same advantage.
+        \item Use the above to prove the following statement\footnote{
+            You will actually get an equality here rather than an inequality.
+            However, since reductions have to be proven one direction
+            at a time anyway, writing the statement as an inequality is helpful
+            for identifying at a glance which direction the reduction is
+            going: simply parse the $\leq$ as an arrow!
+          }: \emph{For every adversary $\adv$, there is a reduction $\bdv$
+          such that for any public-key encryption scheme $\pkescheme$,}
+          \[
+            \advantage{\skucpa}{\pkescheme} \leq
+            \advantage{\owcpa}{\pkescheme}[(\bdv)]\, .
+          \]
+        \item How does this statement capture the implication?
+        \item What would suffice to prove that the opposite implication does
+          not hold, i.e.\ that $\skucpa \nimplies \owcpa$?
+      \end{enumerate}
+      \emph{Hint:} In the reduction, it is imperative that $\adv$ does not \emph{notice} that
+        they are not in the real SKU-CPA game. In other words,
+        $\bdv$ should \emph{perfectly simulate} the $\owcpa$ environment for
+        $\adv$, lest $\adv$ notices that something is off and refuses to play, ruining
+        both advantages in the process.
+        (We will later see how to relax this.)
+    \end{exercise}
+
+    \hhnote{todo: write solution for a) and b)}
+

@@ -62,9 +62,9 @@
 \end{figure}
 %
 \section{The Random Oracle Model}\label{sec:rom}
-  In this chapter, we will introduce the concept of the random oracle. Then we
-    will introduce the \U-transform, which is the second half of the Fujisaki--Okamoto
-    transformation, and, as a first security proof, 
+  This chapter introduces the concept of the random oracle. Then, we
+    introduce the \U-transform, which is the second half of the Fujisaki--Okamoto
+    transformation, and, as a first application of the random oracle model,
     prove that if we have a deterministic PKE scheme
     that achieves one-way security, taking it through the \U-transform gives us
     a KEM that achieves indistinguishability. This proof will teach us several useful
@@ -77,26 +77,26 @@
       the same input produces the same fingerprint. 
       
     But is a hash function really a \emph{function}? Well, since hash functions can take arbitrary-length
-      inputs, they can at least not be \emph{finite} functions. Rather, it is
-      helpful to think of hash functions as an infinite \emph{collection} of finite
-      functions $\{f_n\}$, with one $f_n$ for each possible input length $n$. 
+      inputs, they can at least not be \emph{finite-domain} functions. Still, it is
+      helpful to think of hash functions as an infinite \emph{collection} of
+      finite-domain functions $\{f_n\}$, with one $f_n$ for each possible input length $n$. 
       Let us for the sake of simplicity specialize to one such $f_n$.
       If the hash function produces fingerprints of (fixed) length $m$, then
       this is a function from the set $\bin^n$ to $\bin^m$, which is much
-      simpler to reason about, and we can always go back to the full picture by
-      considering the collection $\{f_n\}$ instead.
+      simpler to reason about. If needed, we can then always go back to the full
+      picture by considering the collection $\{f_n\}$ instead.
 
     We mentioned that cryptographic hash function should produce
-      random-looking fingerprints, and it should be hard
+      random-looking fingerprints, and that it should further be hard
       to find two inputs with the same fingerprint,
       even though such collisions will definitely \emph{exist} whenever $n$ is
       larger than $m$ (which it usually is), by the pigeonhole principle.
 
-    Indeed, there might be quite a lot of collisions. Consider the
-      case of hashing a 10MB picture: then $n$ is $80$ million (since there are
-      $8$ bits in a byte), while a typical choice for the output length $m$
-      might be $256$. This leads to a
-      truly astronomical number of colliding input values: the pigeonhole
+    Indeed, in typical applications there must be a huge number of collisions.
+      Consider the case of hashing a 10MB picture: then $n$ is $80$ million (since there are
+      $8$ bits in a byte), whereas a typical choice for the output length $m$
+      might be $256$. 
+      This leads to a truly astronomical number of colliding input values: the pigeonhole
       principle tells us that at least one of the hash function's $2^m$ possible
       output values will map to at least 
       \[
@@ -107,105 +107,140 @@
       around $10^{80} \approx 2^{266}$.
 
     And yet, actually \emph{finding} even a single such collision can be very
-      hard. To see this, let us assume that the hash function is a function
+      hard. To see this, assume that the hash function is a function
       $f$ drawn uniformly at random from the set of all functions from $\bin^n$ to
-      $\bin^m$. Then we are guaranteed that there is no internal structure that
-      can be exploited to find collisions, and no special inputs that have a
-      higher probability of colliding. Hence, we have no choice but to
-      evaluate the function on different inputs until we find two colliding
-      outputs. How many times will we have to evaluate $f$ before we will likely
-      have found a collision?
+      $\bin^m$; since $f$ is uniform, we are guaranteed that there is no
+      internal structure that can be exploited to find collisions, and no
+      special inputs that have an a priori
+      higher probability of being part of a collision than others. 
+      Hence, an attacker has no choice but to
+      evaluate the function on different inputs until it finds two colliding
+      outputs. 
 
-    \newcommand{\collisions}{\pcalgostyle{coll}}
-    Let us calculate. First, let $\bool{f(x_1) = f(x_2)}$ be the predicate that
+    How many times will the attacker have to evaluate $f$ before it is expected
+      to find a collision?
+      Let us calculate. First, let $\bool{f(x_1) = f(x_2)}$ be the predicate that
       takes the value $1$ if $f(x_1) = f(x_2)$, and $0$ otherwise.
-      Fix $x_1$, and let $x_2$ be chosen at random. Since there are $2^m$
-      possible outputs, and each input were assigned a uniformly
-      random output, the probability that $\bool{f(x_1) = f(x_2)} = 1$
-      is exactly $2^{-m}$. Hence, the expectation value is also
+      Let $x_1$ and $x_2$ two arbitrary but distinct input values.
+      Since there are $2^m$ possible outputs, and each input were assigned an
+      output uniformly at random (that's what it means to draw a function at random), 
+      the probability that $\bool{f(x_1) = f(x_2)} = 1$
+      is exactly $2^{-m}$. Hence, for any choice of distinct $x_i$ and $x_j$, 
+      the expectation value is also
       \[
-        \expect{\bool{f(x_i) = f(x_j)}} = 2^{-m}\, .
+        \expect{\bool{f(x_i) = f(x_j)}} = 2^{-m}\, ,
       \]
-      Now, let $\collisions_q$ be the expected number of
+      with the expectation taken over the choice of $f$.
+
+    Now, let $\collisions_q$ be the expected number of
       collisions observed after $q$ evaluations of $f$ on different inputs.
       \[
-        \collisions_q = \expect{\sum_{i < j}\, \bool{f(x_i) = f(x_j)}}\, ,
+        \collisions_q = \expect{\sum_{i = 1}^{q-1} \sum_{j = i+1}^q\, \bool{f(x_i) = f(x_j)}}\, .
       \]
-      where $i$ and $j$ run from $1$ to $q$, and summing over $i < j$ to 
-      avoid double-counting the pairs. A useful fact about expectation values is
-      that they are linear, so this may be rewritten
+      Here, the sum is taken over $j > i$ to avoid double-counting the pairs. A useful
+      fact about expectation values is
+      that, unlike (correlated) probabilities, they are linear; this may
+      therefore be written
       \[
-        \collisions_q = \sum_{i < j}\expect{\bool{f(x_i) = f(x_j)}} 
-          = \sum_{i<j} \frac{1}{2^m} = \frac{q(q-1)}{2} \cdot \frac{1}{2^m} 
-          \approx \frac{q^2}{2^{m}}\, .
+        \collisions_q 
+          = \sum_{i = 1}^{q-1} \sum_{j = i+1}^q
+            \expect{\bool{f(x_i) = f(x_j)}} 
+          = \sum_{i = 1}^{q-1} \sum_{j = i+1}^q \frac{1}{2^m} 
+          = \frac{q(q-1)}{2} \cdot \frac{1}{2^m} 
+          \approx \frac{q^2}{2^{m+1}}\, .
       \]
-      We want to know how large $q$ must be before $\collisions_q \approx 1$.
-      Now that we have an explicit formula, we find our answer by solving for
-      $q$ and insert for $m = 256$:
+      We wanted to know how large $q$ must be for $\collisions_q \approx 1$.
+      With an explicit formula in hand, we can find our answer by solving for
+      $q$, then inserting $m = 256$:
       \[
         \collisions_q \approx 1 
-        \Longleftrightarrow q \approx \sqrt{2^m} 
-        \Longleftrightarrow q \approx \sqrt{2^{256}} = 2^{128}\, .
+        \Longleftrightarrow q \approx \sqrt{2^{m+1}} 
+        \Longleftrightarrow q \approx \sqrt{2^{257}} \approx 2^{128}\, .
       \]
       So despite the astronomical number of collisions, we would still 
       have to evaluate a random function with length-$256$ outputs on roughly
-      $2^{128}$ input values before we would ever be expected to find one,
-      which is well beyond the capabilities of any realistic computer.
+      $2^{128}$ input values before we would expect to ever find one.
+      This is comfortably beyond the capabilities of even the largest
+      supercomputers.
 
     Incidentally, the somewhat unintuitive fact that the expected number of
-      collisions grows as the \emph{square} of the number of items
+      collisions grows as the \emph{square} of the number of
+      potentially-colliding items
       is sometimes known as the ``birthday paradox'', so named because 
       of the surprising fact that, assuming everyone are assigned birthdays at
       random, it only takes a room of $23$ people before the
       probability that two of them shares a birthday exceeds $50\%$.
       
   \subsection{Monolithic Random Oracles}
-    The idealization that we just made, treating the hash function as a uniformly
-      random function, turned out to be very useful in analyzing the effort
-      required to find a collision: the no-structure guarantee that comes with
-      drawing the function at random enabled us to explicitly calculate how many
-      evaluations are required in expectation.
-      This same no-structure guarantee, however, also means that there is no way
-      to store a truly random function more efficiently than to simply keep a
+    The idealization that we just did when we studied a uniformly random function
+      as a placeholder for a hash function, turned out to be very useful in
+      analyzing the effort required to find a collision: the no-structure
+      guarantee is what enabled us to explicitly calculate how many evaluations
+      one would expect to need to find one.
+
+    However, this same no-structure guarantee also means that there is no way
+      to actually \emph{store} $f$ more efficiently than to simply keep a
       truth table with all the input
       and output values. For a function from $n$ to $m$ bits, one such
       input-output pair will take up $n+m$ bits of memory, and there will be
-      one such pairs for every possible input, so the total memory
-      requirement for storing $f$ would be $(n+m) \cdot 2^n$. If $n$ is larger
-      than $40$, this is already in the terabytes range, and $n$ larger than $60$ is
+      one such pairs for every possible input, so that the total memory
+      requirement for storing $f$ is $2^n \cdot (n+m)$. If the input length $n$
+      is greater than $40$, this would already be in the terabytes range, and
+      $n$ greater than $60$ is
       beyond the capabilities of even the world's largest supercomputers.
 
     As we will see, hash function are very useful primitives when building
-      cryptography. However, we want our cryptography to have
-      \emph{efficient} algorithms, and as we just saw, taking the hash function
-      to be truly random would make any algorithm that uses it highly
-      inefficient. Even just \emph{assuming} a random function for the sake of a
-      security proof would not work,
-      since we need to be able to reason about attackers that are themselves
-      guaranteed to be efficient, meaning they do not have access to
-      exponentially large resources like time and memory.
-      Hence, under such an assumption, the attacker would not even be able to
-      \emph{run} cryptography that internally evaluates hash functions, much
-      less break it.
+      cryptography. However, we need our cryptography to be
+      \emph{efficiently implementable}. This means that we can't just
+      put in a to be truly random $f$ and expect that systems would actually be
+      able to run it. Indeed, even just assuming that the hash function behaves
+      like a random function for the sake of the security proof does not work,
+      since we also need to be able to argue that any hypothetical attackers 
+      are themselves efficient (otherwise they could just break all our crypto via
+      brute-force search).
+      %guaranteed to be efficient, meaning they do not have access to
+      %exponentially large resources like time and memory.
+      If we assume the hash function uniform, an efficient attacker would not even be able to
+      \emph{run} our algorithms, much less break them.
 
-    In such situations, the standard theoretical-computer-science solution is to
-      instead provide the function as an \emph{oracle}. Imagine a giant computer
-      that lives in the sky, which has as much resources as it needs to store
-      and evaluate random functions. Everyone in the world are given access
-      to this \emph{random oracle}, so that they can evaluate $f(x)$ by sending
-      $x$ to the oracle and receiving the evaluation of $x$ in return.
+    A common solution in theoretical computer science is to instead provide
+      evaluations of the inefficient function as an \emph{oracle}. Imagine a giant computer
+      that lives in the sky, which is given as much resources as it needs to store
+      and evaluate random functions. Everyone in the world are given
+      input/output access to this \emph{random oracle}, so that they can evaluate $f$ by sending
+      $x$ to the oracle and receiving $f(x)$ in return.
       Crucially, given the same input $x$, everyone will see the same value for
-      $f(x)$, which means that the random oracle can be used as a perfectly
-      secure hash function.
+      $f(x)$, which means that the random oracle can be used in place of 
+      a publicly known hash function such as SHA3.
 
-    This is shown in pseudocode on the left of \autoref{fig:lazy-sampling}: the
+    The inner workings of such an oracle is shown in pseudocode in
+      \cref{fig:lazy-sampling} (left): the
       ``Initialize'' method initialzes our random oracle $\RO$ by sampling $f$
-      uniformly at random from the set of all functions from $n$ to $m$ bits, 
-      and the ``Oracle'' method 
+      uniformly at random from the set of all functions from $n$ to $m$ bits.
+      Thereafter, the ``Oracle'' interface takes inputs $x$ and returns $f(x)$.
+
+    Note how $\RO$ is implicitly taken to be \emph{stateful}, in the sense
+      that it has a persistent memory that stores $f$ after initialization.
 
   \subsection{Simulation via Lazy-Sampling}
-    They are also very easy to simulate, a process known as
-      lazy-sampling, as shown in \cref{fig:lazy-sampling}.
+    The statefulness of $\RO$ opens up for a very simple and efficient way to
+      \emph{simulate} a random function, known as lazy-sampling. The idea is
+      simple: start with an empty function table; then, every time you receive an input $x$, check if
+      your table already defines an output value for $x$; 
+      if so, return that value, and otherwise draw an output
+      value uniformly at random and store it together with $x$. The result is an
+      oracle that behaves identically to a monolithic random oracle, i.e.\ to a
+      uniformly random function. And yet, if this ``lazy-sampled'' random oracle
+      receives at most $q$ queries, then at most $q \cdot (n+m)$ bits is required to
+      store the table -- an exponential improvement over the memory requirements
+      of the monolithic oracle.
+
+    The lazy-sampling procedure is shown in pseudocode in
+      \cref{fig:lazy-sampling} (right): First, the database $\Db$ is initialized
+      with an empty tuple (recall that databases are lists of tuples); then the
+      oracle interface, on input $x$, checks if $\Db$ already contains $x$, and
+      if not, samples uniformly from the set of output strings $\bin^m$ and
+      stores it in $\Db[x]$.
 
   \subsection{From a One-way PKE to a Hiding KEM: The $\U$-transform}
     The Fujisaki-Okamoto transformation~\cite{C:FujOka99}, which underlies many post-quantum
@@ -869,7 +904,7 @@
 
     \subsubsection{Game Hopping.}
       \hhnote{
-        copy-pasted from \autoref{sec:basics}
+        copy-pasted from \cref{sec:basics}
       }
       %\todoenum[Provide explanations of:]{
       %  \item Basic background on game hopping and advantages, stuff like
