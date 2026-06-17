@@ -226,6 +226,12 @@
     \clearpage
     \input{qrot-rom}
     \clearpage
+    \input{qrot-utransform}
+    \clearpage
+    \iffutureversion
+      \input{qrot-dsa-rom}
+      \clearpage
+    \fi
 
   \addcontentsline{toc}{part}{Part 2. Technical Difficulties in the Post-Quantum Realm}
   %\part{(Post-)Quantum Difficulties}\label{part:classical}
@@ -234,20 +240,19 @@
     \input{qrot-qrom}
     \clearpage
     \iffutureversion
-      \input{qrot-dsa-rom}
+      \input{qrot-pseudocode}
+      \clearpage
+      \input{qrot-compressed}
       \clearpage
     \fi
-    %\input{qrot-problems}
 
   \addcontentsline{toc}{part}{Part 3. The Tools of the QRO Toolbox}
   %\part{The Tools of the Toolbox}\label{part:tools}
     \input{qrot-o2h}
     \clearpage
+    \input{qrot-qutransform}
+    \clearpage
     \iffutureversion
-      \input{qrot-pseudocode}
-      \clearpage
-      \input{qrot-compressed}
-      \clearpage
       \input{qrot-extract} % with CPA -> CCA example 
       \clearpage
       \input{qrot-adaptive} % with NMA -> CMA example
