@@ -625,7 +625,7 @@
               multiple public keys, and allow it to win if it reverses any one of them.
           \end{itemize}
 
-        \begin{definition}[OW-CPA]
+        \begin{definition}[OW-CPA]\label{def:owcpa}
           The one-wayness advantage $\advantage{\owcpa}{\pkescheme}$ of an
           adversary $\adv$ against a public-key encryption scheme $\pkescheme$
           is the "find" advantage (\cref{def:find-adv}) of $\adv$ in the
@@ -858,7 +858,10 @@
 	    				\end{minipage}
 	    			}
 	    		\end{center}
-	    		\caption{\INDCCA game for $\KEM = (\KG, \Encaps, \Decaps)$.}
+	    		\caption{
+            \INDCCA game for $\KEM = (\KG, \Encaps, \Decaps)$.
+            \INDCPA is similarly defined, except without the decryption oracle.
+          }
 	    		\label{fig:def:IND-CCA}
 	    	\end{figure}
 	    \end{definition}

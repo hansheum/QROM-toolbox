@@ -222,7 +222,7 @@
     Note how $\RO$ is implicitly taken to be \emph{stateful}, in the sense
       that it has a persistent memory that stores $f$ after initialization.
 
-  \subsection{Simulation via Lazy-Sampling}
+  \subsection{Simulation via Lazy-Sampling}\label{sec:lazy-sampling}
     The statefulness of $\RO$ opens up for a very simple and efficient way to
       \emph{simulate} a random function, known as lazy-sampling. The idea is
       simple: start with an empty function table; then, every time you receive an input $x$, check if
@@ -242,30 +242,44 @@
       if not, samples uniformly from the set of output strings $\bin^m$ and
       stores it in $\Db[x]$.
 
-  \subsection{From a One-way PKE to a Hiding KEM: The $\U$-transform}
-    The Fujisaki-Okamoto transformation~\cite{C:FujOka99}, which underlies many post-quantum
-      KEMs including the now-standardized ML-KEM (Kyber)~\cite{Kyber}, can be
-      framed as the composition of two 
-      transformations, \T and \U~\cite{TCC:HofHovKil17}.
+  \subsection{From One-wayness to Indistinguishability: The $\U$-transform}
+    The Fujisaki-Okamoto transformation~\cite{C:FujOka99} is a recipe for
+      constructing a strongly-secure key-encapsulation mechanism from a
+      weakly-secure public-key encryption scheme. It is used as part of many
+      post-quantum KEMs, including the now-standardized ML-KEM (Kyber)~\cite{FIPS203}. 
+
+    The transformation can be seen as a composition of two sub-transformations, 
+      which are referred to in the literature as the \T- and
+      \U-transformations.~\cite{TCC:HofHovKil17}.
       %, as defined by Hofheinz et al. (hereafter HHK). 
-      Starting from a public-key
-      encryption scheme, the first transformation \T derandomizes the
-      PKE by having its randomness be derived from a hash of the message (and possibly
-      the public key), and additionally adds a re-encryption check to the
-      decryption algorithm, while the second transformation \U builds a KEM from a
-      deterministic PKE by sampling a uniform message, encrypting it, and
-      hashing it to produce the symmetric key $\eK$.
-  
-    \hhnote{
-      Leave this version without the extra re-encryption check (which also
-      matches the original \U), and define a new \U with the re-encryption check
-      when we later want CCA security.
-    }
-   
-    \begin{definition}[\U-transform]
-      To a deterministic PKE scheme $\dPKE = (\KG, \Enc, \Dec)$ and a hash
-      function $\ROkey: \MSpace \to \KSpace$,
-      we associate the KEM $\KEM \coloneqq \U[\PKE, \ROkey]$ defined in \cref{fig:def:U-transform}.
+      Given a probabilistic PKE scheme, the first transformation
+      (\T) de-randomizes it by first deriving the random coins by hashing
+      the message (and possibly the public key), then running the encryption
+      algorithm using those coins; then, after decrypting, it re-derives the
+      random coins and re-encrypts the message to verify that resulting
+      ciphertext matches the input. (For more details on the \T-transform, see
+      App.~\ref{sec:ttransform}.)
+
+    The second transformation (\U) then 
+      builds a KEM from a deterministic PKE like the above by sampling a random
+      message, encrypting it, and hashing it 
+      (possibly together with the public key and ciphertext) to derive a
+      symmetric key $\eK$. This is the transformation that will serve as our
+      running example.\footnote{
+        When Hofheinz et al.~\cite{TCC:HofHovKil17} first defined
+        the \T- and \U-transforms, they actually defined several \U-variants;
+        %that differ from the variant discussed here
+    		%in how they handle invalid ciphertexts and in what they hash into the
+        %output key; 
+        \cref{def:U-transform} corresponds to
+        \UExpMess in their notation (message-only hashes, explicit decryption failures).
+      }
+
+    \begin{definition}[\U-transform]\label{def:U-transform}
+      Let $\dPKE = (\KG, \Enc, \Dec)$ be a deterministic public-key encryption scheme, and let 
+      $\ROkey: \bin^* \to \bin^m$ be a hash function.
+      Then the \U-transform is the key-encapsulation mechanism 
+      $\U[\PKE, \ROkey] \eqqcolon (\KG, \UEncaps, \UDecaps)$, as defined in \cref{fig:def:U-transform}.
       \begin{figure}[ht]
      	  \begin{center}
     		  \fbox{
@@ -318,87 +332,89 @@
     	  \end{center}
     	  \caption{
     	    \label{fig:def:U-transform}			
-           Algorithms of $\U[\PKE, \ROkey] \eqqcolon (\KG, \UEncaps, \UDecaps)$.
+           Algorithms of $\U[\PKE, \ROkey]$.
         }
       \end{figure} 
     \end{definition}
-
-    \noindent
-    We will use the \U-transformation as our running example,
-      using it to build a KEM that satisfies indistinguishability
-      from a deterministing PKE that satisfies
-      one-wayness.\footnote{
-        When Hofheinz et al.\ first modularized the FO transform into
-        its \T and \U components, they defined several variants of the
-        \U-transform that differ from the variant discussed here
-    		in how they handle invalid ciphertexts and in what they hash into the
-        output key; our variant corresponds to \UExpMess in their notation.~\cite{TCC:HofHovKil17}
-        %\hhnote{
-        %  Should we do the more general \UExpMess transform instead? Or does that
-        %  just muddy the message?
-        %}
-      } (Details on the \T-transform are given in App.~\ref{sec:ttransform}.)
+  
+    \hhnote{
+      Leave this version without the extra re-encryption check (which also
+      matches the original \U), and define a new \U with the re-encryption check
+      when we later want CCA security.
+    }
 
     As explained in \cref{sec:basics}, One-way security under Chosen
       Plaintext Attacks, or \owcpa, is really a minimal security
-      requirement for PKE schemes: The goal of One-Wayness (OW) simply says that
-      given a ciphertext, it should be hard to recover the plaintext, and the
-      power of Chosen Plaintext Attacks (CPA), the ability to encrypt any
-      message under the key you are targetting, are of course ever-present when
-      encryption is public.
-      What we want is the much stronger security requirement of
-      \emph{indistinguishability}, that even when two candidate messages are
-      known, an adversary is not able to figure out which of the two is
-      encrypted. Since our public key scheme is deterministic, it actually
-      \emph{cannot} achieve this notion of security: With two candidate messages
-      known, an adversary can simply re-encrypt both messages and check which of
-      the two yields the challenge ciphertext!
-      And yet, taking the deterministic PKE scheme through the \U-transform
-      will give us a \KEM that \emph{does} achieve indistinguishability.
+      requirement for PKE schemes, and should be considered too weak a security
+      goal for most use-cases. 
+      %The goal of One-Wayness (OW) simply says that
+      %given a ciphertext, it should be hard to recover the plaintext, and the
+      %power of Chosen Plaintext Attacks (CPA), the ability to encrypt any
+      %message under the key you are targetting, are of course ever-present when
+      %encryption is public.
+      Much preferred would be the stronger security requirement of
+      \emph{indistinguishability} under chosen-plaintext attacks, or
+      \indcpa.\footnote{
+        The standard security requirement for deployable KEMs is an even stronger one,
+        namely indistinguishability under chosen-\emph{ciphertext} attacks, or
+        \indcca. 
+        As it turns out, the \U-transform also achieves this, provided the
+        re-encryption check from the \T-transform is carried forward; this will
+        be covered in later chapters (to appear).
+      } 
 
-    The central object that allows us to cross the wide chasm
-      between one-wayness and indistinguishability, is precisely the
-      \emph{random oracle}.
-      Intuitively, the security reduction relies on the fact that in order to
-      distinguish, an adversary will have to call the random oracle on one of
-      the messages used to derive the ephemeral key. Since we
-      fully control the simulation of the random oracle, we can simply output the
-      correct solution when it is used in a query to the random oracle. The fact
-      that $\dPKE$ is deterministic means that our reduction will immediately be
-      able to recognize the correct solution; this fact allows us to get
-      a tight bound in this case. (Otherwise we would have to guess which of the
-      calls to the random oracle contained the solution we are looking for,
-      which would incur a tightness loss related to the probability that
-      we guess correctly.)
+    However, stronger security assumptions usually mean less efficient
+      schemes, as the parameters must be increased to compensate for the
+      increased attack surface. What's worse, we are taking as our starting
+      point a \emph{deterministic} encryption scheme. Such a PKE scheme could
+      \emph{never} achieve indistinguishability, since the adversary can simply
+      re-encrypt the two candidate messages, and check which of them
+      encrypts to the challenge ciphertext.
+
+    Despite this, taking our deterministic PKE scheme through the \U-transform
+      will in fact give us a KEM that \emph{does} achieve indistinguishability
+      \ldots and the object that allows us to cross that chasm
+      %between one-wayness and indistinguishability 
+      is precisely the \emph{random oracle}.
+
+    The strategy of the security reduction will rely on the fact that it can
+      fully control the random oracle for the adversary, inspecting its queries
+      and answering them via the lazy-sampling procedure from \cref{sec:lazy-sampling}. 
+      Intuitively speaking, in order to successfully distinguish, the adversary
+      will have to have called the random oracle on one of
+      the messages used to derive the ephemeral key. 
+      The reduction can recognize this the moment it happens, by re-encrypting
+      each message and checking if the encryption matches the challenge it was
+      issued; if so, it wins at the one-wayness game by outputting that message.
+
+      %able to recognize the correct solution; this fact allows us to get
+      %a tight bound in this case. (Otherwise we would have to guess which of the
+      %calls to the random oracle contained the solution we are looking for,
+      %which would incur a tightness loss related to the probability that
+      %we guess correctly.)
 
     To summarize, if $\dPKE$ satisfies one-wayness
-      (\cref{def:ow}), then $\KEM$ satisfies indistinguishability
-      (\cref{def:indcpa}), captured in the following theorem.
+      (\cref{def:owcpa}), then $\KEM$ satisfies indistinguishability
+      (\cref{def:indcca}), as captured in the following theorem.
 
     \hhnote{
       Defs for OW-CPA and IND-CPA still todo in \cref{sec:basics}.
     }
 
-    \begin{theorem}[$\dPKE$ is OW $\implies$ $\KEM$ is IND]
+    \begin{theorem}[\dPKE is \owcpa $\To$ \KEM is \indcpa]
       \label{thm:cparom}
       Let \dPKE be a deterministic PKE scheme, let \RO be a random oracle, 
-      and let $\KEM$ be the KEM given by $\U[\dPKE, \RO]$.
-      Then for every adversary $\adv$ against $\KEM$, 
+      and let the $\KEM = \U[\dPKE, \RO]$.
+      Then there is a simple, fully black-box reduction $\bdv$, such that for
+      every adversary $\adv$,
       %that makes at most $\qe$ calls to the challenge oracle, 
-      there is an adversary $\bdv$ against $\dPKE$ such that
       \[
-        \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv)]\, .
+        \advantage{\indcpa}{\KEM} \leq \advantage{\owcpa}{\dPKE}[(\bdv^{\adv})]\, .
         %+ \frac{\qe}{2^m}\, .
       \]
       The adversary $\bdv$ runs in the same time as $\adv$, plus the %(relatively small) 
       overhead of lazy-sampling a random oracle.
     \end{theorem}
-
-    The main challenge of the
-      proof is to construct a $\bdv$ that exploits the winning
-      strategy of $\adv$ in such a way that if $\adv$ \emph{would} win at the
-      indistinguishability game, then what \emph{actually} happens is that
-      $\bdv$ wins at the one-wayness game (at least with high probability).
 
     \crakzfigcode{cparom-hops-illustrated}{
       Proof outline for \cref{thm:cparom}. The arrows show the changes
@@ -410,29 +426,35 @@
     }
 
     \begin{proof} %[\cref{thm:cparom}]
-      Our constructed adversary $\bdv$ will not be able simulate the real world of the
-        indistinguishability game, since it does not know which message the
-        challenge ciphertext it recieved encrypted (that's what it's trying to
-        figure out); hence, it can not hash the message to produce the
-        correct symmetric key for $\adv$.
-        It can, however, easily simulate the random world, since here the
-        symmetric key is simply sampled uniformly.  
+      We want to construct a $\bdv$ that exploits any winning
+        strategy of $\adv$ in such a way that if $\adv$ \emph{would} win at the
+        indistinguishability game, then $\bdv$ \emph{actually} wins
+        at the one-wayness game.
+        However, the constructed adversary $\bdv$ will not be able simulate the
+        real ($b=0$) world of the KEM indistinguishability game, since it does
+        not know which message the challenge ciphertext encrypts -- that's what
+        it is trying to figure out! 
+        %hence, it can not hash the message to produce the
+        %correct symmetric key for $\adv$.
+        It can, however, easily simulate the random ($b=1$) world, since here the
+        symmetric key given to the adversary is simply uniformly sampled.
 
-      But in order to argue that $\adv$ can not distinguish this from the real
-        world, we need to change the game in such a way that the move from real to
-        random keys is completely hidden from view.
+      But in order to argue that $\adv$ can not distinguish $\bdv$'s simulation
+        from the real-world game, we need to alter the game in such a way that the
+        move from real to random keys is completely hidden from the view of $\adv$.
         We do this by inserting two intermediary games between the real-world and the
-        random-world games, as shown in \cref{fig:cparom-hops}.
-        These middle games formalize the idea that, thanks to the \U-transform,
+        random-world games, as illustrated in \cref{fig:cparom-hops-illustrated}.
+        These two middle games formalize the intuition that, thanks to the \U-transform,
         the adversary will have to call the random oracle on the correct message
         in order to notice that it is not in the real world: If it
-        does, then a $\bad$ flag is set to true. Assuming the $\bad$ flag is
+        does, then a boolean flag $\bad$ is set to true. Assuming the $\bad$ flag is
         never set to true, the game proceeds exactly as the real-world game, and
-        thanks to \cref{lemma:bad}, we know that the difference between these
-        games is bounded by the probability that $\bad$ is set to true.
-        Then, \emph{conditioned} on $\bad$ never being set to true,
+        thanks to \cref{lemma:bad}, we know that the noticeable difference
+        between these games is bounded exactly by the probability that $\bad$ is
+        set to true. Then, \emph{conditioned} on $\bad$ remaining false,
         we can exchange the real symmetric key for a randomly
-        sampled one without the adversary ever being able to notice. 
+        sampled one, and be sure that the adversary will never be able to
+        notice.
         %Therefore, the second game hop from real to random keys is ``for free'',
         %since the two games are equal in terms of probabilities. 
 
@@ -616,12 +638,15 @@
         }
       \end{figure}
 
-      To make this formal, start by recalling the distinguishing advantage of
-        the given adversary $\adv$. We will use the ``difference'' version of
+      The four games are given in pseudocode in \cref{fig:cparom-hops}, in a
+        layout matching \cref{fig:cparom-hops-illustrated}, and with
+        changes between games highlighted.
+        To make the argument formal, start by recalling the definition of a
+        distinguishing advantage; we will use the ``difference'' version of
         distinguishing advantages, as
-        it fits more cleanly with the ``game hopping'' style of proof.
+        it fits more cleanly with this ``game hopping'' style of proof.
         \[
-        	\advantage{\indcpa}{\KEM} = \abs{
+        	\advantage{\indcpa}{\KEM} \coloneqq \abs{
         		\condprobsample{
         			\experiment{\indcpa}{\KEM}
         		}{1 \gets \adv}{\chalbit = 0}
@@ -632,7 +657,7 @@
         \]
         The game $\game 1$ is just the real-world ($\chalbit=0$) $\indcpa$ game, with the
         construction of \KEM written out explicitly, together with a lazy-sampled
-        random oracle. Similarly, $\game 3$ is just the random-world
+        random oracle. Similarly, $\game 4$ is just the random-world
         ($\chalbit=1$) $\indcpa$ game with the \KEM construction explicit. We
         can therefore write
         \[
@@ -649,9 +674,9 @@
             &\qquad - \probsample{ \game{3}(\adv) }{1 \gets \adv} + \probsample{ \game{3}(\adv) }{1 \gets \adv} \\
             &\qquad - \probsample{ \game{4}(\adv) }{1 \gets \adv}|\, .
         \end{align*}
-        The ``fundamental lemma of game hopping'' is simply the idea that we can  
-        now group terms and apply the triangle inequality to get $n-1$
-        distinguishing advantages (or ``hops'') across $n$ games:
+        Applying the triangle inequality then gives us an upper-bound 
+          on the original distinguishing advantage as the sum of the distinguishing
+          advantages between successive games:
         \begin{align*}
           \advantage{\indcpa}{\KEM} &\leq 
             \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv} 
@@ -661,15 +686,20 @@
             &\qquad + \abs{\probsample{ \game{3}(\adv) }{1 \gets \adv}
               - \probsample{ \game{4}(\adv) }{1 \gets \adv}}\, .
         \end{align*}
-        In this case, the only difference between $\game 1$ and $\game 2$ is 
-        introduction of a $\bad$ flag, which is completely hidden from view from
-        the adversary and therefore cannot affect its behaviour. As a result, the
-        first difference evaluates to $0$. Since the same is true for 
-        $\game 3$ vs.\ $\game 4$, we actually have:
+
+        Let us analyze each distinguishing advantage in turn.
+          First, $\game 1$ delays defining \ldots
+
+        \hhnote{cont}
+
+          the only difference between $\game 1$ and $\game 2$ is 
+          introduction of the flag $\bad$; this flag does not otherwise affect the
+          behaviour of the game, and it is therefore completely hidden from
+          $\adv$'s view. As a result, the first difference evaluates to $0$. 
+          %Since the same is true for $\game 3$ vs.\ $\game 4$, we actually have:
         \begin{align*}
-          \advantage{\indcpa}{\KEM} &\leq 
-            \abs{\probsample{ \game{2}(\adv) }{1 \gets \adv} 
-              - \probsample{ \game{3}(\adv) }{1 \gets \adv}}\, . 
+          \abs{\probsample{ \game{1}(\adv) }{1 \gets \adv} 
+            - \probsample{ \game{2}(\adv) }{1 \gets \adv}} = 0\, . 
         \end{align*}
         Let us use the law of total probability (and the triangle inequality
         again) to split into two distinguishing advantages, one for
