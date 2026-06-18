@@ -22,9 +22,7 @@
   \tutorialtrue
   %\tutorialfalse
 
-%
-% BEGINNING OF DO NOT EDIT ZONE
-%
+%%% BEGINNING OF DO NOT EDIT ZONE %%%
 
 \newif\ifsubmission % best not to manually change this flag
   \iffullversion
@@ -53,14 +51,15 @@
 \else          \ifdraftversion \documentclass[runningheads,            ]{llncs}
                \else           \documentclass[runningheads,                  ]{llncs} \fi\fi
 
+%%% END OF DO NOT EDIT ZONE %%%
+                
 % HH: Added to make table-of-contents work
 %% see: https://tex.stackexchange.com/questions/272200/table-of-contents-showing-the-title-as-only-entry-latex
   \setcounter{tocdepth}{1} % Exclude subsections
-  %\setcounter{tocdepth}{2} % Include subsections
   \makeatletter
   \renewcommand*\l@author[2]{}
   \renewcommand*\l@title[2]{}
-  \makeatletter
+  \makeatother
 %%
 
 \usepackage{cite}
@@ -69,7 +68,6 @@
 
 \ifeprintfull
   \ifdraftversion
-    %% Changed, HH 12025-03-04
     %\usepackage[reset,a4paper]{geometry}
     %\geometry{textwidth=12.2cm, textheight=19.3cm}
     \usepackage[a4paper,margin=1.0in]{geometry}
@@ -77,8 +75,7 @@
     \usepackage[a4paper,margin=1.0in]{geometry}
   \fi
 
-  \usepackage[section]{placeins} %Gets overwritten by ! tag in float
-  %  \setcounter{tocdepth}{3}
+  \usepackage[section]{placeins} % Gets overwritten by ! tag in float
 \fi
 
 \ifsubmission
@@ -92,7 +89,6 @@
 \usepackage[svgnames,table]{xcolor}
 
 %% Hacks to enable grayed-out ToC entries %%
-  \providecommand{\texorpdfstring}[2]{#1}   % no-op if hyperref absent
   \definecolor{draftgrey}{gray}{0.55}
   \newcommand{\plannedsection}[1]{%
     \stepcounter{section}%
@@ -229,9 +225,10 @@
 \newcommand{\defer}[1]{\ref{#1}}              %submission
 % \newcommand{\defer}[1]{the full version}      %camera ready
 
-
+% Start of document
+%-------------------------------------------------------------------------------%
 \begin{document}
-\let\cleardoublepage\clearpage
+  \let\cleardoublepage\clearpage
 
   \input{qrot-header}  % maketitle, abstract, ToC
 

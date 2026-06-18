@@ -781,7 +781,7 @@
         } This is what the next theorem, also proven by
         Zhandry~\cite[Lemma~5]{C:Zhandry19}, shows.
 
-      \begin{theorem}[Extraction is imperfect]\label{thm:imperfect}
+      \begin{lemma}[Extraction is imperfect]\label{lemma:imperfect}
         Let the adversary $\adv$ be a quantum algorithm with oracle access to
         a random oracle $\RO$, and that after at most $q$ queries outputs $\ell
         \leq q$ tuples $(x,y)$ with unique values for $x$, and let
@@ -821,9 +821,122 @@
           \advantage{}{\careset}[(\extractor^\adv)] +
           2\sqrt{\frac{\ell}{2^{m}}} + \frac{\ell}{2^m}\, .
         \]
-      \end{theorem}
+      \end{lemma}
 
-  \ifdraftversion
+  \subsection{A Quantum Collision Bound}
+    \hhnote{
+      Lower bound on the number of queries required to find a collision, as
+      a showcase of the database formulation and applying \cref{lemma:imperfect}, 
+      while mirroring the birthday-bound analysis in \autoref{sec:rom}.
+    }
+    \hhnote{
+      See Claude's suggested strategy in comments
+    }
+    % Me: the neat thing is that the ROM section already contains the classical
+    % collision-finding example as a motivating example for the idealization
+    % itself, see attached. Is it possible to write the argument in a way that
+    % mirrors this classical analysis?
+
+    % Claude: Yes, and the mirror is tighter than you
+    % might expect — right up until one deliberate fault line that's actually the
+    % most instructive part of the whole example. Let me lay the two side by side,
+    % because the place where the analogy breaks is exactly where the quantum-ness
+    % lives.
+
+    % **The correspondence.** In §3.1 the object you study is the query transcript
+    % (x1,…,xq), and "the attacker found a collision" means "two entries of the
+    % transcript collide." The recording technique gives you the same object: the
+    % database D *is* the quantum transcript. So the first beat transfers verbatim
+    % — you study whether D records a collision — and the only thing you need to
+    % license that move is the soundness lemma, which is precisely the quantum
+    % sentence "a collision you output is a collision in your record":
+    %   sqrt(Pr[A outputs x≠x′, H(x)=H(x′)]) ≤ ∥Pcoll ∣ψq⟩∥+O(1/sqrt(N)),
+    % with Pcoll the projector onto "D has two entries sharing a value." That is
+    % the analogue of "observed collisions live in the transcript," and like the
+    % classical version it's a statement about the *record*, not the adversary.
+    % I'd cite this and not re-derive it (Zhandry, CRYPTO 2019 / ePrint 2018/276 —
+    % same paper the technique debuts in); the O(1/sqrt(N)) is the only genuinely
+    % fiddly accounting and it's lower-order here. 
+
+    % **Where the mirror must break — and why that's the lesson.** The naive thing is
+    % to just rerun the birthday count with quantum amplitudes: define a per-pair
+    % collision weight and sum over the (q over 2) pairs, exactly as you do
+    % classically with linearity of expectation. Watch what that would give.
+    % Classically each pair contributes 1/N and linearity hands you 
+    %   (q over 2)/N ≈ q^2/2N, 
+    % hence 
+    %   q ≈ sqrt(2N) = 2^(m+1)/2 ≈ 2^128.
+    % If the same pairwise bound held quantumly — each pair's recorded-collision
+    % amplitude-squared ≤ 1/N — you'd conclude collision-resistance up to
+    %   q ∼ 2^(m/2) = 2^128
+    % in the quantum setting too. But Brassard–Høyer–Tapp find collisions in 
+    %   O(N^(1/3)) = 2^(m/3) ≈ 2^85 
+    % queries. Contradiction. So the per-pair bound is simply false: some pairs of
+    % database entries must carry amplitude vastly exceeding 1/N. The reason is
+    % the thing the example exists to teach — querying in superposition lets the
+    % adversary build interference across queries that correlates the database
+    % entries, so the pairwise independence underwriting classical linearity is
+    % gone. You cannot sum over pairs. You have to track the collision amplitude
+    % dynamically, query by query, and bound the rate at which it can grow.
+
+    % **The argument, in §3.1's beats.** Let 
+    %   p_k = ∥Pcoll∣ψk⟩∥
+    % be the collision amplitude after k queries (the analogue of coll_k, but an
+    % amplitude, not a count). The adversary's own unitary leaves the database
+    % alone, so it commutes with Pcoll and can't change p_k; only the oracle call
+    % can. Splitting the state into its collision and collision-free parts before
+    % the k-th query,
+    %   p_k  ≤  ∥Pcoll O Pcoll∣ψk−1⟩∥   // ≤ p_(k−1)
+    %     +  ∥Pcoll O (1−Pcoll)∣ψk−1⟩∥. // collision created at query k
+    % The first term is just last query's amplitude (O and Pcoll are norm ≤ 1).
+    % The second — creating a *fresh* collision — is the one place you do quantum
+    % work, and it's exactly one line. When query k writes a new entry, its value
+    % register decompresses to the uniform superposition 
+    %   1/sqrt(N) ∑_y ∣y⟩;
+    % a collision appears only if that value lands on one of the ≤ k−1
+    % already-stored values. So you project a uniform state onto a set S 
+    % of size ≤ k−1:
+    %   ∥ P_(y∈S)  1/sqrt(N) ∑_y ∣y⟩ ∥  =  sqrt(∣S∣/N)  ≤  sqrt(k−1/N).
+    % This is the whole quantum punchline in miniature, and it's worth stopping
+    % the reader on it: classically you'd *add* the k−1 per-target collision probabilities, 
+    %   ∑ 1/N = (k−1)/N. 
+    % Quantumly the k−1 target values are orthogonal basis states, so their
+    % amplitudes combine in quadrature — you take the square root of that same
+    % sum, sqrt((k−1)/N). Same 1/N atom, but a quantum union over orthogonal
+    % outcomes is a root-sum-of-squares, not a sum. Telescoping the recursion
+    % p_k ≤ p_(k−1) + sqrt((k−1)/N,
+    %   ∥ Pcoll ∣ψ_q⟩ ∥  ≤  ∑_(k=1)^q sqrt((k−1)/N) 
+    %     ≤ 1/sqrt(N) ∫_0^q sqrt(t) dt = 2/3 q^(3/2)/sqrt(N),
+    % and squaring through the soundness lemma, 
+    %           % (soundness lemma = Zhandry's imperfect extraction lemma, red.adm.) 
+    %   Pr[collision]  ≤  4/9 q^3/N + O(q/sqrt(N) ⋅ 1/sqrt(N)) = O(q^3/N).
+
+    % **The payoff, dropped right next to your 2^128.** Solve q^3/N ≈ 1 the way
+    % §3.1 solves collq ≈ 1: 
+    %   q ≈ N^(1/3) = 2^(m/3) =(m=256)=> 2^85.
+    % So the same section that tells the reader a classical attacker needs 2^128
+    % evaluations can now tell them a quantum one needs only 2^85 — and the entire
+    % difference between those two exponents is one structural move. Classically
+    % you sum the 1/N atom flatly over pairs: ∑_(i<j) 1/N. Quantumly you group the
+    % pairs by the *later* query that creates them, sum the atom *inside* a query
+    % in quadrature, take the root, sum *those* over queries, and square at the end:
+    %   (∑_k sqrt(∑_(i<k) 1/N))^2 vs. ∑_(i<j) 1/N.
+    % The nested sqrt(∑) → ∑ → (⋅)^2 against the flat ∑ is what turns q^2 into
+    % q^3, 2^128 into 2^85. That's the figure I'd actually put on the page.
+
+    % Two honesty flags for the write-up, both small. The leading constant (4/9,
+    % hence the precise "2^85 vs 2^86") is soft — the compress/recompress step
+    % hides an O(1) I've swept into the increment — so sell the exponent m/3
+    % as the robust, BHT-matched claim and don't dress the constant up to look as
+    % tight as the genuinely-tight classical 2^128. And the per-query bound as
+    % I've written it tracks only fresh-entry queries; the full bookkeeping for
+    % queries that revisit existing points, plus that O(1/sqrt(N)) soundness gap,
+    % is the part you outsource to Zhandry. Everything the reader needs to
+    % understand the bound is in the four lines above; everything they'd need to
+    % referee it is in the citation. Which is exactly the division of labor that
+    % makes the collision bound the right showcase and Merkle–Damgård the wrong one.
+
+  \iffalse
   \subsection{Random Oracles are Good PRFs}
     \hhnote{
       Copy-pasted from first intro draft. \emph{Maybe} do the following later when we introduce the
@@ -912,14 +1025,3 @@
     %\label{fig:prf-ku}
     %\end{figure}
   \fi
-
-  
-  \subsection{Making Reprogramming Consistent}
-    \hhnote{
-      Show a minimal working example of something you can do with CROs that
-      seems difficult to do without: Either indifferentiability of a minimal version
-      of Merkle--Damgaard, or something more on-topic like NCE security of BRE.
-      (But maybe the example to \emph{has} to involve several oracles being called 
-      iteratively, like in Merkle--Damgaard. Still, would be nice with a simpler
-      example that somehow involves encryption.)
-    }
