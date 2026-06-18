@@ -90,6 +90,25 @@
 \fi
 
 \usepackage[svgnames,table]{xcolor}
+
+%% Hacks to enable grayed-out ToC entries %%
+  \providecommand{\texorpdfstring}[2]{#1}   % no-op if hyperref absent
+  \definecolor{draftgrey}{gray}{0.55}
+  \newcommand{\plannedsection}[1]{%
+    \stepcounter{section}%
+    \addtocontents{toc}{%
+      \protect\begingroup\protect\color{draftgrey}%
+      \protect\contentsline{section}{\protect\numberline{\thesection}#1}{\textcolor{draftgrey}{
+        %/ % symbol used in place of a page number
+      }}{}%
+      \protect\endgroup}%
+  }
+  % dispatcher: real content when building the future version, phantom otherwise
+  \newcommand{\futuresect}[2]{% {file}{ToC title}
+    \iffutureversion \input{#1}\clearpage \else \plannedsection{#2}\fi
+  }
+
+% Todonotes
 \ifdraftversion
   \usepackage{changes} % also loads todonotes
 \else
@@ -97,7 +116,7 @@
 \fi
 
 % Things Kat has added
-\usepackage{nicodemus}  % For easier handling of pseudocode
+  \usepackage{nicodemus}  % For easier handling of pseudocode
 
 % Things Hans has added
   \usepackage{slashed}
@@ -219,53 +238,60 @@
   % Main body
 
   \input{qrot-preface}
-    \clearpage
+  \clearpage
+
   \addcontentsline{toc}{part}{Part 1. Classical Security is Easy with Random Oracles}
   %\part{Setting the Stage}\label{part:prelims}
     \input{qrot-basics}
     \clearpage
     \input{qrot-rom}
     \clearpage
-    \input{qrot-utransform}
+    \input{qrot-utransform-rom}
     \clearpage
-    \iffutureversion
-      \input{qrot-dsa-rom}
-      \clearpage
-    \fi
+    \newcommand{\titleCcaRom}{Example 2: From CPA to CCA Security with the \U-Transform}
+    \futuresect{qrot-cca-rom}{\titleCcaRom}
+    \newcommand{\titleDsaRom}{Example 3: From Passive to Active Signature Security}
+    \futuresect{qrot-dsa-rom}{\titleDsaRom}
+    \newcommand{\titleFsRom}{Example 4: The Fiat-Shamir Transformation}
+    \futuresect{qrot-fs-rom}{\titleFsRom}
 
-  \addcontentsline{toc}{part}{Part 2. Technical Difficulties in the Post-Quantum Realm}
+  \addcontentsline{toc}{part}{Part 2. Post-Quantum Security is Not So Easy with Random Oracles}
+  %\addcontentsline{toc}{part}{Part 2. Technical Difficulties in the Post-Quantum Realm}
   %\part{(Post-)Quantum Difficulties}\label{part:classical}
     \input{qrot-primer}
     \clearpage
     \input{qrot-qrom}
     \clearpage
-    \iffutureversion
-      \input{qrot-pseudocode}
-      \clearpage
-      \input{qrot-compressed}
-      \clearpage
-    \fi
+    \newcommand{\titlePseudocode}{A Quantum-Register Pseudocode}
+    \futuresect{qrot-pseudocode}{\titlePseudocode}
+    \newcommand{\titleCompressed}{How to Lazy-sample QROs with the Compressed-Oracle Technique}
+    \futuresect{qrot-compressed}{\titleCompressed}
 
   \addcontentsline{toc}{part}{Part 3. The Tools of the QRO Toolbox}
   %\part{The Tools of the Toolbox}\label{part:tools}
     \input{qrot-o2h}
     \clearpage
-    \input{qrot-qutransform}
+    \input{qrot-utransform} % OW -> IND example
     \clearpage
-    \iffutureversion
-      \input{qrot-extract} % with CPA -> CCA example 
-      \clearpage
-      \input{qrot-adaptive} % with NMA -> CMA example
-      \clearpage
-      \input{qrot-rewind} % with Sigma -> NIZK example 
-    \fi
+    \newcommand{\titleExtract}{Tool 2: Learning From QRO Queries via Quantum Online-Extraction}
+    \futuresect{qrot-extract}{\titleExtract}
+    \newcommand{\titleCca}{Example 2: CPA to CCA Security Revisited}
+    \futuresect{qrot-cca}{\titleCca}
+    \newcommand{\titleAdaptive}{Tool 3: Adaptive Reprogramming with Fixed Permutations}
+    \futuresect{qrot-adaptive}{\titleAdaptive}
+    \newcommand{\titleDsa}{Example 3: Passive to Active Signature Security Revisited}
+    \futuresect{qrot-dsa}{\titleDsa}
+    \newcommand{\titleRewind}{Tool 4: Rewinding Quantum Adversaries with Measure-and-Reprogram}
+    \futuresect{qrot-rewind}{\titleRewind}
+    \newcommand{\titleFs}{Example 4: The Fiat-Shamir Transformation Revisited}
+    \futuresect{qrot-fs}{\titleFs}
 
-  \iffutureversion
-    %\part{Under The Rug}\label{part:proofs}
-    \part{Down the Rabbit Hole}\label{part:proofs}
-    \input{qrot-proofs} % leave this for v3
-    \clearpage
-  \fi
+  \addcontentsline{toc}{part}{Part 4. Under the Rug}
+  %\part{Under The Rug}\label{part:proofs}
+    \newcommand{\titleQit}{A Brief Quantum Information Theory Primer}
+    \futuresect{qrot-qit}{\titleQit}
+    \newcommand{\titleProofs}{How to Prove Quantum Lemmas}
+    \futuresect{qrot-proofs}{\titleProofs}
 
   \newpage
   \addtocontents{toc}{\protect\vspace{1.5em}}
@@ -290,9 +316,7 @@
   \input{qrot-ttransform}
   %\clearpage
   \input{qrot-solutions}
-  \ifdraftversion
-    \clearpage
-    \input{qrot-bre}
-  \fi
+  %\clearpage
+  %\input{qrot-bre} % Old BRE-based ROM draft
 
 \end{document}

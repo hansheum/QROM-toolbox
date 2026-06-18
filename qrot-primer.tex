@@ -1,40 +1,41 @@
-\section{A Brief Quantum Primer}\label{sec:primer}
-  \hhnote{
-    This section is in a semi-stable state (2nd draft done). 
-    Missing: How to use projectors for coherent if-else logic.
-  }
+\section{A Brief Quantum Computing Primer}\label{sec:primer}
   Quantum theory arose as a branch of physics, and so (naturally) much of the
     standard notational conventions are hand-wavy and inconsistently
     implemented across the literature. For the sake of conceptual clarity and
-    self-containedness, we therefore specify all our
-    working conventions below, introducing the
+    self-containedness, we will therefore make an effort to specify all our
+    working conventions, introducing the
     building blocks that make up quantum computing theory along the way.
     For more details, see the rightly celebrated introductory text by Nielsen and
     Chuang~\cite{NieChu10}, or the equally-excellent book on quantum
-    information theory by Mark Wilde~\cite{Wilde}.
+    information theory by Mark Wilde~\cite{Wilde17}.
 
-  This chapter contains many footnotes: these are tangents with additional details
-    that may interest the reader, but are inessential to the rest of the text.
-    In particular, if a footnote made \emph{no} sense to you, feel free to
-    ignore it.\footnote{
-      Or ask Hans about it! He loves explaining this stuff.
-    }
+  %This chapter contains many footnotes: these are tangents with additional details
+  %  that may interest the reader, but are inessential to the rest of the text.
+  %  In particular, if a footnote made \emph{no} sense to you, feel free to
+  %  ignore it.\footnote{
+  %    Or ask Hans about it! He loves explaining this stuff.
+  %  }
 
-  The best way to get a \emph{feel} for the esoteric logic of quantum physics is to play
-    around with it. This chapter also provides several exercises meant to serve this purpose,
-    inserted at points in the text where you should be able to use them to test
-    your understanding of the material presented so far. 
-    Solutions for some (but not all) of the exercises are provided in
+  The best way to get a \emph{feel} for the at-times esoteric logic of quantum physics is to play
+    around with it. This chapter contains several exercises meant to serve this purpose;
+    %inserted at points in the text where you should be able to use them to test
+    %your understanding of the material presented so far. 
+    solutions for some (but not all) of the exercises are provided in
     \cref{sec:solutions}.
+
+  \hhnote{
+    Missing: How to use projectors for coherent if-else logic. (Needed?)
+  }
 
   \subsection{Quantum Physics and the Dirac Notation}
     In general, quantum states are complex-valued vectors in Hilbert space,
       which is to say, a vector space defined over functions. This Hilbert space
-      may or may not be infinite-dimensional (though thankfully, we will only have
-      to worry about the finite-dimensional case).\footnote{
+      may or may not be infinite-dimensional, though thankfully, we will only have
+      to contend with the finite-dimensional case.\footnote{
         For an example of an infinite-dimensional Hilbert space, consider the
         state $\ket{p(x)}$ describing the physical position $x \in [0,1]$ of some
-        particle $p$. Since space is not (known to be) discretized, observing this state has infinitely
+        particle $p$. Since space is not (or not known to be) discretized,
+        observing this state may have infinitely
         many possible outcomes: one for every real number between $0$ and $1$. Hence, $\ket{p(x)}$ lives
         in the infinite-dimensional Hilbert space spanned by the infinite set of basis
         states $\{\ket{p(x)}\}_{x\in[0,1]}$.
@@ -54,8 +55,8 @@
       states are identical (modulo an unobservable global phase factor $e^{i\theta}$).
 
     This calculus is fine, but one may wonder, what \emph{is} a quantum
-      state---in the sense, what kind of mathematical object is it? The answer
-      can be found in the statement that they live in $N$-dimensional \emph{Hilbert
+      state? Meaning, what kind of mathematical object is it? The answer
+      can be found in the statement that they live in an $N$-dimensional \emph{Hilbert
       space:} Hilbert spaces are vector spaces defined over \emph{functions}
       rather than vectors. Here, the inner product between two functions $f$ and
       $g$ on the interval $[a,b]$ is defined as $\int_{a}^{b}
@@ -63,93 +64,101 @@
       orthogonality, from which a vector space may be constructed.
       Quantum states, then, are the functions that arise as solutions to a
       differential equation describing the dynamics of the system. 
-      This is the famous Schrödinger equation, for the non-relativistic,
+      This is the famous Schrödinger equation, which covers the non-relativistic,
       non-spin case. For fermions like electrons (which do have spin), we need the
-      \emph{Pauli} equation, and making quantum physics consistent with
-      Einstein's theory of special relitivity requires the \emph{Dirac}
-      equation.\footnote{
+      \emph{Pauli equation}, and making quantum physics consistent with
+      Einstein's theory of special relitivity requires the \emph{Dirac
+      equation}.\footnote{
         Of course, combining quantum physics with \emph{general}
         relativity constitutes \emph{the} open problem of theoretical physics,
         and has given us a half-century of stagnant debate over which
-        as-of-yet unsuccessful approach, such as string theory vs.\ loop quantum
-        gravity, is more ``natural''. (For more on this, see the popular science
-        section of your local book store.)
+        as-of-yet unsuccessful approach is more ``natural'', such as string theory vs.\ loop quantum
+        gravity. (For more on this, see the popular science
+        section in your local book store.)
       } These functions take some
       input value corresponding to a possible observation, such as a particular
-      position $x$, and returns the \emph{amplitude} corresponding to that
-      position; squaring this then gives the probability that when you observe the
-      particle, you will find it in position $x$.
+      position $x$, and returns an \emph{amplitude} corresponding to that
+      position; squaring this amplitude may then for example give you the
+      probability that you will observe the particle to be in position $x$.
 
-    If all of this sounds terribly complicated, then you understand why
+    If all of this sounds terribly complicated, then you may appreciate why
       physicists grew so fond of Dirac's notation, which neatly sweeps all of
-      these horrible details under a rug of algebraic clarity.
-
-    Thankfully, things are easier in the discrete case: the Hilbert
+      these horrible details under a rug of neat, algebraic clarity.
+      Thankfully, things can be made much simpler in the discrete case: the Hilbert
       space is now finite, and so it can be expressed in terms of a finite set of basis
-      ``vectors'' (i.e., functions), and the inner
-      product is now a sum rather than an integral. Further, functions now have finite domains,
-      and may thus be written as $N$-length vectors instead, where each element
-      corresponds to an input to the function, enabling us to
-      employ our toolbox from linear algebra to study them (leveraging
-      the isomorphism between $\funcspace{\bin^n}{\CC}$ and $\CC^{2^n}$). 
+      ``vectors'' (i.e., functions), and inner
+      products are now sums rather than integrals. Further, since our functions
+      now have finite domains, they may be written as $N$-length vectors
+      instead, where each element corresponds to one of the possible inputs to
+      the function (i.e., one of the possible observable outcomes), enabling us to
+      employ our toolbox from linear algebra to study them by leveraging
+      the isomorphism between the set of functions from $\bin^n$ to $\CC$ 
+      and $\CC^{2^n}$. 
 
-    This is the approach taken in the quantum information sciences.
+    This is the approach adopted by the quantum information sciences.
 
   \subsection{Qubit Basis States}
-    \subsubsection{Single-Qubit States.}
-      We are interested modelling quantum computers, which at any point in time
-        can be said to be in some finite-dimensional quantum state over
-        a collection of $n$ qubits. A \emph{qubit} is a quantum state existing
-        in a two-dimensional Hilbert space, which we characterize by the basis states
-        $\ket{0}$ and $\ket{1}$. In physical implementations, these states may for
-        example correspond to the spin of an electron (``up''/``down''), or to the two lowest energy
-        states of an atom, or in general to any two orthogonal states of an
-        observable, where two quantum states are orthogonal if and only if there exists a
-        measurement\footnote{
+    \subsubsection{Single-Qubit Basis States.}
+      We are interested modelling quantum computers. A quantum computer must, of
+        course, have some quantum memory, which is to say a collection of
+        qubits; let's say $n$ of them. 
+        This memory can then at any point in time be said to be in some quantum state
+        defined over $n$ qubits. 
+
+      A \emph{qubit} is a physical system which, when observed, can be observed
+        to take one of two possible values. 
+        In physical implementations, these observables may for
+        example correspond to the spin of an electron (``up'' and ``down''),
+        or to the two lowest energy states of an atom; in general they may be
+        any two orthogonal states of an observable, where two quantum states are
+        orthogonal if and only if there exists a measurement\footnote{
           The words ``observation'' and ``measurement'' describe the same
           procedure. We prefer ``observation'' when speaking informally,
           as the term captures the fact that you don't need fancy lab equipment to
-          collapse a quantum state---coming in contact with it in any way 
-          is enough---but we will follow the standard nomenclature of ``measurement''
+          collapse a quantum state -- coming in contact with it in any way 
+          is usually enough -- but we will follow the standard nomenclature of ``measurement''
           when talking about the technical formalism.
         } procedure that perfectly distinguishes them.
 
-      It is worth emphasizing that the ``$0$'' and ``$1$'' here are \emph{labels},
-        and do not say anything about the physical system in question other than that
-        it supports (at least) two orthogonal quantum states, which we have the
-        ability to distinguish, and which we choose to map to the values $0$ and $1$.
-        In particular, the $\ket0$ state is not the zero
-        \emph{vector}, since the latter is not of unit length (and can
-        furthermore not be normalized through multiplication with some
-        constant), and can therefore not correspond to a quantum state.
+      With exactly two possible outcomes, the qubit \emph{state} lives
+        in the two-dimensional Hilbert space $\CC^2$, which we characterize by
+        the basis states $\ket{0}$ and $\ket{1}$, similarly to how two orthogonal unit
+        vectors will span the real plane. 
 
-      Since two qubit basis states $\ket{b_1}$ and $\ket{b_2}$, for $b_1, b_2 \in
-        \{0,1\}$, must be either identical (up to the
-        aforementioned phase factor) or orthogonal, we have that
+      It is worth emphasizing that in these states, the numbers ``$0$'' and ``$1$'' 
+        are \emph{labels}, and do not say anything about the physical
+        system in question other than that it supports (at least) two orthogonal
+        quantum states, which we have the
+        ability to distinguish, and which we choose to map to the values $0$ and $1$.
+        In particular, the $\ket 0$ state could certainly not be the zero
+        \emph{vector}, since all quantum states must be unit-length, and the
+        zero vector has zero length. 
+
+      Let $\ket{b_1}$ and $\ket{b_2}$ be two qubit basis states, where $b_1, b_2 \in
+        \{0,1\}$. Since these must be either identical or orthogonal, we have that
       \[
         \braket{b_1|b_2} = \delta_{b_1 b_2}\, ,
       \]
       where $\delta_{ij}$ is the Kronecker delta, equal to $1$ if $i = j$ and $0$
         otherwise.
-      
-      Expressing the qubit states (which, remember, are functions from a binary
+        Expressing the qubit states (which, remember, are functions from a binary
         set of observable values to a complex amplitude of magnitude at most
-        $1$) as vectors, as explained above, we see that we can express our qubit
-        basis states as
-      \[
-        \ket0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\, ,\ 
-        \ket1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\, .
-      \]
+        $1$) as vectors, we see that we can express our qubit basis states as
+        \[
+          \ket0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\, ,\ 
+          \ket1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\, .
+        \]
 
-      \noindent
-      If you are ever confused about a calculation on Dirac
+      If you are ever confused about a calculation using Dirac
         brakets, it can be very useful to make the translation into vectors
-        and matrices, and check the calculation
-        using the familiar language of linear algebra.
+        and matrices, and go through the
+        explicit calculation using the familiar language of linear algebra.
       
-    \subsubsection{Multi-Qubit States.}
+    \subsubsection{Multi-Qubit Basis States.}
       In general, two quantum systems (i.e.\ states describing 
-        distinct physical systems) may be combined via the tensor product:
+        distinct physical systems, such as two qubits) may be combined via the
+        tensor product, for which we may use either of the following notational
+        conventions:
         \[
           \ket{\psi} \otimes \ket{\varphi} \coloneqq \ket{\psi}\ket{\varphi}
           \coloneqq \ket{\psi, \varphi} \coloneqq \ket{\psi\varphi}\, .
@@ -174,34 +183,33 @@
 
       \noindent
       We will use any and all of the above conventions when denoting combined quantum
-        states, choosing whichever one we deem to bring the most clarity and
-        eligibility to the given context. (For example, non-binary labels 
+        states, choosing whichever one we deem brings the most clarity and
+        eligibility to the given context. For example, non-binary labels 
         will typically be separated by commas, while binary-valued labels will
-        typically not be, in reference to string concatenation $b_0 b_1 \coloneqq
-        b_0 \concat b_1$.)
+        typically not be, to match the standard nomenclature for bit-string
+        concatenation: $b_0 b_1 \coloneqq b_0 \concat b_1$.
 
       Since each qubit is a two-dimensional quantum state, and there are $n$
         qubits, the
-        combined state will have dimension $N \coloneqq 2^n$. The resulting Hilbert
-        space will be characterized by the computational\footnote{
-          As with any vector space, Hilbert spaces permit an infinitude of basis
-          choices; the ``computational'' basis is simply the name we give the
-          choice of having our qubit basis states be the ones that we already
-          labelled as classical bits (or more generally, bitstrings).
-        } basis states
+        combined state will have dimension $N \coloneqq 2^n$, and the resulting Hilbert
+        space will be characterized by the basis states
       \[
         \{\ket{i}\}_{\forall i \in [N]} = \{ \ket{b_0 b_1 \ldots b_{n-1}}
-          \}_{\forall b_0, \ldots, b_{n-1} \in \bin}\, .
+          \}_{b_0, \ldots, b_{n-1} \in \bin}\, .
       \]
+      Of course, any vector space permits an infinitude of basis
+        choices; the above choice of basis is just the simplest one. We refer
+        to this as the ``computational'' basis, since
+        we have set our basis vectors up in such a way that they map to
+        classical bitstrings.
 
-      \noindent
-      This exponentiality in the dimension of quantum states as the number of
-        qubits increases sits at the core of quantum computers' advantage over
-        classical computers. As an illustrative
-        example, the Hilbert space corresponding to a three-qubit quantum system
-        is characterized by the eight computational basis states:
+      The fact that the dimension of quantum states increases exponentially as
+        the number of qubits increases sits at the core of quantum computers'
+        advantage over classical computers. As an illustrative
+        example, if we add a third qubit to our system, we now need eight basis
+        states to span the Hilbert space:
       \begin{align*}
-        \{ \ket{i} \}_{\forall i \in [2^3]} 
+        \{ \ket{i} \}_{i \in [2^3]} 
         &= \{\ket{000},
           \ket{001},
           \ket{010},
@@ -221,21 +229,22 @@
       \end{align*}
 
       \noindent
-      As in the single-qubit case, we see that we have orthonormality over the
-        multi-qubit computational basis states:
+      As expected, we see that the multi-qubit computational basis states also
+        satisfy orthonormality:
       \[ 
         \braket{x|y} = \delta_{xy}\, . 
       \]
 
-      \noindent
-      We will also sometimes perform a repeated tensor product over identical
-        states, for instance when initializing a set of $n$ qubits to the
-        $\ket{0}$ state; this can be written in either of the following ways:
+      Finally, it will sometimes be useful to perform a repeated tensor product over identical
+        states, for instance when initializing $n$ qubits to the $\ket{0}$
+        state; this can be written in either of the following ways:
       \[
-        \ket{0 \ldots 0} = \bigotimes_{i = 0}^{n-1} \ket{0} \coloneqq \ket{0}^{\otimes n}\, .
+        \bigotimes_{i = 0}^{n-1} \ket{0} \coloneqq
+        \ket{0}^{\otimes n} \coloneqq \ket{0 \ldots 0} \coloneqq \ket{0^n}\, .
       \]
 
   \subsection{General Qubit States}
+    \hhnote{ cont }
     \subsubsection{Greek vs.\ Roman.}
       To distinguish computational basis states from more general quantum states, we will use
         greek letters like $x$, $y$, $z$ to represent classical binary

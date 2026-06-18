@@ -881,7 +881,7 @@
         fingerprints it produces should be random-looking, and it should be hard
         to find two inputs with the same fingerprint. 
 
-  \subsection{Reductions.}
+  \subsection{Reductions}
     The main tool we have in proving security is that of a \emph{security
       reduction} (\ldots)
     
@@ -1057,7 +1057,7 @@
 
     \hhnote{todo: write solution for a) and b)}
 
-  \subsection{Common Proof Techniques}
+  %\subsection{Common Proof Techniques}
     \subsubsection{Game Hopping.}
       \hhnote{
         copy-pasted from \cref{sec:basics}
@@ -1116,7 +1116,7 @@
         environment fails to match their expectation.
       }
 
-    \subsection{Identical-Until-Bad}
+    \subsubsection{Identical-Until-Bad.}
       \hhnote{
         to-be-written; below are cut-and-pasted snippets from the old
         version of the \U-proof.
@@ -1180,3 +1180,11 @@
         where, again, the latter equality holds due to the view of $\adv$ being equal
         in both games up until the point that $\bad$ is set to $\true$, since
         random oracles are perfectly preimage-hiding.
+
+  \subsection{Bit Security and Tightness}
+    \hhnote{
+      should probably briefly explain the $\nicefrac{t}{\epsilon}$
+      convention for bit security, so that we can later use it to illustrate
+      tightness losses
+    }
+
