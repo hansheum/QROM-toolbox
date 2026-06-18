@@ -328,21 +328,22 @@
           %which may be summarized as ``many-worlds without the many worlds''.)
         }
 
-        \hhnote{ cont }
       Likewise, a general, $n$-qubit quantum state may be written in terms of the computational
         basis states:
 
       \[
         \ket{\psi} = \sum_{i = 0}^{N-1} \alpha_i \ket{i} 
           = \alpha_0 \ket{0 \dots 00} + \alpha_1 \ket{0 \dots 01} + \ldots +
-          \alpha_{N-1} \ket{1 \dots 11}\, ,
+          \alpha_{N-1} \ket{1 \dots 11}
+          \coloneqq \alpha_0 \ket{0} + \alpha_1 \ket{1} + \ldots +
+          \alpha_{N-1} \ket{N-1}\, ,
       \]
-      
-      \noindent
-      where the \emph{amplitudes} $\alpha_i$ again satisfy
-        $\sum_{i = 0}^{N-1} \abs{\alpha_i}^2 = 1$.
+      where decimal notation may be used whenever the number of qubits is clear
+      from context (so that we can identify the bitstring $0^n$ with the number
+      $0$), and where the amplitudes $\alpha_i$ again satisfy $\sum_{i =
+      0}^{N-1} \abs{\alpha_i}^2 = 1$.
 
-      When expanded over the basis states, the inner product of two quantum
+      When expanded over the basis states, the inner product of two multi-qubit quantum
         states $\ket{\psi} = \sum_{i = 0}^{N-1} \alpha_i \ket{i}$ and $\ket{\varphi} =
         \sum_{j = 0}^{N-1} \beta_j \ket{j}$ may be written
 
@@ -350,74 +351,57 @@
         \braket{\psi|\varphi} = \sum_{i, j = 0}^{N-1} \alpha^*_i \beta_j \braket{i|j} =
         \sum_{i, j = 0}^{N-1} \alpha^*_i \beta_j \delta_{ij} = \sum_{i, j = 0}^{N-1} \alpha^*_i \beta_i\, .
       \]
-
-      \noindent
-      We see that we have recovered the inner product of complex-valued vectors, which
-        is just the usual inner product of real-valued vectors with an extra complex
-        conjugation.\footnote{
-          In case you're wondering, this is because an inner product on any
-          vector space must satisfy
-          conjugate symmetry, $\langle x, y \rangle = \langle y, x \rangle^*$;
-          see \url{https://en.wikipedia.org/wiki/Inner_product_space}.
-        }
-        Thus we may apply the usual operational interpretation of the inner
-        product, in which unit vectors are ``perpendicular'' when their inner product is $0$,
-        and ``parallel'' when it is $1$. Together with the requirement that
-        quantum states have unit norm, this means that an inner product of $1$ implies
-        that the two quantum states are actually identical,
-        up to the aforementioned unobservable phase factor.
+      We have recovered the inner product of two complex-valued vectors, which
+        is just the usual vector inner product with an extra complex conjugation.
+        %\footnote{
+        %  In case you're wondering, this is because an inner product on any
+        %  vector space must satisfy
+        %  conjugate symmetry, $\langle x, y \rangle = \langle y, x \rangle^*$;
+        %  see \url{https://en.wikipedia.org/wiki/Inner_product_space}.
+        %}
+        We may therefore adopt the usual operational interpretation of the inner
+        product, in which two unit vectors are orthogonal when their inner product is $0$
+        and parallel it is $1$. Together with the requirement that
+        quantum states have unit norm, this means that if two quantum states
+        have an inner product of $1$, then they are actually identical --
+        at least up to the aforementioned unobservable phase factor.
 
       When expanding quantum states in terms of basis states in the manner above,
-        we will sometimes implicitly exclude terms for which $\alpha_i = 0$,
-        writing instead 
+        we will sometimes implicitly exclude terms for which the amplitude is
+        $0$, writing instead 
 
       \[
-        \ket{\psi} = \sum_i \alpha_{i} \ket{x_i} \coloneqq \sum_{\forall i \in \Ispace} \alpha_{i} \ket{x_i}\, , 
+        \ket{\psi} 
+          %= \sum_i \alpha_{i} \ket{x_i}\, ,
+          = \sum_{x \in \Xspace} \alpha_{x} \ket{x} \coloneqq \sum_{x} \alpha_{x} \ket{x}\, , 
       \]
-      
-      \noindent
-      where $\Ispace = [\ell]$ (for some $\ell \in \NN$) indexes the set $\{\ket{x}\, |\ x \in [N]\ \land\
-        \braket{\psi|x} \neq 0\}$.
+      where $\Xspace$ is the non-trivial subset $\{x\, | \braket{\psi|x} \neq
+      0\} \subseteq [N]$, which is just the subset of $x$ that have $\alpha_x \neq 0$.
 
       \begin{exercise}
         Let $\ket\psi$ be a quantum state, and let $\ket\varphi =
         e^{i\theta}\ket\psi$, where the complex phase $\theta$ is a real number between $0$ and
         $2\pi$. Show that no measurement can distinguish $\ket\psi$ from
         $\ket\varphi$.\\
-        \emph{(Hint: try expanding $\ket{\psi}$ in terms of an arbitrary orthonormal basis.)}
+        \emph{(Hint: try expanding $\ket{\psi}$ in terms of an arbitrary
+        orthonormal basis, then compare the probabilities of observing each
+        outcome.)}
       \end{exercise}
-      % solution: exand in terms of arbitrary basis
 
   \subsection{Qubit Registers}
-    Given a collection of $n$ qubits, we will find it useful to divide it
-      into \emph{registers} of specified sizes, for example to separate
-      distincts elements in an input. We may use subscripts to refer to specific
-      registers, unless the register we are referring to is clear from context.
+    Given a collection of $n$ qubits, we will find it useful to divide them
+      into \emph{registers}, for example to separate
+      distincts elements used as part of an operation. 
+      If which register we are referring to is not clear from context,
+      we may use subscripts to specify which register a quantum state describes.
+      If $\ket{\psi}$ describes the state of the $i$'th qubit $\qubit_i$, we may write
+      $\ket{\psi}_i$. Likewise, if the state $\ket{\varphi}$ describes the state of a
+      multi-qubit register $\register$, we may write $\ket{\psi}_\register$.
 
-    As an example, let's say we have $n$ qubits, all initialized to $\ket{0}$,
-      and that we want to put the $i$'th qubit in the state $\ket{\psi}$ and the
-      $j$'th qubit in the state state $\ket{\varphi}$. In other words, we want
-      to do the following:
-
-    %\begin{align*}
-    %  &\ket{0 \ldots 0} \coloneqq
-    %  \left( \bigotimes_{k = 0}^{i-1} \ket{0}\right) \otimes \ket{0} \otimes
-    %  \left( \bigotimes_{k = i+1}^{j-i} \ket{0} \right)\otimes \ket{0} \otimes
-    %  \left( \bigotimes_{k = j+1}^{n-1} \ket{0} \right) \\
-    %  &\longrightarrow 
-    %  \left( \bigotimes_{k = 0}^{i-1} \ket{0}\right) \otimes \ket{\psi} \otimes
-    %  \left( \bigotimes_{k = i+1}^{j-i} \ket{0}\right)\otimes \ket{\varphi} \otimes
-    %  \left( \bigotimes_{k = j+1}^{n-1} \ket{0}\right)
-    %  \coloneqq \ket{0 \ldots 0, \psi, 0 \ldots 0, \varphi, 0 \ldots 0}\, .
-    %\end{align*}
-    \begin{align*}
-      \ket{0 \ldots 0} 
-      \longrightarrow \ket{0 \ldots 0, \psi, 0 \ldots 0, \varphi, 0 \ldots 0}\, ,
-    \end{align*}
-
-    \noindent
-    or, more precisely,
-
+    To see how this is useful, say we have $n$ qubits all initialized to $\ket{0}$,
+      and say we want to put the $i$'th qubit in the state $\ket{\psi}$ and the
+      $j$'th qubit in the state state $\ket{\varphi}$. We could write this
+      operation as
     \begin{align*}
       \ket{0}^{\otimes n} =
       \ket{0}^{\otimes i} \ket{0} 
@@ -426,23 +410,30 @@
       &\longrightarrow 
       \ket{0}^{\otimes i} \ket{\psi} 
       \ket{0}^{\otimes (j-i)} \ket{\varphi} 
-      \ket{0}^{\otimes (n-j)}\, .
+      \ket{0}^{\otimes (n-j)}\, ,
     \end{align*}
-    
-    \noindent
-    By indexing the qubit states by the corresponding qubit \emph{register},
-    this may be expressed much more concisely:
+    but if we index the qubit states by the corresponding qubit \emph{number},
+    this may be expressed much more concisely as:
     \[
       \ket{0}_i \ket{0}_j \longrightarrow \ket{\psi}_i \ket{\varphi}_j\, ,
     \]
-    where $i,j \in [n]$, and by convention the state of any qubit not listed is
+    where by convention the state of any qubit not listed is
     unchanged by the operation.\footnote{
-      In particular, this means that this operation would not
-      be well-defined if qubit $i$ and/or $j$ were entangled with any other
-      qubits; we will remedy this issue in \cref{subsec:pseudocode}.
+      If qubit $i$ and/or $j$ started out entangled with any other
+      qubits, this operation would not be well-defined as written. Given that
+      there in many cases we care about, we do not know whether any given
+      qubit is entangled with any others, this is a real weakness of the Dirac
+      notation. We will tackle this issue head-on 
+      \iffutureversion
+        when we introduce our quantum pseudocode
+        in \cref{sec:pseudocode}.
+      \else
+        when we introduce our quantum pseudocode (to appear).
+      \fi
     }
 
   \subsection{Unitary Operations}\label{sec:unitaries}
+    \hhnote{ cont }
     Since we are working over finite-dimensional Hilbert spaces, 
       operations that evolve quantum states may be represented as 
       $N \times N$-dimensional matrices. What properties should they have?
