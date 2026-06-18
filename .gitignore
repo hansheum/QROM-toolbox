@@ -11,7 +11,7 @@ main-qrot.pdf
 *.bbl
 *.loc
 *.soc
-main-qrotb.synctex.gz
+main-qrotb.synctex*
 main-qrotb.fls
 .aider*
 cryptobib/
