@@ -389,14 +389,10 @@
       \end{exercise}
 
   \subsection{Qubit Registers}
-    Given a collection of $n$ qubits, we will find it useful to divide them
-      into \emph{registers}, for example to separate
-      distincts elements used as part of an operation. 
-      If which register we are referring to is not clear from context,
-      we may use subscripts to specify which register a quantum state describes.
-      If $\ket{\psi}$ describes the state of the $i$'th qubit $\qubit_i$, we may write
-      $\ket{\psi}_i$. Likewise, if the state $\ket{\varphi}$ describes the state of a
-      multi-qubit register $\register$, we may write $\ket{\psi}_\register$.
+    If the qubit a quantum state is describing is not clear from context,
+      we may use subscripts to specify which qubit it describes: 
+      For example, if $\ket{\psi}$ describes the state of the $i$'th qubit
+      $\qubit_i$, we may write $\ket{\psi}_i$. 
 
     To see how this is useful, say we have $n$ qubits all initialized to $\ket{0}$,
       and say we want to put the $i$'th qubit in the state $\ket{\psi}$ and the
@@ -410,9 +406,9 @@
       &\longrightarrow 
       \ket{0}^{\otimes i} \ket{\psi} 
       \ket{0}^{\otimes (j-i)} \ket{\varphi} 
-      \ket{0}^{\otimes (n-j)}\, ,
+      \ket{0}^{\otimes (n-j)}\, .
     \end{align*}
-    but if we index the qubit states by the corresponding qubit \emph{number},
+    If we index the qubit states by the corresponding qubit \emph{number},
     this may be expressed much more concisely as:
     \[
       \ket{0}_i \ket{0}_j \longrightarrow \ket{\psi}_i \ket{\varphi}_j\, ,
@@ -420,17 +416,26 @@
     where by convention the state of any qubit not listed is
     unchanged by the operation.\footnote{
       If qubit $i$ and/or $j$ started out entangled with any other
-      qubits, this operation would not be well-defined as written. Given that
-      there in many cases we care about, we do not know whether any given
+      qubits, this notation would not be well-defined.
+      Given that there in many cases we care about, we do not know whether any given
       qubit is entangled with any others, this is a real weakness of the Dirac
       notation. We will tackle this issue head-on 
+      when we introduce our quantum-register pseudocode
       \iffutureversion
-        when we introduce our quantum pseudocode
         in \cref{sec:pseudocode}.
       \else
-        when we introduce our quantum pseudocode (to appear).
+        in a future chapter.
       \fi
     }
+
+    Given a collection of $n$ qubits $(\qubit_i)_{i\in [n]}$, we will also find it
+      useful to divide them into \emph{registers}, for example to separate
+      distincts elements of an operation. Qubit registers are simply lists of
+      qubits, so a register $\register$ may for example contain the three qubits 
+      $\qubit_1, \qubit_2, \qubit_3$, in which case
+      $\register = (\qubit_1, \qubit_2, \qubit_3)$.
+      As above, if $\ket{\varphi}$ describes the quantum state of this
+      three-qubit register $\register$, we may specify this by writing $\ket{\psi}_{\register}$.
 
   \subsection{Unitary Operations}\label{sec:unitaries}
     \hhnote{ cont }
