@@ -1,25 +1,32 @@
 \section{Example 1: From One-wayness to Hiding with the $\U$-transform}\label{sec:utransform}
-  The Fujisaki-Okamoto transformation~\cite{C:FujOka99} is a recipe for
-    constructing a strongly-secure key-encapsulation mechanism from a
-    weakly-secure public-key encryption scheme. It is used as part of many
-    post-quantum KEMs, including the now-standardized ML-KEM (Kyber)~\cite{FIPS203}. 
+  
+  We will now meet the Fujisaki--Okamoto (FO) transformation~\cite{C:FujOka99},
+  	a PKE-to-KEM recipe that became quite popular in the post-quantum-context --
+  	It is used as part of many post-quantum KEMs,
+  	including the now-standardized ML-KEM (Kyber)~\cite{FIPS203}. 
+  
+  We first focus on the part of FO that turns a deterministic PKE scheme into a KEM.
+	  Following the literature~\cite{TCC:HofHovKil17}, this part of FO will be called the \U-transform.
+	  %, as defined by Hofheinz et al. (hereafter HHK).
+	  To have a simple ROM example, we will -- for now -- only prove that the obtained KEM
+	  achieves key indistinguishability against \emph{passive} adversaries.
+	  This proof will already teach us several useful tricks you can play in the ROM.
+	  These tricks foreshadow and motivate the QROM tools that will be introduced in~\cref{sec:o2h}
+	  \todo{\cref{sec:o2h} vs \cref{sec:C-O2H}}.
 
-  The transformation can be seen as a composition of two sub-transformations, 
-    which are referred to in the literature as the \T- and
-    \U-transformations.~\cite{TCC:HofHovKil17}.
-    %, as defined by Hofheinz et al. (hereafter HHK). 
-    Given a probabilistic PKE scheme, the first transformation
-    (\T) de-randomizes it by first deriving the random coins by hashing
-    the message (and possibly the public key), then running the encryption
-    algorithm using those coins; then, after decrypting, it re-derives the
-    random coins and re-encrypts the message to verify that resulting
-    ciphertext matches the input. (For more details on the \T-transform, see
-    App.~\ref{sec:ttransform}.)
+  At a later point\todo{add pointer to where},
+    we will also prove key indistinguishability against \emph{active} adversaries.
+    There also exists a second part of FO that turns probabilistic PKE schemes
+    into ones that fit the \U-transform's requirements.
+    (This part is called the \T-transform, in case you're curios, see App.~\ref{sec:ttransform}.)
+%    (\T) de-randomizes it by first deriving the random coins by hashing
+%    the message (and possibly the public key), then running the encryption
+%    algorithm using those coins; then, after decrypting, it re-derives the
+%    random coins and re-encrypts the message to verify that resulting
+%    ciphertext matches the input. 
 
-  The second transformation (\U) then 
-    builds a KEM from a deterministic PKE like the above by sampling a random
-    message, encrypting it, and hashing it 
-    (possibly together with the public key and ciphertext) to derive a
+  In short, the \U-transformation builds a KEM from a PKE scheme by sampling a random message,
+    encrypting it, and hashing it (possibly together with the public key and ciphertext) to derive a
     symmetric key $\eK$. This is the transformation that will serve as our
     running example.\footnote{
       When Hofheinz et al.~\cite{TCC:HofHovKil17} first defined
