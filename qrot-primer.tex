@@ -246,7 +246,7 @@
   \subsection{General Qubit States}
     \subsubsection{Greek vs.\ Roman Letters.}
       To distinguish computational basis states from more general quantum states, we will use
-        greek letters like $x$, $y$, $z$ to represent classical binary
+        roman letters like $x$, $y$, $z$ to represent classical binary
         strings. Thus, a state $\ket{x}$ will always be understood to be a
         computational basis state. Whenever we are talking specifically about single-qubit
         computational basis states, we will use $b$ to represent a single bit, 
@@ -256,55 +256,79 @@
         letters taken from the middle of the greek alphabet, such as $\psi$,
         $\varphi$, $\xi$, etc.  We will follow this tradition, or otherwise use a
         more descriptive label specific to the current context.
-        Quantum \emph{amplitudes}, meanwhile, are traditionally written with letters 
-        taken from the start of the greek alphabet, such as $\alpha$ or $\beta$.
+        Quantum \emph{amplitudes}, meanwhile, are traditionally represented with letters 
+        from the start of the greek alphabet, such as $\alpha$ or $\beta$, and
+        the amplitude corresponding to a basis state $\ket x$ will typically be written
+        $\alpha_x$.
 
-    \subsubsection{Expanding a State in Terms of the Basis.} 
+    \subsubsection{Expanding a State in Terms of a Basis.} 
       A general single-qubit state may be written in terms of the computational
         basis states as follows:
 
       \[
         \ket{\psi} = \alpha_0 \ket{0} + \alpha_1 \ket{1}\, ,
       \]
-      where the amplitudes $\alpha_i$ are complex numbers satisfying
-        $\abs{\alpha_0}^2 + \abs{\alpha_1}^2 = 1$. (Recall that the absolute value of
-        a complex number $\alpha$ is defined to be $\abs{\alpha} = \sqrt{\alpha^*
-        \alpha}$.)
+      where the amplitudes $\alpha_b$ are complex numbers satisfying
+      \[
+        \abs{\alpha_0}^2 + \abs{\alpha_1}^2 
+          \coloneqq \alpha_0^*\alpha_0 + \alpha_1^*\alpha_1 = 1\, . 
+      \]
 
-      Whenever a qubit is in a state
-        described by amplitudes $\alpha_0$ and $\alpha_1$ that are both non-zero, we
+      Whenever both $\alpha_0$ and $\alpha_1$ that are both non-zero, we
         say that the qubit is in a \emph{superposition} over the values ``$0$'' and
         ``$1$''. If we then \emph{measure} the qubit, the probability that the
-        random variable  $X$ corresponding to the observed value is either
-        $0$ or $1$ is then given by $\prob{X=b} = \abs{\alpha_b}^2 =
-        \abs{\braket{\psi |b}}^2$, and after we have observed this value,
-        the superposition state will have ``collapsed'' to the basis state
-        $\ket b$ corresponding to the observed value. This is similar to how Bayes'
-        theorem is used in hypothesis testing to update a classical probability
-        distribution after a new observation.\footnote{
-          Nonetheless, the observed quantum state is discernibly \emph{different} than
-          it was before the observation took place. The observable effect observations
-          have on quantum states (which has no classical analogue) has led to a
-          century of heated philosophical debate over how quantum theory should be
-          interpreted: the term ``collapse'' used above is typically associated with the
-          conservative ``Copenhagen interpretation'', championed by Niels Bohr, and commonly
-          characterized as taking a ``shut-up-and-calculate'' attitude towards the problem.
-          Another popular interpretation is the many-worlds interpretation due to Hugh Everett,
-          and favoured by father of quantum computing theory David Deutsch, among others. Instead
-          of the quantum state ``collapsing'' to become ``classical'',
-          this interpretation says that both of these terms are ill-defined, and that
-          the universe should instead be understood to be nothing but one big
-          superposition state over all worlds that might have arisen from
-          the initial conditions preceding the Big Bang; and furthermore, that
-          what \emph{actually} happened
-          when you made your observation, was that the quantum state describing the subsystem you
-          were studying, and the quantum state describing the subsystem
-          containing \emph{you}, became correlated via the process known as \emph{entanglement}.
-          (In case you're wondering, Hans places his bet on a third option,
-          namely the \emph{relational} interpretation due to Carlo Rovelli,
-          which may be summarized as ``many-worlds without the many worlds''.)
+        we observe either $0$ or $1$ is given by squaring the respective amplitude: 
+      \[
+        \prob{\, \text{observe outcome } b\, } = \abs{\alpha_b}^2 
+          = \alpha_b^* \alpha_b = \abs{\braket{\psi |b}}^2\, .
+      \]
+      After we have observed the outcome, 
+        the superposition state ``collapses'' to the corresponding basis state
+        $\ket b$, so that the updated physical system is guaranteed to be consistent with
+        the value we observed. At one level, this is just the quantum version of
+        how Bayes' theorem is used in hypothesis testing
+        to update a prior probability distribution to the marginal distribution
+        conditioned on the observed value; at another level, it is the
+        deepest and strangest mystery in all of quantum physics.\footnote{
+          Unlike the classical case, 
+          post-observation quantum state is noticeably \emph{different} than
+          it was before the observation took place. This single fact
+          has led to a century of heated philosophical debate over how quantum
+          theory should be interpreted, and if you ask five physicists you are
+          likely to get five different answers. The term ``collapse'' that we
+          used above is typically associated with the rather conservative
+          ``Copenhagen interpretation'', championed by Niels Bohr, and commonly
+          characterized as the ``shut-up-and-calculate'' interpretation, since
+          rather than trying to explain the problem, it simply posits that 
+          ``such questions are disallowed''.
+          Another popular interpretation is the many-worlds interpretation due
+          to Hugh Everett, and favoured by father of quantum computing theory
+          David Deutsch, among others. Instead of the quantum state
+          ``collapsing'' to a ``classical'' state, this interpretation says that
+          both terms are ill-defined, and that the universe should instead be
+          understood to be nothing but one big quantum superposition over all
+          the worlds that could have possibly arisen from
+          the initial conditions of the universe; from this point of view, when
+          you made your observation, what \emph{actually} happened
+          was that the quantum state describing the subsystem you
+          were studying and the quantum state describing \emph{you} (after all,
+          you \emph{are} made of quantum particles, are you not?), became
+          completely \emph{entangled}, so that the part of the superposition
+          in which the qubit takes the value $0$ is guaranteed to coincide with
+          the part of the superposition in which you observed the outcome $0$.
+          The world in which the qubit took the value $1$ and you also observed
+          the value $1$ is still ``out there'' in the grand superposition of
+          the universe, it's just been completely cut off from your subjective
+          experience, so from your point of view it might as well not exist.
+          (For more on the various interpretations of quantum mechanics, the
+          popular-science book \emph{Helgoland} by Carlo Rovelli provides an
+          excellent overview, and even proposes a fascinating resolution.)
+          %(In case you're wondering, Hans places his bet on a third option,
+          %namely the \emph{relational} interpretation due to Carlo Rovelli,
+          %which may be summarized as ``many-worlds without the many worlds''.)
         }
 
+        \hhnote{ cont }
       Likewise, a general, $n$-qubit quantum state may be written in terms of the computational
         basis states:
 
