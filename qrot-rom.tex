@@ -1,11 +1,10 @@
-\section{The Random Oracle Model}\label{sec:rom}
-  This chapter introduces the concept of the random oracle. Then, we
-    introduce the \U-transform, which is the second half of the Fujisaki--Okamoto
-    transformation, and, as a first application of the random oracle model,
-    prove that if we have a deterministic PKE scheme
-    that achieves one-way security, taking it through the \U-transform gives us
-    a KEM that achieves indistinguishability. This proof will teach us several useful
-    tricks, foreshadowing the QROM tools that will be introduced in \cref{sec:o2h}.
+\section{The Random Oracle Model (ROM)}\label{sec:rom}
+  This chapter introduces the concept of the ROM,
+  	by first explaining how the ROM models hash functions as random functions
+  	that are only available in oracle form.
+  	In the next chapter, we will then encounter a first application of the ROM:
+  	we will meet the Fujisaki--Okamoto (FO) transformation,
+  	a PKE-to-KEM recipe that became quite popular in the post-quantum-context.
 
   \subsection{Modelling Hash Functions as Random}
     As explained in \cref{sec:basics:primitives}, a hash function is 
