@@ -580,8 +580,8 @@
       logic, this ``check'' happens coherently, i.e.\ inside of the superposition --
       no need to measure the state and check.
 
-    In fact, any operation $\unitary$ implies a controlled version $\unitary[CU]$ of the same
-      operation:
+    In fact, any operation $\unitary$ acting on $n$ qubits implies a controlled version $\unitary[CU]$ of the same
+      operation acting on $n+1$ qubits. If the first qubit acts like a control for the rest, this will have the shape:
     \[
       \unitary[CU] = 
       \begin{sqmatrix} 
@@ -589,6 +589,12 @@
         0 & \unitary 
       \end{sqmatrix}\, .
     \]
+
+    \begin{exercise}\label{ex:truthtable}
+      Write down a matrix for the $\unitary[CCX]$ gate, known as the
+      Toffoli gate. Which classically-irreversible logic gate does this gate
+      reversibly implement?
+    \end{exercise}
 
     \begin{exercise}
       Starting with the two-qubit state $\ket{\psi} = \ket{\qubit_1 \qubit_2} = \ket{0}_1\ket{0}_2$, apply
@@ -713,7 +719,6 @@
     \end{exercise}
 
   \subsection{The Hadamard Basis}
-
     As mentioned, there is a continuous infinity orthonormal bases to choose
       between (\ldots)
     \begin{exercise}\label{ex:HadamardBasis}
@@ -733,6 +738,16 @@
       $\CXgate$ has on the computational basis. What should we call this
       unitary, following the conventions introduced so far?
     \end{exercise}
+
+  \subsection{Phase Gates and the Universal Quantum Turing Machine}
+    Good to know:
+    \[
+      \Zgate\, ,\ \unitary[S] \coloneqq \sqrt{\Zgate}\, ,\ \unitary[T] \coloneqq
+      \sqrt{\unitary[S]} = \Zgate^\frac{1}{4}\, .
+    \]
+    As it turns out, we don't get universality before we include $\unitary[T]$.
+    Without it, we get the Clifford gates, which it turns out is even efficiently
+    simulatable on a classical computer!
 
   \subsection{Measurements}
     But before we present our quantum pseudocode in
@@ -1091,8 +1106,7 @@
       philosophy alike, but which mathematically speaking is nothing but the quantum
       generalization of correlated probabilities.\footnote{
         In other words, the term ``separable'' here carries exactly the same
-        meaning as the term ``product'' does when talking about classical
-        probability distributions.
+        meaning as the term ``product'' does when talking about probability distributions.
         More precisely, if an arbitrary quantum state is \emph{separable} along
         some dividing line, such that $\ket{\psi} = \ket{\varphi} \otimes
         \ket{\xi}$, then the probability distribution over the possible
