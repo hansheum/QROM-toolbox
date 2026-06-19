@@ -96,6 +96,64 @@
       and $\CC^{2^n}$. 
 
     This is the approach adopted by the quantum information sciences.
+    \begin{table}%[b]
+      \centering
+      %
+      \caption{
+        \label{tab:notation}
+        An overview of our notational conventions for quantum objects. 
+        Bold sans-serif denotes physical objects such as qubits and qubit
+        registers, to distinguish them from the math italics of mathematical objects.
+      }
+      %
+      \rowcolors{2}{}{gray!10} % zebra striping
+      \begin{tabular}{cccc}
+        \toprule
+        Object & Convention & Example & Definition \\
+        \midrule
+        Bitstring & Lowercase roman, start of alph. & $x$ & $\in\bin^n$ \\
+        Qubit count & Lowercase roman, middle of alph. & $n$ & $\in\NN$ \\
+        Hilbert space dimension & Uppercase roman, middle of alph. & $N$ & $\in\NN$ \\
+        Quantum amplitude & Lowercase greek, start of alph. & $\alpha$ & $\in\CC$ \\
+        State label & Lowercase greek, middle of alph. & $\psi$ & (any symbol is permissible) \\
+        Conjugate transpose & Dagger & $A^\dagger$ & $= (A^*)^T$ \\
+        \midrule
+        %Pure quantum state & Dirac ket with label & $\ket{\ \cdot\ }$ & $\in \CC^{M}$ \\
+        Computational basis state & ``Ket'' with bitstring label & $\ket{x}$ & 
+        $= [0\ \ldots\ 0\ 1\ 0\ \ldots\ 0]^T$ \\
+        &&& single-unit column vector $\in\CC^{N}$\\
+        General quantum state & ``Ket'' with state label & $\ket{\psi}$ & 
+        $= \sum_x \alpha_x \ket x$ s.th.\ $\sum_x \alpha^*_x \alpha_x = 1$ \\
+        &&& unit-norm column vector $\in \CC^N$ \\
+        %Evolving state & Ket with time-step label & $\ket{\psi(t)}$ & $t \in \NN$ \\
+        Conjugate quantum state & ``Bra'' with state label & $\bra{\psi}$ & 
+        $\coloneqq \ket{\psi}^\dagger$ \\
+        &&& unit-norm row vector $\in \CC^N$  \\
+        Inner product & ``Bra-ket'' & $\braket{\psi|\varphi}$ & $\in \CC$, $\abs{\braket{\psi|\varphi}} \leq 1$ \\
+        &&& 
+          $\braket{x|y} = \delta_{xy} \to \braket{\psi|\varphi} = \sum_x \alpha_x^* \beta_x$ \\
+        \midrule
+        Unitary transformation & Uppercase roman, late alphabet & $\unitary$ & $\in \CC^{N \times N}$ s.th.\ $U^\dagger U = 1$ \\
+        Orthogonal projector & Uppercase roman, middle-late alph. & $\projector$ & $\in \CC^{N \times N}$ s.th.\ $P^2 = P = P^\dagger$ \\
+        \midrule
+        Qubit & Lowercase roman, bold sans-serif & $\qubit$ & Two-level physical system \\
+        %Single-qubit register & Register $\bitReg$ & $\bitReg$ & List of one qubit \\ 
+        %Global quantum system & Register $\qcomp$ & $\qcomp$ & List of all qubits \\ 
+        %\midrule
+        Qubit state & State with index subscript & $\ket{\psi}_i$ & $\coloneqq \ket{\qubit_i} \in \CC^2$ \\
+        Register & Uppercase roman, bold sans-serif & $\register$ & List of qubits \\
+        Register state & State with register subscript & $\ket{\psi}_{\register}$ &
+        $\coloneqq \ket{\register} \in \CC^{2^n}$ for $n$ qubits \\
+        % Unitary/measurement operators & Roman (uc., sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M}$ \\
+        % Apply unitary to register & $\pcalgostyle{Apply}$(unitary : register)
+        % & $\applyU{U}{\register}$ & \cref{def:apply} \\ 
+        % %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \cref{def:}) \\ 
+        % Measure register & $\pcalgostyle{Meas}$(projector : register) & $x
+        % \sample \meas{\measurement}{\register}$ & \cref{def:measure} \\ 
+        % \bottomrule
+      \end{tabular}
+    \end{table}
+
 
   \subsection{Qubit Basis States}
     \subsubsection{Single-Qubit Basis States.}
@@ -446,10 +504,11 @@
       }
 
   \subsection{Unitary Operations}\label{sec:unitaries}
-    \hhnote{ cont }
     Since we are working over finite-dimensional Hilbert spaces, 
-      operations that evolve quantum states may be represented as 
+      operations that evolve our quantum state vectors may be represented as 
       $N \times N$-dimensional matrices. What properties should they have?
+
+    \hhnote{cont}
     
     Clearly, any operation that we perform on a quantum state (other than
       observing them---we'll get to that) should yield another valid quantum state

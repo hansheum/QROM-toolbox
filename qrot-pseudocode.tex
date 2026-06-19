@@ -45,51 +45,6 @@
     }
   \end{figure}
 
-    \begin{table}%[b]
-      \centering
-      %
-      \caption{
-        \label{tab:notation}
-        An overview of our notational conventions for quantum objects. 
-        %In our notation, boldface indicates ``quantumness''.
-      }
-      %
-      \rowcolors{2}{}{gray!10}
-      \begin{tabular}{cccc}
-        \toprule
-        Object & Convention & Examples & Membership/definition \\
-        \midrule
-        Bitstring & Lowercase roman (start of alph.) & $x,y$ & $\bin^n$ \\
-        Qubit count & Lowercase roman (middle of alph.) & $n,m$ & $\NN$ \\
-        Dimensonality & Uppercase roman (middle of alph.) & $N,M$ & $2^n, 2^m$ \\
-        Amplitude & Lowercase greek (start of alph.) & $\alpha,\beta$ & $\CC$ \\
-        State label & Lowercase greek (middle of alph.) & $\psi,\varphi$ & $\{\text{labels}\}$ \\
-        \midrule
-        %Pure quantum state & Dirac ket with label & $\ket{\ \cdot\ }$ & $\in \CC^{M}$ \\
-        Computational-basis state & Ket with bitstring label & $\ket{x}$ & $\CC^{N}$ \\
-        General state & Ket with state label & $\ket{\psi}$ & $\CC^N$ \\
-        Evolving state & Ket with time-step label & $\ket{\psi(t)}$ & $t \in \NN$ \\
-        \midrule
-        Qubit & Lowercase $\qubit$ (bold sans serif) & $\qubit$ & 2D physical system \\
-        Qubit register & Uppercase roman (bold sans serif) & $\register, \inReg, \outReg$ & List of qubits \\
-        Single-qubit register & Register $\bitReg$ & $\bitReg$ & List of one qubit \\ 
-        Global quantum system & Register $\qcomp$ & $\qcomp$ & List of all qubits \\ 
-        \midrule
-        Qubit pure state & Qubit label/index subscript & $\ket{\qubit}, \ket{\psi}_i$ & $\CC^2$ \\
-        Register pure state & Register label/subscript & $\ket{\register}, \ket{\psi}_{\register}$ & $\CC^N$ \\
-        \midrule
-        %Unitary transformation & Uppercase roman (sans serif) & $\unitary$ & $\in \CC^{M \times M},\ m \leq n$ \\
-        %Projector & Uppercase roman (sans serif) & $\projector$ & $\in \CC^{M \times M},\ m \leq n$ \\
-        % Unitary/measurement operators & Roman (uc., sans serif) & $\unitary, \projector, \measurement$ & $\in \CC^{M \times M}$ \\
-        % Apply unitary to register & $\pcalgostyle{Apply}$(unitary : register)
-        % & $\applyU{U}{\register}$ & \cref{def:apply} \\ 
-        % %Transfer (sub)register & Arrow with register & $\register[A] \apply{\register[R]} \register[B]$ & Communication (see \cref{def:}) \\ 
-        % Measure register & $\pcalgostyle{Meas}$(projector : register) & $x
-        % \sample \meas{\measurement}{\register}$ & \cref{def:measure} \\ 
-        % \bottomrule
-      \end{tabular}
-    \end{table}
-
     \begin{table}[h]
       \centering
       %
