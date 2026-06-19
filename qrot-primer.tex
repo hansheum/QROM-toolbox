@@ -435,7 +435,15 @@
       $\qubit_1, \qubit_2, \qubit_3$, in which case
       $\register = (\qubit_1, \qubit_2, \qubit_3)$.
       As above, if $\ket{\varphi}$ describes the quantum state of this
-      three-qubit register $\register$, we may specify this by writing $\ket{\psi}_{\register}$.
+      three-qubit register $\register$, we may specify this by writing
+      $\ket{\psi}_{\register}$.\footnote{
+        And what space do the qubits $\qubit_i$ live in? Well, this
+        is where our mathematical rigor bottoms out, and all we can say is
+        that
+        $
+          \qubit_i \in \{ \text{physical system that admits a two-level quantum-mechanical description} \}
+        $.
+      }
 
   \subsection{Unitary Operations}\label{sec:unitaries}
     \hhnote{ cont }
@@ -477,10 +485,10 @@
 
     Some common, elementary unitary transformations, known as quantum \emph{gates}, include
       \[
-        \Xgate = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}\, , \quad
-        \Zgate = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, , \quad
-        \Hgate = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}\, , \quad
-        \CXgate = \begin{bmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{bmatrix}\, ,
+        \Xgate = \begin{sqmatrix} 0 & 1 \\ 1 & 0 \end{sqmatrix}\, , \quad
+        \Zgate = \begin{sqmatrix} 1 & 0 \\ 0 & -1 \end{sqmatrix}\, , \quad
+        \Hgate = \frac{1}{\sqrt{2}} \begin{sqmatrix} 1 & 1 \\ 1 & -1 \end{sqmatrix}\, , \quad
+        \CXgate = \begin{sqmatrix} 1 & 0 & 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{sqmatrix}\, ,
       \]
     where the matrices shown are the computational-basis representations of the general
       unitary transformations.

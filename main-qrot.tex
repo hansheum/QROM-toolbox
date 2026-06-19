@@ -66,6 +66,20 @@
 \usepackage{bbm} % for thick 1. wait, isn't there already a package in cryptocodeh for this?
 \usepackage{dashbox} 
 
+%% For mono-width matrices
+  \usepackage{nicematrix}
+  %% grid matrix; scales all column widths to fit the widest 
+  \NewDocumentEnvironment{gmatrix}{O{auto}} % default = auto, or pass a fixed width
+    {\begin{bNiceMatrix}[columns-width=#1]}
+    {\end{bNiceMatrix}}
+  %% For square matrices to actually render as square
+  \newlength{\sqw}
+  \NewDocumentEnvironment{sqmatrix}{O{1}}{%
+    \setlength{\sqw}{#1\baselineskip}%   cell width = (multiple of) row height
+    \setlength{\arraycolsep}{0pt}%        kill the inter-column gap
+    \begin{bNiceMatrix}[columns-width=\sqw]%
+  }{\end{bNiceMatrix}}
+
 \ifeprintfull
   \ifdraftversion
     %\usepackage[reset,a4paper]{geometry}
