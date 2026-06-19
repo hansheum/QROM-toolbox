@@ -652,96 +652,100 @@
       off'' the matrix.}
     \end{exercise}
 
-    %\subsubsection{Transformations Across Space and Time.}
     \subsubsection{Transformations Across Space and Time.}
-      \hhnote{cont}
-      You may have noticed that we are working with two different kinds of
-        product when dealing with unitary matrices: the matrix product
-        $\unitary_1 \unitary_2$, and the tensor product $\unitary_1 \otimes
-        \unitary_2$. When should each kind be used?
+      You may have noticed that we have been dealing with two different kinds of
+        product for unitary matrices: the usual matrix product
+        $\unitary \unitary[V]$, and the tensor product 
+        $\unitary \otimes \unitary[V]$. What does each kind of product represent?
 
       To illustrate, let $\ket{\psi}$ and $\ket{\varphi}$ be two single-qubit
-        states, combined in the two-qubit state $\ket{\psi, \varphi} \coloneqq
-        \ket{\psi} \otimes \ket{\varphi}$. Then, if $\unitary_1$ and
-        $\unitary_2$ are single-qubit transformations (i.e.\ $2 \times 2$ unitary
-        matrices), and you want to apply $\unitary_1$ to $\ket{\psi}$ and
-        $\unitary_2$ to $\ket{\varphi}$, you might write
-
+        states, combined in the two-qubit state $\ket{\psi, \varphi}$.
+        Then, if $\unitary$ and $\unitary[V]$ are single-qubit operations,
+        so represented by $2 \times 2$ unitary matrices, 
+        and you want to apply $\unitary$ to $\ket{\psi}$ and
+        $\unitary[V]$ to $\ket{\varphi}$, this would be equivalent to the
+        operation
       \[
-        (\unitary_1 \otimes \unitary_2) (\ket{\psi} \otimes \ket{\varphi})
-        \coloneqq \unitary_{1,2} \ket{\psi, \varphi}\, . 
+        (\unitary \otimes \unitary[V])(\ket{\psi} \otimes \ket{\varphi})
+          = (\unitary \otimes \unitary[V]) \ket{\psi, \varphi}\, .
       \]
-
-      \noindent
-      The matrix $\unitary_{1,2} \coloneqq \unitary_1 \otimes \unitary_2$ will be a two-qubit
-        transformation, i.e.\ a $4 \times 4$ unitary that combine the effect
-        of the two single-qubit transformations to apply them in parallel
+      The unitary matrix formed by the tensor product 
+        $\unitary \otimes \unitary[V]$
+        will be a $4 \times 4$ unitary, 
+        a two-qubit operation that combine the effects
+        of both single-qubit unitaries in parallel,
         (that is, in the same time step).
 
-      Next, imagine instead that you have two two-qubit unitaries ($4 \times 4$
-        matrices) $\unitary_1$ and $\unitary_2$, and you want to apply
-        $\unitary_1$ first, and then $\unitary_2$. In other words, you want
+      Following the register-subscript convention introduced earlier, if we wanted to
+        apply $\unitary$ only to the first qubit, we would like to be able to write 
+      \[
+        \unitary_1 \ket{\psi, \varphi} = \unitary_1 \ket{\psi}_1 \ket{\varphi}_2\, ,
+      \]
+      which we may now define as
+      \[
+        \unitary_1 (\ket{\psi} \otimes \ket{\varphi})
+        \coloneqq (\unitary \otimes \idmatrix)(\ket{\psi} \otimes
+        \ket{\varphi})\, ,
+      \]
+      and likewise if we want to only apply $\unitary[V]$ to the second qubit:
+      \[
+        \unitary[V]_2 \ket{\psi, \varphi}
+        \coloneqq (\idmatrix \otimes \unitary[V])(\ket{\psi} \otimes \ket{\varphi})\, .
+      \]
+      In this sense, the tensor product represents combinations of operations
+        happening at the same moment in time, but across different points in the
+        \emph{space} of qubit registers.
+
+      Now, imagine that you instead have two two-qubit operations,
+        represented by the $4 \times 4$ unitaries $\unitary$ and $\unitary[V]$, and that you
+        want to first apply $\unitary$ on both qubits, and then $\unitary[V]$. In other words, you want
         something to the effect of
-        
       \[
-        \ket{\psi(0), \varphi(0)} \apply{\unitary_1} \ket{\psi(1), \varphi(1)}
-          \apply{\unitary_2} \ket{\psi(2), \varphi(2)}\, ,
+        \ket{\psi, \varphi} \apply{\unitary} \ket{\psi^\prime, \varphi^\prime}
+          \apply{\unitary[V]} \ket{\psi^{\prime\prime}, \varphi^{\prime\prime}}\, .
       \]
-
-      \noindent
-      where $\ket{\psi(t)}$ denotes the evolved state at time step $t$, and
-        $\ket\psi \coloneqq \ket{\psi(0)}$. This is then given by
-
+      This is given by
       \[
-        \unitary_2 \unitary_1 \ket{\psi(0), \varphi(0)}
-        = \unitary_2 (\unitary_1 \ket{\psi(0), \varphi(0)})
-        = \unitary_2 \ket{\psi(1), \varphi(1)}
-        = \ket{\psi(2), \varphi(2)}\, .
+        \unitary[V] \unitary \ket{\psi, \varphi}
+        = \unitary[V] (\unitary \ket{\psi, \varphi})
+        = \unitary[V] \ket{\psi^\prime, \varphi^\prime}
+        = \ket{\psi^{\prime\prime}, \varphi^{\prime\prime}}\, .
       \]
+      Hence, the matrix product represents operations happening in different
+        moments in time, in this case across two time steps, with the right
+        unitary applied first and the left one thereafter. Note the reverse time-ordering!
 
-      \noindent
-      Note the reversed ordering!
-
-      As before, we could define a unitary $\unitary_{1,2} \coloneqq \unitary_1 \unitary_2$. 
-        Thus, even though we want to say that the application of $\unitary_1$ and $\unitary_2$
-        happens in two time steps, we see that the time of application can be ``collapsed'' to a
-        single time-step! This is why, in order for complexity analyses that count
-        the number of time steps spent by a quantum
-        algorithms to be meaningful, we first have to agree on some Turing-universal set of
-        elementary quantum gates that can be said to require one time-step
-        each to apply, and require that all other unitaries are constructed from
-        that gate set, in series and/or in parallel.
-
-      To summarize, the tensor product is used when applying unitaries in
+      In summary, the tensor product is used when applying unitaries in
         \emph{parallel}, while the matrix product is used when applying unitaries in
         \emph{series}.
 
-    \begin{exercise}
-      Construct the $\SWAPgate$ gate from a series of $\CXgate$ gates.
-    \end{exercise}
+      % too hard?
+      %\begin{exercise}
+      %  Construct the $\SWAPgate$ gate from a series of $\CXgate$ gates.
+      %\end{exercise}
 
-  \subsection{The Hadamard Basis}
-    As mentioned, there is a continuous infinity orthonormal bases to choose
-      between (\ldots)
-    \begin{exercise}\label{ex:HadamardBasis}
-      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
-      terms of the alternative ``Hadamard'' basis 
-      \[
-        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
-        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
-      \]
-      Compare with the truth table from \cref{ex:truthtable}. What has changed?
-    \end{exercise}
+  \subsection{Elementary Gates and the Universal Quantum Turing Machine}
+    Above, we argued that the matrix product represents operations happening at
+      different time steps. But is ``time step'' even a meaningful unit here? 
+      After all, with $\unitary$ and $\unitary[V]$ being arbitrary unitary
+      matrices, we could always define a new unitary $\unitary[W] = \unitary[V]
+      \unitary$, and say that \emph{this} is the operation that was applied,
+      now seemingly in unit time!
 
-    \begin{exercise}
-      Give the computational-basis matrix representation of the unitary
-      that has the same effect on the
-      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
-      $\CXgate$ has on the computational basis. What should we call this
-      unitary, following the conventions introduced so far?
-    \end{exercise}
+    This is why, in order for our analyses of algorithmic complexity to be
+      meaningful, we first have to agree on a set of
+      \emph{elementary gates}, which we then say require one time-step
+      each to apply, and require that all other quantum operations can be constructed 
+      by applying those gates in series and parallel, implicitly building
+      the final unitary from tensor and matrix products of the elementary unitaries.
+      In other words, we need a gate set that is \emph{universal}.
 
-  \subsection{Phase Gates and the Universal Quantum Turing Machine}
+    \hhnote{Clifford gates: CCX, S, H; make it universal by adding T (not to be
+    confused with Toffoli)}
+    \hhnote{Clifford gates classically simulatable, so the presence of T gates seems
+    to somehow represent the ``power'' of quantum algorithms. This ``T-ness'' is
+    known as magic. (No, seriously.)}
+
     Good to know:
     \[
       \Zgate\, ,\ \unitary[S] \coloneqq \sqrt{\Zgate}\, ,\ \unitary[T] \coloneqq
@@ -1079,6 +1083,27 @@
           when used as a measurement operator by identifying its
           eigenstates and eigenvalues.
         \end{exercise}
+
+  \subsection{The Hadamard Basis}
+    As mentioned, there is a continuous infinity orthonormal bases to choose
+      between (\ldots)
+    \begin{exercise}\label{ex:HadamardBasis}
+      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
+      terms of the alternative ``Hadamard'' basis 
+      \[
+        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
+        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
+      \]
+      Compare with the truth table from \cref{ex:truthtable}. What has changed?
+    \end{exercise}
+
+    \begin{exercise}
+      Give the computational-basis matrix representation of the unitary
+      that has the same effect on the
+      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
+      $\CXgate$ has on the computational basis. What should we call this
+      unitary, following the conventions introduced so far?
+    \end{exercise}
 
   \subsection{Quantum Entities and Hidden Entanglement}
     Until now we have defined notation for computational basis states
