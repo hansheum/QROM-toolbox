@@ -608,7 +608,7 @@
     \end{exercise}
 
     Another two-qubit unitary that will turn out to be useful is the $\SWAPgate$
-      gate, which acts on the computational basis states like 
+      gate, which acts on the computational-basis qubit states like 
     \[
       \ket{b_1 b_2} \apply{\SWAPgate} \ket{b_2 b_1}\, .
     \]
@@ -757,12 +757,19 @@
     simulatable on a classical computer!
 
   \subsection{Measurements}
-    But before we present our quantum pseudocode in
-      \cref{subsec:pseudocode}, we have
+    But after all this, we would like to read out something, no?
       to talk about measurements. We mentioned earlier that measurements
       constitute an exception to the rule that any operation performed on a
-      quantum state must be unitary. But if observing a quantum state is not a
-      unitary operation, then what \emph{is} it?
+      quantum state must be unitary. 
+
+    \hhnote{
+      Give the two-sentence run-down: The probability, and the post-measurement
+      state.
+    }
+      That is really all you need to know. But if you'd like to peek at the
+      machinery that places measurements on formal ground, read on --
+      for if observing a quantum state is not a
+      unitary operation, then what kind of operation \emph{is} it?
      
     \subsubsection{Projectors.} 
       The answer may be gleaned from the fact, stated earlier, that \emph{upon
@@ -1085,26 +1092,34 @@
           eigenstates and eigenvalues.
         \end{exercise}
 
-  \subsection{The Hadamard Basis}
-    As mentioned, there is a continuous infinity orthonormal bases to choose
-      between (\ldots)
-    \begin{exercise}\label{ex:HadamardBasis}
-      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
-      terms of the alternative ``Hadamard'' basis 
-      \[
-        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
-        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
-      \]
-      Compare with the truth table from \cref{ex:truthtable}. What has changed?
-    \end{exercise}
+  \iffutureversion
+    \subsection{The Hadamard Basis}
+      As mentioned, there is a continuous infinity orthonormal bases to choose
+        between (\ldots)
 
-    \begin{exercise}
-      Give the computational-basis matrix representation of the unitary
-      that has the same effect on the
-      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
-      $\CXgate$ has on the computational basis. What should we call this
-      unitary, following the conventions introduced so far?
-    \end{exercise}
+      \begin{exercise}\label{ex:HadamardBasis}
+        Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
+        terms of the alternative ``Hadamard'' basis 
+        \[
+          \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
+          \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
+        \]
+        Compare with the truth table from \cref{ex:truthtable}. What has changed?
+      \end{exercise}
+
+      \begin{exercise}
+        Give the computational-basis matrix representation of the unitary
+        that has the same effect on the
+        Hadamard basis states (given in \cref{ex:HadamardBasis}) as
+        $\CXgate$ has on the computational basis. What should we call this
+        unitary, following the conventions introduced so far?
+      \end{exercise}
+
+      \hhnote{
+        Introduce the Hadamard number system $\hat{0} = +, \hat{1} = -, \hat{2} =
+        +-, \ldots$
+      }
+  \fi
 
   \subsection{Quantum Entities and Hidden Entanglement}
     Until now we have defined notation for computational basis states
