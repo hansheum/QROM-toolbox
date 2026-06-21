@@ -730,50 +730,34 @@
         unitary applied first and the left one thereafter. 
 
       Note the reverse time-ordering! Given that most matrices don't commute,
-        the order clearly matters, and the above operational interpretation
+        this order clearly matters, and the above operational interpretation
         tells us why: Two unitaries commute if and only if
         applying the operations in either order always yields the same result,
-        regardless of the state. That is, 
+        regardless of state.
 
-      In summary, the tensor product is used when applying unitaries in
-        \emph{parallel}, while the matrix product is used when applying unitaries in
+      But hold on -- is ``time step'' even a well-defined unit here? 
+        After all, with $\unitary$ and $\unitary[V]$ being arbitrary unitary
+        matrices, we could always define a new unitary $\unitary[W] = \unitary[V]
+        \unitary$, and say that \emph{this} is the operation that was applied,
+        now apparently in unit time!
+        This is why before analysing the time it would take to run a quantum
+        algorithm, we first have to agree on an \emph{elementary gate set}, so
+        that we can take those to be unit-time, and let the algorithm we actually
+        analyze be the implementation ``compiled'' to this gate set,
+        %by applying those gates in series and parallel, implicitly 
+        factoring the final unitary into tensor and matrix products of the
+        elementary unitaries.
+        More on this in \cref{sec:complexity}, when we discuss
+        \emph{complexity}.
+
+      To summarize, the tensor product represents unitaries applied in
+        \emph{parallel}, while the matrix product represents unitaries applied in
         \emph{series}.
 
       % too hard?
       %\begin{exercise}
       %  Construct the $\SWAPgate$ gate from a series of $\CXgate$ gates.
       %\end{exercise}
-
-  \subsection{Elementary Gates and the Universal Quantum Turing Machine}
-    Above, we argued that the matrix product represents operations happening at
-      different time steps. But is ``time step'' even a meaningful unit here? 
-      After all, with $\unitary$ and $\unitary[V]$ being arbitrary unitary
-      matrices, we could always define a new unitary $\unitary[W] = \unitary[V]
-      \unitary$, and say that \emph{this} is the operation that was applied,
-      now seemingly in unit time!
-
-    This is why, in order for our analyses of algorithmic complexity to be
-      meaningful, we first have to agree on a set of
-      \emph{elementary gates}, which we then say require one time-step
-      each to apply, and require that all other quantum operations can be constructed 
-      by applying those gates in series and parallel, implicitly building
-      the final unitary from tensor and matrix products of the elementary unitaries.
-      In other words, we need a gate set that is \emph{universal}.
-
-    \hhnote{Clifford gates: CCX, S, H; make it universal by adding T (not to be
-    confused with Toffoli)}
-    \hhnote{Clifford gates classically simulatable, so the presence of T gates seems
-    to somehow represent the ``power'' of quantum algorithms. This ``T-ness'' is
-    known as magic. (No, seriously.)}
-
-    Good to know:
-    \[
-      \Zgate\, ,\ \unitary[S] \coloneqq \sqrt{\Zgate}\, ,\ \unitary[T] \coloneqq
-      \sqrt{\unitary[S]} = \Zgate^\frac{1}{4}\, .
-    \]
-    As it turns out, we don't get universality before we include $\unitary[T]$.
-    Without it, we get the Clifford gates, which it turns out is even efficiently
-    simulatable on a classical computer!
 
   \subsection{Measurements}
     But after all this, we would like to read out something, no?
@@ -1218,3 +1202,75 @@
         \fi
       }
 
+  \subsection{Complexity}\label{sec:complexity}
+    \subsubsection{Elementary Qubit Gates and the Universal Quantum Computer.}
+      It is far from obvious that it should be possible to
+        come up with a single device that \emph{provably} can simulate any kind
+        of ``computer'' you might cook up; and yet this is exactly what
+        Alan Turing did when he introduced the world to the concept of the
+        \emph{universal computer} in 1936. (Yes, including quantum computers!)
+
+      %We just argued that the matrix product represents operations happening at
+      %  different time steps. 
+
+      %But is ``time step'' a well-defined unit here? 
+      %  After all, with $\unitary$ and $\unitary[V]$ being arbitrary unitary
+      %  matrices, we could always define a new unitary $\unitary[W] = \unitary[V]
+      %  \unitary$, and say that \emph{this} is the operation that was applied,
+      %  now apparently in unit time!
+
+      %This is why we first have to agree on a set of elementary gates
+      %  if we want our time-complexity analyses to be meaningful.
+      %  If we are able to find a set of gates such that \emph{any} quantum
+      %  operation can be constructed from these basic elements,
+      %  then we can say that these are the gates that takes one time-step to
+      %  apply, and let the time it takes to run the full algorithm be given by how
+      %  many elemantry gates must be run in \emph{sequence} to produce the desired
+      %  effect (known as the ``circuit depth'' of the algorithm).
+
+      \hhnote{
+        Classically, any Boolean circuit can be generated by AND, OR and NOT.
+        But of course, AND and OR are not linear; they delete information.
+        Is this avoidable?
+      }
+      \hhnote{
+        Bennett answered yes, when he showed that any Boolean
+        circuit can be made reversible with a little overhead – and it turns out
+        that any reversible circuit can be generated from the three-bit Toffoli
+        gate $\CCXgate$. But the irreversible case had only two-bit gates -- can we get
+        away with using only two-bit reversible gates? Answer turns out to be no: 
+        Then you could only simulate the \emph{linear} Boolean circuits, and to
+        get out of this basin and recover non-linear circuits such as products,
+        you need at least one three-bit gate.
+      }
+      \hhnote{
+        The Toffoli gate $\CCXgate$ $+$ Hadamard $=$ quantum universality -- just slap some
+        superpositions on the classical case!
+      }
+
+    \subsubsection{Computability versus Complexity.}
+      As a cryptographer, you know P vs.\ NP \ldots
+      \hhnote{
+        Quantum computers as a refutation of the \emph{extended}
+        Church--Turing thesis? $\to$ the Church-Turing-Deutsch thesis
+      }
+      \hhnote{
+        P vs.\ BQP, NP-hard vs.\ ``NP-intermediate''.
+      }
+
+    \subsubsection{Classical Simulatability and Quantum Magic.}
+      \hhnote{
+        Another popular choice of gate set is Clifford $+$ $\Tgate$: 
+        $\CXgate$, $\Sgate$, $\Hgate$. 
+        Make it universal by adding $\Tgate$
+        (not to be confused with Toffoli). 
+        Note: Only one- and two-qubit gates! 
+      }
+      \hhnote{
+        In an interesting parallel to the reversible case, if you leave out
+        $\Tgate$, then the quantum circuits you can generate turn out to all be
+        efficiently simulatable on classical computers! So ``quantumness''
+        $\neq$ ``hard to simulate''; you need something more, and that more is
+        exactly the power provided by the $\Tgate$ gates. This
+        ``T-ness'' actually has a name, and it is \emph{magic}. (No, seriously.)
+      }
