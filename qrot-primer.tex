@@ -692,29 +692,48 @@
         \unitary[V]_2 \ket{\psi, \varphi}
         \coloneqq (\idmatrix \otimes \unitary[V])(\ket{\psi} \otimes \ket{\varphi})\, .
       \]
-      \hhnote{and likewise for registers in general}
+
+      Extending to multi-qubit registers is straightforward: 
+        Let $\ket{\psi} = \ket{\psi}_{\register[R],\register[S],\register[T]}$ 
+        be defined over a number of qubits that can be
+        split into three sub-registers $\register[R]$, $\register[S]$, and
+        $\register[T]$, comprising $n$, $m$, and $k$ qubits, respectively.
+        Say you have a $2^m \times 2^m$-unitary $\unitary$, and you would like to apply
+        it to the qubits in register $\register[S]$. Then we may write:
+      \[
+        \unitary[U]_{\register[S]} \ket{\psi}
+        \coloneqq (\idmatrix_{2^n \times 2^n} \otimes \unitary \otimes 
+        \idmatrix_{2^k \times 2^k}) \ket{\psi}\, .
+      \]
+
       In this sense, the tensor product represents combinations of operations
         happening at the same moment in time, but across different points in the
         \emph{space} of qubit registers.
 
-      Now, imagine that you instead have two two-qubit operations,
-        represented by the $4 \times 4$ unitaries $\unitary$ and $\unitary[V]$, and that you
-        want to first apply $\unitary$ on both qubits, and then $\unitary[V]$. In other words, you want
+      Now, imagine that you instead have two (single- or multi-qubit) unitaries
+        $\unitary$ and $\unitary[V]$, and that you
+        would like to first apply $\unitary$, then $\unitary[V]$. In other words, you want
         something to the effect of
       \[
-        \ket{\psi, \varphi} \apply{\unitary} \ket{\psi^\prime, \varphi^\prime}
-          \apply{\unitary[V]} \ket{\psi^{\prime\prime}, \varphi^{\prime\prime}}\, .
+        \ket{\psi} \apply{\unitary} \ket{\psi^\prime}
+          \apply{\unitary[V]} \ket{\psi^{\prime\prime}}\, .
       \]
-      This is given by
+      This is given by the product
       \[
-        \unitary[V] \unitary \ket{\psi, \varphi}
-        = \unitary[V] (\unitary \ket{\psi, \varphi})
-        = \unitary[V] \ket{\psi^\prime, \varphi^\prime}
-        = \ket{\psi^{\prime\prime}, \varphi^{\prime\prime}}\, .
+        \unitary[V] \unitary \ket{\psi}
+        = \unitary[V] (\unitary \ket{\psi})
+        = \unitary[V] \ket{\psi^\prime}
+        = \ket{\psi^{\prime\prime}}\, .
       \]
       Hence, the matrix product represents operations happening in different
         moments in time, in this case across two time steps, with the right
-        unitary applied first and the left one thereafter. Note the reverse time-ordering!
+        unitary applied first and the left one thereafter. 
+
+      Note the reverse time-ordering! Given that most matrices don't commute,
+        the order clearly matters, and the above operational interpretation
+        tells us why: Two unitaries commute if and only if
+        applying the operations in either order always yields the same result,
+        regardless of the state. That is, 
 
       In summary, the tensor product is used when applying unitaries in
         \emph{parallel}, while the matrix product is used when applying unitaries in
