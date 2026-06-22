@@ -290,9 +290,9 @@
     \input{qrot-qrom}
     \clearpage
     \newcommand{\titlePseudocode}{A Quantum-Register Pseudocode}
-    \futuresect{qrot-pseudocode}{\titlePseudocode}
-    \newcommand{\titleCompressed}{How to Lazy-sample QROs with the Compressed-Oracle Technique}
-    \futuresect{qrot-compressed}{\titleCompressed}
+    \input{qrot-pseudocode}
+    \clearpage
+    %\futuresect{qrot-pseudocode}{\titlePseudocode}
 
   \addcontentsline{toc}{part}{Part 3. The Tools of the QRO Toolbox}
   %\part{The Tools of the Toolbox}\label{part:tools}
@@ -300,6 +300,8 @@
     \clearpage
     \input{qrot-utransform} % OW -> IND example
     \clearpage
+    \newcommand{\titleCompressed}{Interlude: Lazy-sampling QROs with the Compressed-Oracle Technique}
+    \futuresect{qrot-compressed}{\titleCompressed}
     \newcommand{\titleExtract}{Tool 2: Learning From QRO Queries via Quantum Online-Extraction}
     \futuresect{qrot-extract}{\titleExtract}
     \newcommand{\titleCca}{Example 2: CPA to CCA Security Revisited}
