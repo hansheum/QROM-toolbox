@@ -433,7 +433,7 @@
       where $\Xspace$ is the non-trivial subset $\{x\, | \braket{\psi|x} \neq
       0\} \subseteq [N]$, which is just the subset of $x$ that have $\alpha_x \neq 0$.
 
-      \begin{exercise}
+      \begin{exercise}\label{ex:global-phase}
         Let $\ket\psi$ be a quantum state, and let $\ket\varphi =
         e^{i\theta}\ket\psi$, where the complex phase $\theta$ is a real number between $0$ and
         $2\pi$. Show that no measurement can distinguish $\ket\psi$ from
@@ -718,7 +718,7 @@
         \ket{\psi} \apply{\unitary} \ket{\psi^\prime}
           \apply{\unitary[V]} \ket{\psi^{\prime\prime}}\, .
       \]
-      This is given by the product
+      This is given by the following product.
       \[
         \unitary[V] \unitary \ket{\psi}
         = \unitary[V] (\unitary \ket{\psi})
@@ -760,21 +760,62 @@
       %\end{exercise}
 
   \subsection{Measurements}
-    But after all this, we would like to read out something, no?
-      to talk about measurements. We mentioned earlier that measurements
+    At the end of our quantum algorithm, we would usually like to read out
+      some classical information by measuring the end-state. 
+      We mentioned earlier that measurements
       constitute an exception to the rule that any operation performed on a
-      quantum state must be unitary. 
+      quantum state must be unitary. We will give two explanations:
+      First, the easily-applied intuition, then the more powerful mathematical
+      formalism.
 
-    \hhnote{
-      Give the two-sentence run-down: The probability, and the post-measurement
-      state.
-    }
-      That is really all you need to know. But if you'd like to peek at the
-      machinery that places measurements on formal ground, read on --
-      for if observing a quantum state is not a
-      unitary operation, then what kind of operation \emph{is} it?
+    \subsubsection{State Collapse.}
+      If you perform a standard, computational-basis measurement on a state 
+        $\ket \psi = \sum_x \alpha_x \ket x$, then you will observe value $x$ with
+        probability $\abs{\alpha_x}^2 = \alpha_x^* \alpha_x$. After observation,
+        if you continue to perform the same measurement on the state, you will continue to
+        see the same value $x$ -- we say that the superposition state $\ket \psi$
+        has \emph{collapsed} to the basis state $\ket x$. In other words, this
+        post-collapse state has $\alpha_x = 1$, with all the other $\alpha$ set to
+        $0$.
+      \[
+        \ket{\psi} = \sum_x \alpha_x \ket x\ \apply{\observe}\ \ket{\psi^\prime} =
+        \ket x\, .
+      \]
+      Note the irreversibility: Once the state
+        collapses, any information about the prior state is \emph{deleted},
+        except for the single bit of information
+        that $\alpha_x$ had non-zero magnitude. 
+
+      That is really all you need to know about measurements to get started with
+        quantum computing.
+        But if you'd like a peek at the machinery required to place measurements
+        on formal ground, read on -- for if observing a quantum state is not a
+        unitary operation, then what kind of operation \emph{is} it?
+
+      \begin{exercise}
+        Let $\ket{\psi}$ be the single-qubit state given by
+        \[
+          \ket{\psi} = \frac{e^{i \theta}\ket{0} + e^{i \phi}\ket{1}}{\sqrt 2}\, ,
+        \] 
+        where $\theta, \phi \in [0,2\pi)$ are \emph{phases}.
+        \begin{subex}
+          \item What is the probability of observing each outcome under a
+            computational-basis measurement?
+          \item Show that $\ket \psi$ is observationally equivalent
+            (for every choice of basis) to the state
+            \[
+              \ket{\psi} = \frac{\ket{0} + e^{i \theta^\prime}\ket{1}}{\sqrt
+              2}\, ,
+            \]
+            where $\theta^\prime$ is the \emph{relative phase} between $\ket 0$
+            and $\ket 1$. 
+            What is $\theta^\prime$, in terms of $\theta$ and $\phi$?
+        \end{subex}
+        \emph{Hint: Recall \cref{ex:global-phase}.}
+      \end{exercise}
      
     \subsubsection{Projectors.} 
+      \hhnote{cont}
       The answer may be gleaned from the fact, stated earlier, that \emph{upon
         observing a state, the quantum state collapses to the observed state}.
         This means that if you observe the state twice in a row

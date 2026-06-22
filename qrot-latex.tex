@@ -194,16 +194,8 @@
   \newcommand{\Tno}{\ensuremath{\Tpie{0}}}
   \newcommand{\Tmaybe}{\Tleft}
 
-%%% Boxed exercise environment
-\usepackage{environ}
-\newcounter{exercisecounter}
-\renewenvironment{exercise}[1][]{%
-  \refstepcounter{exercisecounter}%
-  \begin{tcolorbox}[colback=white, colframe=black!50, boxrule=0.4pt, arc=0pt]
-    \textbf{Exercise \theexercisecounter\ifx\\#1\\\else\ (#1)\fi.}
-}{%
-  \end{tcolorbox}%
-}
+%%% Boxed exercise environment + sub-exercises: see main-qrot.tex preamble
+%%% (packages and environment definitions live there, not in this macro file).
 
 %% KATHIE THINGS IMPORTED
 %% see qrot-latex-Kat.tex for more Kathie things

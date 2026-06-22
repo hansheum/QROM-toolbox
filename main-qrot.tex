@@ -220,8 +220,24 @@
 \crefname{definition}{Def.}{Defs.}          \Crefname{definition}{Def.}{Defs.}
 \crefname{corollary}{Cor.}{Cors.}           \Crefname{corollary}{Cor.}{Cors.}
 \crefname{example}{Example}{Examples}       \Crefname{example}{Example}{Examples}
-% NB: the custom boxed exercise env (qrot-latex.tex) steps "exercisecounter".
+% NB: the custom boxed exercise env (below) steps "exercisecounter".
 \crefname{exercisecounter}{Exercise}{Exercises} \Crefname{exercisecounter}{Exercise}{Exercises}
+
+%%% Boxed exercise environment + sub-exercises (a), b), ...).
+% tcolorbox is loaded by cryptocodeh (input above); environ/enumitem here.
+\usepackage{environ}
+\usepackage{enumitem}
+\newcounter{exercisecounter}
+\renewenvironment{exercise}[1][]{%
+  \refstepcounter{exercisecounter}%
+  \begin{tcolorbox}[colback=white, colframe=black!50, boxrule=0.4pt, arc=0pt]
+    \textbf{Exercise \theexercisecounter\ifx\\#1\\\else\ (#1)\fi.}
+}{%
+  \end{tcolorbox}%
+}
+% Sub-exercises: \ref yields e.g. "3a" for individual parts.
+\newlist{subex}{enumerate}{1}
+\setlist[subex]{label=\textbf{\alph*)}, leftmargin=*, ref=\theexercisecounter\alph*}
 % \cpageref wording: "p. 17" / "pp. 17--19" instead of "page"/"pages".
 \crefname{page}{p.}{pp.}                     \Crefname{page}{P.}{Pp.}
 % Appendix reference helper (hyperref-based; appendix-specific "App." name).
