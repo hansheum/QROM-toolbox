@@ -59,6 +59,10 @@
   \makeatletter
   \renewcommand*\l@author[2]{}
   \renewcommand*\l@title[2]{}
+  % HH: llncs hardcodes \LoadClass[twoside]{article}, so the blank verso after
+  %     each \part title page can't be removed via the oneside option. Strip the
+  %     two-side blank-page block from \@endpart instead.
+  \renewcommand\@endpart{\vfil\newpage}
   \makeatother
 %%
 
@@ -270,8 +274,8 @@
   \input{qrot-preface}
   \clearpage
 
-  \addcontentsline{toc}{part}{Part 1. Classical Security is Easy with Random Oracles}
-  %\part{Setting the Stage}\label{part:prelims}
+  %\addcontentsline{toc}{part}{Part 1. Classical Security is Easy with Random Oracles}
+  \part{Classical Security is Easy with Random Oracles}\label{part:classical}
     \newcommand{\titleBasics}{Foundations of Provable Security}
       \inputsect{qrot-basics}
     \newcommand{\titleRom}{The Random Oracle Model (ROM)}
@@ -279,20 +283,21 @@
     \newcommand{\titleUtransformRom}{Example 1a: Classical Indistinguishability from the \U-transform}
       \inputsect{qrot-utransform-rom}
 
-  \addcontentsline{toc}{part}{Part 2. Enter Quantum}
+  \part{Enter Quantum}\label{part:quantum}
+  %\addcontentsline{toc}{part}{Part 2. Enter Quantum}
   %\addcontentsline{toc}{part}{Part 2. Post-Quantum Security is Not So Easy with Random Oracles}
   %\addcontentsline{toc}{part}{Part 2. Technical Difficulties in the Post-Quantum Realm}
-  %\part{(Post-)Quantum Difficulties}\label{part:classical}
     \newcommand{\titlePrimer}{A Brief Quantum Primer}
       \inputsect{qrot-primer}
     %\newcommand{\titleQrom}{From Classical to Quantum Random Oracles}
     \newcommand{\titleQrom}{The Quantum Random Oracle Model (QROM)}
       \inputsect{qrot-qrom}
 
+  \part{Non-adaptive Programming}\label{part:o2h}
+  %\addcontentsline{toc}{part}{Part 3. Non-adaptive Programming}
   %\addcontentsline{toc}{part}{Part 3. One-Way to Hiding}
-  \addcontentsline{toc}{part}{Part 3. Non-adaptive Programming}
   %\part{The Tools of the Toolbox}\label{part:tools}
-    \newcommand{\titleOtoH}{The O2H Lemmas: Programming Quantum Random Oracles}
+    \newcommand{\titleOtoH}{The One-way To Hiding (O2H) Lemmas}
       \inputsect{qrot-o2h}
     \newcommand{\titleUtransformQrom}{Example 1b: Post-Quantum Indistinguishability from the \U-transform}
       \inputsect{qrot-utransform} % OW -> IND example
@@ -301,29 +306,29 @@
     \newcommand{\titleExtractors}{The Extractors of O2H}
       \futuresect{qrot-extractors}{\titleExtractors}
 
+  \addcontentsline{toc}{part}{IV\quad On-the-fly Simulation}
   %\addcontentsline{toc}{part}{Part 4. The Compressed-Oracle Technique}
-  \addcontentsline{toc}{part}{Part 4. Simulation}
     \newcommand{\titleCompressed}{Lazy-sampling QROs with the Compressed-Oracle Technique}
       \futuresect{qrot-compressed}{\titleCompressed}
 
   %\addcontentsline{toc}{part}{Part 5. Online Extractability}
-  \addcontentsline{toc}{part}{Part 5. Extraction}
+  \addcontentsline{toc}{part}{V\quad Online Extraction}
     \newcommand{\titleCcaRom}{Example 2a: Classical CCA-security from the \U-transform}
       \futuresect{qrot-cca-rom}{\titleCcaRom}
-    \newcommand{\titleExtract}{Online Extractability: Learning From Oracle Queries}
+    \newcommand{\titleExtract}{The Online-extractability Technique}
       \futuresect{qrot-extract}{\titleExtract}
     \newcommand{\titleCca}{Example 2b: Post-Quantum CCA-security from the \U-transform}
       \futuresect{qrot-cca}{\titleCca}
 
-  \addcontentsline{toc}{part}{Part 6. Adaptive Programming}
+  \addcontentsline{toc}{part}{VI\quad Adaptive Programming}
     \newcommand{\titleDsaRom}{Example 3a: Classical CMA-security from NIZKs}
       \futuresect{qrot-dsa-rom}{\titleDsaRom}
-    \newcommand{\titleAdaptive}{Delayed Programming from the Resampling Lemma and Fixed-Permutation O2H}
+    \newcommand{\titleAdaptive}{The Resampling Lemma and Fixed-Permutation O2H}
       \futuresect{qrot-adaptive}{\titleAdaptive}
     \newcommand{\titleDsa}{Example 3b: Post-Quantum CMA-security from NIZKs}
       \futuresect{qrot-dsa}{\titleDsa}
 
-  \addcontentsline{toc}{part}{Part 7. Rewinding}
+  \addcontentsline{toc}{part}{VII\quad Rewinding}
     \newcommand{\titleFsRom}{Example 4a: Classical NIZKs from the Fiat-Shamir Transformation}
       \futuresect{qrot-fs-rom}{\titleFsRom}
     \newcommand{\titleRewind}{Rewinding Quantum Adversaries with Measure-and-Reprogram}
