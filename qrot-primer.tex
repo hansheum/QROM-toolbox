@@ -130,15 +130,19 @@
         $\coloneqq \ket{\psi}^\dagger$ \\
         &&& unit-norm row vector $\in \CC^N$  \\
         Inner product & ``Bra-ket'' & $\braket{\psi|\varphi}$ & $\in \CC$, $\abs{\braket{\psi|\varphi}} \leq 1$ \\
-        &&& 
-          $\braket{x|y} = \delta_{xy} \to \braket{\psi|\varphi} = \sum_x \alpha_x^* \beta_x$ \\
+        &&& $\braket{x|y} = \delta_{xy} \To \braket{\psi|\varphi} = \sum_x \alpha_x^* \beta_x$ \\
         \midrule
         Unitary transformation & Uppercase roman, late alphabet & $\unitary$ &
           $\in \CC^{N \times N}$ s.th.\ $\unitary^\dagger \unitary = 1$ \\
+        &&& $\unitary$ is an $n$-qubit op.\ $\To \unitary \in \CC^{2^n \times 2^n}$ \\
         Controlled unitary & $\unitary[C]\text{(unitary)}$ & $\unitary[CU]$ &
           $\in \CC^{N \times N}$ \\
+        % &&& $\unitary \in \CC^{2^n \times 2^n} \To \unitary[CU] \in \CC^{2^{n+1} \times 2^{n+1}}$ \\
+        &&& $n$-qubit op.\ $\unitary$ $\To$ $(n+1)$-qubit op. $\unitary[CU]$ \\
         Orthogonal projector & Uppercase roman, middle-late alph. & $\projector$ & 
           $\in \CC^{N \times N}$ s.th.\ $\projector^2 = \projector = \projector^\dagger$ \\
+        &&& Single-state projector $\projector_\psi = \ketbra{\psi}$ \\
+        POVM & ? & ? & ? \\
         \midrule
         Qubit & Lowercase roman, bold sans-serif & $\qubit$ & Two-level physical system \\
         %Single-qubit register & Register $\bitReg$ & $\bitReg$ & List of one qubit \\ 
@@ -146,7 +150,8 @@
         %\midrule
         Qubit state & State with index subscript & $\ket{\psi}_i$ & $= \ket{\qubit_i} \in \CC^2$ \\
         Register & Uppercase roman, bold sans-serif & $\register$ & List of qubits \\
-        Register state & State with register subscript & $\ket{\psi}_{\register}$ & $= \ket{\register} \in \CC^{2^n}$ for $n$ qubits \\
+        Register state & State with register subscript &
+          $\ket{\psi}_{\register}$ & $= \ket{\register} \in \CC^{2^n}$ for $n$-qubit register \\
         % Measure register & $\pcalgostyle{Meas}$(projector : register) & $x \sample \meas{\measurement}{\register}$ & \cref{def:measure} \\ 
         \bottomrule
       \end{tabular}
@@ -200,12 +205,27 @@
         Expressing the qubit states (which, remember, are functions from a binary
         set of observable values to a complex amplitude of magnitude at most
         $1$) as vectors, we see that we can express our qubit basis states as
+        the column vectors
         \[
           \ket0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\, ,\ 
-          \ket1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\, .
+          \ket1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\, ,
         \]
+        making their conjugate transposes row vectors:
+        \begin{align*}
+          \bra0 &= \ket0^{\dagger} = (\ket0^*)^T = \begin{bmatrix} 1 & 0 \end{bmatrix}\, ,\ \\
+          \bra1 &= \ket1^{\dagger} = (\ket1^*)^T = \begin{bmatrix} 0 & 1 \end{bmatrix}\, .
+        \end{align*}
+        As a sanity check, the inner product of two single-qubit basis states becomes
+        \[
+          \braket{b_1|b_2} = \begin{bmatrix} b_1 && 1-b_1 \end{bmatrix}
+            \begin{bmatrix} b_2 \\ 1-b_2 \end{bmatrix}
+              = b_1 b_2 + (1-b_1)(1-b_2) 
+              %= 2 b_1 b_2 - b_1 - b_2 + 1 
+              = \delta_{b_1 b_2}\, ,
+        \]
+        as desired.
 
-      If you are ever confused about a calculation using Dirac
+      If you are ever confused about a derivation on these Dirac
         ``bra-kets'', it can be very useful to make the translation into vectors
         and matrices, and go through the
         explicit calculation using the familiar language of linear algebra;
@@ -251,7 +271,7 @@
         combined state will have dimension $N \coloneqq 2^n$, and the resulting Hilbert
         space will be characterized by the basis states
       \[
-        \{\ket{i}\}_{\forall i \in [N]} = \{ \ket{b_0 b_1 \ldots b_{n-1}}
+        \{\ket{i}\}_{i \in [N]} = \{ \ket{b_0 b_1 \ldots b_{n-1}}
           \}_{b_0, \ldots, b_{n-1} \in \bin}\, .
       \]
       Of course, any vector space permits an infinitude of basis
@@ -815,222 +835,147 @@
       \end{exercise}
      
     \subsubsection{Projectors.} 
-      \hhnote{cont}
-      The answer may be gleaned from the fact, stated earlier, that \emph{upon
-        observing a state, the quantum state collapses to the observed state}.
-        This means that if you observe the state twice in a row
-        (using the same measurement basis, to be defined shortly), then the
-        outcome will be the same.
-        The state has already collapsed; it can't collapse \emph{more}.
+      To see what kind of non-unitary matrix is needed to represent the act of
+        measuring a state, recall that after state collapse, further
+        observations is guaranteed to just yield the same result.
+        %(using the same measurement basis, to be defined shortly), 
+        %then the outcome will be the same.
+        The state has already collapsed; it cannot collapse
+        \emph{further}.\footnote{
+          Unless you switch your measurement basis, that is; more on this in a minute.
+        }
 
-      If we call such an operation $\projector$, then we can write this insight as
+      Let $\projector$ represent such an \emph{idempotent} operation. Then,
         \[ 
-          \projector \ket{\psi} = \projector (\projector \ket{\psi}) =
-          \projector^2 \ket{\psi} 
+          \projector (\projector \ket{\psi}) =
+          %\projector^2 \ket{\psi} 
+          \projector \ket{\psi}
           \quad \Longleftrightarrow \quad 
           \projector^2 = \projector\, .
         \]
 
       \noindent
-      Such operators are known as \emph{projectors}, so named because they have
-        the effect of \emph{projecting} a higher dimensional object onto a
-        lower-dimensional hyperplane---or, in the case of 
-        measuring all the qubits at once,
-        all the way down to one of the basis vectors.
-
-      For single-qubit states, it is easy to verify that the following
-        operators satisfy this definition:
+      Operators like $\projector$ are known as \emph{projectors}, so named because they 
+        effectively project higher dimensional objects onto some lower-dimensional
+        hyperplane.
+        %---or, in the case of measuring all the qubits at once,
+        %all the way down to one of the basis vectors.
+        For single-qubit states, it is easy to verify that the outer product 
+        of a basis state with itself will satisfy the definition: Let
+        $\projector_0$ and $\projector_1$ be given by
       \[
-        \projector_0 \coloneqq \ket{0}\bra{0}
+        \projector_0 = \ketbra{0}
         = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \begin{bmatrix} 1 & 0 \end{bmatrix}
-        = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}\, , \quad
-        \projector_1 \coloneqq \ket{1}\bra{1}
+        = \begin{sqmatrix} 
+          1 & 0 \\ 
+          0 & 0 
+        \end{sqmatrix}\, , \quad
+        \projector_1 \coloneqq \ketbra{1}
         = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \begin{bmatrix} 0 & 1 \end{bmatrix}
-        = \begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}\, . \quad
+        = \begin{sqmatrix} 
+          0 & 0 \\ 
+          0 & 1 
+        \end{sqmatrix}\, . \quad
       \]
-
-      \noindent
-      From the matrix representations above, we see that effect of applying
-        $\projector_0$ to a single-qubit state is to \emph{single out} the
-        $\ket 0$ state from the superposition: 
-
+      From these matrix representations, we can see that effect of applying
+        $\projector_b$ to a single-qubit state is to single out the
+        $\ket b$-part of the state from the superposition. For example, applying
+        $\projector_0$ to a general qubit state yields:
       \[
-        \projector_0 \ket{\psi} = \projector_0(\alpha_0 \ket{0} + \alpha_1 \ket{1})
-        = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix} \begin{bmatrix} \alpha_0 \\ \alpha_1 \end{bmatrix} 
-        = \alpha_0 \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \alpha_0 \ket{0}\, ,
+        \projector_0 \ket{\psi} = \projector_0(\alpha \ket{0} + \beta \ket{1})
+        = \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix} \begin{bmatrix} \alpha_0 \\ \alpha_1 \end{bmatrix} 
+        = \alpha_0 \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \alpha_0 \ket{0}\, .
       \]
-
-      \noindent
-      and applying $\projector_0$ on it again thereafter
-        will have no effect, whereas applying $\projector_1$ will simply yield
-        the zero vector (which does not correspond to a quantum state, as it
-        is not unit length). What's more, we see that 
-        $\projector_0 + \projector_1 = \idmatrix[2]$. 
-        Clearly, these projectors will be \emph{orthogonal} in the sense that they
+      Applying $\projector_0$ a second time, then, has no effect:
+      \[
+        \projector_0^2 \ket{\psi} = \projector_0 (\alpha_0 \ket{0})
+        = \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix} \begin{bmatrix} \alpha_0 \\ 0 \end{bmatrix} 
+          %= \alpha_0 \begin{bmatrix} 1 \\ 0 \end{bmatrix} 
+          = \alpha_0 \ket{0} = \projector_0 \ket{\psi}\, .
+      \]
+      If we instead apply $\projector_1$ as the second projector, we get the zero vector:
+      \[
+        \projector_1 \projector_0 \ket{\psi} = \projector_1 (\alpha_0 \ket{0})
+        = \begin{sqmatrix} 0 & 0 \\ 0 & 1 \end{sqmatrix} \begin{bmatrix} \alpha_0 \\ 0 \end{bmatrix} 
+          = \begin{bmatrix} 0 \\ 0 \end{bmatrix}\, .
+      \]
+      Hence, these projectors are \emph{orthogonal} in the sense that they
         satisfy $\projector_i \projector_j = \delta_{ij} \projector_i$.
-
-      On the other hand, these matrices are manifestly \emph{not} unitary, as
-        seen from the fact that they are not even invertible. This reflects the
-        irreversible loss of information induced by observation: after
-        measuring a state, there is no way to recover the full pre-collapse
-        state, other than to re-create it from scratch!
-
-      Let us next define the projector $\projector_\Sspace$ onto some
-        subspace $\Sspace$ of the full $N$-dimensional Hilbert space, as
-        specified by a subset of the computational basis states
-        $\{\ket{x_i}\}_{\forall i \in [k]}$ (where $k \leq N$). This will
-        simply be the sum of the relevant basis projectors:
-
+        What's more, the set $\{ \projector_0, \projector_1 \}$ is \emph{complete}
+        in the sense that it sums to identity:
       \[
-        \projector_\Sspace = \sum_{i = 0}^{k-1} \ket{x_i} \bra{x_i} = 
-        \sum_{i = 0}^{k-1} \projector_{x_i}\, .
+        \projector_0 + \projector_1 = 
+        \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix}
+        + \begin{sqmatrix} 0 & 0 \\ 0 & 1 \end{sqmatrix}
+        = \begin{sqmatrix} 1 & 0 \\ 0 & 1 \end{sqmatrix} = \idmatrix\, .
       \]
-
-      \noindent
-      The larger the sum, the ``gentler'' the measurement, in the sense that
-        you learn less from performing it and hence also disturb the state less.
-
-      \begin{example}\label{ex:projector}
-        Let $\ket\psi = \sum_{\forall i \in [8]} \alpha_i \ket{i}$ be a
-        three-qubit state. Then the projector $\projector_{00b}$, given
-        by 
-        \[
-          \projector_{00b} = \ket{000}\bra{000} + \ket{001}\bra{001}
-        \] 
-        ``selects'' the states 
-        in the superposition in which the first and second qubits are zero:
-        \begin{align*}
-          \projector_{00b} \ket\psi &= 
-          \ket{000}\bra{000} \sum_{\forall i \in [8]} \alpha_i \ket{i}
-          + \ket{001}\bra{001} \sum_{\forall i \in [8]} \alpha_i \ket{i} \\
-          &= \ket{000} \sum_{\forall i \in [8]} \alpha_i \braket{000|i}
-          + \ket{001} \sum_{\forall i \in [8]} \alpha_i \braket{001|i} \\
-          &= \ket{000} \sum_{\forall i \in [8]} \alpha_i \cdot \delta_{000, i}
-          + \ket{001} \sum_{\forall i \in [8]} \alpha_i \cdot \delta_{001, i} 
-          = %\ket{000}\alpha_0  + \ket{001}\alpha_1  = 
-          \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
-        \end{align*}
-        %as follows from the orthonormality of basis states.
-        We see that $\ket\psi$ has been \emph{projected} from 
-        $8$-dimensional Hilbert space down to the $2$-dimensional subspace
-        spanned by $\ket{000}$ and $\ket{001}$. Note, however, that
-        $\projector_{00b} \ket\psi$ will not itself be a valid quantum
-        \emph{state}, since (unless all the other $\alpha_i$ were already zero) we will have
-        $\abs{\alpha_0} + \abs{\alpha_1} < 1$, meaning $\projector_{00b}
-        \ket\psi$ will not satisfy the requirement of quantum states being unit length.
-      \end{example}
-
-      \noindent
-      Unlike the basis-state projectors $\projector_i$, two projectors
-        $\projector_{\Sspace}$, $\projector_\Tspace$
-        need \emph{not} be orthogonal, as subspaces $\Sspace$ and $\Tspace$ may
-        be spanned by an overlapping set of basis vectors.
-
-      \begin{exercise}
-        Let $\projector_{0b0}$ be given by
-        \[
-          \projector_{0b0} = \ket{000}\bra{000} + \ket{010}\bra{010}\, ,
-        \] 
-        and show that $\projector_{0b0}$ and $\projector_{00b}$ are non-orthogonal,
-        where $\projector_{00b}$ is as given in \cref{ex:projector}.
-      \end{exercise}
-
-      \noindent
-      We will for the most part be interested in sets of orthogonal projectors.
-        From the perspective of the computational basis states $\ket x$, this just means
-        that no two projectors ``select'' the same string $x$ as part of their
-        overall selection.
-        (When applied to measurements, projectors being orthogonal will
-        translate to no measurement yielding the outcome ``undecided''.)
-
-      Projectors may not be unitary, but it is easy to see that they are
-        \emph{Hermitian}, which is to say they
-        satisfy $\projector^\dagger = \projector$. For 
-        computational-basis projectors, this follows trivially from the
-        matrices being real and symmetric, but it also holds in general. 
-
-      \begin{exercise}\label{ex:hermitian-projectors}
-        Show that any projector is Hermitian.
-        \emph{(Hint: Try expanding in terms of an arbitrary set of basis
-        states.)}
-      \end{exercise}
-
-      \noindent
-      Finally, a set of projectors $\{\projector_{\Sspace_i}\}_{\forall i \in [k]}$ is said to be
-        \emph{complete} if $\sum_{\forall i \in [k]} \projector_{\Sspace_i} = \idmatrix$.
-        In particular, the set of computational-basis projectors
-        $\{\projector_i \}_{\forall i \in [N]} = \{ \ket{i}\bra{i} \}_{\forall i \in [N]}$
-        is easily seen to be complete: Each element in the sum will simply add one $1$ to
-        a previously-zero spot on the diagonal, and zeroes everywhere else; and
-        the sum has $N$ elements, so the full diagonal must be covered.
-        In the context of measurements, completeness reflects that outcome
-        probabilities should sum to one.
-
-      \begin{exercise}
-        Provide a set of projectors such that, when taken
-        together with $\projector_{00b}$ from \cref{ex:projector}, the set
-        is orthogonal and complete.
-      \end{exercise}
+      On the other hand, these matrices are manifestly \emph{not} unitary, as
+        can be seen from the fact that they are not norm-preserving (cf.\
+        \cref{ex:unitarity}): If $\ket\psi$ starts out as a
+        superposition state, then $\projector_0 \ket\psi$ will not be
+        unit-length and therefore not a valid quantum state. 
+        Alternatively, you may have noticed that the projector
+        matrices are not even \emph{invertible}, 
+        reflecting the information loss incurred by measurements.
+        %after measuring a state, there is no way to recover the full pre-collapse
+        %state, other than to re-create it from scratch!
 
     \subsubsection{Projective Measurements.}
       \hhnote{
         NB: I suspect the formalism here is not exactly right.
       }
       As mentioned, $\projector \ket{\psi}$ will not itself be a quantum
-        state, since it will typically not have unit norm.
-        Additionally, we have not yet
+        state, since (assuming $\projector$ did any projection at all) the result will not
+        be of unit norm. Additionally, we have not yet
         touched on the concept of measurement \emph{outcomes}. What are the
-        values that are actually observed? Something more is needed.
+        values that are actually observed? Clearly, something more is needed.
 
-      Let's say that the outcome of some measurement is $m_x$, which is
-        thereafter interpreted as the binary string $x$. We can formalize this by letting
-        $\measurement$ be a \emph{measurement operator} such that
+      Let's say we want to measure a qubit, which remember is some physical
+        system which can be observed in one of two states, which
+        we have labelled ``0'' and ``1''. Let us stay general for now, and let
+        $m_b$ represent the value that is actually observed in the laboratory,
+        so that if we see $m_0$, then we \emph{interpret} that as having observed the
+        state $\ket0$, and likewise for $m_1$. What we want, then, is
+        a \emph{measurement operator} $\measurement$ such that
         \[
-          \ket\psi \apply{M} m_x \ket x\, ,
+          \ket\psi \apply{M} m_b \ket b\, .
         \]
-        for one of several possible strings $x$, via some as-yet-undefined
-        process. We can also make it more general, by making a measurement
-        which determines which of several
-        subspaces $\Sspace_i$ $\ket\psi$ belongs to:
-        \[
-          \ket\psi \apply{M} m_{\Sspace_i} \ket{\psi_{\Sspace_i}}\, ,
-        \]
-        where $\ket{\psi_{\Sspace_i}}$ is the state that results from projecting
-        $\ket\psi$ onto subspace $\Sspace_i$.
-
-        %i.e., such that the state collapses to the basis state $\ket\psi$.
-      Note that this measurement operator is \emph{not} a projector, since
+      This operator is \emph{not} a projector, since
         repeated applications of $\measurement$ will give back increasing
-        powers of $m_x$. However, provided that the measurement
-        outcomes are all \emph{orthogonal} (again meaning that none of the
-        possible outcomes would be classified as ``undecided''), we are
-        guaranteed that there exists a complete set of orthogonal
-        projectors $\{\projector_{\Sspace_i}\}_{\forall i \in [k]}$ such that 
-        \[
-          \measurement = \sum_{\forall i \in [k]} m_{\Sspace_i} \projector_{\Sspace_i}\, .
-        \]
-        In linear algebra terms, this defines the \emph{spectral decomposition} of the
-          operator $\measurement$, with $m_{\Sspace_i}$ being the eigenvalues
-          of $\measurement$.
-
-        In the case that you are just reading off the values of $n$ qubits
-          directly in what we'll refer to as a ``computational-basis
-          measurement'', this will be
+        powers of $m_b$. However, we can use the qubit projectors $\projector_0$
+        and $\projector_1$ to build an operation $\measurement$ that satisfies
+        our needs:
           \[
-            \measurement = \sum_{\forall i \in [N]} m_i \projector_i
-            = \sum_{\forall i \in [N]} m_i \ket{i} \bra{i}\, ,
+            \measurement = \sum_{b \in \bin} m_b \projector_b
+            = \sum_{b \in \bin} m_b \ketbra{b}\, ,
           \]
-          which, when expressed in the computational basis, is just a sum of
-          $N$ matrices with the single non-zero element $m_i$ in the $i$'th
-          position along its diagonal.
 
-        With all of this in place, we are finally ready to formally define our measurement procedure.
+        \hhnote{cont}
+
+        With this in place, we are finally ready to formally define our measurement procedure.
+
+        \begin{definition}[Complete, orthogonal projectors]
+          A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ is said to be
+            \emph{complete} if the projectors sum to identity:
+            \[
+              \sum_{i \in [k]} \projector_i = \idmatrix\, ,
+            \]
+            and \emph{orthogonal} if the projectors are simultaneously
+            \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
+            \[
+              \projector_i^\dagger = \projector_i\, ,\qquad
+              \projector_i \projector_j = \delta_{ij}\projector_i\, .
+            \]
+        \end{definition}
 
         \begin{definition}[Projective measurement]
-          Let $i$ be an $n$-length bitstring, let $\{ \projector_{\Sspace_i}
-            \}_{\forall i \in [k]}$ be a complete, orthogonal set of projectors
-            (projecting onto the orthogonal subspaces $\Sspace_i$ of the full Hilbert space),
-            and let $\measurement \coloneqq \sum_{\forall i \in [k]}
+          Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
+            orthogonal set of projectors on a Hilbert space $\mathcal{H}$:
+            Then each projector $\projector_i$ projects onto a subspace $\Sspace_i$
+            such that $\bigoplus_{i\in[k]} \Sspace_i = \Hspace$
+
+            
+            and let $\measurement \coloneqq \sum_{i \in [k]}
             m_{\Sspace_i} \projector_{\Sspace_i}$
             be a projective measurement operator.
             %
@@ -1047,8 +992,6 @@
               \ket{\psi} \apply{\measurement} \frac{\projector_{\Sspace_i}
               \ket{\psi}}{\abs{\projector_{\Sspace_i} \ket{\psi}}}\, .
             \]
-            The value $\projector_{\Sspace_i} \ket{\psi} \coloneqq \alpha_{\Sspace_i} \in \CC$
-            is known as the \emph{amplitude} of observing outcome $\Sspace_i$.
         \end{definition}
         
         \noindent
@@ -1135,6 +1078,135 @@
           when used as a measurement operator by identifying its
           eigenstates and eigenvalues.
         \end{exercise}
+    \subsubsection{Multi-Qubit Measurements.}
+      \hhnote{todo}
+
+    \subsubsection{Subspace Measurements.}
+      Let us next define the projector $\projector_\Sspace$ onto some
+        subspace $\Sspace$ of the full $N$-dimensional Hilbert space, as
+        specified by a subset of the computational basis states
+        $\{\ket{x_i}\}_{i \in [k]}$ (where $k \leq N$). This will
+        simply be the sum of the relevant basis projectors:
+
+      \[
+        \projector_\Sspace = \sum_{i = 0}^{k-1} \ket{x_i} \bra{x_i} = 
+        \sum_{i = 0}^{k-1} \projector_{x_i}\, .
+      \]
+
+      \noindent
+      The larger the sum, the ``gentler'' the measurement, in the sense that
+        you learn less from performing it and hence also disturb the state less.
+
+      \begin{example}\label{ex:projector}
+        Let $\ket\psi = \sum_{i \in [8]} \alpha_i \ket{i}$ be a
+        three-qubit state. Then the projector $\projector_{00b}$, given
+        by 
+        \[
+          \projector_{00b} = \ket{000}\bra{000} + \ket{001}\bra{001}
+        \] 
+        ``selects'' the states 
+        in the superposition in which the first and second qubits are zero:
+        \begin{align*}
+          \projector_{00b} \ket\psi &= 
+          \ket{000}\bra{000} \sum_{i \in [8]} \alpha_i \ket{i}
+          + \ket{001}\bra{001} \sum_{i \in [8]} \alpha_i \ket{i} \\
+          &= \ket{000} \sum_{i \in [8]} \alpha_i \braket{000|i}
+          + \ket{001} \sum_{i \in [8]} \alpha_i \braket{001|i} \\
+          &= \ket{000} \sum_{i \in [8]} \alpha_i \cdot \delta_{000, i}
+          + \ket{001} \sum_{i \in [8]} \alpha_i \cdot \delta_{001, i} 
+          = %\ket{000}\alpha_0  + \ket{001}\alpha_1  = 
+          \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
+        \end{align*}
+        %as follows from the orthonormality of basis states.
+        We see that $\ket\psi$ has been \emph{projected} from 
+        $8$-dimensional Hilbert space down to the $2$-dimensional subspace
+        spanned by $\ket{000}$ and $\ket{001}$. Note, however, that
+        $\projector_{00b} \ket\psi$ will not itself be a valid quantum
+        \emph{state}, since (unless all the other $\alpha_i$ were already zero) we will have
+        $\abs{\alpha_0} + \abs{\alpha_1} < 1$, meaning $\projector_{00b}
+        \ket\psi$ will not satisfy the requirement of quantum states being unit length.
+      \end{example}
+
+      \noindent
+      Unlike the basis-state projectors $\projector_i$, two projectors
+        $\projector_{\Sspace}$, $\projector_\Tspace$
+        need \emph{not} be orthogonal, as subspaces $\Sspace$ and $\Tspace$ may
+        be spanned by an overlapping set of basis vectors.
+
+      \begin{exercise}
+        Let $\projector_{0b0}$ be given by
+        \[
+          \projector_{0b0} = \ket{000}\bra{000} + \ket{010}\bra{010}\, ,
+        \] 
+        and show that $\projector_{0b0}$ and $\projector_{00b}$ are non-orthogonal,
+        where $\projector_{00b}$ is as given in \cref{ex:projector}.
+      \end{exercise}
+
+      \noindent
+      We will for the most part be interested in sets of orthogonal projectors.
+        From the perspective of the computational basis states $\ket x$, this just means
+        that no two projectors ``select'' the same string $x$ as part of their
+        overall selection.
+        (When applied to measurements, projectors being orthogonal will
+        translate to no measurement yielding the outcome ``undecided''.)
+
+      Projectors may not be unitary, but it is easy to see that they are
+        \emph{Hermitian}, which is to say they
+        satisfy $\projector^\dagger = \projector$. For 
+        computational-basis projectors, this follows trivially from the
+        matrices being real and symmetric, but it also holds in general. 
+
+      \begin{exercise}\label{ex:hermitian-projectors}
+        Show that any projector is Hermitian.
+        \emph{(Hint: Try expanding in terms of an arbitrary set of basis
+        states.)}
+      \end{exercise}
+
+      \noindent
+      Finally, a set of projectors $\{\projector_{\Sspace_i}\}_{i \in [k]}$ is said to be
+        \emph{complete} if $\sum_{i \in [k]} \projector_{\Sspace_i} = \idmatrix$.
+        In particular, the set of computational-basis projectors
+        $\{\projector_i \}_{i \in [N]} = \{ \ket{i}\bra{i} \}_{i \in [N]}$
+        is easily seen to be complete: Each element in the sum will simply add one $1$ to
+        a previously-zero spot on the diagonal, and zeroes everywhere else; and
+        the sum has $N$ elements, so the full diagonal must be covered.
+        In the context of measurements, completeness reflects that outcome
+        probabilities should sum to one.
+
+      \begin{exercise}
+        Provide a set of projectors such that, when taken
+        together with $\projector_{00b}$ from \cref{ex:projector}, the set
+        is orthogonal and complete.
+      \end{exercise}
+
+      \hhnote{\ldots}
+
+      We can also make it more general, by making a measurement
+        which determines which of several
+        subspaces $\Sspace_i$ $\ket\psi$ belongs to:
+        \[
+          \ket\psi \apply{M} m_{\Sspace_i} \ket{\psi_{\Sspace_i}}\, ,
+        \]
+        where $\ket{\psi_{\Sspace_i}}$ is the state that results from projecting
+        $\ket\psi$ onto subspace $\Sspace_i$.
+
+      \hhnote{\ldots}
+
+      However, provided that the measurement
+        outcomes are all \emph{orthogonal}, meaning that the set of possible outcomes
+        are mutually exclusive, we are guaranteed that there exists a complete set of orthogonal
+        projectors $\{\projector_{\Sspace_i}\}_{i \in [k]}$ such that 
+        \[
+          \measurement = \sum_{i \in [k]} m_{\Sspace_i} \projector_{\Sspace_i}\, .
+        \]
+        In linear algebra terms, this defines the \emph{spectral decomposition} of the
+          operator $\measurement$, with $m_{\Sspace_i}$ being the eigenvalues
+          of $\measurement$.
+
+
+    \subsubsection{An Optimally Distinguishing Measurement.}
+      \hhnote{todo}
+
 
   \iffutureversion
     \subsection{The Hadamard Basis}
