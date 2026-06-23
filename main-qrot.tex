@@ -3,8 +3,8 @@
   %\darktrue % triggers dark coloured pdf for late night work
 
 \newif\iffutureversion
-  \futureversiontrue
-  %\futureversionfalse
+  %\futureversiontrue
+  \futureversionfalse
 
 \newif\ifdraftversion
   %\draftversionfalse
@@ -116,6 +116,9 @@
   % dispatcher: real content when building the future version, phantom otherwise
   \newcommand{\futuresect}[2]{% {file}{ToC title}
     \iffutureversion \input{#1}\clearpage \else \plannedsection{#2}\fi
+  }
+  \newcommand{\inputsect}[1]{
+    \input{#1}\clearpage 
   }
 
 % Todonotes
@@ -269,58 +272,71 @@
 
   \addcontentsline{toc}{part}{Part 1. Classical Security is Easy with Random Oracles}
   %\part{Setting the Stage}\label{part:prelims}
-    \input{qrot-basics}
-    \clearpage
-    \input{qrot-rom}
-    \clearpage
-    \input{qrot-utransform-rom}
-    \clearpage
-    \newcommand{\titleCcaRom}{Example 2: From CPA to CCA Security with the \U-Transform}
-    \futuresect{qrot-cca-rom}{\titleCcaRom}
-    \newcommand{\titleDsaRom}{Example 3: From Passive to Active Signature Security}
-    \futuresect{qrot-dsa-rom}{\titleDsaRom}
-    \newcommand{\titleFsRom}{Example 4: The Fiat-Shamir Transformation}
-    \futuresect{qrot-fs-rom}{\titleFsRom}
+    \newcommand{\titleBasics}{Foundations of Provable Security}
+      \inputsect{qrot-basics}
+    \newcommand{\titleRom}{The Random Oracle Model (ROM)}
+      \inputsect{qrot-rom}
+    \newcommand{\titleUtransformRom}{Example 1a: Classical Indistinguishability from the \U-transform}
+      \inputsect{qrot-utransform-rom}
 
-  \addcontentsline{toc}{part}{Part 2. Post-Quantum Security is Not So Easy with Random Oracles}
+  \addcontentsline{toc}{part}{Part 2. Enter Quantum}
+  %\addcontentsline{toc}{part}{Part 2. Post-Quantum Security is Not So Easy with Random Oracles}
   %\addcontentsline{toc}{part}{Part 2. Technical Difficulties in the Post-Quantum Realm}
   %\part{(Post-)Quantum Difficulties}\label{part:classical}
-    \input{qrot-primer}
-    \clearpage
-    \input{qrot-qrom}
-    \clearpage
-    \newcommand{\titlePseudocode}{A Quantum-Register Pseudocode}
-    \input{qrot-pseudocode}
-    \clearpage
-    %\futuresect{qrot-pseudocode}{\titlePseudocode}
+    \newcommand{\titlePrimer}{A Brief Quantum Primer}
+      \inputsect{qrot-primer}
+    %\newcommand{\titleQrom}{From Classical to Quantum Random Oracles}
+    \newcommand{\titleQrom}{The Quantum Random Oracle Model (QROM)}
+      \inputsect{qrot-qrom}
 
-  \addcontentsline{toc}{part}{Part 3. The Tools of the QRO Toolbox}
+  %\addcontentsline{toc}{part}{Part 3. One-Way to Hiding}
+  \addcontentsline{toc}{part}{Part 3. Non-adaptive Programming}
   %\part{The Tools of the Toolbox}\label{part:tools}
-    \input{qrot-o2h}
-    \clearpage
-    \input{qrot-utransform} % OW -> IND example
-    \clearpage
-    \newcommand{\titleCompressed}{Interlude: Lazy-sampling QROs with the Compressed-Oracle Technique}
-    \futuresect{qrot-compressed}{\titleCompressed}
-    \newcommand{\titleExtract}{Tool 2: Learning From QRO Queries via Quantum Online-Extraction}
-    \futuresect{qrot-extract}{\titleExtract}
-    \newcommand{\titleCca}{Example 2: CPA to CCA Security Revisited}
-    \futuresect{qrot-cca}{\titleCca}
-    \newcommand{\titleAdaptive}{Tool 3: Adaptive Reprogramming with Fixed Permutations}
-    \futuresect{qrot-adaptive}{\titleAdaptive}
-    \newcommand{\titleDsa}{Example 3: Passive to Active Signature Security Revisited}
-    \futuresect{qrot-dsa}{\titleDsa}
-    \newcommand{\titleRewind}{Tool 4: Rewinding Quantum Adversaries with Measure-and-Reprogram}
-    \futuresect{qrot-rewind}{\titleRewind}
-    \newcommand{\titleFs}{Example 4: The Fiat-Shamir Transformation Revisited}
-    \futuresect{qrot-fs}{\titleFs}
+    \newcommand{\titleOtoH}{The O2H Lemmas: Programming Quantum Random Oracles}
+      \inputsect{qrot-o2h}
+    \newcommand{\titleUtransformQrom}{Example 1b: Post-Quantum Indistinguishability from the \U-transform}
+      \inputsect{qrot-utransform} % OW -> IND example
+    \newcommand{\titlePseudocode}{Interlude: A Quantum Register Pseudocode}
+      \futuresect{qrot-pseudocode}{\titlePseudocode}
+    \newcommand{\titleExtractors}{The Extractors of O2H}
+      \futuresect{qrot-extractors}{\titleExtractors}
 
-  \addcontentsline{toc}{part}{Part 4. Under the Rug}
-  %\part{Under The Rug}\label{part:proofs}
-    \newcommand{\titleQit}{A Brief Quantum Information Theory Primer}
-    \futuresect{qrot-qit}{\titleQit}
-    \newcommand{\titleProofs}{How to Prove Quantum Lemmas}
-    \futuresect{qrot-proofs}{\titleProofs}
+  %\addcontentsline{toc}{part}{Part 4. The Compressed-Oracle Technique}
+  \addcontentsline{toc}{part}{Part 4. Simulation}
+    \newcommand{\titleCompressed}{Lazy-sampling QROs with the Compressed-Oracle Technique}
+      \futuresect{qrot-compressed}{\titleCompressed}
+
+  %\addcontentsline{toc}{part}{Part 5. Online Extractability}
+  \addcontentsline{toc}{part}{Part 5. Extraction}
+    \newcommand{\titleCcaRom}{Example 2a: Classical CCA-security from the \U-transform}
+      \futuresect{qrot-cca-rom}{\titleCcaRom}
+    \newcommand{\titleExtract}{Online Extractability: Learning From Oracle Queries}
+      \futuresect{qrot-extract}{\titleExtract}
+    \newcommand{\titleCca}{Example 2b: Post-Quantum CCA-security from the \U-transform}
+      \futuresect{qrot-cca}{\titleCca}
+
+  \addcontentsline{toc}{part}{Part 6. Adaptive Programming}
+    \newcommand{\titleDsaRom}{Example 3a: Classical CMA-security from NIZKs}
+      \futuresect{qrot-dsa-rom}{\titleDsaRom}
+    \newcommand{\titleAdaptive}{Delayed Programming from the Resampling Lemma and Fixed-Permutation O2H}
+      \futuresect{qrot-adaptive}{\titleAdaptive}
+    \newcommand{\titleDsa}{Example 3b: Post-Quantum CMA-security from NIZKs}
+      \futuresect{qrot-dsa}{\titleDsa}
+
+  \addcontentsline{toc}{part}{Part 7. Rewinding}
+    \newcommand{\titleFsRom}{Example 4a: Classical NIZKs from the Fiat-Shamir Transformation}
+      \futuresect{qrot-fs-rom}{\titleFsRom}
+    \newcommand{\titleRewind}{Rewinding Quantum Adversaries with Measure-and-Reprogram}
+      \futuresect{qrot-rewind}{\titleRewind}
+    \newcommand{\titleFs}{Example 4b: Post-Quantum NIZKs from the Fiat-Shamir Transformation}
+      \futuresect{qrot-fs}{\titleFs}
+
+  %\addcontentsline{toc}{part}{Part 8. Under the Rug}
+  %%\part{Under The Rug}\label{part:proofs}
+  %  \newcommand{\titleQit}{A Brief Quantum Information Theory Primer}
+  %    \futuresect{qrot-qit}{\titleQit}
+  %  \newcommand{\titleProofs}{How to Prove Quantum Lemmas}
+  %    \futuresect{qrot-proofs}{\titleProofs}
 
   \newpage
   \addtocontents{toc}{\protect\vspace{1.5em}}
@@ -336,16 +352,16 @@
   \clearpage
 
   % Appendices input below
-  \input{qrot-toolbox}
-  \clearpage
+  \inputsect{qrot-toolbox}
   \iffutureversion
-    \input{qrot-pseudocode-defs}
-    \clearpage
+    \inputsect{qrot-pseudocode-defs}
   \fi
-  \input{qrot-ttransform}
-  %\clearpage
-  \input{qrot-solutions}
-  %\clearpage
+  \inputsect{qrot-ttransform}
   %\input{qrot-bre} % Old BRE-based ROM draft
+  \newcommand{\titleQit}{A Brief Quantum Information Theory Primer}
+    \futuresect{qrot-qit}{\titleQit}
+  \newcommand{\titleProofs}{Deriving the Tools}
+    \futuresect{qrot-proofs}{\titleProofs}
+  \inputsect{qrot-solutions}
 
 \end{document}
