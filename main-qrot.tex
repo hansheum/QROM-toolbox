@@ -258,6 +258,15 @@
 % MUST be called here in the preamble, not after \begin{document}.
 \pcfixcleveref
 
+% Muscle-memory guard: the project migrated to cleveref, but \autoref still
+% exists (hyperref defines it). Redefine it to halt the build, so a stray
+% \autoref is caught immediately rather than silently producing inconsistent
+% reference names. Use \cref / \Cref instead.
+\renewcommand{\autoref}[1]{%
+  \PackageError{qrot}{Use \string\cref\space (or \string\Cref), not
+  \string\autoref}{This project migrated to cleveref; replace \string\autoref%
+  \space with \string\cref.}}
+
 % \newcommand{\defer}[1]{Appendix~\ref{#1}}   %full version
 \newcommand{\defer}[1]{\ref{#1}}              %submission
 % \newcommand{\defer}[1]{the full version}      %camera ready

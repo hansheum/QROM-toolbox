@@ -81,6 +81,11 @@
       position; squaring this amplitude may then for example give you the
       probability that you will observe the particle to be in position $x$.
 
+    \hhnote{
+      Quantum states are to probability distributions what quantum
+      amplitudes are to probabilities.
+    }
+
     If all of this sounds terribly complicated, then you may appreciate why
       physicists grew so fond of Dirac's notation, which neatly sweeps all of
       these horrible details under a rug of neat, algebraic clarity.
@@ -141,8 +146,13 @@
         &&& $n$-qubit op.\ $\unitary$ $\To$ $(n+1)$-qubit op. $\unitary[CU]$ \\
         Orthogonal projector & Uppercase roman, middle-late alph. & $\projector$ & 
           $\in \CC^{N \times N}$ s.th.\ $\projector^2 = \projector = \projector^\dagger$ \\
-        &&& Single-state projector $\projector_\psi = \ketbra{\psi}$ \\
-        POVM & ? & ? & ? \\
+        &&& Single-state projector: $\projector_\psi = \ketbra{\psi}$ \\
+        PVM  & Calligraphic M & $\measurement$ & Complete, orthogonal set $\{ \projector_i \}_{i \in [k]}$ \\
+        (Projector-Valued Measure) &&& for $k$ mutually-exclusive outcomes \\
+        \midrule
+        Hilbert space & Calligraphic H & $\Hspace$ & Complex inner product space \\
+        The set of quantum states & ? & $\Psi_\Hspace$ & 
+          $\coloneqq\, \mathcal{S}(\Hspace)/{\sim}\, \subset\, \Hspace$ \\
         \midrule
         Qubit & Lowercase roman, bold sans-serif & $\qubit$ & Two-level physical system \\
         %Single-qubit register & Register $\bitReg$ & $\bitReg$ & List of one qubit \\ 
@@ -462,6 +472,60 @@
         orthonormal basis, then compare the probabilities of observing each
         outcome.}
       \end{exercise}
+
+    \subsubsection{The Set of Quantum States.}
+      Until now, we have used that quantum states $\ket\psi$ live in the Hilbert
+        space $\Hspace$, which is correct but not very precise: The
+        Hilbert space of $N$-dimensional complex vectors include vectors of arbitrary
+        norm, whereas our quantum (pure) states are always unit-length. 
+        In most cases, this is not a problem, but what if we want to quantify over
+        all valid quantum states? Writing $\forall\ \ket\psi \in \Hspace$ 
+        won't cut it, since this would seem to imply that $\ket\psi$ can take
+        any norm.
+        %break the convention that $\ket\psi$ denotes pure quantum states. 
+
+      We might instead want to write something like
+      \[
+        \forall\, \ket\psi \in \mathcal{S}(\Hspace) \coloneqq 
+        \{ \ket{\psi} \in \Hspace\ |\, \norm{\ket{\psi}} = 1 \}\, ,
+        %= \mathcal{S}(\Hspace)\, ,
+      \]
+      i.e.\ quantify over the unit sphere of $\Hspace$.
+        However, you saw in \cref{ex:global-phase} that quantum states that only
+        differ by a global phase factor cannot be distinguished by observation, so
+        quantifying over the unit sphere would lead to a kind of observational 
+        double-counting -- again, perhaps not a problem in most contexts, but can we do better? 
+
+      What we really want is a set that contains exactly \emph{one} element 
+        per observationally-distinct quantum state,
+        and the standard way to construct such a set is to invoke the 
+        machinery of equivalence classes. Let $\sim$ be the equivalence relation
+        given by 
+      \[
+        \ket\psi \sim \ket\varphi\ \Longleftrightarrow\ 
+        \exists_{\theta\, \in[0,2\pi)} e^{i\theta} \ket\psi = \ket\varphi\, ,
+      \]
+      i.e.\ $\ket\psi \sim \ket\varphi$ iff the two states only differ by a
+      global phase fector. Next, let $[\ket\psi]$ denote the corresponding
+      equivalence class:
+      \[
+        [\ket\psi] \coloneqq \{ \ket\varphi\, |\, \ket\varphi \sim \ket\psi \}\, ,
+        %= \{ \ket\varphi\ |\ \exists_{\theta\, \in[0,2\pi)} e^{i\theta} \ket\psi = \ket\varphi \}\, ,
+      \]
+      which is then exactly the set of states observationally equivalent to $\ket\psi$.
+      Then the set of observationally-distinct quantum states is captured by the set of
+      equivalence classes of states on the unit sphere of the Hilbert space $\Hspace$:
+      \[
+        \states \coloneqq \mathcal{S}(\Hspace)/{\sim} = \{[\ket\psi]\ |\,
+        \ket\psi \in \mathcal{S}(\Hspace) \}\, .
+      \]
+      We may then write $\forall \ket{\psi} \in \states$, and be sure that we
+        only quantify over each observably-distinct state only once,
+        by doing the standard trick of leaving implicit the fact that what we are
+        actually quantifying over are \emph{equivalence classes} of objects in place
+        of the original objects themselves, which is a well-defined
+        simplification exactly because ``differ by at most a global phase'' and
+        ``cannot be distinguished by any measurement'' imply each other perfectly.
 
   \subsection{Qubit Registers}
     If the qubit a quantum state is describing is not clear from context,
@@ -1057,6 +1121,18 @@
 
         \clearpage
 
+        \begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
+          Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
+          operator on $\Hspace$ ($\unitary[A]^\dagger = \unitary[A]$).
+          Then $\unitary[A]$ is \emph{positive semi-definite}, written
+          $\unitary[A] \succeq 0$, if for every pure state $\ket\psi \in \Hspace$,
+          \[
+            \braket{\psi|\unitary[A]|\psi} \geq 0\, .
+          \]
+          If the inequality is strict, then $\unitary[A]$ is
+          \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
+        \end{definition}
+
         \begin{definition}[Complete, orthogonal projectors]
           A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
             Hilbert space $\Hspace$ is said to be
@@ -1064,14 +1140,17 @@
             \[
               \sum_{i \in [k]} \projector_i = \idmatrix\, ,
             \]
-            and \emph{orthogonal} if the projectors are simultaneously
+            and \emph{orthogonal} if the projectors are
             \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
             \[
               \projector_i^\dagger = \projector_i\, ,\qquad
               \projector_i \projector_j = \delta_{ij}\projector_i\, .
             \]
-            Then the projectors $\projector_i$ project onto mutually orthogonal
-            subspaces $\Sspace_i$ that together compose the full Hilbert space: 
+            Then the projectors $\projector_i$ are PSD operators with eigenvalues in $\bin$ (as follows
+            from $\projector_i = \projector_i^\dagger$ and $\projector_i^2 =
+            \projector_i$) which project $\Hspace$ onto mutually orthogonal
+            subspaces $\Sspace_i \coloneqq \projector_i \Hspace$ that together compose the full Hilbert space
+            (as follows from orthogonality and completeness): 
             \[
               \bigoplus_{i\in[k]} \Sspace_i = \Hspace\, .
             \]
