@@ -6,7 +6,6 @@
 
 %%% Arrows
 \newcommand{\assign}{\ensuremath{\coloneqq}} % for deterministic assignment
-\newcommand{\apply}[1]{\overset{#1}{\longrightarrow}}
 \newcommand{\applyleft}[1]{\overset{#1}{\longleftarrow}}
 \newcommand{\applyleftright}[1]{\overset{#1}{\longleftrightarrow}}
 \newcommand{\To}{\ensuremath{\Rightarrow}}
@@ -18,6 +17,7 @@
 \newcommand{\predicate}{\mathcal{P}}
 \newcommand{\primitive}{\pcalgostyle{P}}
 \newcommand{\collisions}{\pcalgostyle{coll}}
+\newcommand{\distribution}{{\ensuremath{\Dspace}}}
 
 %%% Adversaries
 \renewcommand{\pcadvstyle}[1]{\mathcal{#1}}
@@ -115,7 +115,9 @@
 
 %%% Gates
 %\newcommand{\unitary}[1][U]{\mathsf{#1}}
-\newcommand{\measurement}[1][M]{\mathsf{#1}}
+%\newcommand{\measurement}[1][M]{\mathsf{#1}}
+\newcommand{\measurement}[1][M]{{\ensuremath{\mathcal{#1}}}}
+\newcommand{\collapse}{{\ensuremath{\mathsf{Collapse}}}}
 \newcommand{\Xgate}{\unitary[X]}
 \newcommand{\Zgate}{\unitary[Z]}
 \newcommand{\Ygate}{\unitary[Y]}

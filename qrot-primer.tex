@@ -1080,22 +1080,51 @@
         \begin{definition}[Projective measurement (PVM)]
           Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
             orthogonal set of projectors on a Hilbert space $\Hspace$.
-            Then $\{ \projector_{i} \}_{i \in [k]}$ defines a \emph{Projection-Valued
-            Measure (PVM)}, under which measuring a state $\ket{\psi}
-            \in \Hspace$, $\braket{\psi|\psi} = 1$ yields
-            outcome $i$ with probability
+            Then $\measurement = \{\projector_{i} \}_{i \in [k]}$ is a 
+            \emph{Projection-Valued Measure (PVM)}, under which measuring a
+            state $\ket{\psi} \in \Hspace$, $\braket{\psi|\psi} = 1$ 
+            %yields outcome $i$ with probability
+            induces a probability distribution
+            $\distribution_{\psi}^{\measurement}$ over the outcomes 
+            $i \in [k]$, given by
             \[
-              \prob{\text{outcome $i$ observed}\, } = \braket{\psi|\projector_i|\psi}
-              = \norm{\projector_i \ket\psi}^2\, ,
+              \distribution_\psi^{\measurement}(i) = \braket{\psi|\projector_i|\psi}
+              = \norm{\projector_i \ket\psi}^2\, .
             \]
-            and, conditioned on outcome $i$, the post-measurement state will be
-            \[
-              \ket{\psi^\prime} = 
-              \frac{\projector_{i}\ket{\psi}}{\norm{\projector_{i} \ket{\psi}}}\, .
-            \]
+            %and, conditioned on outcome $i$, the post-measurement state will be
+            %\[
+            %  \ket{\psi^\prime} = 
+            %  \frac{\projector_{i}\ket{\psi}}{\norm{\projector_{i} \ket{\psi}}}\, .
+            %\]
+            We will write $X \gets \measurement(\ket\psi)$
+            for sampling a random variable $X$ from the induced distribution
+            $\distribution_\psi^{\measurement}$.
         \end{definition}
 
-        \hhnote{ldots}
+        \begin{definition}[Post-measurement state]
+          Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
+          Upon observing a state $\ket\psi$, if outcome $i$ is observed,
+          the state will immediately collapse to a state consistent with the
+          observed outcome, as follows:
+          \[
+            \ket{\psi} \apply{\measurement \to i} 
+            \mathsf{Collapse}^{\measurement}_i(\ket{\psi}) 
+            \coloneqq \frac{\projector_i \ket\psi}{\norm{\projector_i \ket{\psi}}}
+            = \frac{\projector_i \ket\psi}{\sqrt{\braket{\psi|\projector_i|\psi}}}\, ,
+          \]
+          where $\norm{\projector_i \ket{\psi}} > 0$
+          (since conditioning on outcome $i$ implies a non-zero probability that
+          $i$ was observed).
+        \end{definition}
+        Note how $\mathsf{Coll}^{\measurement}_i(\ket{\psi})$ is not an
+        operator, but rather a non-linear map on the Hilbert space $\Hspace$. 
+
+        The fact that the induced object is indeed a probability distribution
+        follows from positivity (which is what Hermiticity granted us) and
+        completeness (the distribution sums to one).
+
+
+        \hhnote{\ldots}
 
       specified by a subset of the computational basis states
         $\{\ket{x_i}\}_{i \in [k]}$ (where $k \leq N$). This will
