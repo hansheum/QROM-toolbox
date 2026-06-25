@@ -102,41 +102,59 @@
 
     This is the approach adopted by the quantum information sciences.
     \begin{table}%[b]
-      \centering
-      %
       \caption{
         \label{tab:notation}
         An overview of our notational conventions for quantum objects. 
         Bold sans-serif denotes physical objects such as qubits and qubit
         registers, to distinguish them from the math italics of mathematical objects.
       }
-      %
+      \centering
+      %\scriptsize
       \rowcolors{2}{}{gray!10} % zebra striping
-      \begin{tabular}{cccc}
+      \resizebox{\textwidth}{!}{\begin{tabular}{cccc}
         \toprule
-        Object & Convention & Example & Definition \\
+        Object & Convention & Notation & Definition/example \\
+        %
         \midrule
-        Bitstring & Lowercase roman, end of alph. & $x$ & $\in\bin^n$ \\
-        Qubit count & Lowercase roman, middle of alph. & $n$ & $\in\NN$ \\
-        Hilbert space dimension & Uppercase roman, middle of alph. & $N$ & $\in\NN$ \\
-        Quantum amplitude & Lowercase greek, start of alph. & $\alpha$ & $\in\CC$ \\
-        State label & Lowercase greek, middle of alph. & $\psi$ & (any label is permissible) \\
-        Conjugate transpose & Dagger & $A^\dagger$ & $= (A^*)^T$ \\
+        %
+        Hilbert space & Calligraphic H & $\Hspace$ & Complete, complex inner-prod.\ space \\
+        &&& Single qubit $\To \Hspace \cong \CC^2$ \\
+        Hilbert space dimension & Uppercase roman, middle & $N$ & $\in\NN$ \\
+        & of alphabet && $\Hspace$ finite-dim.\ $\To \Hspace \cong \CC^N$ \\
+        Qubit count & Lowercase roman, middle & $n$ & $\in\NN$ \\
+        & of alphabet && $n$ qubits $\To \Hspace \cong (\CC^2)^{\otimes n} \cong \CC^{2^n}$ \\
+        Unit sphere & Calligraphic S & $\sphere$ & Unit-norm subset of inner-prod.\ space \\
+        &&& $\sphere(\Xspace) = \{\vec{x} \in \Xspace\, |\, \norm{\vec x} = 1 \}$ \\
+        %
         \midrule
+        %
+        Bitstring & Lowercase roman, end & $x$ & $\in\bin^n$ \\
+        & of alphabet && \\
+        Quantum amplitude & Lowercase greek, start & $\alpha$ & $\in\CC$, $\abs{\alpha} \leq 1$ \\
+        & of alphabet && \\
+        State label & Lowercase greek, middle & $\psi$ & (any label is permissible) \\
+        & of alphabet && \\
+        Conjugate transpose & Dagger superscript & $\unitary[A]^\dagger$ & $\coloneqq (\unitary[A]^*)^T$ \\
+        &&& Note: $(\unitary[A]\unitary[B])^\dagger = \unitary[B]^\dagger \unitary[A]^\dagger$ \\
+        %
+        \midrule
+        %
         %Pure quantum state & Dirac ket with label & $\ket{\ \cdot\ }$ & $\in \CC^{M}$ \\
-        Computational basis state & ``Ket'' with bitstring label & $\ket{x}$ & 
+        Computational basis-state & ``Ket'' with bitstring label & $\ket{x}$ & 
         $= [0\ \ldots\ 0\ 1\ 0\ \ldots\ 0]^T$ \\
-        &&& single-unit column vector $\in\CC^{N}$\\
-        General quantum state & ``Ket'' with state label & $\ket{\psi}$ & 
+        vector &&& single-unit column vector $\in\sphere(\Hspace)$\\
+        Quantum state vector & ``Ket'' with state label & $\ket{\psi}$ & 
         $= \sum_x \alpha_x \ket x$ s.th.\ $\sum_x \alpha^*_x \alpha_x = 1$ \\
-        &&& unit-norm column vector $\in \CC^N$ \\
-        %Evolving state & Ket with time-step label & $\ket{\psi(t)}$ & $t \in \NN$ \\
-        Conjugate quantum state & ``Bra'' with state label & $\bra{\psi}$ & 
+        &&& unit-norm column vector $\in \sphere(\Hspace)$ \\
+        %Evolving state & Ket with time-step label & $\ket{\psi(t)}$ & $t \in \NN$ \\
+        Conjugate state vector & ``Bra'' with state label & $\bra{\psi}$ & 
         $\coloneqq \ket{\psi}^\dagger$ \\
-        &&& unit-norm row vector $\in \CC^N$  \\
+        &&& unit-norm row vector $\in \sphere(\Hspace)$  \\
         Inner product & ``Bra-ket'' & $\braket{\psi|\varphi}$ & $\in \CC$, $\abs{\braket{\psi|\varphi}} \leq 1$ \\
         &&& $\braket{x|y} = \delta_{xy} \To \braket{\psi|\varphi} = \sum_x \alpha_x^* \beta_x$ \\
+        %
         \midrule
+        %
         Unitary transformation & Uppercase roman, late alphabet & $\unitary$ &
           $\in \CC^{N \times N}$ s.th.\ $\unitary^\dagger \unitary = 1$ \\
         &&& $\unitary$ is an $n$-qubit op.\ $\To \unitary \in \CC^{2^n \times 2^n}$ \\
@@ -144,27 +162,52 @@
           $\in \CC^{N \times N}$ \\
         % &&& $\unitary \in \CC^{2^n \times 2^n} \To \unitary[CU] \in \CC^{2^{n+1} \times 2^{n+1}}$ \\
         &&& $n$-qubit op.\ $\unitary$ $\To$ $(n+1)$-qubit op. $\unitary[CU]$ \\
-        Orthogonal projector & Uppercase roman, middle-late alph. & $\projector$ & 
+        %
+        \midrule
+        %
+        Orthogonal projector & Uppercase roman, middle-late & $\projector$ & 
           $\in \CC^{N \times N}$ s.th.\ $\projector^2 = \projector = \projector^\dagger$ \\
-        &&& Single-state projector: $\projector_\psi = \ketbra{\psi}$ \\
-        PVM  & Calligraphic M & $\measurement$ & Complete, orthogonal set $\{ \projector_i \}_{i \in [k]}$ \\
-        (Projector-Valued Measure) &&& for $k$ mutually-exclusive outcomes \\
+        & alphabet && Single-state projector: $\projector_\psi = \ketbra{\psi}$ \\
+        PVM (Projector-valued & Calligraphic M & $\measurement$ & Complete, orthogonal set $\{ \projector_i \}_{i \in [k]}$ \\
+        Measure) &&& for $k$ mutually-exclusive outcomes \\
+        Induced probability & Distribution with measurement- & $\distribution_\psi^{\measurement}$ &
+          $\distribution_\psi^{\measurement}(i) = \braket{\psi|\projector_i|\psi}$ \\
+        distribution & and state-dependencies && $\distribution_\psi^{\mathrm{comp}}(x) = \abs{\alpha_x}^2$ \\
+        Post-measurement state & Sans-serif with measurement- &
+        $\mathsf{Collapse}_i^{\measurement}(\ket{\psi})$ & $= \projector_i \ket\psi / \sqrt{\braket{\psi|\projector_i|\psi}} $ \\
+        & and outcome-dependencies && $\mathsf{Collapse}_x^{\mathrm{comp}}(\ket{\psi}) = \ket{x}$ \\ 
+        %
         \midrule
-        Hilbert space & Calligraphic H & $\Hspace$ & Complex inner product space \\
-        The set of quantum states & ? & $\Psi_\Hspace$ & 
-          $\coloneqq\, \mathcal{S}(\Hspace)/{\sim}\, \subset\, \Hspace$ \\
-        \midrule
+        %
         Qubit & Lowercase roman, bold sans-serif & $\qubit$ & Two-level physical system \\
+        &&& \\
         %Single-qubit register & Register $\bitReg$ & $\bitReg$ & List of one qubit \\ 
         %Global quantum system & Register $\qcomp$ & $\qcomp$ & List of all qubits \\ 
         %\midrule
         Qubit state & State with index subscript & $\ket{\psi}_i$ & $= \ket{\qubit_i} \in \CC^2$ \\
+        &&& \\
         Register & Uppercase roman, bold sans-serif & $\register$ & List of qubits \\
+        &&& \\
         Register state & State with register subscript &
           $\ket{\psi}_{\register}$ & $= \ket{\register} \in \CC^{2^n}$ for $n$-qubit register \\
-        % Measure register & $\pcalgostyle{Meas}$(projector : register) & $x \sample \meas{\measurement}{\register}$ & \cref{def:measure} \\ 
+        &&& \\
+        %
+        \midrule
+        %
+        %$\mathrm{SU}(N)$ 
+        Physical equivalence & Equivalence relation & $\ket\psi \sim
+          \ket\varphi$ & $\exists\, {\theta\in[0,2\pi)}$ s.th. $\ket{\psi} = e^{i\theta}\ket\varphi$ \\
+        &&& \\
+        Physical state & Congruence class of state vectors & $[\ket{\psi}]$ & 
+          $\coloneqq \{ \ket{\varphi}\, |\, \ket\varphi \sim \ket\psi \}$ \\
+        &&& \\
+        The set of physical & Capital psi with Hilbert & $\Psi_\Hspace$ & $\coloneqq\, \mathcal{S}(\Hspace)/{\sim}
+          = \mathcal{S}(\Hspace)/\mathrm{U}(1)$ \\
+        quantum states & space dependency && Unit sphere modulo the circle group \\
+        % Measure register & $\pcalgostyle{Meas}$(projector : register) & $x
+          % \sample \meas{\measurement}{\register}$ & \cref{def:measure} \\ 
         \bottomrule
-      \end{tabular}
+      \end{tabular}}
     \end{table}
 
 
@@ -986,8 +1029,44 @@
 
       \hhnote{
         We also need Hermiticity if we want our probabilities to end up
-        positive; make counterexample an exercise
+        positive; make counterexample an exercise?
       }
+
+      \begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
+        Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
+        operator on $\Hspace$ ($\unitary[A]^\dagger = \unitary[A]$).
+        Then $\unitary[A]$ is \emph{positive semi-definite}, written
+        $\unitary[A] \succeq 0$, if for every pure state $\ket\psi \in \Hspace$,
+        \[
+          \braket{\psi|\unitary[A]|\psi} \geq 0\, .
+        \]
+        If the inequality is strict, then $\unitary[A]$ is
+        \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
+      \end{definition}
+
+      \begin{definition}[Complete, orthogonal projectors]
+        A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
+          Hilbert space $\Hspace$ is said to be
+          \emph{complete} if the projectors sum to identity:
+          \[
+            \sum_{i \in [k]} \projector_i = \idmatrix\, ,
+          \]
+          and \emph{orthogonal} if the projectors are
+          \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
+          \[
+            \projector_i^\dagger = \projector_i\, ,\qquad
+            \projector_i \projector_j = \delta_{ij}\projector_i\, .
+          \]
+          Then the projectors $\projector_i$ are PSD operators with eigenvalues in $\bin$ (as follows
+          from $\projector_i = \projector_i^\dagger$ and $\projector_i^2 =
+          \projector_i$) which project $\Hspace$ onto mutually orthogonal
+          subspaces $\Sspace_i \coloneqq \projector_i \Hspace$ that together compose the full Hilbert space
+          (as follows from orthogonality and completeness): 
+          \[
+            \bigoplus_{i\in[k]} \Sspace_i = \Hspace\, .
+          \]
+      \end{definition}
+
 
     \subsubsection{Projective Measurements.}
       \hhnote{
@@ -1118,43 +1197,6 @@
 
         With this in place, we are finally ready to formally define our
         measurement procedure.
-
-        \clearpage
-
-        \begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
-          Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
-          operator on $\Hspace$ ($\unitary[A]^\dagger = \unitary[A]$).
-          Then $\unitary[A]$ is \emph{positive semi-definite}, written
-          $\unitary[A] \succeq 0$, if for every pure state $\ket\psi \in \Hspace$,
-          \[
-            \braket{\psi|\unitary[A]|\psi} \geq 0\, .
-          \]
-          If the inequality is strict, then $\unitary[A]$ is
-          \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
-        \end{definition}
-
-        \begin{definition}[Complete, orthogonal projectors]
-          A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
-            Hilbert space $\Hspace$ is said to be
-            \emph{complete} if the projectors sum to identity:
-            \[
-              \sum_{i \in [k]} \projector_i = \idmatrix\, ,
-            \]
-            and \emph{orthogonal} if the projectors are
-            \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
-            \[
-              \projector_i^\dagger = \projector_i\, ,\qquad
-              \projector_i \projector_j = \delta_{ij}\projector_i\, .
-            \]
-            Then the projectors $\projector_i$ are PSD operators with eigenvalues in $\bin$ (as follows
-            from $\projector_i = \projector_i^\dagger$ and $\projector_i^2 =
-            \projector_i$) which project $\Hspace$ onto mutually orthogonal
-            subspaces $\Sspace_i \coloneqq \projector_i \Hspace$ that together compose the full Hilbert space
-            (as follows from orthogonality and completeness): 
-            \[
-              \bigoplus_{i\in[k]} \Sspace_i = \Hspace\, .
-            \]
-        \end{definition}
 
         \begin{definition}[Projective measurement (PVM)]
           Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
