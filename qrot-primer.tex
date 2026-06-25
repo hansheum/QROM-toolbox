@@ -1068,15 +1068,126 @@
       \end{definition}
 
 
-    \subsubsection{Projective Measurements.}
+    \subsubsection{The Induced Distribution.}
+      We already mentioned the Born rule, which says that the probability of
+        observing an outcome is equal to the norm-squared of the corresponding
+        amplitude. This makes quantum states (vectors of amplitudes) the quantum
+        equivalent of a probability distribution (lists of probabilities). 
+        For example, performing a computational-basis measurement on a qubit in
+        the state $\ket\psi = \alpha_0 \ket0 + \alpha_1 \ket1$ induces the
+        distribution
+        \[
+          \distribution_\psi^{\computational} 
+          = \left(\abs{\alpha_0}^2, \abs{\alpha_1}^2\right)
+          \quad\Longrightarrow\quad \distribution_\psi^{\computational}(b) 
+          = \abs{\alpha_b}^2 = \norm{\projector_b \ket\psi}^2 
+          = \braket{\psi|\projector_b|\psi}\, ,
+        \]
       \hhnote{
-        NB: formalism being reworked
+        kinda feels like we have no choice but to count list
+        elements from $0$ instead of $1$
       }
-      As mentioned, $\projector \ket{\psi}$ will not itself be a quantum
-        state, since (assuming $\projector$ did any projection at all) the result will not
-        be of unit norm. Additionally, we have not yet
+      where we used the properties of the projectors $\projector_0,
+      \projector_1$ to rewrite the probability of observing outcome $b$.
+      This suggests a natural $n$-qubit generalization: 
+      Let $\ket\psi = \sum_x \alpha_x \ket{x}$. Then performing a
+      computational-basis measurement on all $n$ qubits induces the distribution
+      \[
+        \distribution_\psi^{\computational}(x) 
+        = \abs{\alpha_x}^2 = \braket{\psi|\projector_x|\psi}\, .
+      \]
+
+      What about other measurements that you might want to perform? 
+        Say, for example, you only want to measure whether the first bit $x_0$ of
+        the string $x$ is equal to $0$ or $1$. To express this as a measurement on
+        $\ket\psi$, you might define the projectors
+      \[
+        \projector_{x_0 = 0} \coloneqq \projector_0 \otimes \idmatrix_{2^{n-1}}\, ,
+        \quad
+        \projector_{x_0 = 1} \coloneqq \projector_1 \otimes \idmatrix_{2^{n-1}}\, .
+      \]
+      Then $\{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$ is a complete set of
+        orthogonal projectors, as they must be, since they each correspond to
+        mutually-exclusive outcomes whose probabilities sum to one. 
+        Call this set $\measurement_{x_0}$. Performing this measurement then
+        induces the distribution
+      \[
+        \distribution_\psi^{\measurement_{x_0}}(b) 
+        = \braket{\psi|\projector_{x_0 = b}|\psi}
+        = \sum_{x\, :\, x_0 = b} \abs{\alpha_x}^2\, .
+      \]
+
+      \begin{exercise}
+        %Let $\ket\psi = \sum_x \alpha_x \ket x$.
+        \begin{subex}
+          \item Show that the matrix $\projector_{x_0=b} = \projector_b \otimes \idmatrix_{2^{n-1}}$ is a projector.
+          \item Show that the set $\measurement_{x_0} = \{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$
+            is complete and orthogonal.
+          %\item Show that if $\ket\psi = \sum_x \alpha_x \ket x$, then
+          %  $\distribution_\psi^{\measurement_{x_0}}(b) = \sum_{x\, :\, x_0 = b}
+          %  \abs{\alpha_x}^2$.
+          \item Show that the projector $\projector_{x_0=b}$ is equal to the sum
+            $\sum_{x\, :\, x_0=b} \projector_x$.
+        \end{subex}
+        \emph{
+          %Hint: You may use that $\projector = \projector^\dagger \projector$.
+          Hint: Consider the effect of applying $\projector_{x_0=b}$ to 
+          $\ket\psi = \sum_x \alpha_x \ket x$.
+        }
+      \end{exercise}
+
+      The set $\measurement_{x_0}$ is an example of a \emph{Projector-Valued
+        Measure} (PVM). Any set of complete, orthogonal projectors defines a
+        PVM; conversely, for any \emph{sharp} measurement (meaning measurements
+        such that repeating yields the same outcome) such that there are $k$
+        possible, mutually exclusive outcomes, there is a corresponding
+        PVM.\footnote{
+          The most general class of measurements are the POVMs, or ``Positive
+          Operator-Valued Measures'', which capture the class of measurements
+          with $k$ possible, mutually exclusive outcomes (as above), but
+          possibly \emph{non-sharp}, so that repeating the measurement may yield
+          different results. 
+          (Intuitively speaking, POVMs are to PVMs what mixed states are to
+          pure states.)
+        }
+
+      \begin{definition}[Projective measurement (PVM)]
+        Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
+          orthogonal set of projectors on a Hilbert space $\Hspace$.
+          Then $\measurement = \{\projector_{i} \}_{i \in [k]}$ is a 
+          \emph{Projection-Valued Measure (PVM)}, under which measuring a
+          state $\ket{\psi} \in \Hspace$
+          %yields outcome $i$ with probability
+          induces a probability distribution
+          $\distribution_{\psi}^{\measurement}$ over outcomes 
+          $i \in [k]$, given by
+          \[
+            \distribution_\psi^{\measurement}(i) 
+            \coloneqq \norm{\projector_i \ket\psi}^2
+            = \braket{\psi|\projector_i|\psi}\, .
+          \]
+          %and, conditioned on outcome $i$, the post-measurement state will be
+          %\[
+          %  \ket{\psi^\prime} = 
+          %  \frac{\projector_{i}\ket{\psi}}{\norm{\projector_{i} \ket{\psi}}}\, .
+          %\]
+          We will use $X \gets \measurement(\ket\psi)$
+          as shorthand for sampling a random variable $X$ from the distribution
+          $\distribution_\psi^{\measurement}$.
+      \end{definition}
+
+    \subsubsection{The Post-Measurement State.}
+      \hhnote{cont}
+      As mentioned, $\projector\ket{\psi}$ will usually not be a valid quantum
+        state, since if $\projector$ did any projection at all, then the
+        resulting vector will not have unit norm. Clearly, something more is needed.
+
+
+
+    \subsubsection{OLD OBSERVABLE-POINTING TEXT:}
+      Additionally, we have not yet
         touched on the concept of measurement \emph{outcomes}. What are the
-        values that are actually observed? Clearly, something more is needed.
+        values that are actually observed? 
 
       Let's say we want to measure a qubit, which remember is some physical
         system which can be observed in one of two states, which
@@ -1197,30 +1308,6 @@
 
         With this in place, we are finally ready to formally define our
         measurement procedure.
-
-        \begin{definition}[Projective measurement (PVM)]
-          Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
-            orthogonal set of projectors on a Hilbert space $\Hspace$.
-            Then $\measurement = \{\projector_{i} \}_{i \in [k]}$ is a 
-            \emph{Projection-Valued Measure (PVM)}, under which measuring a
-            state $\ket{\psi} \in \Hspace$, $\braket{\psi|\psi} = 1$ 
-            %yields outcome $i$ with probability
-            induces a probability distribution
-            $\distribution_{\psi}^{\measurement}$ over the outcomes 
-            $i \in [k]$, given by
-            \[
-              \distribution_\psi^{\measurement}(i) = \braket{\psi|\projector_i|\psi}
-              = \norm{\projector_i \ket\psi}^2\, .
-            \]
-            %and, conditioned on outcome $i$, the post-measurement state will be
-            %\[
-            %  \ket{\psi^\prime} = 
-            %  \frac{\projector_{i}\ket{\psi}}{\norm{\projector_{i} \ket{\psi}}}\, .
-            %\]
-            We will write $X \gets \measurement(\ket\psi)$
-            for sampling a random variable $X$ from the induced distribution
-            $\distribution_\psi^{\measurement}$.
-        \end{definition}
 
         \begin{definition}[Post-measurement state]
           Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
