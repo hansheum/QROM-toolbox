@@ -517,6 +517,9 @@
       \end{exercise}
 
     \subsubsection{The Set of Quantum States.}
+      \hhnote{
+        mention pure vs.\ mixed states somewhere, or remove mentions of pure
+      }
       Until now, we have used that quantum states $\ket\psi$ live in the Hilbert
         space $\Hspace$, which is correct but not very precise: The
         Hilbert space of $N$-dimensional complex vectors include vectors of arbitrary
@@ -1147,8 +1150,8 @@
           with $k$ possible, mutually exclusive outcomes (as above), but
           possibly \emph{non-sharp}, so that repeating the measurement may yield
           different results. 
-          (Intuitively speaking, POVMs are to PVMs what mixed states are to
-          pure states.)
+          (Intuitively, you may think of POVMs as being to PVMs what mixed
+          states are to pure states.)
         } We call such measurements \emph{projective}.
 
       \begin{definition}[Projective Measurement]
@@ -1182,152 +1185,82 @@
         state, since if $\projector$ did any projection at all, then the
         resulting vector will not have unit norm. Clearly, something more is needed.
 
-
-
-    \subsubsection{OLD OBSERVABLE-POINTING TEXT:}
-      Additionally, we have not yet
-        touched on the concept of measurement \emph{outcomes}. What are the
-        values that are actually observed? 
-
-      Let's say we want to measure a qubit, which remember is some physical
-        system which can be observed in one of two states, which
-        we have labelled ``0'' and ``1''. Let us stay general for now, and let
-        $m_b$ represent the value that is actually observed in the laboratory,
-        so that if we see $m_0$, then we \emph{interpret} that as having observed the
-        state $\ket0$, and likewise for $m_1$. What we want, then, is
-        a \emph{measurement operator} $\measurement$ such that
+      \begin{definition}[Post-measurement state]
+        Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
+        Upon observing a state $\ket\psi$, if outcome $i$ is observed,
+        the state will immediately collapse to a state consistent with the
+        observed outcome, as follows:
         \[
-          \ket\psi \apply{M} m_b \ket b\, .
+          \ket{\psi} \apply{\measurement \to i} 
+          \mathsf{Collapse}^{\measurement}_i(\ket{\psi}) 
+          \coloneqq \frac{\projector_i \ket\psi}{\norm{\projector_i \ket{\psi}}}
+          = \frac{\projector_i \ket\psi}{\sqrt{\braket{\psi|\projector_i|\psi}}}\, ,
         \]
-      This operator is \emph{not} a projector, since
-        repeated applications of $\measurement$ will give back increasing
-        powers of $m_b$. However, we can use the qubit projectors $\projector_0$
-        and $\projector_1$ to build an operation $\measurement$ that satisfies
-        our needs:
-          \[
-            \measurement = \sum_{b \in \bin} m_b \projector_b
-            = \sum_{b \in \bin} m_b \ketbra{b}\, ,
-          \]
+        where $\norm{\projector_i \ket{\psi}} > 0$
+        (since conditioning on outcome $i$ implies a non-zero probability that
+        $i$ was observed).
+      \end{definition}
+      Note how $\mathsf{Coll}^{\measurement}_i(\ket{\psi})$ is not a
+        linear operator, but rather a non-linear map on the Hilbert space.
 
-        \noindent
-        The first half of the above definition, defining the probabilities of
-          measurement outcomes as the square of their amplitudes, is known as the
-          \emph{Born rule}. The second half of the definition describes how
-          projected states are \emph{renormalized},
-          thus ensuring that the post-collapse state has unit length and is
-          therefore a valid quantum state.
-          
-        Specializing to the case of measuring $n$ qubits in the
-          computational basis and reading off the resulting string, we see that
-          the probability of observing any particular string $x$ is given by
-          \[
-            \prob{\abs{\measurement \ket\psi} = m_x} = \abs{\projector_x \ket{\psi}}^2
-            = \abs{\alpha_x \ket x}^2 = \abs{\alpha_x}^2\, ,
-          \]
-          with the post-measurement state 
-          \[
-            \ket\psi \apply{\measurement} 
-            \frac{\projector_x \ket{\psi}}{\abs{\projector_x \ket{\psi}}}
-            = \frac{\alpha_x \ket x}{\abs{\alpha_x \ket x}}
-            = \frac{\alpha_x }{\abs{\alpha_x}} \ket x
-            \longrightarrow \ket x\, ,
-          \]
-          as required (where the final step, shown as a rightward arrow, does
-          away with the unobservable
-          global phase $\frac{\alpha_x }{\abs{\alpha_x}} = e^{i\theta}$).
-        
-        You may wonder, what \emph{are} the values $m_x$ output by the
-          measurement procedure? Why not just let $m_x = x$? Well, let
-          us look at single-bit measurements: $m_0$ will signal outcome $\ket 0$, and
-          $m_1$ will signal outcome $\ket 1$. Though tempting, we surely can't set
-          $m_b = b$, since the outcome $\ket 0$ would then multiply away the
-          entire state! Instead, the canonical choice\footnote{
-            Historically, this choice corresponds to the possible outcomes of
-            the \emph{spin} observable for fermionic particles such as
-            electrons, with the value $+1$ corresponding to
-            ``spin-up'' (the spin vector points in the positive direction of
-            the $z$-coordinate) and the value $-1$ meaning ``spin-down'' (the
-            spin vector points in the negative $z$-direction).
-          } is to let $m_0 = 1$ and $m_1 = -1$. Then, 
+      %%% X and Z measurements
+         %Instead, the canonical choice\footnote{
+         %   Historically, this choice corresponds to the possible outcomes of
+         %   the \emph{spin} observable for fermionic particles such as
+         %   electrons, with the value $+1$ corresponding to
+         %   ``spin-up'' (the spin vector points in the positive direction of
+         %   the $z$-coordinate) and the value $-1$ meaning ``spin-down'' (the
+         %   spin vector points in the negative $z$-direction).
+         % } is to let $m_0 = 1$ and $m_1 = -1$. Then, 
 
-        \[
-          \measurement = m_0 \projector_0 + m_1 \projector_1
-          = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, .
-        \]
-        You may recognize this matrix from earlier: It's the $\Zgate$ gate! In
-          fact, computational-basis measurements are often referred to as
-          ``$\Zgate$ measurements'' for this reason. As you can see, this
-          choice also has the useful property that the measurement operator is
-          unitary, with the possible
-          outcomes represented by the eigenvalues and eigenstates of that operator.
+        %\[
+        %  \measurement = m_0 \projector_0 + m_1 \projector_1
+        %  = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, .
+        %\]
+        %You may recognize this matrix from earlier: It's the $\Zgate$ gate! In
+        %  fact, computational-basis measurements are often referred to as
+        %  ``$\Zgate$ measurements'' for this reason. As you can see, this
+        %  choice also has the useful property that the measurement operator is
+        %  unitary, with the possible
+        %  outcomes represented by the eigenvalues and eigenstates of that operator.
 
-        This mapping, from a unitary to a measurement, is possible to do for any
-          operator that is both unitary and Hermitian, meaning that 
-          $\unitary^{-1} = \unitary^\dagger = \unitary$. Such unitaries are
-          easy to recognize: They are the ones
-          with real values along the diagonal, and complex-conjugate symmetry
-          over the off-diagonals: $\unitary{[i,j]} = \unitary{[j,i]}^*$. 
+        %This mapping, from a unitary to a measurement, is possible to do for any
+        %  operator that is both unitary and Hermitian, meaning that 
+        %  $\unitary^{-1} = \unitary^\dagger = \unitary$. Such unitaries are
+        %  easy to recognize: They are the ones
+        %  with real values along the diagonal, and complex-conjugate symmetry
+        %  over the off-diagonals: $\unitary{[i,j]} = \unitary{[j,i]}^*$. 
 
-        Just like we can perform a $\Zgate$ measurement, we can also perform an
-          $\Xgate$ measurement. This is sometimes called measuring in the Hadamard
-          basis, since it is equivalent to first applying a Hadamard gate to the
-          qubit, and then performing a $\Zgate$ measurement.
-        
-        There is also a $\Ygate$ gate, equal to $i\Xgate\Zgate$. As
-          it turns, every possible single-qubit
-          measurement can be written as a linear combination of these three
-          unitaries, known as the \emph{Pauli matrices} after their
-          discoverer.
+        %Just like we can perform a $\Zgate$ measurement, we can also perform an
+        %  $\Xgate$ measurement. This is sometimes called measuring in the Hadamard
+        %  basis, since it is equivalent to first applying a Hadamard gate to the
+        %  qubit, and then performing a $\Zgate$ measurement.
+        %
+        %There is also a $\Ygate$ gate, equal to $i\Xgate\Zgate$. As
+        %  it turns, every possible single-qubit
+        %  measurement can be written as a linear combination of these three
+        %  unitaries, known as the \emph{Pauli matrices} after their
+        %  discoverer.
+        %% Is this statement true? Isn't the T gate outside that set?
 
-        \begin{exercise}
-          Show that interpreting the $\Xgate$ (a.k.a. ``NOT'') gate as a
-          measurement operator leads to
-          the possible outcomes $\ket{+}$ and $\ket{-}$ (where these are as
-          defined in \cref{ex:HadamardBasis}). 
-          What are the values of $m_+$ and $m_-$?
-        \end{exercise}
+        %\begin{exercise}
+        %  Show that interpreting the $\Xgate$ (a.k.a. ``NOT'') gate as a
+        %  measurement operator leads to
+        %  the possible outcomes $\ket{+}$ and $\ket{-}$ (where these are as
+        %  defined in \cref{ex:HadamardBasis}). 
+        %  What are the values of $m_+$ and $m_-$?
+        %\end{exercise}
 
-        \begin{exercise}
-          Write out the matrix representation of $\Ygate$ in the computational
-          basis, and find the possible measurement outcomes it gives rise to
-          when used as a measurement operator by identifying its
-          eigenstates and eigenvalues.
-        \end{exercise}
+        %\begin{exercise}
+        %  Write out the matrix representation of $\Ygate$ in the computational
+        %  basis, and find the possible measurement outcomes it gives rise to
+        %  when used as a measurement operator by identifying its
+        %  eigenstates and eigenvalues.
+        %\end{exercise}
 
-    \subsubsection{Multi-Qubit Measurements.}
-      \hhnote{todo}
-
-    \subsubsection{Subspace Measurements.}
+    \subsubsection{Measuring Subspaces.}
       Let us next define the projector $\projector_\Sspace$ onto some
         subspace $\Sspace$ of the full $N$-dimensional Hilbert space
-
-        \hhnote{\ldots}
-
-        With this in place, we are finally ready to formally define our
-        measurement procedure.
-
-        \begin{definition}[Post-measurement state]
-          Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
-          Upon observing a state $\ket\psi$, if outcome $i$ is observed,
-          the state will immediately collapse to a state consistent with the
-          observed outcome, as follows:
-          \[
-            \ket{\psi} \apply{\measurement \to i} 
-            \mathsf{Collapse}^{\measurement}_i(\ket{\psi}) 
-            \coloneqq \frac{\projector_i \ket\psi}{\norm{\projector_i \ket{\psi}}}
-            = \frac{\projector_i \ket\psi}{\sqrt{\braket{\psi|\projector_i|\psi}}}\, ,
-          \]
-          where $\norm{\projector_i \ket{\psi}} > 0$
-          (since conditioning on outcome $i$ implies a non-zero probability that
-          $i$ was observed).
-        \end{definition}
-        Note how $\mathsf{Coll}^{\measurement}_i(\ket{\psi})$ is not an
-        operator, but rather a non-linear map on the Hilbert space $\Hspace$. 
-
-        The fact that the induced object is indeed a probability distribution
-        follows from positivity (which is what Hermiticity granted us) and
-        completeness (the distribution sums to one).
-
 
         \hhnote{\ldots}
 
@@ -1374,44 +1307,6 @@
         \ket\psi$ will not satisfy the requirement of quantum states being unit length.
       \end{example}
 
-      \noindent
-      Unlike the basis-state projectors $\projector_i$, two projectors
-        $\projector_{\Sspace}$, $\projector_\Tspace$
-        need \emph{not} be orthogonal, as subspaces $\Sspace$ and $\Tspace$ may
-        be spanned by an overlapping set of basis vectors.
-
-      \begin{exercise}
-        Let $\projector_{0b0}$ be given by
-        \[
-          \projector_{0b0} = \ket{000}\bra{000} + \ket{010}\bra{010}\, ,
-        \] 
-        and show that $\projector_{0b0}$ and $\projector_{00b}$ are non-orthogonal,
-        where $\projector_{00b}$ is as given in \cref{ex:projector}.
-      \end{exercise}
-
-      \noindent
-      We will for the most part be interested in sets of orthogonal projectors.
-        From the perspective of the computational basis states $\ket x$, this just means
-        that no two projectors ``select'' the same string $x$ as part of their
-        overall selection.
-        (When applied to measurements, projectors being orthogonal will
-        translate to no measurement yielding the outcome ``undecided''.)
-
-      Projectors may not be unitary, but it is easy to see that they are
-        \emph{Hermitian}, which is to say they
-        satisfy $\projector^\dagger = \projector$. For 
-        computational-basis projectors, this follows trivially from the
-        matrices being real and symmetric, but it also holds in general. 
-
-      \begin{exercise}\label{ex:hermitian-projectors}
-        Show that any projector is Hermitian.
-        \emph{(Hint: Try expanding in terms of an arbitrary set of basis
-        states.)}
-      \end{exercise}
-
-      \noindent
-      Finally, a set of projectors $\{\projector_{\Sspace_i}\}_{i \in [k]}$ is said to be
-        \emph{complete} if $\sum_{i \in [k]} \projector_{\Sspace_i} = \idmatrix$.
         In particular, the set of computational-basis projectors
         $\{\projector_i \}_{i \in [N]} = \{ \ket{i}\bra{i} \}_{i \in [N]}$
         is easily seen to be complete: Each element in the sum will simply add one $1$ to
@@ -1439,125 +1334,50 @@
 
       \hhnote{\ldots}
 
-      However, provided that the measurement
-        outcomes are all \emph{orthogonal}, meaning that the set of possible outcomes
-        are mutually exclusive, we are guaranteed that there exists a complete set of orthogonal
-        projectors $\{\projector_{\Sspace_i}\}_{i \in [k]}$ such that 
-        \[
-          \measurement = \sum_{i \in [k]} m_{\Sspace_i} \projector_{\Sspace_i}\, .
-        \]
-        In linear algebra terms, this defines the \emph{spectral decomposition} of the
-          operator $\measurement$, with $m_{\Sspace_i}$ being the eigenvalues
-          of $\measurement$.
+    %% Spectral decomposition -- skipping, since I'm moving away from measurements-as-operators
+      %However, provided that the measurement
+      %  outcomes are all \emph{orthogonal}, meaning that the set of possible outcomes
+      %  are mutually exclusive, we are guaranteed that there exists a complete set of orthogonal
+      %  projectors $\{\projector_{\Sspace_i}\}_{i \in [k]}$ such that 
+      %  \[
+      %    \measurement = \sum_{i \in [k]} m_{\Sspace_i} \projector_{\Sspace_i}\, .
+      %  \]
+      %  In linear algebra terms, this defines the \emph{spectral decomposition} of the
+      %    operator $\measurement$, with $m_{\Sspace_i}$ being the eigenvalues
+      %    of $\measurement$.
 
 
     \subsubsection{An Optimally Distinguishing Measurement.}
       \hhnote{todo}
 
+  \subsection{The Hadamard Basis}
+    As mentioned, there is a continuous infinity orthonormal bases to choose
+      between (\ldots)
 
-  \iffutureversion
-    \subsection{The Hadamard Basis}
-      As mentioned, there is a continuous infinity orthonormal bases to choose
-        between (\ldots)
+    \begin{exercise}\label{ex:HadamardBasis}
+      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
+      terms of the alternative ``Hadamard'' basis 
+      \[
+        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
+        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
+      \]
+      Compare with the truth table from \cref{ex:truthtable}. What has changed?
+    \end{exercise}
 
-      \begin{exercise}\label{ex:HadamardBasis}
-        Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
-        terms of the alternative ``Hadamard'' basis 
-        \[
-          \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
-          \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
-        \]
-        Compare with the truth table from \cref{ex:truthtable}. What has changed?
-      \end{exercise}
+    \begin{exercise}
+      Give the computational-basis matrix representation of the unitary
+      that has the same effect on the
+      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
+      $\CXgate$ has on the computational basis. What should we call this
+      unitary, following the conventions introduced so far?
+    \end{exercise}
 
-      \begin{exercise}
-        Give the computational-basis matrix representation of the unitary
-        that has the same effect on the
-        Hadamard basis states (given in \cref{ex:HadamardBasis}) as
-        $\CXgate$ has on the computational basis. What should we call this
-        unitary, following the conventions introduced so far?
-      \end{exercise}
+    \hhnote{
+      Later: Introduce the Hadamard number system $\hat{0} = +, \hat{1} = -, \hat{2} =
+      +-, \ldots$
+    }
 
-      \hhnote{
-        Introduce the Hadamard number system $\hat{0} = +, \hat{1} = -, \hat{2} =
-        +-, \ldots$
-      }
-  \fi
-
-  \subsection{Complexity}\label{sec:complexity}
-    \subsubsection{Elementary Qubit Gates and the Universal Quantum Computer.}
-      It is far from obvious that it should be possible to
-        come up with a single device that \emph{provably} can simulate any kind
-        of ``computer'' you might cook up; and yet this is exactly what
-        Alan Turing did when he introduced the world to the concept of the
-        \emph{universal computer} in 1936. (Yes, including quantum computers!)
-
-      %We just argued that the matrix product represents operations happening at
-      %  different time steps. 
-
-      %But is ``time step'' a well-defined unit here? 
-      %  After all, with $\unitary$ and $\unitary[V]$ being arbitrary unitary
-      %  matrices, we could always define a new unitary $\unitary[W] = \unitary[V]
-      %  \unitary$, and say that \emph{this} is the operation that was applied,
-      %  now apparently in unit time!
-
-      %This is why we first have to agree on a set of elementary gates
-      %  if we want our time-complexity analyses to be meaningful.
-      %  If we are able to find a set of gates such that \emph{any} quantum
-      %  operation can be constructed from these basic elements,
-      %  then we can say that these are the gates that takes one time-step to
-      %  apply, and let the time it takes to run the full algorithm be given by how
-      %  many elemantry gates must be run in \emph{sequence} to produce the desired
-      %  effect (known as the ``circuit depth'' of the algorithm).
-
-      \hhnote{
-        Classically, any Boolean circuit can be generated by AND, OR and NOT.
-        But of course, AND and OR are not linear; they delete information.
-        Is this avoidable?
-      }
-      \hhnote{
-        Bennett answered yes, when he showed that any Boolean
-        circuit can be made reversible with a little overhead – and it turns out
-        that any reversible circuit can be generated from the three-bit Toffoli
-        gate $\CCXgate$. But the irreversible case had only two-bit gates -- can we get
-        away with using only two-bit reversible gates? Answer turns out to be no: 
-        Then you could only simulate the \emph{linear} Boolean circuits, and to
-        get out of this basin and recover non-linear circuits such as products,
-        you need at least one three-bit gate.
-      }
-      \hhnote{
-        The Toffoli gate $\CCXgate$ $+$ Hadamard $=$ quantum universality -- just slap some
-        superpositions on the classical case!
-      }
-
-    \subsubsection{Computability versus Complexity.}
-      As a cryptographer, you know P vs.\ NP \ldots
-      \hhnote{
-        Quantum computers as a refutation of the \emph{extended}
-        Church--Turing thesis? $\to$ the Church-Turing-Deutsch thesis
-      }
-      \hhnote{
-        P vs.\ BQP, NP-hard vs.\ ``NP-intermediate''.
-      }
-
-    \subsubsection{Classical Simulatability, Quantum Magic.}
-      \hhnote{
-        Another popular choice of gate set is Clifford $+$ $\Tgate$: 
-        $\CXgate$, $\Sgate$, $\Hgate$. 
-        Make it universal by adding $\Tgate$
-        (not to be confused with Toffoli). 
-        Note: Only one- and two-qubit gates! 
-      }
-      \hhnote{
-        In an interesting parallel to the reversible case, if you leave out
-        $\Tgate$, then the quantum circuits you can generate turn out to all be
-        efficiently simulatable on classical computers! So ``quantumness''
-        $\neq$ ``hard to simulate''; you need something more, and that more is
-        exactly the power provided by the $\Tgate$ gates. This
-        ``T-ness'' actually has a name, and it is \emph{magic}. (No, seriously.)
-      }
-
-  \subsection{Quantum Entities and Hidden Entanglement}
+  \subsection{Entanglement}
     Until now we have defined notation for computational basis states
       $\ket{x}$, general quantum states $\ket{\psi}$,
       unitary transformations $\unitary$, and the
@@ -1634,3 +1454,77 @@
           analyses, and we will meet them again in \cref{sec:proofs}. 
         \fi
       }
+
+  \subsection{Complexity}\label{sec:complexity}
+    \subsubsection{Elementary Qubit Gates and the Universal Quantum Computer.}
+      It is far from obvious that it should be possible to
+        come up with a single device that \emph{provably} can simulate any kind
+        of ``computer'' you might cook up; and yet this is exactly what
+        Alan Turing did when he introduced the world to the concept of the
+        \emph{universal computer} in 1936. (Yes, including quantum computers!)
+
+      %We just argued that the matrix product represents operations happening at
+      %  different time steps. 
+
+      %But is ``time step'' a well-defined unit here? 
+      %  After all, with $\unitary$ and $\unitary[V]$ being arbitrary unitary
+      %  matrices, we could always define a new unitary $\unitary[W] = \unitary[V]
+      %  \unitary$, and say that \emph{this} is the operation that was applied,
+      %  now apparently in unit time!
+
+      %This is why we first have to agree on a set of elementary gates
+      %  if we want our time-complexity analyses to be meaningful.
+      %  If we are able to find a set of gates such that \emph{any} quantum
+      %  operation can be constructed from these basic elements,
+      %  then we can say that these are the gates that takes one time-step to
+      %  apply, and let the time it takes to run the full algorithm be given by how
+      %  many elemantry gates must be run in \emph{sequence} to produce the desired
+      %  effect (known as the ``circuit depth'' of the algorithm).
+
+      \hhnote{
+        Classically, any Boolean circuit can be generated by AND, OR and NOT.
+        But of course, AND and OR are not linear; they delete information.
+        Is this avoidable?
+      }
+      \hhnote{
+        Bennett answered yes, when he showed that any Boolean
+        circuit can be made reversible with a little overhead – and it turns out
+        that any reversible circuit can be generated from the three-bit Toffoli
+        gate $\CCXgate$. But the irreversible case had only two-bit gates -- can we get
+        away with using only two-bit reversible gates? Answer turns out to be no: 
+        Then you could only simulate the \emph{linear} Boolean circuits, and to
+        get out of this basin and recover non-linear circuits such as products,
+        you need at least one three-bit gate.
+      }
+      \hhnote{
+        The Toffoli gate $\CCXgate$ $+$ Hadamard $=$ quantum universality -- just slap some
+        superpositions on the classical case!
+      }
+
+    \subsubsection{Computability versus Complexity.}
+      As a cryptographer, you know P vs.\ NP \ldots
+      \hhnote{
+        Quantum computers as a refutation of the \emph{extended}
+        Church--Turing thesis? $\to$ the Church-Turing-Deutsch thesis
+      }
+      \hhnote{
+        P vs.\ BQP, NP-hard vs.\ ``NP-intermediate''.
+      }
+
+    \subsubsection{Classical Simulatability, Quantum Magic.}
+      \hhnote{
+        Another popular choice of gate set is Clifford $+$ $\Tgate$: 
+        $\CXgate$, $\Sgate$, $\Hgate$. 
+        Make it universal by adding $\Tgate$
+        (not to be confused with Toffoli). 
+        Note: Only one- and two-qubit gates! 
+      }
+      \hhnote{
+        In an interesting parallel to the reversible case, if you leave out
+        $\Tgate$, then the quantum circuits you can generate turn out to all be
+        efficiently simulatable on classical computers! So ``quantumness''
+        $\neq$ ``hard to simulate''; you need something more, and that more is
+        exactly the power provided by the $\Tgate$ gates. This
+        ``T-ness'' actually has a name, and it is \emph{magic}. (No, seriously.)
+      }
+
