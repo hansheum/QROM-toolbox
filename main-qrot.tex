@@ -175,6 +175,9 @@
   \end{figure}
 }
 
+% Usage: \crackzfigcode{ 
+%          name of file in ./crakz/ (gets label "fig:[file name]")
+%        }{ caption }
 \newcommand{\crakzfigcode}[2]{
   \begin{figure}[t!]
     \centering
@@ -308,6 +311,8 @@
   %\part{The Tools of the Toolbox}\label{part:tools}
     \newcommand{\titleOtoH}{The One-way To Hiding (O2H) Lemmas}
       \inputsect{qrot-o2h}
+    \newcommand{\titleTightness}{Interlude: Understanding Tightness}
+      \inputsect{qrot-tightness}
     \newcommand{\titleUtransformQrom}{Example 1b: Post-Quantum Indistinguishability from the \U-transform}
       \inputsect{qrot-utransform} % OW -> IND example
     \newcommand{\titlePseudocode}{Interlude: A Quantum Register Pseudocode}

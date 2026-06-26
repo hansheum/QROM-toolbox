@@ -1,0 +1,36 @@
+\section{\titleTightness}\label{sec:tightness}
+  \hhnote{ 
+    Either insert after O2H section as an ``Interlude'', or leave as an appendix. 
+  }
+
+  \hhnote{
+    Todo: make the Grover figs.\ assume 128-bit security by having the original
+    parameter be 256.
+  }
+
+  % Usage: \crackzfigcode{ name of file in ./crakz/ -- gets label "fig:[file name]" }{ caption }
+  %\crakzfigcode{qh-attacks}{
+  %  The effect of a loss factor $q \leq 2^{80}$ on the 
+  %  attacks our security proof rules out, under the assumption that the
+  %  underlying primitive achieves $128$-bit security, and that the best attack
+  %  on the primitive is a classical brute-force search (left) and Grover
+  %  search (right), as a function of the upper-bound $t$ on the adversary's runtime. 
+  %  Higher up on the $y$-axis $=$ higher probability $\epsilon$ of a successful break.
+  %}
+
+  \crakzfigcode{qh-loss}{
+    Attacks ruled out by a reduction from the security of a primitive to the
+    security of a construction, for a reduction that incurred a $q \leq 2^{80}$
+    loss factor in the advantage (and no loss in the running time) (top), and
+    what bit-securities are implied for the construction (bottom), assuming that the
+    best attack on the primitive is a classical brute-force search (left) and Grover
+    search (right), against which the primitive achieves $128$-bit security,
+    displayed as a function of adversary run-times $t$ on the adversary's run-time. 
+    (Note: The brute-force setting will still be relevant in a world
+    with cryptographically-relevant quantum computers, given how much cheaper
+    classical attack resources are.)
+  }
+
+  \crakzfigcode{sq-loss}{
+    Same as \cref{fig:qh-loss}, except for a reduction that incurred a square-root.
+  }
