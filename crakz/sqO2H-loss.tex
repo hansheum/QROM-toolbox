@@ -1,0 +1,175 @@
+% --- shared colours (matplotlib tab10) ---
+\definecolor{cblue}{RGB}{31,119,180}
+\definecolor{cred}{RGB}{214,39,40}
+\definecolor{cgreen}{RGB}{44,160,44}
+
+% common picture options: 1 bit = 0.042 cm on both axes (square aspect)
+\tikzset{bitsec/.style={x=0.042cm,y=0.042cm,font=\small}}
+
+% solid = sqrt(eps) ; dashed = sqrt(q eps) ; dotted = q sqrt(eps)
+\tikzset{rpure/.style={cred,very thick},
+         rgood/.style={cred,very thick,dashed},
+         rbad/.style={cred!55!black,very thick,densely dotted}}
+
+%======================================================================
+% PANEL 1 :  log t  vs  log eps   (advantage view)  --  SEARCH / linear
+%======================================================================
+\newcommand{\panelEpsSearch}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}
+    \fill[black!12]  (0,0) -- (0,40) -- (\n,40) -- (\n,0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\n,0) -- (\n,-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-\n) -- (\n,0) -- (0,-64) -- cycle;            % gap (below sqrt-eps)
+    \fill[cgreen!10] (0,-64) -- (\n,0) -- (48,0) -- (0,-24) -- cycle;  % gain: remove q
+    \fill[cgreen!24] (0,0) -- (0,-24) -- (48,0) -- cycle;             % gain: q inside root
+    \draw[->] (0,-135) -- (0,44) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\n+16},-135) node[right] {$t$};
+    \foreach \x in {0,32,64,96,128} \draw (\x,-135)--(\x,-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-32,-64,-96,-128} \draw (0,\y)--(-4,\y) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- (\n,0);
+    \draw[cblue,very thick] (0,-\n) -- (\n,0);
+    \draw[rpure] (0,-64) -- (\n,0);
+    \draw[rgood] (0,-24) -- (\n,40);
+    \draw[rbad]  (0,16) -- (48,40);
+    \node[cblue,rotate=45,anchor=south,font=\scriptsize] at (90,-38) {$\epsilon_\Pi \sim t$};
+    \node[cred,rotate=26.57,anchor=south,font=\tiny] at (64,-32) {$\sqrt{\epsilon_\Pi}$};
+    \node[cred,rotate=26.57,anchor=south,font=\tiny] at (17,-16) {$\sqrt{q\epsilon_\Pi}$};
+    \node[cred!55!black,rotate=26.57,anchor=south,font=\tiny] at (22,26) {$q\sqrt{\epsilon_\Pi}$};
+    \node[gray,font=\scriptsize] at ({0.5*\n},25) {N/A};
+    \node[orange!70!black,align=center,font=\footnotesize] at (38,-68) {gap};
+    \node[cblue!70!black,align=center,font=\footnotesize] at (74,-120) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 2 :  log t  vs  log eps   --  GROVER / collision
+%======================================================================
+\newcommand{\panelEpsGrover}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}\def\m{64}
+    \fill[black!12]  (0,0) -- (0,40) -- (\m,40) -- (\m,0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\m,0) -- (\m,-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-\n) -- (\m,0) -- (0,-64) -- cycle;            % gap
+    \fill[cgreen!10] (0,-64) -- (\m,0) -- (44,0) -- (0,-44) -- cycle;  % remove q
+    \fill[cgreen!24] (0,-44) -- (44,0) -- (24,0) -- (0,-24) -- cycle;  % q inside
+    \fill[cgreen!42] (0,0) -- (0,-24) -- (24,0) -- cycle;             % all
+    \draw[->] (0,-135) -- (0,44) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\m+14},-135) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/2},-135)--({\x/2},-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-64,-128,-192,-256} \draw (0,{\y/2})--(-4,{\y/2}) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- (\m,0);
+    \draw[cblue,very thick] (0,-\n) -- (\m,0);
+    \draw[rpure] (0,-64) -- (\m,0);
+    \draw[rgood] (0,-44) -- (\m,20);
+    \draw[rbad]  (0,-24) -- (\m,40);
+    \node[cblue,rotate=63.43,anchor=south,font=\scriptsize] at (44,-44) {$\epsilon_\Pi \sim t^2$};
+    \node[cred,rotate=45,anchor=south,font=\tiny] at (30,-36) {$\sqrt{\epsilon_\Pi}$};
+    \node[cred,rotate=45,anchor=south,font=\tiny] at (21,-24) {$\sqrt{q\epsilon_\Pi}$};
+    \node[cred!55!black,rotate=45,anchor=south,font=\tiny] at (13,-13) {$q\sqrt{\epsilon_\Pi}$};
+    \node[gray,font=\scriptsize] at ({0.5*\m},25) {N/A};
+    \node[orange!70!black,align=center,font=\scriptsize] at (12,-80) {gap};
+    \node[cblue!70!black,align=center,font=\scriptsize] at (35,-122) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 3 :  t  vs  kappa   (bit-security view)  --  SEARCH / linear
+%======================================================================
+\newcommand{\panelKapSearch}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}
+    \fill[cblue!7]   (0,\n) -- (0,{\n+16}) -- (\n,{\n+16}) -- (\n,\n) -- cycle;
+    \fill[black!12]  (0,0) -- (\n,\n) -- (\n,0) -- cycle;
+    \fill[orange!22] (0,64) -- (\n,\n) -- (0,\n) -- cycle;            % gap (sqrt-eps to blue)
+    \fill[cgreen!10] (0,24) -- (48,48) -- (\n,\n) -- (0,64) -- cycle; % remove q
+    \fill[cgreen!24] (0,0) -- (0,24) -- (48,48) -- cycle;            % q inside
+    \draw[->] (0,0) -- (0,{\n+22}) node[above] {$\log_2(t/\epsilon)$};
+    \draw[->] (0,0) -- ({\n+16},0) node[right] {$t$};
+    \foreach \x in {0,32,64,96,128} \draw (\x,0)--(\x,-4) node[below] {$2^{\x}$};
+    \foreach \y in {0,32,64,96,128} \draw (0,\y)--(-4,\y) node[left] {$\y$};
+    \draw[gray,dashed] (0,0) -- (\n,\n);
+    \draw[cblue,very thick] (0,\n) -- (\n,\n);
+    \draw[rpure] (0,64) -- (\n,\n);
+    \draw[rgood] (0,24) -- (48,48);
+    \draw[cred,thick,dashed,opacity=0.30] (48,48) -- (\n,88);
+    \draw[rbad]  (32,0) -- (\n,48);
+    \fill (0,64) circle (1.6pt);
+    \node[black!55,font=\tiny,rotate=26.57] at (11,65) {$64$ bits};
+    \fill (0,24) circle (1.6pt);
+    \node[black!55,font=\tiny,rotate=26.57] at (11,25) {$24$ bits};
+    \fill (32,0) circle (1.6pt);
+    \node[black!55,font=\tiny,rotate=26.57] at (51,6) {$0$ bits};
+    \node[cred,rotate=26.57,anchor=south,font=\tiny] at (70,98) {$\sqrt{\epsilon_\Pi}$};
+    \node[cred,rotate=26.57,anchor=south,font=\tiny] at (33,39) {$\sqrt{q\epsilon_\Pi}$};
+    \node[cred!55!black,rotate=26.57,anchor=south,font=\tiny] at (80,23) {$q\sqrt{\epsilon_\Pi}$};
+    \node[cblue!60!black,anchor=west,font=\footnotesize] at (4,{\n+8}) {assumed bit-security};
+    %\node[orange!70!black,font=\footnotesize] at (20,110) {gap};
+    \node[black!55,align=center,font=\footnotesize] at (98,15) {N/A};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 4 :  t  vs  kappa   --  GROVER / collision
+%======================================================================
+\newcommand{\panelKapGrover}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}\def\m{64}
+    \fill[cblue!7]   (0,\n) -- (0,{\n+16}) -- (\m,{\n+16}) -- (\m,\m) -- cycle;
+    \fill[black!12]  (0,0) -- (\m,\m) -- (\m,0) -- cycle;
+    \fill[orange!22] (0,64) -- (\m,\m) -- (0,\n) -- cycle;            % gap (sqrt-eps to blue)
+    \fill[cgreen!10] (0,44) -- (44,44) -- (\m,\m) -- (0,64) -- cycle; % remove q
+    \fill[cgreen!24] (0,24) -- (24,24) -- (44,44) -- (0,44) -- cycle; % q inside
+    \fill[cgreen!42] (0,0) -- (0,24) -- (24,24) -- cycle;            % all
+    \draw[->] (0,0) -- (0,{\n+22}) node[above] {$\log_2(t/\epsilon)$};
+    \draw[->] (0,0) -- ({\m+14},0) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/2},0)--({\x/2},-4) node[below] {$2^{\x}$};
+    \foreach \y in {0,64,128,192,256} \draw (0,{\y/2})--(-4,{\y/2}) node[left] {$\y$};
+    \draw[gray,dashed] (0,0) -- (\m,\m);
+    \draw[cblue,very thick] (0,\n) -- (\m,\m);
+    \draw[rpure] (0,64) -- (\m,\m);
+    \draw[rgood] (0,44) -- (44,44);
+    \draw[cred,thick,dashed,opacity=0.30] (44,44) -- (\m,44);
+    \draw[rbad]  (0,24) -- (24,24);
+    \draw[cred!55!black,thick,densely dotted,opacity=0.40] (24,24) -- (\m,24);
+    \fill (0,64) circle (1.6pt);
+    \node[black!55,font=\tiny] at (11,60) {$128$ bits};
+    \fill (0,44) circle (1.6pt);
+    \node[black!55,font=\tiny] at (10,40) {$88$ bits};
+    \fill (0,24) circle (1.6pt);
+    \node[black!55,font=\tiny] at (9,20) {$48$ bits};
+    \node[cred,anchor=south,font=\tiny] at (32,64) {$\sqrt{\epsilon_\Pi}$};
+    \node[cred,anchor=south,font=\tiny] at (22,44) {$\sqrt{q\epsilon_\Pi}$};
+    \node[cred!55!black,anchor=south,font=\tiny] at (12,24) {$q\sqrt{\epsilon_\Pi}$};
+    \node[cblue!60!black,rotate=-45,anchor=south,font=\scriptsize] at (30,98) {assumed bit-security};
+    %\node[orange!70!black,font=\footnotesize] at (8,98) {gap};
+    \node[black!55,font=\scriptsize] at (48,12) {N/A};
+  \end{tikzpicture}
+}
+
+% Hack created by Claude for wrapping subheaders
+\newcommand{\panelcap}[2]{% #1 = panel, #2 = caption
+  \sbox{\pb}{#1}%
+  \begin{minipage}[t]{\wd\pb}\centering
+    \usebox{\pb}\par\smallskip {\small #2}%
+  \end{minipage}
+}
+
+\begin{tabular}{@{}c@{\hspace{3em}}c@{}}
+  \panelcap{\panelEpsSearch}{
+    %(a) Possible attacks if best attack against the
+    %primitive scales linearly with time (brute-force)
+    (a) Ruled-out attacks if the best attack on the primitive scales
+    \emph{linearly} with time (brute-force)
+  }
+& \panelcap{\panelEpsGrover}{
+    (b) vs.\ \emph{quadratically} (birthday/Grover)
+  }\\[30pt]
+  \panelcap{\panelKapSearch}{
+    %(c) Bit security if best primitive attack $=$ brute-force
+    (c) Bit security if the best attack on the primitive scales
+    \emph{linearly} with time (brute-force)
+  }
+& \panelcap{\panelKapGrover}{
+    (d) vs.\ \emph{quadratically} (birthday/Grover)
+  }\\
+\end{tabular}
