@@ -33,7 +33,7 @@
       {secure};
     \node[orange!70!black,align=center,font=\footnotesize] at (45,-45)
       %{primitive secure \\ construction broken?};
-      {gap};
+      {$\Pi$ secure};
     \node[cblue!70!black,align=center,font=\footnotesize] at (80,-100) 
       {attacks on $\Pi$};
   \end{tikzpicture}
@@ -61,9 +61,9 @@
     \node[cred,rotate=63.43,anchor=south,font=\scriptsize] at (30,-30) {$q\cdot\epsilon_\Pi$};
     \node[cgreen!55!black,align=center,rotate=63.43,font=\scriptsize] at (15,-29) 
       {construction secure};
-    \node[orange!70!black,align=center,font=\footnotesize] at (30,-50)
+    \node[orange!70!black,align=center,rotate=63.43,font=\footnotesize] at (30,-50)
       %{primitive secure \\ construction broken?};
-      {gap};
+      {$\Pi$ secure};
     \node[cblue!70!black,align=center,font=\footnotesize] at (36,-120) 
       {attacks on $\Pi$};
   \end{tikzpicture}
@@ -90,11 +90,11 @@
     %\node[gray,rotate=45,anchor=south,font=\footnotesize] at (104,104) {$\epsilon=1$};
     %\node[cred,rotate=26.57,anchor=south,font=\footnotesize] at (58,90) {$\kappa_A=\tfrac12(\tau+n)$};
     %\node[cblue,anchor=south,font=\footnotesize] at (96,129) {$\kappa_B=n$};
-    \node[cblue!60!black,anchor=west,font=\footnotesize] at (4,{\n+8}) {assumed bit-security};
+    \node[cblue!60!black,anchor=west,font=\footnotesize] at (4,{\n+8}) {assumed security};
     \node[orange!70!black,font=\footnotesize] at (40,90) {gap};
     %\node[cgreen!55!black,font=\footnotesize] at (17,37) {implied};
     \node[cgreen!55!black,rotate=45,font=\scriptsize] at (12,29) {implied};
-    \node[cgreen!55!black,rotate=45,font=\scriptsize] at (16,24) {bit-security};
+    \node[cgreen!55!black,rotate=45,font=\scriptsize] at (16,24) {security};
     \node[black!55,align=center,font=\footnotesize] at (88,25) {N/A};
   \end{tikzpicture}
 }
@@ -120,12 +120,12 @@
     %\node[cblue,rotate=-45,anchor=south,font=\footnotesize] at (24,104) {$\kappa_B=n-\tau$};
     %\node[cred,anchor=south,font=\footnotesize] at (18,65) {$\kappa_A=n/2$};
     %\node[gray,rotate=45,anchor=south,font=\footnotesize] at (28,28) {$\epsilon=1$};
-    \node[cblue!60!black,rotate=-45,anchor=south,font=\footnotesize] at (30,98) {assumed bit-security};
+    \node[cblue!60!black,rotate=-45,anchor=south,font=\footnotesize] at (30,98) {assumed security};
     \node[orange!70!black,font=\footnotesize] at (28,79) {gap};
     %\node[cgreen!55!black,font=\footnotesize] at (18,44) {implied};
     \node[black!55,font=\tiny] at (32,44) {$88$ bits};
     \node[cgreen!55!black,rotate=45,font=\scriptsize] at (12,29) {implied};
-    \node[cgreen!55!black,rotate=45,font=\scriptsize] at (16,24) {bit-security};
+    \node[cgreen!55!black,rotate=45,font=\scriptsize] at (16,24) {security};
     \node[black!55,font=\footnotesize] at (40,12) {N/A};
   \end{tikzpicture}
 }
@@ -141,15 +141,7 @@
 %  {\small (c) Bit security if best primitive attack $=$ brute-force} & {\small (d) Bit security if best primitive attack $=$ Grover}\\
 %\end{tabular}
 
-% Hack created by Claude for wrapping subheaders
-\newsavebox{\pb}
-\newcommand{\panelcap}[2]{% #1 = panel, #2 = caption
-  \sbox{\pb}{#1}%
-  \begin{minipage}[t]{\wd\pb}\centering
-    \usebox{\pb}\par\smallskip {\small #2}%
-  \end{minipage}
-}
-
+%
 \begin{tabular}{@{}c@{\hspace{3em}}c@{}}
   \panelcap{\panelEpsSearch}{
     %(a) Possible attacks if best attack against the

@@ -125,14 +125,6 @@
   \end{tikzpicture}
 }
 
-% Hack created by Claude for wrapping subheaders
-\newcommand{\panelcap}[2]{% #1 = panel, #2 = caption
-  \sbox{\pb}{#1}%
-  \begin{minipage}[t]{\wd\pb}\centering
-    \usebox{\pb}\par\smallskip {\small #2}%
-  \end{minipage}
-}
-
 \begin{tabular}{@{}c@{\hspace{3em}}c@{}}
   \panelcap{\panelEpsSearch}{
     %(a) Possible attacks if best attack against the

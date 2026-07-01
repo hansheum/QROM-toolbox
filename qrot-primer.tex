@@ -1074,15 +1074,15 @@
     \subsubsection{Projective Measurements.}
       We already mentioned the Born rule, which says that the probability of
         observing an outcome is equal to the norm-squared of the corresponding
-        amplitude. This makes quantum states (vectors of amplitudes) the quantum
-        equivalent of a probability distribution (lists of probabilities). 
+        amplitude; hence, quantum states (which are vectors of amplitudes) are the quantum
+        equivalent of probability distributions (lists of probabilities). 
         For example, performing a computational-basis measurement on a qubit in
         the state $\ket\psi = \alpha_0 \ket0 + \alpha_1 \ket1$ induces the
         distribution
         \[
           \distribution_\psi^{\computational} 
           = \left(\abs{\alpha_0}^2, \abs{\alpha_1}^2\right)
-          \quad\Longrightarrow\quad \distribution_\psi^{\computational}(b) 
+          \quad\Longleftrightarrow\quad \distribution_\psi^{\computational}(b) 
           = \abs{\alpha_b}^2 = \norm{\projector_b \ket\psi}^2 
           = \braket{\psi|\projector_b|\psi}\, ,
         \]

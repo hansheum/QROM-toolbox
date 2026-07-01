@@ -19,123 +19,198 @@
   %  Higher up on the $y$-axis $=$ higher probability $\epsilon$ of a successful break.
   %}
 
-  \crakzfigcode{qh-loss}{
-    Attack advantages ruled out by a reduction from the security of a primitive
-    $\Pi$ to the security of a construction, if the reduction incurred a $q \leq 2^{80}$
-    loss factor in the advantage (and no loss in the running time) (top), and
-    the bit-security implied for the construction (bottom), assuming that the
-    best attack on the primitive is scales linearly as in a brute-force search
-    (left) and quadratically as with Grover search and collision-finding
-    (right). We assume that the primitive achieves $128$-bit security against
-    the relevant attack, and display the ruled-out advantages/bit security as a
-    function of the bound on the adversarial run-time $t$, to highlight the
-    time-probability trade-off that adversaries generally face. 
-    (So for example, if high $t$ gives lower bit-security, the adversary will be
-    incentivized to use all the time available to it, while if the lowest
-    bit-security sits at low $t$, the optimal attack may involve performing the
-    same low-advantage attack a large number of times in parallel.)
-  }
+  \subsection{Kinds of Loss: Additive vs.\ Multiplicative vs.\ Roots}
+    Say you have a construction built on top of a primitive $\Pi$, that incurs
+      some tightness loss. For illustration, we study how this tightness loss
+      affects security under the assumption that the best-known attack against
+      the primitive is either brute-force search (linear, so $\epsilon_\Pi =
+      t/{2^{-\lambda}}$), Grover search or (classical) collision-finding
+      (quadratic, $\epsilon_\Pi = t^2/2^{-\lambda}$), or quantum
+      collision-finding (cubic, $\epsilon_\Pi = t^3/2^{-\lambda}$). 
 
-  \crakzfigcode{sq-loss}{
-    Same as \cref{fig:qh-loss}, except if the reduction incurred a
-    square-root loss instead of a factor $q$.
-    Interestingly, if the best attack on the primitive already scales
-    quadratically, then a square-root yields the same bit-security, the only
-    difference being that now we can't rule out matching attacks for any values
-    of $t$ (where previously the only matching attack was at $t = t_{\text{max}}
-    = 2^{128}$). Contrast with the linear-scaling case, where a square-root
-    loss would halve the bit-security.
-  }
+    \crefrange{fig:qh-loss}{fig:sq-loss} show how different kinds of tightness
+      losses degrade the provable security of our construction, under different
+      assumptions. Here, the primitive $\Pi$ is assumed to achieve
+      $128$-bit security against various assumed-optimal attacks: 
+      Brute-force search in \cref{fig:qh-loss},
+      Grover search and/or classical collision-finding in \cref{fig:sq-loss},
+      and quantum collision-finding in \cref{fig:cube-loss}.
+      \cref{tab:compensation} shows how high one would have to set the security
+      parameter $\lambda$ of the construction in order to sufficiently
+      compensate for the tightness so that the construction achieves $128$-bit
+      security.
 
-  %\crakzfigcode{GuessO2H-loss}{
-  %  $\epsilon \sim q \sqrt{\epsilon_\Pi}$
-  %}
+    Note that this is not a particularly realistic setting, as even 
+      primitives that are considered highly secure (such as AES) 
+      usually face attacks that are
+      significantly better than the generic ones we consider here.
+      Further, different attacks strategies may be optimal for different ranges
+      of the time budget $t$. 
 
-  %\crakzfigcode{FindO2H-loss}{
-  %  Same as \cref{fig:qh-loss} -- \cref{fig:GuessO2H-loss}, except if the reduction
-  %  incurred the Find-O2H loss $\epsilon \sim \sqrt{q \cdot \epsilon_\Pi}$.
-  %}
-
-  %\crakzfigcode{O2H-loss}{
-  %  Find and Guess combined
-  %}
-
-  \crakzfigcode{sqO2H-loss}{
-    Same as \cref{fig:qh-loss} and \cref{fig:sq-loss}, except if the reduction
-    incurred each of the O2H losses 
-    $\epsilon \sim \sqrt{\epsilon_\Pi}$ (line),  
-    $\epsilon \sim \sqrt{q \cdot \epsilon_\Pi}$ (line),  
-    $\epsilon \sim q \sqrt{\epsilon_\Pi}$ (line).
-    Observe how, if parameter were chosen to resist a linearly-scaling attack with
-    $128$-bit security, then the tightness loss is large enough to completely void the
-    reduction bound, meaning the theorem would imply no security for the
-    construction in this case.
-  }
-
-  \begin{table}[h]
-    \centering
-    %
-    \caption{
-      \label{tab:compensation}
-      Compensating for tightness losses: Assuming the primitive $\Pi$ achieves
-      $128$-bit security against Attack (and assuming that Attack
-      is the most effective attack against the primitive), how large should we set
-      the security parameter of the construction to compensate for the security
-      loss and provably achieve $128$-bit security?
-      Here, as elsewhere, we assume $q \leq 2^{80}$.
-      Note how once we assume a primitive attack that scales like $\epsilon \sim
-      t^c$ for $c \geq 2$, then a square-root loss no longer needs to be
-      compensated for.
+    %\crakzfigcode{add-loss}{
+    \hhnote{OLD CAPTION 1:
+      The effect of an additive loss $q/2^{n} \leq 2^{80-128} = 2^{-48}$.
     }
-    %
-    \rowcolors{2}{}{gray!10}
-    \begin{tabular}{lc|l|l|l}
-      \toprule
-      \multicolumn{5}{c}{%
-        \textbf{For $128$-bit security against Attack on $\Pi$, set $\lambda$ to \ldots}
-      } \\
-      \midrule
-        & Tightness loss 
-          & Brute-force search 
-            & Grover search/collision finding 
-              & Quantum collision finding \\
-      O2H Variant
-        & $\epsilon \lesssim \ldots$ 
-          & $\quad \To \epsilon_\Pi \sim t$, $\lambda_\Pi = 128$ 
-            & $\quad \To \epsilon_\Pi \sim t^2$, $\lambda_\Pi = 256$  
-              & $\quad \To \epsilon_\Pi \sim t^3$, $\lambda_\Pi = 384$ \\
-      \midrule
-      Classical Find
-        & $\epsilon_\Pi$ 
-          & $\lambda \assign 128\ (= \lambda_\Pi)$ 
-            & $\lambda \assign 256\ (= \lambda_\Pi)$ 
-              & $\lambda \assign 384\ (= \lambda_\Pi)$ \\
-      MRE-Find
-        & $\sqrt{q} \cdot \epsilon_\Pi$ 
-          & $\lambda \assign 168\ (= \lambda_\Pi + 40)$ 
-            & $\lambda \assign 296\ (= \lambda_\Pi + 40)$ 
-              & $\lambda \assign 424\ (= \lambda_\Pi + 40)$ \\
-      Classical Guess
-        & $q \cdot \epsilon_\Pi$ 
-          & $\lambda \assign 208\ (= \lambda_\Pi + 80)$ 
-            & $\lambda \assign 336\ (= \lambda_\Pi + 80)$ 
-              & $\lambda \assign 464\ (= \lambda_\Pi + 80)$ \\
-      \midrule
-      DS-Find
-        & $\sqrt{\epsilon_\Pi}$ 
-          & $\lambda \assign 256\ (= 2 \cdot \lambda_\Pi)$ 
-            & $\lambda \assign 256\ (= \lambda_\Pi)$ 
-              & $\lambda \assign 384\ (= \lambda_\Pi)$ \\
-      SC-Find
-        & $\sqrt{q \cdot \epsilon_\Pi}$ 
-          & $\lambda \assign 336\ (= 2 \cdot \lambda_\Pi + 80)$ 
-            & $\lambda \assign 336\ (= \lambda_\Pi + 80)$ 
-              & $\lambda \assign 464\ (= \lambda_\Pi + 80)$ \\
-      Guess
-        & $q\sqrt{\epsilon_\Pi}$ 
-          & $\lambda \assign 416\ (= 2 \cdot (\lambda_\Pi + 80))$ 
-            & $\lambda \assign 416\ (= \lambda_\Pi + 2 \cdot 80)$ 
-              & $\lambda \assign 544\ (= \lambda_\Pi + 2 \cdot 80)$ \\
-      \bottomrule
-    \end{tabular}
-  \end{table}
+
+    %\crakzfigcode{qh-loss}{
+    \hhnote{OLD CAPTION 2:
+      Attack advantages ruled out by a reduction from the security of a primitive
+      $\Pi$ to the security of a construction, if the reduction incurred a $q \leq 2^{80}$
+      loss factor in the advantage (and no loss in the running time) (top), and
+      the bit-security implied for the construction (bottom), assuming that the
+      best attack on the primitive is scales linearly as in a brute-force search
+      (left) and quadratically as with Grover search and collision-finding
+      (right). We assume that the primitive achieves $128$-bit security against
+      the relevant attack, and display the ruled-out advantages/bit security as a
+      function of the bound on the adversarial run-time $t$, to highlight the
+      time-probability trade-off that adversaries generally face. 
+      (So for example, if high $t$ gives lower bit-security, the adversary will be
+      incentivized to use all the time available to it, while if the lowest
+      bit-security sits at low $t$, the optimal attack may involve performing the
+      same low-advantage attack a large number of times in parallel.)
+    }
+
+    %\crakzfigcode{sq-loss}{
+    \hhnote{OLD CAPTION 3:
+      Same as \cref{fig:qh-loss}, except if the reduction incurred a
+      square-root loss instead of a factor $q$.
+      Interestingly, if the best attack on the primitive already scales
+      quadratically, then a square-root yields the same bit-security, the only
+      difference being that now we can't rule out matching attacks for any values
+      of $t$ (where previously the only matching attack was at $t = t_{\text{max}}
+      = 2^{128}$). Contrast with the linear-scaling case, where a square-root
+      loss would halve the bit-security.
+    }
+
+    %\crakzfigcode{loss-attacks}{
+    %  ATTACKS: testing a different combination: loss types left--right, attack types
+    %  up--down
+    %}
+    %\crakzfigcode{loss-bitsec}{
+    %  BIT-SECURITY: testing a different combination: loss types left--right, attack types
+    %  up--down
+    %}
+
+    % try with every loss = 64 bits
+    \crakzfigcode{sixtyfourloss-attacks}{
+      The $t$-vs.-$\epsilon$ attack landscape for a construction built from some
+      primitive $\Pi$, if the security reduction incurred 1) the
+      additive loss $+c=2^{-64}$ (top row), 2) the multiplicative loss
+      $\cdot\, c=2^{64}$ (middle row), or 3) a square-root loss, 
+      assuming that the optimal advantage against $\Pi$ scales a)
+      linearly with time, e.g.\ brute-force search (left column), b)
+      quadratically with time, e.g.\ Grover
+      search/classical collision-finding (middle column), and 
+      c) cubically with time, e.g.\ quantum collision-finding (right column).
+      We assume that $\Pi$ achieves $128$-bit security against
+      the relevant attack type, and that the reduction did not incur any significant
+      increase in runtime.
+      Dots mark the corresponding bit-security, see \cref{fig:sixtyfourloss-bitsec}.
+    }
+    \crakzfigcode{sixtyfourloss-bitsec}{
+      The bit-security of the primitive $\Pi$ for each kind of assumed-best
+      attack, and the implied bit-security of the construction for a given reduction type, as
+      a function of the upper-bound $t$ on the run-time of the adversary. 
+      The panels correspond to the panels of \cref{fig:sixtyfourloss-attacks},
+      and dots mark the assumed/implied bit-security when $t \leq 2^{128}$.
+      Observe how a square-root loss does not lead to a loss in bit-security
+      once the underlying assumed-optimal attack scales quadratically or better.
+    }
+
+  \subsection{Understanding the O2H Losses}
+    See \cref{tab:compensation} and \cref{fig:sqO2H-loss}.
+
+    \begin{table}[h]
+      \centering
+      %
+      \caption{
+        \label{tab:compensation}
+        Compensating for tightness losses: Assuming the primitive $\Pi$ achieves
+        $128$-bit security against Attack (and assuming that Attack
+        is the most effective attack against the primitive), how large should we set
+        the security parameter of the construction to compensate for the security
+        loss and provably achieve $128$-bit security?
+        Here, as elsewhere, we assume $q \leq 2^{80}$.
+        Note how once we assume a primitive attack that scales like $\epsilon
+        \propto t^c$ for $c \geq 2$, then a square-root loss no longer needs to be
+        compensated for.
+      }
+      %
+      \rowcolors{2}{}{gray!10}
+      \begin{tabular}{lc||l|l|l}
+        \toprule
+        \multicolumn{5}{c}{%
+          \textbf{For $128$-bit security against Attack on $\Pi$, set $\lambda$ to \ldots}
+        } \\
+        \midrule
+          & \textbf{Tightness loss}
+            & Brute-force search 
+              & Grover search/collision finding 
+                & Quantum collision finding \\
+        \textbf{O2H Variant}
+          & $\epsilon \lesssim \ldots$ 
+            & $\quad \To \epsilon_\Pi \propto t$, $\lambda_\Pi = 128$ 
+              & $\quad \To \epsilon_\Pi \propto t^2$, $\lambda_\Pi = 256$  
+                & $\quad \To \epsilon_\Pi \propto t^3$, $\lambda_\Pi = 384$ \\
+        \midrule
+        \midrule
+        Classical Find
+          & $\epsilon_\Pi$ 
+            & $\lambda \assign 128\ (= \lambda_\Pi)$ 
+              & $\lambda \assign 256\ (= \lambda_\Pi)$ 
+                & $\lambda \assign 384\ (= \lambda_\Pi)$ \\
+        MRE-Find
+          & $\sqrt{q} \cdot \epsilon_\Pi$ 
+            & $\lambda \assign 168\ (= \lambda_\Pi + 40)$ 
+              & $\lambda \assign 296\ (= \lambda_\Pi + 40)$ 
+                & $\lambda \assign 424\ (= \lambda_\Pi + 40)$ \\
+        Classical Guess
+          & $q \cdot \epsilon_\Pi$ 
+            & $\lambda \assign 208\ (= \lambda_\Pi + 80)$ 
+              & $\lambda \assign 336\ (= \lambda_\Pi + 80)$ 
+                & $\lambda \assign 464\ (= \lambda_\Pi + 80)$ \\
+        \midrule
+        DS-Find
+          & $\sqrt{\epsilon_\Pi}$ 
+            & $\lambda \assign 256\ (= 2 \cdot \lambda_\Pi)$ 
+              & $\lambda \assign 256\ (= \lambda_\Pi)$ 
+                & $\lambda \assign 384\ (= \lambda_\Pi)$ \\
+        SC-Find
+          & $\sqrt{q \cdot \epsilon_\Pi}$ 
+            & $\lambda \assign 336\ (= 2 \cdot \lambda_\Pi + 80)$ 
+              & $\lambda \assign 336\ (= \lambda_\Pi + 80)$ 
+                & $\lambda \assign 464\ (= \lambda_\Pi + 80)$ \\
+        Guess
+          & $q\sqrt{\epsilon_\Pi}$ 
+            & $\lambda \assign 416\ (= 2 \cdot (\lambda_\Pi + 80))$ 
+              & $\lambda \assign 416\ (= \lambda_\Pi + 2 \cdot 80)$ 
+                & $\lambda \assign 544\ (= \lambda_\Pi + 2 \cdot 80)$ \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+
+    %\crakzfigcode{GuessO2H-loss}{
+    %  $\epsilon \sim q \sqrt{\epsilon_\Pi}$
+    %}
+
+    %\crakzfigcode{FindO2H-loss}{
+    %  Same as \cref{fig:qh-loss} -- \cref{fig:GuessO2H-loss}, except if the reduction
+    %  incurred the Find-O2H loss $\epsilon \sim \sqrt{q \cdot \epsilon_\Pi}$.
+    %}
+
+    %\crakzfigcode{O2H-loss}{
+    %  Find and Guess combined
+    %}
+
+    \crakzfigcode{sqO2H-loss}{
+      Same as \cref{fig:qh-loss} and \cref{fig:sq-loss}, except if the reduction
+      incurred each of the O2H losses 
+      $\epsilon \sim \sqrt{\epsilon_\Pi}$ (line),  
+      $\epsilon \sim \sqrt{q \cdot \epsilon_\Pi}$ (line),  
+      $\epsilon \sim q \sqrt{\epsilon_\Pi}$ (line).
+      Observe how, if parameter were chosen to resist a linearly-scaling attack with
+      $128$-bit security, then the tightness loss is large enough to completely void the
+      reduction bound, meaning the theorem would imply no security for the
+      construction in this case.
+    }
+

@@ -1,0 +1,299 @@
+% --- shared colours (matplotlib tab10) ---
+\definecolor{cblue}{RGB}{31,119,180}
+\definecolor{cred}{RGB}{214,39,40}
+\definecolor{cgreen}{RGB}{44,160,44}
+
+% common picture options: 1 bit = 0.042 cm on both axes (square aspect)
+\tikzset{bitsec/.style={x=0.042cm,y=0.042cm,font=\small}}
+
+%======================================================================
+% PANEL 1a:  Additive loss, linear attack
+%======================================================================
+\newcommand{\panelAddLin}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}
+    \fill[black!12]  (0,0) -- (0,16) -- (\n,16) -- (\n,0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\n,0) -- (\n,-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-\n) -- (0,-64) -- (64,-64) -- cycle;                 % gap
+    \fill[cgreen!18] (0,0) -- (0,-64) -- (64,-64) -- (\n,0) -- cycle;          % construction secure
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\n+16},-135) node[right] {$t$};
+    \foreach \x in {0,32,64,96,128} \draw (\x,-135)--(\x,-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-32,-64,-96,-128} \draw (0,\y)--(-4,\y) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- (\n,0);
+    \node[gray,font=\scriptsize] at ({0.5*\n},8) {N/A};
+    \draw[cblue,very thick] (0,-\n) -- (\n,0);
+    \draw[cred,very thick,dashed] (0,-64) -- (64,-64); %-- (\n,0);
+    \fill[cblue] (0,-\n) circle (1.6pt);
+    \fill[cblue] (\n,0) circle (1.6pt);
+    \fill (0,-64) circle (1.6pt);
+    \node[cblue,rotate=45,anchor=south,font=\scriptsize] at (98,-28) {$\epsilon_\Pi \propto t$};
+    \node[cred,anchor=south,font=\scriptsize] at (30,-64) {$\epsilon \leq \epsilon_\Pi + c$};
+    \node[cgreen!55!black,align=center,font=\footnotesize] at (44,-32) {construction secure};
+    \node[orange!70!black,align=center,font=\footnotesize] at (22,-80) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\footnotesize] at (82,-114) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 1b:  Additive loss, quadratic attack
+%======================================================================
+\newcommand{\panelAddQuad}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}\def\m{64}
+    \fill[black!12]  (0,0) -- (0,16) -- (\m,16) -- (\m,0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\m,0) -- (\m,-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-32) -- (48,-32) -- (0,-\n) -- cycle;
+    \fill[cgreen!18] (0,0) -- (0,-32) -- (48,-32) -- (\m,0) -- cycle;
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\m+14},-135) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/2},-135)--({\x/2},-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-64,-128,-192,-256} \draw (0,{\y/2})--(-4,{\y/2}) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- (\m,0);
+    \node[gray,font=\scriptsize] at (32,8) {N/A};
+    \draw[cblue,very thick] (0,-\n) -- (\m,0);
+    \draw[cred,very thick,dashed] (0,-32) -- (48,-32); % -- (\m,0);
+    \fill[cblue] (\m,0) circle (1.6pt);
+    \fill (0,-32) circle (1.6pt);
+    \node[cblue,rotate=63.43,anchor=south,font=\tiny] at (41,-50) {$\epsilon_\Pi \propto t^2$};
+    \node[cred,anchor=south,font=\tiny] at (22,-31) {$\epsilon \leq \epsilon_\Pi + c$};
+    \node[cgreen!55!black,align=center,font=\scriptsize] at (30,-12) {construction\\secure};
+    \node[orange!70!black,align=center,font=\scriptsize] at (15,-64) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\scriptsize] at (36,-118) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 1c:  Additive loss, cubic attack
+%======================================================================
+\newcommand{\panelAddCube}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}
+    \fill[black!12]  (0,0) -- (0,16) -- ({\n/3},16) -- ({\n/3},0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- ({\n/3},0) -- ({\n/3},-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-21.333) -- (35.556,-21.333) -- (0,-\n) -- cycle;
+    \fill[cgreen!18] (0,0) -- (0,-21.333) -- (35.556,-21.333) -- ({\n/3},0) -- cycle;
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\n/3+16},-135) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/3},-135)--({\x/3},-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-128,-256,-384} \draw (0,{\y/3})--(-4,{\y/3}) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- ({\n/3},0);
+    \node[gray,font=\scriptsize] at ({\n/6},8) {N/A};
+    \draw[cblue,very thick] (0,-\n) -- ({\n/3},0);
+    \draw[cred,very thick,dashed] (0,-21.333) -- (35.556,-21.333) -- ({\n/3},0);
+    \fill[cblue] ({\n/3},0) circle (1.6pt);
+    \fill (0,-21.333) circle (1.6pt);
+    \node[cblue,rotate=71.57,anchor=south,font=\tiny] at (27,-52) {$\epsilon_\Pi \propto t^3$};
+    \node[cred,anchor=south,font=\tiny] at (17,-21) {$\epsilon \leq \epsilon_\Pi + c$};
+    \node[cgreen!55!black,align=center,font=\tiny] at (20,-7) {construction\\secure};
+    \node[orange!70!black,align=center,rotate=71.57,font=\scriptsize] at (10,-55) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\tiny] at (24,-122) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 2a:  Multiplicative loss, linear attack
+%======================================================================
+\newcommand{\panelMultLin}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}\def\l{64}
+    \fill[black!12]   (0,0) -- (0,16) -- (\n,16) -- (\n,0) -- cycle;
+    \fill[cgreen!18] (0,{-\n+\l}) -- (0,0) -- ({\n-\l},0) -- cycle;
+    \fill[orange!22] (0,{-\n}) -- (0,{-\n+\l}) -- ({\n-\l},) -- (\n,0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\n,0) -- (\n,-135) -- (0,-135) -- cycle;
+    \draw[->] (0,-135) -- ({\n+16},-135) node[right] {$t$}; % x-axis
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$}; % y-axis
+    \foreach \x in {0,32,64,96,128} \draw (\x,-135)--(\x,-140) node[below] {$2^{\x}$}; % x-axis labels
+    \foreach \y in {0,-32,-64,-96,-128} \draw (0,\y)--(-4,\y) node[left] {$2^{\y}$}; % y-axis labes
+    %\node[gray,rotate=90,anchor=south,font=\scriptsize] at (-24,-68) {$\downarrow$ more secure};
+    \draw[gray,dashed] (0,0) -- (\n,0); % gray top line
+    \node[gray,font=\scriptsize] at ({0.5*\n},8) {N/A}; % top line legend
+    \draw[cred,very thick,dashed] (0,{-\n+\l}) -- ({\n-\l},0); % red middle line
+    \draw[cblue,very thick] (0,-\n) -- (\n,0); % blue bottom line
+    \fill[cblue] (0,-\n) circle (1.6pt);
+    \fill[cblue] (\n,0) circle (1.6pt);
+    \fill (0,-64) circle (1.6pt);
+    \fill (64,0) circle (1.6pt);
+    \node[cblue,rotate=45,anchor=south,font=\scriptsize] at (100,-30) {$\epsilon_\Pi \propto t$};
+    \node[cred,rotate=45,anchor=south,font=\scriptsize] at (32,-32) {$\epsilon \leq c \cdot \epsilon_\Pi$};
+    \node[cgreen!55!black,align=center,rotate=45,font=\scriptsize] at (15,-15) {construction};
+    \node[cgreen!55!black,align=center,rotate=45,font=\scriptsize] at (19,-19) {secure};
+    \node[orange!70!black,align=center,font=\footnotesize] at (50,-45) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\footnotesize] at (80,-100) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 2b:  Multiplicative loss, quadratic attack
+%======================================================================
+\newcommand{\panelMultQuad}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}\def\m{64}\def\l{32} % everything scaled by x2
+    \fill[black!12]   (0,0) -- (0,16) -- (\m,16) -- (\m,0) -- cycle;
+    \fill[cgreen!18] (0,{-\n+\l}) -- (0,0) -- ({(\n-\l)/2},0) -- cycle;
+    \fill[orange!22] (0,{-\n+\l}) -- (0,{-\n}) -- (\m,0) -- ({(\n-\l)/2},0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\m,0) -- (\m,-135) -- (0,-135) -- cycle;
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\m+14},-135) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/2},-135)--({\x/2},-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-64,-128,-192,-256} \draw (0,{\y/2})--(-4,{\y/2}) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- (\m,0);
+    \node[gray,font=\scriptsize] at (32,8) {N/A};
+    \draw[cred,very thick,dashed] (0,{-\n+\l}) -- ({(\n-\l)/2},0);
+    \draw[cblue,very thick] (0,-\n) -- (\m,0);
+    \fill[cblue] (\m,0) circle (1.6pt);
+    \fill ({\m-(\l/2)},0) circle (1.6pt);
+    \node[cblue,rotate=63.43,anchor=south,font=\scriptsize] at (53,-25) {$\epsilon_\Pi \propto t^2$};
+    \node[cred,rotate=63.43,anchor=south,font=\scriptsize] at (33,-30) {$\epsilon \leq c\cdot\epsilon_\Pi$};
+    \node[cgreen!55!black,align=center,rotate=63.43,font=\scriptsize] at (15,-29) {construction secure};
+    \node[orange!70!black,align=center,rotate=63.43,font=\footnotesize] at (20,-70) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\footnotesize] at (36,-120) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 2c:  Multiplicative loss, cubic attack
+%======================================================================
+\newcommand{\panelMultCube}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}
+    \fill[black!12]  (0,0) -- (0,16) -- ({\n/3},16) -- ({\n/3},0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- ({\n/3},0) -- ({\n/3},-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-\n) -- ({\n/3},0) -- (35.556,0) -- (0,-106.667) -- cycle;
+    \fill[cgreen!18] (0,0) -- (0,-106.667) -- (35.556,0) -- cycle;
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\n/3+16},-135) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/3},-135)--({\x/3},-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-128,-256,-384} \draw (0,{\y/3})--(-4,{\y/3}) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- ({\n/3},0);
+    \node[gray,font=\scriptsize] at ({\n/6},8) {N/A};
+    \draw[cblue,very thick] (0,-\n) -- ({\n/3},0);
+    \draw[cred,very thick,dashed] (0,-106.667) -- (35.556,0);
+    \fill[cblue] ({\n/3},0) circle (1.6pt);
+    \fill (35.556,0) circle (1.6pt);
+    \node[cblue,rotate=71.57,anchor=south,font=\tiny] at (41,-38) {$\epsilon_\Pi \propto t^3$};
+    \node[cred,rotate=71.57,anchor=south,font=\scriptsize] at (30,-20) {$\epsilon \leq c \cdot \epsilon_\Pi$};
+    \node[cgreen!55!black,align=center,rotate=71.57,font=\tiny] at (11,-30) {construction secure};
+    \node[orange!70!black,align=center,font=\tiny,rotate=71.57] at (10,-87) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\tiny] at (24,-122) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 3a:  Square-root loss, linear attack
+%======================================================================
+\newcommand{\panelRootLin}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}
+    \fill[black!12]   (0,0) -- (0,16) -- (\n,16) -- (\n,0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\n,0) -- (\n,-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-\n) -- (0,{-\n/2}) -- (\n,0) -- cycle;
+    \fill[cgreen!18] (0,{-\n/2}) -- (0,0) -- (\n,0) -- cycle;
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\n+16},-135) node[right] {$t$};
+    \foreach \x in {0,32,64,96,128} \draw (\x,-135)--(\x,-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-32,-64,-96,-128} \draw (0,\y)--(-4,\y) node[left] {$2^{\y}$};
+    %\node[gray,rotate=90,anchor=south,font=\scriptsize] at (-24,-68) {$\downarrow$ more secure};
+    \draw[gray,dashed] (0,0) -- (\n,0);
+    \node[gray,font=\scriptsize] at ({0.5*\n},8) {N/A};
+    \draw[cblue,very thick] (0,-\n) -- (\n,0);
+    \draw[cred,very thick,dashed] (0,{-\n/2}) -- (\n,0);
+    \fill[cblue] (0,-\n) circle (1.6pt);
+    \fill[cblue] (\n,0) circle (1.6pt);
+    \fill (0,-64) circle (1.6pt);
+    \node[cblue,rotate=45,anchor=south,font=\scriptsize] at (80,-48) {$\epsilon_\Pi \propto t$};
+    \node[cred,rotate=26.57,anchor=south,font=\scriptsize] at (33,-48) {$\epsilon \leq \sqrt{\epsilon_\Pi}$};
+    \node[cgreen!55!black,align=center,font=\footnotesize] at (38,-13) {construction secure};
+    \node[orange!70!black,align=center,font=\footnotesize] at (33,-67) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\footnotesize] at (72,-117) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 3b:  Square-root loss, quadratic attack
+%======================================================================
+\newcommand{\panelRootQuad}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}\def\m{64}
+    \fill[black!12]   (0,0) -- (0,16) -- (\m,16) -- (\m,0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- (\m,0) -- (\m,-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-\n) -- (0,-\m) -- (\m,0) -- cycle;
+    \fill[cgreen!18] (0,-\m) -- (0,0) -- (\m,0) -- cycle;
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\m+14},-135) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/2},-135)--({\x/2},-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-64,-128,-192,-256} \draw (0,{\y/2})--(-4,{\y/2}) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- (\m,0);
+    \node[gray,font=\scriptsize] at (32,8) {N/A};
+    \draw[cblue,very thick] (0,-\n) -- (\m,0);
+    \draw[cred,very thick,dashed] (0,-\m) -- (\m,0);
+    \fill (\m,0) circle (1.6pt);
+    \fill (0,-\m) circle (1.6pt);
+    \node[cblue,rotate=63.43,anchor=south,font=\scriptsize] at (40,-50) {$\epsilon_\Pi \propto t^2$};
+    \node[cred,rotate=45,anchor=south,font=\scriptsize] at (25,-40) {$\epsilon \leq \sqrt{\epsilon_\Pi}$};
+    \node[cgreen!55!black,align=center,font=\scriptsize] at (26,-7) {construction};
+    \node[cgreen!55!black,align=center,font=\scriptsize] at (26,-13) {secure};
+    \node[orange!70!black,align=center,rotate=55,font=\scriptsize] at (15,-70) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\footnotesize] at (35,-120) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+%======================================================================
+% PANEL 3c:  Square-root loss, qubic attack
+%======================================================================
+\newcommand{\panelRootCube}{%
+  \begin{tikzpicture}[bitsec]
+    \def\n{128}% depth 128 drawn = 384 bits; pinch x = \n/3
+    \fill[black!12]  (0,0) -- (0,16) -- ({\n/3},16) -- ({\n/3},0) -- cycle;
+    \fill[cblue!12]  (0,-\n) -- ({\n/3},0) -- ({\n/3},-135) -- (0,-135) -- cycle;
+    \fill[orange!22] (0,-\n) -- (0,{-\n/2}) -- ({\n/3},0) -- cycle;
+    \fill[cgreen!18] (0,{-\n/2}) -- (0,0) -- ({\n/3},0) -- cycle;
+    \draw[->] (0,-135) -- (0,18) node[above] {$\epsilon$};
+    \draw[->] (0,-135) -- ({\n/3+16},-135) node[right] {$t$};
+    \foreach \x in {0,64,128} \draw ({\x/3},-135)--({\x/3},-140) node[below] {$2^{\x}$};
+    \foreach \y in {0,-128,-256,-384} \draw (0,{\y/3})--(-4,{\y/3}) node[left] {$2^{\y}$};
+    \draw[gray,dashed] (0,0) -- ({\n/3},0);
+    \node[gray,font=\scriptsize] at ({\n/6},8) {N/A};
+    \draw[cblue,very thick] (0,-\n) -- ({\n/3},0);
+    \draw[cred,very thick,dashed] (0,{-\n/2}) -- ({\n/3},0);
+    \fill ({\n/3},0) circle (1.6pt);
+    \node[cblue,rotate=71.57,anchor=south,font=\scriptsize] at (39,-45) {$\epsilon_\Pi \propto t^3$};
+    \node[cred,rotate=56.31,anchor=south,font=\scriptsize] at (18,-38) {$\epsilon \leq \sqrt{\epsilon_\Pi}$};
+    \node[cgreen!55!black,align=center,font=\tiny] at (18,-8) {construction\\secure};
+    \node[orange!70!black,align=center,rotate=63,font=\scriptsize] at (10,-68) {$\Pi$ secure};
+    \node[cblue!70!black,align=center,font=\tiny] at (24,-122) {attacks on $\Pi$};
+  \end{tikzpicture}
+}
+
+\resizebox{\textwidth}{!}{
+  \begin{tabular}{@{}c@{\hspace{1em}}c@{\hspace{1em}}c@{}}
+    \panelcap{\panelAddLin}{
+      (1a) Additive loss $+c=2^{-64}$; attacks on $\Pi$ scale linearly
+    }
+    & \panelcap{\panelAddQuad}{
+      (1b) Additive loss; quadratic scaling
+    } 
+    & \panelcap{\panelAddCube}{
+      (1c) Additive loss; cubic scaling
+    } \\[30pt]
+    \panelcap{\panelMultLin}{
+      (2a) Multiplicative loss $\cdot\, c = 2^{64}$; attacks on $\Pi$ scale
+      linearly 
+    }
+    & \panelcap{\panelMultQuad}{
+      (2b) Multiplicative loss; quadratic scaling
+    }
+    & \panelcap{\panelMultCube}{
+      (2c) Multiplicative loss; cubic scaling
+    } \\[30pt]
+    \panelcap{\panelRootLin}{
+      (3a) Square-root loss; attacks on $\Pi$ scale linearly
+    }
+    & \panelcap{\panelRootQuad}{
+      (3b) Square-root loss; quadratic scaling
+    }
+    & \panelcap{\panelRootCube}{
+      (3c) Square-root loss; cubic scaling
+    } 
+  \end{tabular}
+}
