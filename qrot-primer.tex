@@ -1112,49 +1112,30 @@
       Then $\{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$ is a complete set of
         orthogonal projectors, as they must be, since they each correspond to
         mutually-exclusive outcomes whose probabilities sum to one. 
-        Call this set $\measurement_{x_0}$. Performing this measurement then
-        induces the distribution
+        Call the set of these two projectors $\measurement_{x_0}$. 
+        Performing the corresponding measurement then induces the distribution
       \[
         \distribution_\psi^{\measurement_{x_0}}(b) 
         = \braket{\psi|\projector_{x_0 = b}|\psi}
         = \sum_{x\, :\, x_0 = b} \abs{\alpha_x}^2\, .
       \]
 
-      \begin{exercise}
-        %Let $\ket\psi = \sum_x \alpha_x \ket x$.
-        \begin{subex}
-          \item Show that the matrix $\projector_{x_0=b} = \projector_b \otimes \idmatrix_{2^{n-1}}$ is a projector.
-          \item Show that the set $\measurement_{x_0} = \{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$
-            is complete and orthogonal.
-          %\item Show that if $\ket\psi = \sum_x \alpha_x \ket x$, then
-          %  $\distribution_\psi^{\measurement_{x_0}}(b) = \sum_{x\, :\, x_0 = b}
-          %  \abs{\alpha_x}^2$.
-          \item Show that the projector $\projector_{x_0=b}$ is equal to the sum
-            $\sum_{x\, :\, x_0=b} \projector_x$.
-        \end{subex}
-        \emph{
-          %Hint: You may use that $\projector = \projector^\dagger \projector$.
-          Hint: Consider the effect of applying $\projector_{x_0=b}$ to 
-          $\ket\psi = \sum_x \alpha_x \ket x$.
-        }
-      \end{exercise}
-
       The set $\measurement_{x_0}$ is an example of a \emph{Projector-Valued
         Measure} (PVM). Any set of complete, orthogonal projectors defines a
         PVM; conversely, for any \emph{sharp} measurement (meaning measurements
-        such that repeating yields the same outcome) such that there are $k$
+        such that repeating them yields the same outcome) such that there are $k$
         possible, mutually exclusive outcomes, there is a corresponding
         PVM.\footnote{
-          The most general class of measurements are the POVMs, or ``Positive
+          The more general class of measurements are the POVMs, or ``Positive
           Operator-Valued Measures'', which capture the class of measurements
-          with $k$ possible, mutually exclusive outcomes (as above), but
-          possibly \emph{non-sharp}, so that repeating the measurement may yield
-          different results. 
+          with $k$ possible, mutually exclusive outcomes (like above), but
+          which may be \emph{non-sharp}, meaning that repeating the measurement
+          may yield a different results. 
           (Intuitively, you may think of POVMs as being to PVMs what mixed
           states are to pure states.)
         } We call such measurements \emph{projective}.
 
-      \begin{definition}[Projective Measurement]
+      \begin{definition}[Projective Measurement]\label{def:pvm}
         Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
           orthogonal set of projectors on a Hilbert space $\Hspace$.
           Then $\measurement = \{\projector_{i} \}_{i \in [k]}$ is a 
@@ -1179,36 +1160,73 @@
           $\distribution_\psi^{\measurement}$.
       \end{definition}
 
-      \hhnote{
-        Exercise idea: find the projectors $\projector_+$, $\projector_-$,
-        expressed in the computational basis, and
-        verify that transforming them to the Hadamard basis makes them take the
-        form $\projector_0$, $\projector_1$.
-      }
-
-    \subsubsection{The Post-Measurement State.}
-      \hhnote{cont}
-      As mentioned, $\projector\ket{\psi}$ will usually not be a valid quantum
-        state, since if $\projector$ did any projection at all, then the
-        resulting vector will not have unit norm. Clearly, something more is needed.
+      The projected state $\projector_i \ket{\psi}$ will not (usually) be
+        unit-norm, and hence not a valid quantum state, so we still need to
+        define an update procedure for the post-measurement state, given that a
+        particular outcome $i$ was observed: If we observed outcome $i$, 
+        then the projected state vector $\projector_i \ket{\psi}$ will be
+        pointing in the right direction in Hilbert space, but its magnitude will be 
+        $\norm{\projector_i \ket{\psi}} = \abs{\alpha_i} \leq 1$. 
+        Physically speaking, observing a quantum state has the
+        effect of ``snapping'' the vector from the old direction in Hilbert
+        space, to a new direction consistent with the observed outcome -- the
+        magnitude never shifts away from $1$. Mathematically, we can recover this 
+        behaviour by defining the post-measurement state to be the projected state vector
+        $\projector_i \ket{\psi}$ (giving the direction), \emph{renormalized}
+        to $1$ by dividing away the factor $\abs{\alpha_i}$.
 
       \begin{definition}[Post-measurement state]
         Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
         Upon observing a state $\ket\psi$, if outcome $i$ is observed,
-        the state will immediately collapse to a state consistent with the
-        observed outcome, as follows:
+        the state will immediately\footnote{
+          Whether the state update upon measuring is truly
+          instantaneous, or if there is a continuous, dynamical
+          process underlying it (or if the question is ill-posed), 
+          remains a hotly debated question in the foundations of physics.
+        }
+        update (or ``collapse'') to the state 
         \[
           \ket{\psi} \apply{\measurement \to i} 
           \mathsf{Collapse}^{\measurement}_i(\ket{\psi}) 
           \coloneqq \frac{\projector_i \ket\psi}{\norm{\projector_i \ket{\psi}}}
           = \frac{\projector_i \ket\psi}{\sqrt{\braket{\psi|\projector_i|\psi}}}\, ,
         \]
-        where $\norm{\projector_i \ket{\psi}} > 0$
-        (since conditioning on outcome $i$ implies a non-zero probability that
-        $i$ was observed).
+        where conditioning on outcome $i$ guarantees $\prob{\text{observe } i\, } > 0 \To \norm{\projector_i \ket{\psi}} > 0$.
       \end{definition}
-      Note how $\mathsf{Coll}^{\measurement}_i(\ket{\psi})$ is not a
-        linear operator, but rather a non-linear map on the Hilbert space.
+      Note how $\mathsf{Collapse}^{\measurement}_i(\ket{\psi})$ is 
+        a \emph{non-linear} map on the Hilbert space, in stark contrast to the
+        unitary operations we have encountered so far.
+        In fact, $\mathsf{Collapse}^{\measurement}_i(\ket{\psi})$ is 
+        not even injective -- there is an infinite continuity of
+        pre-measurement states that could have yielded the
+        post-measurement state -- which shows how measurements
+        are fundamentally \emph{irreversible operations}.
+
+      \begin{exercise}
+        %Let $\ket\psi = \sum_x \alpha_x \ket x$.
+        \begin{subex}
+          \item Show that the matrix $\projector_{x_0=b} = \projector_b \otimes \idmatrix_{2^{n-1}}$ is a projector.
+          \item Show that the set $\measurement_{x_0} = \{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$
+            is complete and orthogonal.
+          %\item Show that if $\ket\psi = \sum_x \alpha_x \ket x$, then
+          %  $\distribution_\psi^{\measurement_{x_0}}(b) = \sum_{x\, :\, x_0 = b}
+          %  \abs{\alpha_x}^2$.
+          \item Show that the projector $\projector_{x_0=b}$ is equal to the sum
+            $\sum_{x\, :\, x_0=b} \projector_x$.
+        \end{subex}
+        \emph{
+          %Hint: You may use that $\projector = \projector^\dagger \projector$.
+          Hint: Consider the effect of applying $\projector_{x_0=b}$ to 
+          $\ket\psi = \sum_x \alpha_x \ket x$.
+        }
+      \end{exercise}
+
+      \hhnote{
+        Exercise idea: find the projectors $\projector_+$, $\projector_-$,
+        expressed in the computational basis, and
+        verify that transforming them to the Hadamard basis makes them take the
+        form $\projector_0$, $\projector_1$.
+      }
 
       %%% X and Z measurements
          %Instead, the canonical choice\footnote{
@@ -1265,81 +1283,81 @@
         %  eigenstates and eigenvalues.
         %\end{exercise}
 
-    \subsubsection{Measuring Subspaces.}
-      Let us next define the projector $\projector_\Sspace$ onto some
-        subspace $\Sspace$ of the full $N$-dimensional Hilbert space
+    %\subsubsection{Measuring Subspaces.}
+      %Let us next define the projector $\projector_\Sspace$ onto some
+      %  subspace $\Sspace$ of the full $N$-dimensional Hilbert space
 
-        \hhnote{\ldots}
+      %  \hhnote{\ldots}
 
-      specified by a subset of the computational basis states
-        $\{\ket{x_i}\}_{i \in [k]}$ (where $k \leq N$). This will
-        simply be the sum of the relevant basis projectors:
+      %specified by a subset of the computational basis states
+      %  $\{\ket{x_i}\}_{i \in [k]}$ (where $k \leq N$). This will
+      %  simply be the sum of the relevant basis projectors:
 
-      \[
-        \projector_\Sspace = \sum_{i = 0}^{k-1} \ket{x_i} \bra{x_i} = 
-        \sum_{i = 0}^{k-1} \projector_{x_i}\, .
-      \]
+      %\[
+      %  \projector_\Sspace = \sum_{i = 0}^{k-1} \ket{x_i} \bra{x_i} = 
+      %  \sum_{i = 0}^{k-1} \projector_{x_i}\, .
+      %\]
 
-      \noindent
-      The larger the sum, the ``gentler'' the measurement, in the sense that
-        you learn less from performing it and hence also disturb the state less.
+      %\noindent
+      %The larger the sum, the ``gentler'' the measurement, in the sense that
+      %  you learn less from performing it and hence also disturb the state less.
 
-      \begin{example}\label{ex:projector}
-        Let $\ket\psi = \sum_{i \in [8]} \alpha_i \ket{i}$ be a
-        three-qubit state. Then the projector $\projector_{00b}$, given
-        by 
-        \[
-          \projector_{00b} = \ket{000}\bra{000} + \ket{001}\bra{001}
-        \] 
-        ``selects'' the states 
-        in the superposition in which the first and second qubits are zero:
-        \begin{align*}
-          \projector_{00b} \ket\psi &= 
-          \ket{000}\bra{000} \sum_{i \in [8]} \alpha_i \ket{i}
-          + \ket{001}\bra{001} \sum_{i \in [8]} \alpha_i \ket{i} \\
-          &= \ket{000} \sum_{i \in [8]} \alpha_i \braket{000|i}
-          + \ket{001} \sum_{i \in [8]} \alpha_i \braket{001|i} \\
-          &= \ket{000} \sum_{i \in [8]} \alpha_i \cdot \delta_{000, i}
-          + \ket{001} \sum_{i \in [8]} \alpha_i \cdot \delta_{001, i} 
-          = %\ket{000}\alpha_0  + \ket{001}\alpha_1  = 
-          \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
-        \end{align*}
-        %as follows from the orthonormality of basis states.
-        We see that $\ket\psi$ has been \emph{projected} from 
-        $8$-dimensional Hilbert space down to the $2$-dimensional subspace
-        spanned by $\ket{000}$ and $\ket{001}$. Note, however, that
-        $\projector_{00b} \ket\psi$ will not itself be a valid quantum
-        \emph{state}, since (unless all the other $\alpha_i$ were already zero) we will have
-        $\abs{\alpha_0} + \abs{\alpha_1} < 1$, meaning $\projector_{00b}
-        \ket\psi$ will not satisfy the requirement of quantum states being unit length.
-      \end{example}
+      %\begin{example}\label{ex:projector}
+      %  Let $\ket\psi = \sum_{i \in [8]} \alpha_i \ket{i}$ be a
+      %  three-qubit state. Then the projector $\projector_{00b}$, given
+      %  by 
+      %  \[
+      %    \projector_{00b} = \ket{000}\bra{000} + \ket{001}\bra{001}
+      %  \] 
+      %  ``selects'' the states 
+      %  in the superposition in which the first and second qubits are zero:
+      %  \begin{align*}
+      %    \projector_{00b} \ket\psi &= 
+      %    \ket{000}\bra{000} \sum_{i \in [8]} \alpha_i \ket{i}
+      %    + \ket{001}\bra{001} \sum_{i \in [8]} \alpha_i \ket{i} \\
+      %    &= \ket{000} \sum_{i \in [8]} \alpha_i \braket{000|i}
+      %    + \ket{001} \sum_{i \in [8]} \alpha_i \braket{001|i} \\
+      %    &= \ket{000} \sum_{i \in [8]} \alpha_i \cdot \delta_{000, i}
+      %    + \ket{001} \sum_{i \in [8]} \alpha_i \cdot \delta_{001, i} 
+      %    = %\ket{000}\alpha_0  + \ket{001}\alpha_1  = 
+      %    \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
+      %  \end{align*}
+      %  %as follows from the orthonormality of basis states.
+      %  We see that $\ket\psi$ has been \emph{projected} from 
+      %  $8$-dimensional Hilbert space down to the $2$-dimensional subspace
+      %  spanned by $\ket{000}$ and $\ket{001}$. Note, however, that
+      %  $\projector_{00b} \ket\psi$ will not itself be a valid quantum
+      %  \emph{state}, since (unless all the other $\alpha_i$ were already zero) we will have
+      %  $\abs{\alpha_0} + \abs{\alpha_1} < 1$, meaning $\projector_{00b}
+      %  \ket\psi$ will not satisfy the requirement of quantum states being unit length.
+      %\end{example}
 
-        In particular, the set of computational-basis projectors
-        $\{\projector_i \}_{i \in [N]} = \{ \ket{i}\bra{i} \}_{i \in [N]}$
-        is easily seen to be complete: Each element in the sum will simply add one $1$ to
-        a previously-zero spot on the diagonal, and zeroes everywhere else; and
-        the sum has $N$ elements, so the full diagonal must be covered.
-        In the context of measurements, completeness reflects that outcome
-        probabilities should sum to one.
+      %  In particular, the set of computational-basis projectors
+      %  $\{\projector_i \}_{i \in [N]} = \{ \ket{i}\bra{i} \}_{i \in [N]}$
+      %  is easily seen to be complete: Each element in the sum will simply add one $1$ to
+      %  a previously-zero spot on the diagonal, and zeroes everywhere else; and
+      %  the sum has $N$ elements, so the full diagonal must be covered.
+      %  In the context of measurements, completeness reflects that outcome
+      %  probabilities should sum to one.
 
-      \begin{exercise}
-        Provide a set of projectors such that, when taken
-        together with $\projector_{00b}$ from \cref{ex:projector}, the set
-        is orthogonal and complete.
-      \end{exercise}
+      %\begin{exercise}
+      %  Provide a set of projectors such that, when taken
+      %  together with $\projector_{00b}$ from \cref{ex:projector}, the set
+      %  is orthogonal and complete.
+      %\end{exercise}
 
-      \hhnote{\ldots}
+      %\hhnote{\ldots}
 
-      We can also make it more general, by making a measurement
-        which determines which of several
-        subspaces $\Sspace_i$ $\ket\psi$ belongs to:
-        \[
-          \ket\psi \apply{M} m_{\Sspace_i} \ket{\psi_{\Sspace_i}}\, ,
-        \]
-        where $\ket{\psi_{\Sspace_i}}$ is the state that results from projecting
-        $\ket\psi$ onto subspace $\Sspace_i$.
+      %We can also make it more general, by making a measurement
+      %  which determines which of several
+      %  subspaces $\Sspace_i$ $\ket\psi$ belongs to:
+      %  \[
+      %    \ket\psi \apply{M} m_{\Sspace_i} \ket{\psi_{\Sspace_i}}\, ,
+      %  \]
+      %  where $\ket{\psi_{\Sspace_i}}$ is the state that results from projecting
+      %  $\ket\psi$ onto subspace $\Sspace_i$.
 
-      \hhnote{\ldots}
+      %\hhnote{\ldots}
 
     %% Spectral decomposition -- skipping, since I'm moving away from measurements-as-operators
       %However, provided that the measurement
@@ -1354,8 +1372,345 @@
       %    of $\measurement$.
 
 
-    \subsubsection{An Optimally Distinguishing Measurement.}
-      \hhnote{todo}
+    \subsubsection{Distinguishing Quantum States.}
+      \newcommand{\unknown}{\ket{\emph{?}\, }} % local macro
+      Say that you are given qubit register $\register$ in some unknown state $\unknown$,
+        but you are promised that $\unknown$ is equal to one of two known states (which
+        you also know how to prepare), $\ket\psi$ or $\ket\varphi$. What
+        measurement should you do to maximize your likelihood of telling them
+        apart? Note that $\ket\psi$ and $\ket\varphi$ need not be orthogonal, so
+        there may be many possible measurement outcomes that are consistent with
+        $\unknown$ being either state.
+
+      A natural thing to try is the procedure known as the ``SWAP test'':
+        Prepare a new register $\register[S]$ in one of the two states, say
+        $\ket \psi$, and prepare an ancilla qubit $\qubit$ in the uniform
+        superposition $\ket +$. 
+        Then, perform a controlled SWAP of the states $\unknown$ and
+        $\ket\psi$, controlled on the ancilla qubit:
+      \[
+        \ket{+}_\qubit
+        \unknown_{\register}
+        \ket{\psi}_{\register[S]}
+        =
+        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
+        \unknown_{\register}
+        \ket{\psi}_{\register[S]}
+        \apply{\CSWAPgate} 
+        \frac{1}{\sqrt 2}
+        \left(
+          \ket{0}_\qubit 
+          \unknown_{\register}
+          \ket{\psi}_{\register[S]}
+        + \ket{1}_\qubit
+          \ket{\psi}_{\register}
+          \unknown_{\register[S]}
+        \right)\, .
+      \]
+      Then, apply a Hadamard gate to $\qubit$ and perform a computational-basis
+        measurement on it. If the unknown
+        state is $\ket\psi$, then the $\CSWAPgate$ operation had no effect:
+      \[
+        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
+        \ket{\psi}_{\register}
+        \ket{\psi}_{\register[S]}
+        \apply{\CSWAPgate} 
+        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
+        \ket{\psi}_{\register}
+        \ket{\psi}_{\register[S]}
+        \apply{\Hgate}
+        \ket{0}_\qubit
+        \ket{\psi}_{\register}
+        \ket{\psi}_{\register[S]}\, ,
+      \]
+      so that when we measure $\qubit$, we are guaranteed to observe the value
+        $0$. Hence, if we observe a $1$, then we learn that $\unknown$ is \emph{not}
+        identical to $\ket\psi$, from which we may conclude that $\unknown$ must
+        be $\ket\varphi$. 
+
+      What is the probability that we observe $1$ in this case? 
+        If $\unknown$ is equal to $\ket\varphi$, then we get
+      \begin{multline*}
+        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
+        \ket{\varphi}_{\register}
+        \ket{\psi}_{\register[S]}
+        \apply{\CSWAPgate} 
+        \frac{1}{\sqrt 2}
+        \left(
+          \ket{0}_\qubit 
+          \ket{\varphi}_{\register}
+          \ket{\psi}_{\register[S]}
+        + \ket{1}_\qubit
+          \ket{\psi}_{\register}
+          \ket{\varphi}_{\register[S]}
+        \right) \\
+        %
+        \apply{\Hgate}
+        \frac{1}{\sqrt 2}
+        \left(
+          \left(
+            \frac{
+              \ket{0}_\qubit 
+              + \ket{1}_\qubit 
+            }{\sqrt 2}
+          \right)
+          \ket{\varphi}_{\register}
+          \ket{\psi}_{\register[S]}
+        + \left(
+            \frac{
+              \ket{0}_\qubit 
+              - \ket{1}_\qubit 
+            }{\sqrt 2}
+          \right)
+          \ket{\psi}_{\register}
+          \ket{\varphi}_{\register[S]}
+        \right) \\
+        = \frac{1}{2}
+        \left(
+          \ket{0} 
+          \left(
+            \ket{\varphi}_{\register}
+            \ket{\psi}_{\register[S]}
+            +
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right)
+          + \ket{1} 
+          \left(
+            \ket{\varphi}_{\register}
+            \ket{\psi}_{\register[S]}
+            -
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right)
+        \right)\, .
+      \end{multline*}
+      Let $\projector^{(\qubit)}_{b}$ be the projector $\projector_b \otimes
+        \idmatrix_{\register} \otimes \idmatrix_{\register[S]}$, i.e.\ the projector
+        that acts like $\projector_b$ on $\qubit$ and like the identity on 
+        $\register$ and $\register[S]$.
+        Then, \cref{def:pvm} tells us that the probability that measuring
+        $\qubit$ will yield outcome $1$ is
+      \begin{multline*}
+        %\condprob{\text{outcome } 1}{\unknown = \ket{\varphi}} = 
+        \norm{\projector^{(\qubit)}_1 
+        \frac{1}{2}
+        \left(
+          \ket{0} 
+          \left(
+            \ket{\varphi}_{\register}
+            \ket{\psi}_{\register[S]}
+            +
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right)
+          + \ket{1} 
+          \left(
+            \ket{\varphi}_{\register}
+            \ket{\psi}_{\register[S]}
+            -
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right)
+        \right)
+        }^2 \\
+        %
+        =
+        \norm{
+        \frac{1}{2}
+          \ket{1} 
+          \left(
+            \ket{\varphi}_{\register}
+            \ket{\psi}_{\register[S]}
+            -
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right)
+        }^2 
+        = 
+        \frac{1}{4}
+        \abs{
+          \braket{1|1}
+          \left(
+            \bra{\psi}_{\register[S]}
+            \bra{\varphi}_{\register}
+            -
+            \bra{\varphi}_{\register[S]}
+            \bra{\psi}_{\register}
+          \right)
+          \left(
+            \ket{\varphi}_{\register}
+            \ket{\psi}_{\register[S]}
+            -
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right) 
+        } \\
+        %
+        \frac{1}{4}
+        \abs{
+          \braket{\varphi|\varphi}_{\register}
+          \braket{\psi|\psi}_{\register[S]}
+          +
+          \braket{\psi|\psi}_{\register}
+          \braket{\varphi|\varphi}_{\register[S]}
+          -
+          \braket{\psi|\varphi}_{\register}
+          \braket{\varphi|\psi}_{\register[S]}
+          -
+          \braket{\varphi|\psi}_{\register}
+          \braket{\psi|\varphi}_{\register[S]}
+        }
+        = \frac{1}{2} - \frac{1}{2} 
+        \abs{
+          \braket{\psi|\varphi}
+        }^2\, .
+        %
+      \end{multline*}
+      Note how, even if $\ket{\psi}$ and $\ket{\varphi}$ are orthogonal, then the
+        probability of observing $1$ is only $\frac{1}{2} - 0 = \frac{1}{2}$, so
+        that even in the best case, while observing a $1$ would allow us to
+        immediately conclude that $\unknown = \ket\varphi$, observing the
+        zero outcome would only provide relatively weak evidence towards
+        $\unknown$ being $\ket\psi$. Given several copies of $\unknown$, we
+        could amplify our distinguishing advantage by repeating the
+        experiment, but what if we only had the one copy of $\unknown$?
+        With the state being unknown to us, the no-cloning theorem 
+        bars us from generating more copies of it, and we are stuck with a
+        single measurement. Can we do better?
+
+      As it turns out, the answer is yes, and the \emph{optimal} distinguishing
+        measurement is known as the \emph{Helstrom measurement} after its
+        discoverer.
+        %
+      \begin{theorem}[The Helstrom measurement]\label{thm:helstrom}
+        Given a register $\register$ promised to be in either state
+        $\ket\psi$ or state $\ket\varphi$ with equal probability, 
+        then the Helstrom measurement $\Helstrom$ 
+        correctly identifies the state with probability
+        \[
+          \prob{0 \gets \Helstrom(\ket{\psi})} 
+          = 
+          \prob{1 \gets \Helstrom(\ket{\varphi})} 
+          = 
+          \frac{1}{2} + \frac{1}{2} \sqrt{1 - \abs{\braket{\psi|\varphi}}^2}\, ,
+        \]
+        which is optimal. 
+      \end{theorem}
+      %
+      Unlike our SWAP test, if the two possible states $\ket\psi$, $\ket\varphi$
+        are orthogonal, then the Helstrom measurement is
+        guaranteed to distinguish them:
+        \[
+          \braket{\psi|\varphi} = 0 \implies
+          \prob{0 \gets \Helstrom(\ket{\psi})} 
+          = 
+          \prob{1 \gets \Helstrom(\ket{\varphi})} 
+          = 
+          \frac{1}{2} + \frac{1}{2} \sqrt{1 - 0} = 1\, .
+        \]
+        In that case, the measurement is simply given by the PVM
+        \[
+          \Helstrom = \{ \projector_\psi, \projector_\varphi \}
+          = \{ \ketbra{\psi}, \ketbra{\varphi} \}\, .
+        \]
+        
+      % local macros
+      \newcommand{\orthpsi}{\tilde{\psi}}
+      \newcommand{\orthphi}{\tilde{\varphi}}
+      What about the more general case?
+        Well, if $\ket\psi$ and $\ket\varphi$ are non-orthogonal,
+        then $\{ \ketbra{\psi}, \ketbra{\varphi} \}$ is not a
+        PVM, since these projectors will not orthogonal either -- we need to build
+        two \emph{orthogonal} projectors from $\ket\psi$ and $\ket\varphi$.
+        The Helstrom measurement does this by picking out
+        the optimal orientation in the 2D plane 
+        spanned by $\ket\psi$ and $\ket{\varphi}$, 
+        as illustrated in \cref{fig:helstrom}:
+        Let $\ket{\orthpsi}$ and $\ket{\orthphi}$ be the
+        two orthogonal states that 1) sit in the plane spanned by $\ket\psi$
+        and $\ket\varphi$, and 2) are oriented such that the bisecting
+        line between $\ket\psi$ and $\ket\varphi$ sits at a $45^\circ$
+        angle to both states. Then
+        the Helstrom measurement is given by the PVM
+        \[
+          \Helstrom = \{ \projector_\psi, \projector_\varphi \}
+          = \{ \ketbra{\orthpsi}, \ketbra{\orthphi} \}\, ,
+        \]
+        which is optimally distinguishes the two states, assuming we were given
+        $\ket\psi$ or $\ket\varphi$ with equal probability.
+
+      \crakzfigcode{helstrom}{
+        The orthogonal states $\ket{\orthpsi}$ and $\ket{\orthphi}$
+        defining the (equal-priors) Helstrom measurement live in the 2D plane spanned by
+        $\ket\psi$ and $\ket\varphi$, oriented symmetrically about their
+        bisecting line.
+      }
+
+      Keep in mind, however, that in order to perform a Helstrom measurement, we need to
+        not only \emph{know} the states $\ket{\psi}$ and $\ket{\varphi}$, but
+        also be able to \emph{efficiently prepare them}, which is a capability we
+        may or may not possess in any given situation. Contrast with the SWAP
+        test, where it sufficed for us to
+        be able to efficiently prepare one of the two candidate states.
+
+      \begin{exercise}
+        Let $\ket\psi = \cos \frac{\theta}{2} \ket 0 + \sin \frac{\theta}{2} \ket 1$
+        and $\ket\varphi = \cos \frac{\theta}{2} \ket 0 - \sin \frac{\theta}{2}
+        \ket 1$ for an angle $\theta \in [0,2\pi)$, and let 
+        $\ket{\mathit{sum}} = \frac{\ket\psi + \ket\varphi}{\norm{\ket\psi + \ket\varphi}}$ 
+        and
+        $\ket{\mathit{diff}} = \frac{\ket\psi - \ket\varphi}{\norm{\ket\psi - \ket\varphi}}$
+        be the states given by their (normalized) sum and difference.
+        \begin{subex}
+          \item Show that 
+            $\ket{\orthpsi} = 
+            \frac{1}{\sqrt 2} \left(
+              \ket{\mathit{sum}} + \ket{\mathit{diff}}
+            \right)$ and 
+            $\ket{\orthphi} = 
+            \frac{1}{\sqrt 2} \left(
+              \ket{\mathit{sum}} - \ket{\mathit{diff}}
+            \right)$.
+          \item Use this to show that $\Helstrom = \{ \ketbra{\orthpsi}, \ketbra{\orthphi}
+            \}$ satisfies the definition of a PVM.
+          \item Show that for any two states $\ket\psi$, $\ket\varphi$, there
+            exists a choice of $\theta$ such that they can be expressed as
+            above (up to an unobservable global phase $e^{i\phi}$).
+        \end{subex}
+      \end{exercise}
+
+      \ifdraftversion
+        \paragraph{The Weighted Helstrom Measurement for Non-equal Priors.}
+          \hhnote{
+            skip this for now (got too involved); re-introduce if and
+            when needed
+          }
+          \begin{theorem}\label{thm:unequal-helstrom}
+            For unequal priors $p_\psi = p$, $p_\varphi = 1 - p$, the 
+            \emph{weighted} Helstrom measurement achieves the expected success rate 
+            \begin{multline*}
+              \expect{\text{success}} = p \prob{0 \gets \Helstrom(\ket{\psi})} 
+              + (1-p) \prob{1 \gets \Helstrom(\ket{\varphi})}
+              = \frac{1}{2} + \frac{1}{2} \sqrt{1 - 4 p (1-p) \abs{\braket{\psi|\varphi}}^2}\, ,
+            \end{multline*}
+            which is optimal.
+          \end{theorem}
+
+        \begin{exercise}
+          (\ldots)
+          \begin{subex}
+            \item The weighted Helstrom measurement for non-equal priors is given
+              by the PVM $\Helstrom = (\ldots)$. Show that this gives the
+              measurement statistics claimed in \cref{thm:unequal-helstrom}.
+          \end{subex}
+        \end{exercise}
+      \fi
+
+      % undefining local macros
+      \let\unknown\undefined
+      \let\orthpsi\undefined
+      \let\orthphi\undefined
 
   \subsection{The Hadamard Basis}
     As mentioned, there is a continuous infinity orthonormal bases to choose

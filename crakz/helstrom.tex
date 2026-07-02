@@ -1,0 +1,29 @@
+% needs \usetikzlibrary{arrows.meta}
+\begin{tikzpicture}[>=Stealth, line cap=round]
+  % --- the plane spanned by |psi>, |phi> ---
+  %\fill[black!4] (0,0) rectangle (4.6,4.6);
+
+  % --- Helstrom measurement basis ---
+  \draw[->] (0,0) -- (0:4)  node[right] {$\ket{\orthpsi}$};
+  \draw[->] (0,0) -- (90:4) node[above] {$\ket{\orthphi}$};
+
+  % --- bisector: dotted, faint (the "between" line -- worst axis) ---
+  \draw[dotted, black!45] (0,0) -- (45:3.7)
+        node[above right, black!55, font=\small] {bisector};
+
+  % --- the two candidate states: solid, arrowheads ---
+  \draw[very thick, ->] (0,0) -- (63:4) node[above left=-2pt] {$\ket\varphi$};
+  \draw[very thick, ->] (0,0) -- (27:4) node[below right=-2pt] {$\ket\psi$};
+
+  % --- angle between the states ---
+  %\draw[<->, black!70] (27:1.15) arc[start angle=27, end angle=63, radius=1.15];
+  \draw[<->, black!70] (63:1.15) arc[start angle=63, end angle=90, radius=1.15];
+  \draw[<->, black!70] (27:1.15) arc[start angle=27, end angle=0, radius=1.15];
+  %\node[right,font=\small] at (45:0.8) {$\theta$};
+
+  % --- the 45-degree rotations off the bisector ---
+  %\draw[black!55] (45:2.0) arc[start angle=45, end angle=90, radius=2.0];
+  %\node[black!55, font=\small] at (67.5:2.3) {$\tfrac{\pi}{4}$};
+  %\draw[black!55] (0:2.0)  arc[start angle=0,  end angle=45, radius=2.0];
+  %\node[black!55, font=\small] at (22.5:2.3) {$\tfrac{\pi}{4}$};
+\end{tikzpicture}
