@@ -130,6 +130,8 @@
         %
         Bitstring & Lowercase roman, end & $x$ & $\in\bin^n$ \\
         & of alphabet && \\
+        Hadamard string & Bitstring with hat & $\hat x$ & $\in\{+,-\}^n$ \\
+        &&& $\ket{\hat x} = 2^{-n}\sum_{x} (-1)^{\hat x \cdot x} \ket x$ \\
         Quantum amplitude & Lowercase greek, start & $\alpha$ & $\in\CC$, $\abs{\alpha} \leq 1$ \\
         & of alphabet && \\
         State label & Lowercase greek, middle & $\psi$ & (any label is permissible) \\
@@ -373,6 +375,176 @@
         \ket{0}^{\otimes n} \coloneqq \ket{0 \ldots 0} \coloneqq \ket{0^n}\, .
       \]
 
+    \subsubsection{Superpositions.}
+      Of course, this is \emph{quantum} computing, and so we are interested in
+        qubit states which are more than just rewritten bitstrings like the
+        above. The unique thing about qubits is that they can be in
+        \emph{superpositions} of $\ket 0$ and $\ket 1$, usually popularized to
+        the qubit somehow being ``both $0$ and $1$ at once'' (before inevitably
+        failing to explain what makes this any different from classical randomness). For
+        a single qubit, the simplest superposition states are common enough to
+        warrant their own names, and they are known as the
+        $\ket +$ (``plus'') and $\ket -$ (``minus'') states. They are:
+        \[
+          \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, , \quad 
+          \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}\, .
+        \]
+        If you were to observe these states directly, you would see $0$ or $1$
+        with equal probability (since $\prob{\text{observed } 0} =
+        \prob{\text{observed } 1} = (\nicefrac{1}{\sqrt 2})^2 = \half$).
+        If this were all, then this would be no different from tossing a coin.
+
+      What makes quantum superpositions different from classical stochastics is
+        that despite both states being uniform superpositions of $0$ and $1$,
+        they can be \emph{perfectly distinguished from each other}. This is
+        because, unlike the classical world, we are no longer stuck with only
+        computational-basis measurements. 
+        One of the elementary quantum operations that we can apply to a qubit is
+        the \emph{Hadamard gate} $\Hgate$, and it applies the self-inverse map
+      \[
+        \ket{0} \apply{\Hgate} \ket{+} \apply{\Hgate} \ket{0}\, , \quad
+        \ket{1} \apply{\Hgate} \ket{-} \apply{\Hgate} \ket{1}\, .
+      \]
+      So, if we are given a qubit in state either $\ket +$ or $\ket -$,
+        measuring the qubit directly would give us no information about which
+        state it was in. But if we \emph{first} apply $\Hgate$ and \emph{then}
+        measure it, we learn which state it was with certainty,
+        with the outcome $0$ mapping to $\ket +$ and the outcome $1$ mapping to
+        $\ket -$.
+        We will refer to this procedure as a ``Hadamard-basis measurement'', to contrast
+        with the standard computational-basis measurement. 
+
+      For $n$ qubits, the uniform superposition over all bitstrings $x$ is the
+      state
+      \[
+        \frac{\ket{0 \ldots 00}
+        + \ket{0 \ldots 01} + \ldots + \ket{1 \ldots 11}}{\sqrt{2^n}}
+        = 
+        \sum_{x \in \bin^n} \frac{1}{\sqrt{2^n}}\ket{x}\, .
+      \]
+      This is equal to the state
+      \[
+        \ket{+}^{\otimes n}
+        \coloneqq 
+        \ket{+}\ket{+} \ldots \ket{+} 
+        = 
+        \left( \frac{\ket{0} + \ket{1}}{\sqrt{2}} \right)
+        \left( \frac{\ket{0} + \ket{1}}{\sqrt{2}} \right)
+        \ldots
+        \left( \frac{\ket{0} + \ket{1}}{\sqrt{2}} \right)\, ,
+      \]
+      since multiplying out the paranthesis gives a sum over all possible
+      bitstrings. Of course, this is exactly the state that will be reached if
+      we apply the gate $\Hgate$ to each of the qubits that make up $x$:
+      \[
+        \ket{0^n} \apply{\Hgate} \ket{+^n} \apply{\Hgate} \ket{0^n}\, .
+      \]
+      
+      What happens do we get if we start with computational basis states other
+        than $0^n$? Say we have five qubits, arranged to represent
+        the decimal $21$:
+        \[
+          \ket{[21]_2} = \ket{10101}\, .
+        \]
+        After applying $\Hgate$ gates to each qubit, we get the state
+        \[
+          \ket{-+-+-} =
+          \left( \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right)
+          \left( \frac{\ket{0} + \ket{1}}{\sqrt{2}} \right)
+          \left( \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right)
+          \left( \frac{\ket{0} + \ket{1}}{\sqrt{2}} \right)
+          \left( \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right)
+          = \sum_{x \in \bin^5} \frac{(-1)^{x \cdot [21]_2}}{\sqrt{2^5}} \ket x\, ,
+        \]
+        where $x \cdot [21]_2$ denotes the inner product of the two bitstrings
+        modulo $2$, e.g.\ $[5]_2 \cdot [21]_2 = 10101 \cdot 00101 = 0$.
+        This is also a uniform superposition, with all the information about the
+        original number $21$ stored in the \emph{relative phases} of the
+        bitstrings, which can be recovered by applying the Hadamard gates a
+        second time.
+
+      We will refer to the act of applying one Hadamard gate to each of the $n$
+        qubits as the ``Hadamard transformation'', and it will be one of the
+        main tools at our disposal. As we hinted above, the effect of the
+        Hadamard basis on an arbitrary computational basis state $\ket x$ will be a
+        uniform superposition state, with the bits of $x$ stored in
+        binary phases:
+      \[
+        \ket x 
+        \apply{\Hgate^{\otimes n}}
+        \sum_{y \in \bin^n} \frac{(-1)^{x \cdot y}}{\sqrt{2^n}} \ket y\, ,
+      \]
+      The multi-qubit Hadamard-basis measurement is then the procedure that
+        first applies the Hadamard transformation, then measures the state in
+        the computational basis.
+
+    \subsubsection{The Hadamard Basis.}
+      Actually, we don't have to
+        imagine explicitly applying the $\Hgate$ gates to our qubits before
+        measuring them, as Hadamard-basis measurements
+        are perfectly well-defined on their own merits, as one choice among a
+        continuous infinity of measurements we could choose to apply (we will make this
+        formal in \cref{sec:measurements}).
+        Perhaps it is better, then, to view the Hadamard basis as a sort of
+        ``dual domain'' under which we can view our quantum state. To see how it
+        is ``dual'', notice the following identities:
+        \[
+          \ket{0} \coloneqq \frac{\ket{+} + \ket{-}}{\sqrt{2}}\, , \quad 
+          \ket{1} \coloneqq \frac{\ket{+} - \ket{-}}{\sqrt{2}}\, .
+        \]
+        You can easily verify that this holds by inserting for $\ket +$
+        and $\ket -$ and seeing how the terms cancel.
+        Notice their shape: The computational basis states $\ket 0$ and $\ket 1$
+        are to the Hadamard basis \emph{exactly} what the plus state and minus
+        states are to the computational basis; they really are \emph{dual views},
+        which we can translate between by the map $\Hgate$.\footnote{
+          The notion of a ``dual domain'' will sound familiar to anyone who has
+          ever come across Fourier analysis, and not without reason: The Hadamard
+          map is exactly the single-qubit Fourier transformation.
+        }
+
+      How can we make this work for multi-qubit states?
+        %In analogy to the single-qubit case, 
+        With $\{\ket 0, \ket 1\}$ and $\{\ket +, \ket -\}$ being exact duals of
+        each other, if
+        \[
+          \ket{+^n} 
+          = \frac{\ket{0 \ldots 00} + \ket{0 \ldots 01} + \ldots + \ket{1 \ldots 11}}{\sqrt{2^n}}
+          = \sum_{x \in \bin^n} \frac{1}{\sqrt{2^n}}\ket x
+        \]
+        then it must also be true that 
+        \[
+          \ket{0^n} 
+          = \frac{\ket{+ \ldots ++} + \ket{+ \ldots +-} + \ldots + \ket{- \ldots --}}{\sqrt{2^n}}
+          = \sum_{\hat{x} \in \{+,-\}^n} \frac{1}{\sqrt{2^n}} \ket{\hat x}\, .
+        \]
+        We see that we have a new kind of bitstring, one that represents numbers
+        using the alphabet $\{+, -\}$ in place of $\bin$. We will use the
+        convention that whenever a number or variable is represented with a hat,
+        then it is to be understood as a Hadamard-basis bitstring. For example,
+        whereas the decimal $21$ was represented by the string $[21]_2 = 10101$, writing
+        $\widehat{21}$ would imply the string $\big[\, \widehat{21}\, \big]_2 = -+-+-$. 
+        As we might have anticipated, just like the all-zero state $\ket{0^n}$
+        maps to the decimal state $\ket 0$, and the all-ones state $\ket{1^n}$
+        maps to the decimal $N$-state $\ket N$ (where $N = 2^n$ as usual),
+        the uniform superposition $\ket{+^n}$
+        then maps to the Hadamard-zero state $\ket{\hat 0}$, while the all-minus state
+        $\ket{-^n}$ maps to the state $\ket{\hat{N}}$.
+
+      This gives us our two equivalent (but not equal!) views on our quantum
+        state space, which we can translate between as desired via the Hadamard
+        maps, now expressed in decimal:
+      \[
+        \ket{\hat x} = \sum_{x \in [N]} 
+        \frac{(-1)^{\hat x \cdot x}}{\sqrt{2^n}} \ket x\, ,
+        \quad
+        \ket{x} = \sum_{\hat x \in [\hat{N}]} \frac{(-1)^{x \cdot
+        \hat x}}{\sqrt{2^n}} \ket{\hat{x}}\, ,
+      \]
+      where we define the dual-alphabet inner bitstring product
+        $x \cdot \hat{x}$ to be the obvious one that maps $\{+,-\}$
+        to $\bin$ before evaluating the product.
+ 
   \subsection{General Qubit States}
     \subsubsection{Greek vs.\ Roman Letters.}
       To distinguish computational basis states from more general quantum states, we will use
@@ -450,8 +622,9 @@
           the universe, it's just been completely cut off from your subjective
           experience, so from your point of view it might as well not exist.
           (For more on the various interpretations of quantum mechanics, the
-          popular-science book \emph{Helgoland} by Carlo Rovelli provides an
-          excellent overview, and even proposes a fascinating resolution.)
+          pop-sci book \emph{Helgoland} by Carlo Rovelli provides an
+          excellent overview, and even proposes its own fascinating resolution
+          to the problem.)
           %(In case you're wondering, Hans places his bet on a third option,
           %namely the \emph{relational} interpretation due to Carlo Rovelli,
           %which may be summarized as ``many-worlds without the many worlds''.)
@@ -687,6 +860,17 @@
     the $\Hgate$ is known as the Hadamard gate, and is the fundamental
     superposition-generating gate.
 
+    \hhnote{todo: update given new Hadamard section}
+    \begin{exercise}\label{ex:HadamardBasis}
+      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
+      terms of the alternative ``Hadamard'' basis 
+      \[
+        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
+        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
+      \]
+      Compare with the truth table from \cref{ex:truthtable}. What has changed?
+    \end{exercise}
+
     Here is the most common two-qubit gate, known as the ``controlled-not'':
     \[
       \CXgate = 
@@ -703,6 +887,16 @@
       ($\ket{0} \apply{\Xgate} \ket{1}$, $\ket{00} \apply{\CXgate}
       \ket{00}$, and so on.)
     \end{exercise}
+
+    \hhnote{todo: update given new Hadamard section}
+    \begin{exercise}
+      Give the computational-basis matrix representation of the unitary
+      that has the same effect on the
+      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
+      $\CXgate$ has on the computational basis. What should we call this
+      unitary, following the conventions introduced so far?
+    \end{exercise}
+
 
     You may have noticed that $\CXgate$ has the effect of 
       the first qubit \emph{controlling} an $\Xgate$ operation on the second
@@ -889,7 +1083,7 @@
       %  Construct the $\SWAPgate$ gate from a series of $\CXgate$ gates.
       %\end{exercise}
 
-  \subsection{Measurements}
+  \subsection{Measurements}\label{sec:measurements}
     At the end of our quantum algorithm, we would usually like to read out
       some classical information by measuring the end-state. 
       We mentioned earlier that measurements
@@ -1637,8 +1831,23 @@
           \Helstrom = \{ \projector_\psi, \projector_\varphi \}
           = \{ \ketbra{\orthpsi}, \ketbra{\orthphi} \}\, ,
         \]
-        which is optimally distinguishes the two states, assuming we were given
-        $\ket\psi$ or $\ket\varphi$ with equal probability.
+        which optimally distinguishes the two states, provided either 
+        state were given to us with equal probability.\footnote{
+          There is also a \emph{weighted} Helstrom measurement, for the case
+          that the probability of receiving each state is shifted away from
+          $\half$ by some known amount. If we parameterize the probability by
+          $p$, so that the probability of receiving each state is $p$ resp.\ $1-p$, it
+          effectively biases the measurement by rotating
+          the measurement axes $\ket{\orthpsi}$ and $\ket{\orthphi}$ in
+          \cref{fig:helstrom} by the angle (derived from $p$) that maximizes
+          the expected success rate, achieving
+          \[
+            \expect{\, \text{success}\, } = p \prob{0 \gets \Helstrom(\ket{\psi})} 
+              + (1-p) \prob{1 \gets \Helstrom(\ket{\varphi})}
+              = \frac{1}{2} + \frac{1}{2} \sqrt{1 - 4 p (1-p) \abs{\braket{\psi|\varphi}}^2}\, ,
+          \]
+          which can again be shown to be optimal.
+        }
 
       \crakzfigcode{helstrom}{
         The orthogonal states $\ket{\orthpsi}$ and $\ket{\orthphi}$
@@ -1711,33 +1920,6 @@
       \let\unknown\undefined
       \let\orthpsi\undefined
       \let\orthphi\undefined
-
-  \subsection{The Hadamard Basis}
-    As mentioned, there is a continuous infinity orthonormal bases to choose
-      between (\ldots)
-
-    \begin{exercise}\label{ex:HadamardBasis}
-      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
-      terms of the alternative ``Hadamard'' basis 
-      \[
-        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
-        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
-      \]
-      Compare with the truth table from \cref{ex:truthtable}. What has changed?
-    \end{exercise}
-
-    \begin{exercise}
-      Give the computational-basis matrix representation of the unitary
-      that has the same effect on the
-      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
-      $\CXgate$ has on the computational basis. What should we call this
-      unitary, following the conventions introduced so far?
-    \end{exercise}
-
-    \hhnote{
-      Later: Introduce the Hadamard number system $\hat{0} = +, \hat{1} = -, \hat{2} =
-      +-, \ldots$
-    }
 
   \subsection{Entanglement}
     Until now we have defined notation for computational basis states
