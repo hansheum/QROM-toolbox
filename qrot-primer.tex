@@ -381,7 +381,8 @@
         above. The unique thing about qubits is that they can be in
         \emph{superpositions} of $\ket 0$ and $\ket 1$, usually popularized to
         the qubit somehow being ``both $0$ and $1$ at once'' (before inevitably
-        failing to explain what makes this any different from classical randomness). For
+        failing to explain what makes this any different from classical
+	randomness). For
         a single qubit, the simplest superposition states are common enough to
         warrant their own names, and they are known as the
         $\ket +$ (``plus'') and $\ket -$ (``minus'') states. They are:
@@ -483,17 +484,41 @@
         imagine explicitly applying the $\Hgate$ gates to our qubits before
         measuring them, as Hadamard-basis measurements
         are perfectly well-defined on their own merits, as one choice among a
-        continuous infinity of measurements we could choose to apply (we will make this
-        formal in \cref{sec:measurements}).
+        continuous infinity of measurements we could choose to apply
+	(we will make this formal in \cref{sec:measurements}).
         Perhaps it is better, then, to view the Hadamard basis as a sort of
-        ``dual domain'' under which we can view our quantum state. To see how it
-        is ``dual'', notice the following identities:
+        ``dual domain'' under which we can view our qubit,
+	with two possible questions we can ask our state: 
+	Either ``are you $\ket 0$ or $\ket 1$?'', or 
+	``are you $\ket +$ or $\ket -$?'' Either way, 
+	the qubit will provide a definite answer, after which its state will 
+	collapse to whatever answer you got.
+
+	This is a point worth internalizing, so let us repeat it: 
+	\emph{The set of possible post-measurement states changes to match
+	the question you choose to ask.} If you ask ``are you $0$ or $1$?'', 
+	then the possible outcomes are $\ket 0$ and $\ket 1$; 
+	if you ask ``are you $+$ or $-$'', then the possible outcomes are 
+	$\ket +$ and $\ket -$. 
+	(And of course, the outcome statistics also change
+	depending on what question you ask.)
+
+	Of course, any vector space has a continuous infinity of 
+	bases to choose from, each of which define a binary ``question'' we
+	can pose to our qubit, and the Hadamard
+	basis is just one particularly nice choice;
+	geometrically, it is just the basis rotated by $45^\circ$ 
+	relative to the original one.
+	\hhnote{insert fig}
+	To appreciate how this makes for a perspective
+         ``dual'' to the computational basis,
+	 take a look at the following identities:
         \[
           \ket{0} \coloneqq \frac{\ket{+} + \ket{-}}{\sqrt{2}}\, , \quad 
           \ket{1} \coloneqq \frac{\ket{+} - \ket{-}}{\sqrt{2}}\, .
         \]
-        You can easily verify that this holds by inserting for $\ket +$
-        and $\ket -$ and seeing how the terms cancel.
+        You can verify that these hold by inserting for $\ket +$
+        and $\ket -$ and seeing that the extra terms cancel out exactly.
         Notice their shape: The computational basis states $\ket 0$ and $\ket 1$
         are to the Hadamard basis \emph{exactly} what the plus state and minus
         states are to the computational basis; they really are \emph{dual views},
