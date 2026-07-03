@@ -61,7 +61,7 @@
       output length $m$, and that $q$ is an upper bound on the total
       number of queries made to the oracle.
 
-    \paragraph{The empty string.}
+    \paragraph{The Empty String.}
        Let $\emptystring$ to be the empty string, encoded
         as $1 \concat{}0^n$. We will interpret the string $0 \concat{}x$ as $x$.
         Strings of the form $1 \concat x$ for $x \neq 0^n$ will never
@@ -132,7 +132,7 @@
           ever exceeds $q$.
         }
 
-    \paragraph{Database subregisters.}
+    \paragraph{Database Subregisters.}
       Next, let us define a naming convention for subregisters of $\database$:
         Let $\database_\inputreg$ refer to the collection of qubits that
         store input values in the list (so a subregister of size $q\cdot
@@ -173,7 +173,7 @@
       %  updated away from $0^n$. Something something entanglement\ldots)
       %}
 
-    \paragraph{The primal and the Hadamard domain.}
+    \paragraph{The Primal and the Hadamard Domain.}
       You may have noticed the hats. These denote that the value in question is
         defined in the Hadamard-domain: a computational basis state
         $\ket{y}$ in the primal domain (left) will be the following 
@@ -215,7 +215,7 @@
         will be kept in the Hadamard domain.
 
   \subsection{Defining Compressed Random Oracles}\label{sec:defining-cros}
-    \paragraph{Updating the database.}
+    \paragraph{Updating the Database.}
       Next, we define a unitary that acts on the combined state of the input
         register $\inputreg$ and the database $\database$,
         named $\decomp$ for ``Store'' and/or ``Sort''.\footnote{
@@ -302,7 +302,7 @@
         the action performed by our compressed random oracle upon receiving a
         query $\RO(\inputreg, \outputreg)$.
 
-      \begin{definition}[Compressed random oracle]
+      \begin{definition}[Compressed Random Oracle]
         \label{def:compressed-ros}
         Given registers $\inputreg,
           \outputreg, \database$, the \emph{compressed random oracle} 
@@ -321,7 +321,7 @@
         simulation of a quantum-accessible random
         oracle~\cite[Lemma~4]{C:Zhandry19}.
 
-      \begin{theorem}[Simulation is perfect]\label{thm:perfect}
+      \begin{theorem}[Simulation Is Perfect]\label{thm:perfect}
         Let $\RO$ be a (monolithic) quantum-accessible random oracle, and let $\RO[G]$ be a
         compressed random oracle. Then we have for all distinguishers $\distinguisher$,
         \[
@@ -333,7 +333,7 @@
   \subsection{But How Do They Work?}
     What is the effect of the operations listed in \cref{def:compressed-ros}? Let's explore!
 
-    \paragraph{Classical queries.}
+    \paragraph{Classical Queries.}
       As a first sanity check, consider the result of performing the
         first three steps on a classical query, i.e.\ with $\inputreg$
         and $\outputreg$ put in a computational basis state
@@ -426,7 +426,7 @@
       %  cases. The output register is still \emph{there}, after all.)
       %}
 
-    \paragraph{Uniform superpositions.}
+    \paragraph{Uniform Superpositions.}
       Next, what if $\outputreg$ is set to be in the
         uniform superposition, $\sum_y \sqrt{2^{-m}}\ket{y}$ (with the input
         value still set to the computational basis state $\ket{x}$)? Well, then
@@ -465,7 +465,7 @@
         be a mixed state from the point of view of the compressed oracle, and
         so their combined state will, after entangling, also be a mixed state.
 
-    \paragraph{Superpositions over input values.}
+    \paragraph{Superpositions over Input Values.}
       Finally, what about superpositions over $x$? The easiest way to think
         about this is to adopt an Everettian worldview, and imagine the
         superposition state of $\inputreg$
@@ -492,7 +492,7 @@
         inside each universe we are performing a purely classical query,
         and we are back to the situation that we first considered.
 
-    \paragraph{Repeated queries.}
+    \paragraph{Repeated Queries.}
       Say the oracle started out in the empty state
         $\ket{\database_\emptystring}$, and was then queried on the classical
         input state $\ket{x}\ket{y}$.
@@ -588,7 +588,7 @@
         to some other state than the one it was in in during the first query, and the
         cancellation of the $\hat{y}$ values in the second query won't happen.
 
-    \paragraph{How consistency is maintained.}
+    \paragraph{How Consistency Is Maintained.}
       Now, let us return to the conundrum from the start of the section: Is
         it really true that forgetting $x$ on one of $2^n$ points can never lead
         to problems? Well---yes and no. We'll start with ``yes'' here, and leave
@@ -781,7 +781,7 @@
         } This is what the next theorem, also proven by
         Zhandry~\cite[Lemma~5]{C:Zhandry19}, shows.
 
-      \begin{lemma}[Extraction is imperfect]\label{lemma:imperfect}
+      \begin{lemma}[Extraction Is Imperfect]\label{lemma:imperfect}
         Let the adversary $\adv$ be a quantum algorithm with oracle access to
         a random oracle $\RO$, and that after at most $q$ queries outputs $\ell
         \leq q$ tuples $(x,y)$ with unique values for $x$, and let
@@ -937,7 +937,7 @@
     % makes the collision bound the right showcase and Merkle–Damgård the wrong one.
 
   \iffalse
-  \subsection{Random Oracles are Good PRFs}
+  \subsection{Random Oracles Are Good PRFs}
     \hhnote{
       Copy-pasted from first intro draft. \emph{Maybe} do the following later when we introduce the
       compressed random oracle technique? But definitely do not \emph{start} here. (Game figs. in

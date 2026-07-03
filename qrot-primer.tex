@@ -976,7 +976,7 @@
       off'' the matrix.}
     \end{exercise}
 
-    \subsubsection{Transformations Across Space and Time.}
+    \subsubsection{Transformations across Space and Time.}
       You may have noticed that we have been dealing with two different kinds of
         product for unitary matrices: the usual matrix product
         $\unitary \unitary[V]$, and the tensor product 
@@ -1241,7 +1241,7 @@
         \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
       \end{definition}
 
-      \begin{definition}[Complete, orthogonal projectors]
+      \begin{definition}[Complete, Orthogonal Projectors]
         A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
           Hilbert space $\Hspace$ is said to be
           \emph{complete} if the projectors sum to identity:
@@ -1369,7 +1369,7 @@
         $\projector_i \ket{\psi}$ (giving the direction), \emph{renormalized}
         to $1$ by dividing away the factor $\abs{\alpha_i}$.
 
-      \begin{definition}[Post-measurement state]
+      \begin{definition}[Post-Measurement State]
         Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
         Upon observing a state $\ket\psi$, if outcome $i$ is observed,
         the state will immediately\footnote{
@@ -1566,7 +1566,7 @@
       %    of $\measurement$.
 
 
-    \subsubsection{Distinguishing Quantum States.}
+    \subsubsection{Measurements That Distinguish Quantum States.}
       \newcommand{\unknown}{\ket{\emph{?}\, }} % local macro
       Say that you are given qubit register $\register$ in some unknown state $\unknown$,
         but you are promised that $\unknown$ is equal to one of two known states (which
@@ -1576,352 +1576,373 @@
         there may be many possible measurement outcomes that are consistent with
         $\unknown$ being either state.
 
-      A natural thing to try is the procedure known as the ``SWAP test'':
-        Prepare a new register $\register[S]$ in one of the two states, say
-        $\ket \psi$, and prepare an ancilla qubit $\qubit$ in the uniform
-        superposition $\ket +$. 
-        Then, perform a controlled SWAP of the states $\unknown$ and
-        $\ket\psi$, controlled on the ancilla qubit:
-      \[
-        \ket{+}_\qubit
-        \unknown_{\register}
-        \ket{\psi}_{\register[S]}
-        =
-        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
-        \unknown_{\register}
-        \ket{\psi}_{\register[S]}
-        \apply{\CSWAPgate} 
-        \frac{1}{\sqrt 2}
-        \left(
-          \ket{0}_\qubit 
+      \paragraph{The SWAP Test.}
+        A natural first thing to try is the procedure known as the ``SWAP test'':
+          Prepare a new register $\register[S]$ in one of the two states, say
+          $\ket \psi$, and prepare an ancilla qubit $\qubit$ in the uniform
+          superposition $\ket +$. 
+          Then, perform a controlled SWAP of the states $\unknown$ and
+          $\ket\psi$, controlled on the ancilla qubit:
+        \[
+          \ket{+}_\qubit
           \unknown_{\register}
           \ket{\psi}_{\register[S]}
-        + \ket{1}_\qubit
+          =
+          \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
+          \unknown_{\register}
+          \ket{\psi}_{\register[S]}
+          \apply{\CSWAPgate} 
+          \frac{1}{\sqrt 2}
+          \left(
+            \ket{0}_\qubit 
+            \unknown_{\register}
+            \ket{\psi}_{\register[S]}
+          + \ket{1}_\qubit
+            \ket{\psi}_{\register}
+            \unknown_{\register[S]}
+          \right)\, .
+        \]
+        Then, apply a Hadamard gate to $\qubit$ and perform a computational-basis
+          measurement on it. If the unknown
+          state is $\ket\psi$, then the $\CSWAPgate$ operation had no effect:
+        \[
+          \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
           \ket{\psi}_{\register}
-          \unknown_{\register[S]}
-        \right)\, .
-      \]
-      Then, apply a Hadamard gate to $\qubit$ and perform a computational-basis
-        measurement on it. If the unknown
-        state is $\ket\psi$, then the $\CSWAPgate$ operation had no effect:
-      \[
-        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
-        \ket{\psi}_{\register}
-        \ket{\psi}_{\register[S]}
-        \apply{\CSWAPgate} 
-        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
-        \ket{\psi}_{\register}
-        \ket{\psi}_{\register[S]}
-        \apply{\Hgate}
-        \ket{0}_\qubit
-        \ket{\psi}_{\register}
-        \ket{\psi}_{\register[S]}\, ,
-      \]
-      so that when we measure $\qubit$, we are guaranteed to observe the value
-        $0$. Hence, if we observe a $1$, then we learn that $\unknown$ is \emph{not}
-        identical to $\ket\psi$, from which we may conclude that $\unknown$ must
-        be $\ket\varphi$. 
+          \ket{\psi}_{\register[S]}
+          \apply{\CSWAPgate} 
+          \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
+          \ket{\psi}_{\register}
+          \ket{\psi}_{\register[S]}
+          \apply{\Hgate}
+          \ket{0}_\qubit
+          \ket{\psi}_{\register}
+          \ket{\psi}_{\register[S]}\, ,
+        \]
+        so that when we measure $\qubit$, we are guaranteed to observe the value
+          $0$. Hence, if we observe a $1$, then we learn that $\unknown$ is \emph{not}
+          identical to $\ket\psi$, from which we may conclude that $\unknown$ must
+          be $\ket\varphi$. 
 
-      What is the probability that we observe $1$ in this case? 
-        If $\unknown$ is equal to $\ket\varphi$, then we get
-      \begin{multline*}
-        \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
-        \ket{\varphi}_{\register}
-        \ket{\psi}_{\register[S]}
-        \apply{\CSWAPgate} 
-        \frac{1}{\sqrt 2}
-        \left(
-          \ket{0}_\qubit 
+        What is the probability that we observe $1$ in this case? 
+          If $\unknown$ is equal to $\ket\varphi$, then we get
+        \begin{multline*}
+          \left( \frac{\ket{0}_\qubit + \ket{1}_\qubit}{\sqrt{2}} \right)
           \ket{\varphi}_{\register}
           \ket{\psi}_{\register[S]}
-        + \ket{1}_\qubit
-          \ket{\psi}_{\register}
-          \ket{\varphi}_{\register[S]}
-        \right) \\
-        %
-        \apply{\Hgate}
-        \frac{1}{\sqrt 2}
-        \left(
+          \apply{\CSWAPgate} 
+          \frac{1}{\sqrt 2}
           \left(
-            \frac{
-              \ket{0}_\qubit 
-              + \ket{1}_\qubit 
-            }{\sqrt 2}
-          \right)
-          \ket{\varphi}_{\register}
-          \ket{\psi}_{\register[S]}
-        + \left(
-            \frac{
-              \ket{0}_\qubit 
-              - \ket{1}_\qubit 
-            }{\sqrt 2}
-          \right)
-          \ket{\psi}_{\register}
-          \ket{\varphi}_{\register[S]}
-        \right) \\
-        = \frac{1}{2}
-        \left(
-          \ket{0} 
-          \left(
+            \ket{0}_\qubit 
             \ket{\varphi}_{\register}
             \ket{\psi}_{\register[S]}
+          + \ket{1}_\qubit
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right) \\
+          %
+          \apply{\Hgate}
+          \frac{1}{\sqrt 2}
+          \left(
+            \left(
+              \frac{
+                \ket{0}_\qubit 
+                + \ket{1}_\qubit 
+              }{\sqrt 2}
+            \right)
+            \ket{\varphi}_{\register}
+            \ket{\psi}_{\register[S]}
+          + \left(
+              \frac{
+                \ket{0}_\qubit 
+                - \ket{1}_\qubit 
+              }{\sqrt 2}
+            \right)
+            \ket{\psi}_{\register}
+            \ket{\varphi}_{\register[S]}
+          \right) \\
+          = \frac{1}{2}
+          \left(
+            \ket{0} 
+            \left(
+              \ket{\varphi}_{\register}
+              \ket{\psi}_{\register[S]}
+              +
+              \ket{\psi}_{\register}
+              \ket{\varphi}_{\register[S]}
+            \right)
+            + \ket{1} 
+            \left(
+              \ket{\varphi}_{\register}
+              \ket{\psi}_{\register[S]}
+              -
+              \ket{\psi}_{\register}
+              \ket{\varphi}_{\register[S]}
+            \right)
+          \right)\, .
+        \end{multline*}
+        Let $\projector^{(\qubit)}_{b}$ be the projector $\projector_b \otimes
+          \idmatrix_{\register} \otimes \idmatrix_{\register[S]}$, i.e.\ the projector
+          that acts like $\projector_b$ on $\qubit$ and like the identity on 
+          $\register$ and $\register[S]$.
+          Then, \cref{def:pvm} tells us that the probability that measuring
+          $\qubit$ will yield outcome $1$ is
+        \begin{multline*}
+          %\condprob{\text{outcome } 1}{\unknown = \ket{\varphi}} = 
+          \norm{\projector^{(\qubit)}_1 
+          \frac{1}{2}
+          \left(
+            \ket{0} 
+            \left(
+              \ket{\varphi}_{\register}
+              \ket{\psi}_{\register[S]}
+              +
+              \ket{\psi}_{\register}
+              \ket{\varphi}_{\register[S]}
+            \right)
+            + \ket{1} 
+            \left(
+              \ket{\varphi}_{\register}
+              \ket{\psi}_{\register[S]}
+              -
+              \ket{\psi}_{\register}
+              \ket{\varphi}_{\register[S]}
+            \right)
+          \right)
+          }^2 \\
+          %
+          =
+          \norm{
+          \frac{1}{2}
+            \ket{1} 
+            \left(
+              \ket{\varphi}_{\register}
+              \ket{\psi}_{\register[S]}
+              -
+              \ket{\psi}_{\register}
+              \ket{\varphi}_{\register[S]}
+            \right)
+          }^2 
+          = 
+          \frac{1}{4}
+          \abs{
+            \braket{1|1}
+            \left(
+              \bra{\psi}_{\register[S]}
+              \bra{\varphi}_{\register}
+              -
+              \bra{\varphi}_{\register[S]}
+              \bra{\psi}_{\register}
+            \right)
+            \left(
+              \ket{\varphi}_{\register}
+              \ket{\psi}_{\register[S]}
+              -
+              \ket{\psi}_{\register}
+              \ket{\varphi}_{\register[S]}
+            \right) 
+          } \\
+          %
+          \frac{1}{4}
+          \abs{
+            \braket{\varphi|\varphi}_{\register}
+            \braket{\psi|\psi}_{\register[S]}
             +
-            \ket{\psi}_{\register}
-            \ket{\varphi}_{\register[S]}
-          \right)
-          + \ket{1} 
-          \left(
-            \ket{\varphi}_{\register}
-            \ket{\psi}_{\register[S]}
+            \braket{\psi|\psi}_{\register}
+            \braket{\varphi|\varphi}_{\register[S]}
             -
-            \ket{\psi}_{\register}
-            \ket{\varphi}_{\register[S]}
-          \right)
-        \right)\, .
-      \end{multline*}
-      Let $\projector^{(\qubit)}_{b}$ be the projector $\projector_b \otimes
-        \idmatrix_{\register} \otimes \idmatrix_{\register[S]}$, i.e.\ the projector
-        that acts like $\projector_b$ on $\qubit$ and like the identity on 
-        $\register$ and $\register[S]$.
-        Then, \cref{def:pvm} tells us that the probability that measuring
-        $\qubit$ will yield outcome $1$ is
-      \begin{multline*}
-        %\condprob{\text{outcome } 1}{\unknown = \ket{\varphi}} = 
-        \norm{\projector^{(\qubit)}_1 
-        \frac{1}{2}
-        \left(
-          \ket{0} 
-          \left(
-            \ket{\varphi}_{\register}
-            \ket{\psi}_{\register[S]}
-            +
-            \ket{\psi}_{\register}
-            \ket{\varphi}_{\register[S]}
-          \right)
-          + \ket{1} 
-          \left(
-            \ket{\varphi}_{\register}
-            \ket{\psi}_{\register[S]}
+            \braket{\psi|\varphi}_{\register}
+            \braket{\varphi|\psi}_{\register[S]}
             -
-            \ket{\psi}_{\register}
-            \ket{\varphi}_{\register[S]}
-          \right)
-        \right)
-        }^2 \\
-        %
-        =
-        \norm{
-        \frac{1}{2}
-          \ket{1} 
-          \left(
-            \ket{\varphi}_{\register}
-            \ket{\psi}_{\register[S]}
-            -
-            \ket{\psi}_{\register}
-            \ket{\varphi}_{\register[S]}
-          \right)
-        }^2 
-        = 
-        \frac{1}{4}
-        \abs{
-          \braket{1|1}
-          \left(
-            \bra{\psi}_{\register[S]}
-            \bra{\varphi}_{\register}
-            -
-            \bra{\varphi}_{\register[S]}
-            \bra{\psi}_{\register}
-          \right)
-          \left(
-            \ket{\varphi}_{\register}
-            \ket{\psi}_{\register[S]}
-            -
-            \ket{\psi}_{\register}
-            \ket{\varphi}_{\register[S]}
-          \right) 
-        } \\
-        %
-        \frac{1}{4}
-        \abs{
-          \braket{\varphi|\varphi}_{\register}
-          \braket{\psi|\psi}_{\register[S]}
-          +
-          \braket{\psi|\psi}_{\register}
-          \braket{\varphi|\varphi}_{\register[S]}
-          -
-          \braket{\psi|\varphi}_{\register}
-          \braket{\varphi|\psi}_{\register[S]}
-          -
-          \braket{\varphi|\psi}_{\register}
-          \braket{\psi|\varphi}_{\register[S]}
-        }
-        = \frac{1}{2} - \frac{1}{2} 
-        \abs{
-          \braket{\psi|\varphi}
-        }^2\, .
-        %
-      \end{multline*}
-      Note how, even if $\ket{\psi}$ and $\ket{\varphi}$ are orthogonal, then the
-        probability of observing $1$ is only $\frac{1}{2} - 0 = \frac{1}{2}$, so
-        that even in the best case, while observing a $1$ would allow us to
-        immediately conclude that $\unknown = \ket\varphi$, observing the
-        zero outcome would only provide relatively weak evidence towards
-        $\unknown$ being $\ket\psi$. Given several copies of $\unknown$, we
-        could amplify our distinguishing advantage by repeating the
-        experiment, but what if we only had the one copy of $\unknown$?
-        With the state being unknown to us, the no-cloning theorem 
-        bars us from generating more copies of it, and we are stuck with a
-        single measurement. Can we do better?
-
-      As it turns out, the answer is yes, and the \emph{optimal} distinguishing
-        measurement is known as the \emph{Helstrom measurement} after its
-        discoverer.
-        %
-      \begin{theorem}[The Helstrom measurement]\label{thm:helstrom}
-        Given a register $\register$ promised to be in either state
-        $\ket\psi$ or state $\ket\varphi$ with equal probability, 
-        then the Helstrom measurement $\Helstrom$ 
-        correctly identifies the state with probability
-        \[
-          \prob{0 \gets \Helstrom(\ket{\psi})} 
-          = 
-          \prob{1 \gets \Helstrom(\ket{\varphi})} 
-          = 
-          \frac{1}{2} + \frac{1}{2} \sqrt{1 - \abs{\braket{\psi|\varphi}}^2}\, ,
-        \]
-        which is optimal. 
-      \end{theorem}
-      %
-      Unlike our SWAP test, if the two possible states $\ket\psi$, $\ket\varphi$
-        are orthogonal, then the Helstrom measurement is
-        guaranteed to distinguish them:
-        \[
-          \braket{\psi|\varphi} = 0 \implies
-          \prob{0 \gets \Helstrom(\ket{\psi})} 
-          = 
-          \prob{1 \gets \Helstrom(\ket{\varphi})} 
-          = 
-          \frac{1}{2} + \frac{1}{2} \sqrt{1 - 0} = 1\, .
-        \]
-        In that case, the measurement is simply given by the PVM
-        \[
-          \Helstrom = \{ \projector_\psi, \projector_\varphi \}
-          = \{ \ketbra{\psi}, \ketbra{\varphi} \}\, .
-        \]
-        
-      % local macros
-      \newcommand{\orthpsi}{\tilde{\psi}}
-      \newcommand{\orthphi}{\tilde{\varphi}}
-      What about the more general case?
-        Well, if $\ket\psi$ and $\ket\varphi$ are non-orthogonal,
-        then $\{ \ketbra{\psi}, \ketbra{\varphi} \}$ is not a
-        PVM, since these projectors will not orthogonal either -- we need to build
-        two \emph{orthogonal} projectors from $\ket\psi$ and $\ket\varphi$.
-        The Helstrom measurement does this by picking out
-        the optimal orientation in the 2D plane 
-        spanned by $\ket\psi$ and $\ket{\varphi}$, 
-        as illustrated in \cref{fig:helstrom}:
-        Let $\ket{\orthpsi}$ and $\ket{\orthphi}$ be the
-        two orthogonal states that 1) sit in the plane spanned by $\ket\psi$
-        and $\ket\varphi$, and 2) are oriented such that the bisecting
-        line between $\ket\psi$ and $\ket\varphi$ sits at a $45^\circ$
-        angle to both states. Then
-        the Helstrom measurement is given by the PVM
-        \[
-          \Helstrom = \{ \projector_\psi, \projector_\varphi \}
-          = \{ \ketbra{\orthpsi}, \ketbra{\orthphi} \}\, ,
-        \]
-        which optimally distinguishes the two states, provided either 
-        state were given to us with equal probability.\footnote{
-          There is also a \emph{weighted} Helstrom measurement, for the case
-          that the probability of receiving each state is shifted away from
-          $\half$ by some known amount. If we parameterize the probability by
-          $p$, so that the probability of receiving each state is $p$ resp.\ $1-p$, it
-          effectively biases the measurement by rotating
-          the measurement axes $\ket{\orthpsi}$ and $\ket{\orthphi}$ in
-          \cref{fig:helstrom} by the angle (derived from $p$) that maximizes
-          the expected success rate, achieving
-          \[
-            \expect{\, \text{success}\, } = p \prob{0 \gets \Helstrom(\ket{\psi})} 
-              + (1-p) \prob{1 \gets \Helstrom(\ket{\varphi})}
-              = \frac{1}{2} + \frac{1}{2} \sqrt{1 - 4 p (1-p) \abs{\braket{\psi|\varphi}}^2}\, ,
-          \]
-          which can again be shown to be optimal.
-        }
-
-      \crakzfigcode{helstrom}{
-        The orthogonal states $\ket{\orthpsi}$ and $\ket{\orthphi}$
-        defining the (equal-priors) Helstrom measurement live in the 2D plane spanned by
-        $\ket\psi$ and $\ket\varphi$, oriented symmetrically about their
-        bisecting line.
-      }
-
-      Keep in mind, however, that in order to perform a Helstrom measurement, we need to
-        not only \emph{know} the states $\ket{\psi}$ and $\ket{\varphi}$, but
-        also be able to \emph{efficiently prepare them}, which is a capability we
-        may or may not possess in any given situation. Contrast with the SWAP
-        test, where it sufficed for us to
-        be able to efficiently prepare one of the two candidate states.
-
-      \begin{exercise}
-        Let $\ket\psi = \cos \frac{\theta}{2} \ket 0 + \sin \frac{\theta}{2} \ket 1$
-        and $\ket\varphi = \cos \frac{\theta}{2} \ket 0 - \sin \frac{\theta}{2}
-        \ket 1$ for an angle $\theta \in [0,2\pi)$, and let 
-        $\ket{\mathit{sum}} = \frac{\ket\psi + \ket\varphi}{\norm{\ket\psi + \ket\varphi}}$ 
-        and
-        $\ket{\mathit{diff}} = \frac{\ket\psi - \ket\varphi}{\norm{\ket\psi - \ket\varphi}}$
-        be the states given by their (normalized) sum and difference.
-        \begin{subex}
-          \item Show that 
-            $\ket{\orthpsi} = 
-            \frac{1}{\sqrt 2} \left(
-              \ket{\mathit{sum}} + \ket{\mathit{diff}}
-            \right)$ and 
-            $\ket{\orthphi} = 
-            \frac{1}{\sqrt 2} \left(
-              \ket{\mathit{sum}} - \ket{\mathit{diff}}
-            \right)$.
-          \item Use this to show that $\Helstrom = \{ \ketbra{\orthpsi}, \ketbra{\orthphi}
-            \}$ satisfies the definition of a PVM.
-          \item Show that for any two states $\ket\psi$, $\ket\varphi$, there
-            exists a choice of $\theta$ such that they can be expressed as
-            above (up to an unobservable global phase $e^{i\phi}$).
-        \end{subex}
-      \end{exercise}
-
-      \iffalse
-        \paragraph{The Weighted Helstrom Measurement for Non-equal Priors.}
-          \hhnote{
-            skip this for now (got too involved); re-introduce if and
-            when needed
+            \braket{\varphi|\psi}_{\register}
+            \braket{\psi|\varphi}_{\register[S]}
           }
-          \begin{theorem}\label{thm:unequal-helstrom}
-            For unequal priors $p_\psi = p$, $p_\varphi = 1 - p$, the 
-            \emph{weighted} Helstrom measurement achieves the expected success rate 
-            \begin{multline*}
-              \expect{\text{success}} = p \prob{0 \gets \Helstrom(\ket{\psi})} 
-              + (1-p) \prob{1 \gets \Helstrom(\ket{\varphi})}
-              = \frac{1}{2} + \frac{1}{2} \sqrt{1 - 4 p (1-p) \abs{\braket{\psi|\varphi}}^2}\, ,
-            \end{multline*}
-            which is optimal.
-          \end{theorem}
+          = 
+          \frac{1}{2} - \frac{1}{2} 
+          \abs{
+            \braket{\psi|\varphi}
+          }^2\, .
+          %
+        \end{multline*}
+        Note how, even if $\ket{\psi}$ and $\ket{\varphi}$ are orthogonal, then the
+          probability of observing $1$ is only $\frac{1}{2} - 0 = \frac{1}{2}$, so
+          that even in the best case, while observing a $1$ would allow us to
+          immediately conclude that $\unknown = \ket\varphi$, observing the
+          zero outcome would only provide relatively weak evidence towards
+          $\unknown$ being $\ket\psi$, achieving in expectation the success rate
+        \[
+          \expect{\, \text{success}\, } = \frac{1}{2} \prob{0 \gets \Helstrom(\ket{\psi})} 
+            + \frac{1}{2} \prob{1 \gets \Helstrom(\ket{\varphi})}
+            = \frac{1}{2} + \frac{1}{2}
+            \left(
+              \frac{1}{2} - \frac{1}{2} 
+              \abs{
+                \braket{\psi|\varphi}
+              }^2
+            \right) = \frac{3}{4} - \frac{1}{4} \abs{\braket{\psi|\varphi}}^2\, .
+        \]
+        As a sanity check, notice how the expected success rate
+          falls to $\half$ when the states are identical, and how orthogonal
+          states maximize the rate.
+
+        Given several copies of $\unknown$, we
+          could of course amplify our distinguishing advantage by repeating the
+          experiment. But what if we only had the one copy of $\unknown$?
+          With the state being unknown to us, the \emph{no-cloning theorem}
+          (see \cref{sec:entanglement})
+          bars us from generating copies of it, and we are stuck with a
+          single measurement. Can we do better?
+
+      \paragraph{The Helstrom Measurement.}
+        As it turns out, the answer is yes, and the \emph{optimal} distinguishing
+          measurement is known as the \emph{Helstrom measurement} after its
+          discoverer.
+          %
+        \begin{theorem}[The Helstrom Measurement]\label{thm:helstrom}
+          Given a register $\register$ promised to be in either state
+          $\ket\psi$ or state $\ket\varphi$ with equal probability, 
+          then the Helstrom measurement $\Helstrom$ 
+          correctly identifies the state with probability
+          \[
+            \prob{0 \gets \Helstrom(\ket{\psi})} 
+            = 
+            \prob{1 \gets \Helstrom(\ket{\varphi})} 
+            = 
+            \frac{1}{2} + \frac{1}{2} \sqrt{1 - \abs{\braket{\psi|\varphi}}^2}\, ,
+          \]
+          which is optimal. 
+        \end{theorem}
+        %
+        Unlike our SWAP test, if the two possible states $\ket\psi$, $\ket\varphi$
+          are orthogonal, then the Helstrom measurement is
+          guaranteed to distinguish them:
+          \[
+            \braket{\psi|\varphi} = 0 \implies
+            \prob{0 \gets \Helstrom(\ket{\psi})} 
+            = 
+            \prob{1 \gets \Helstrom(\ket{\varphi})} 
+            = 
+            \frac{1}{2} + \frac{1}{2} \sqrt{1 - 0} = 1\, .
+          \]
+          In that case, the measurement is simply given by the PVM
+          \[
+            \Helstrom = \{ \projector_\psi, \projector_\varphi \}
+            = \{ \ketbra{\psi}, \ketbra{\varphi} \}\, .
+          \]
+          
+        % local macros
+        \newcommand{\orthpsi}{\tilde{\psi}}
+        \newcommand{\orthphi}{\tilde{\varphi}}
+        What about the more general case?
+          Well, if $\ket\psi$ and $\ket\varphi$ are non-orthogonal,
+          then $\{ \ketbra{\psi}, \ketbra{\varphi} \}$ is not a
+          PVM, since these projectors will not orthogonal either -- we need to build
+          two \emph{orthogonal} projectors from $\ket\psi$ and $\ket\varphi$.
+          The Helstrom measurement does this by picking out
+          the optimal orientation in the 2D plane 
+          spanned by $\ket\psi$ and $\ket{\varphi}$, 
+          as illustrated in \cref{fig:helstrom}:
+          Let $\ket{\orthpsi}$ and $\ket{\orthphi}$ be the
+          two orthogonal states that 1) sit in the plane spanned by $\ket\psi$
+          and $\ket\varphi$, and 2) are oriented such that the bisecting
+          line between $\ket\psi$ and $\ket\varphi$ sits at a $45^\circ$
+          angle to both states. Then
+          the Helstrom measurement is given by the PVM
+          \[
+            \Helstrom = \{ \projector_\psi, \projector_\varphi \}
+            = \{ \ketbra{\orthpsi}, \ketbra{\orthphi} \}\, ,
+          \]
+          which optimally distinguishes the two states, provided either 
+          state were given to us with equal probability.\footnote{
+            There is also the \emph{weighted} Helstrom measurement, for the case
+            that the probability of receiving each state is shifted away from
+            $\half$ by some known amount. If the probability of receiving each
+            state is $p$ resp.\ $1-p$, it
+            effectively biases the measurement by rotating
+            the measurement axes $\ket{\orthpsi}$ and $\ket{\orthphi}$ in
+            \cref{fig:helstrom} by the angle (which can be derived from $p$) that maximizes
+            the expected success rate, achieving the optimal rate
+            \[
+              \expect{\, \text{success}\, } = p \prob{0 \gets \Helstrom(\ket{\psi})} 
+                + (1-p) \prob{1 \gets \Helstrom(\ket{\varphi})}
+                = \frac{1}{2} + \frac{1}{2} \sqrt{1 - 4 p (1-p)
+                \abs{\braket{\psi|\varphi}}^2}\, .
+            \]
+            %which can again be shown to be optimal.
+          }
+
+        \crakzfigcode{helstrom}{
+          The orthogonal states $\ket{\orthpsi}$ and $\ket{\orthphi}$
+          defining the (equal-priors) Helstrom measurement live in the 2D plane spanned by
+          $\ket\psi$ and $\ket\varphi$, oriented symmetrically about their
+          bisecting line.
+        }
+
+        Keep in mind, however, that in order to perform a Helstrom measurement, we need to
+          not only \emph{know} the states $\ket{\psi}$ and $\ket{\varphi}$, but
+          also be able to \emph{efficiently prepare them}, which is a capability we
+          may or may not possess in any given situation. Contrast with the SWAP
+          test, where it sufficed for us to
+          be able to efficiently prepare one of the two candidate states.
 
         \begin{exercise}
-          (\ldots)
+          Let $\ket\psi = \cos \frac{\theta}{2} \ket 0 + \sin \frac{\theta}{2} \ket 1$
+          and $\ket\varphi = \cos \frac{\theta}{2} \ket 0 - \sin \frac{\theta}{2}
+          \ket 1$ for an angle $\theta \in [0,2\pi)$, and let 
+          $\ket{\mathit{sum}} = \frac{\ket\psi + \ket\varphi}{\norm{\ket\psi + \ket\varphi}}$ 
+          and
+          $\ket{\mathit{diff}} = \frac{\ket\psi - \ket\varphi}{\norm{\ket\psi - \ket\varphi}}$
+          be the states given by their (normalized) sum and difference.
           \begin{subex}
-            \item The weighted Helstrom measurement for non-equal priors is given
-              by the PVM $\Helstrom = (\ldots)$. Show that this gives the
-              measurement statistics claimed in \cref{thm:unequal-helstrom}.
+            \item Show that 
+              $\ket{\orthpsi} = 
+              \frac{1}{\sqrt 2} \left(
+                \ket{\mathit{sum}} + \ket{\mathit{diff}}
+              \right)$ and 
+              $\ket{\orthphi} = 
+              \frac{1}{\sqrt 2} \left(
+                \ket{\mathit{sum}} - \ket{\mathit{diff}}
+              \right)$.
+            \item Use this to show that $\Helstrom = \{ \ketbra{\orthpsi}, \ketbra{\orthphi}
+              \}$ satisfies the definition of a PVM.
+            \item Show that for any two states $\ket\psi$, $\ket\varphi$, there
+              exists a choice of $\theta$ such that they can be expressed as
+              above (up to an unobservable global phase $e^{i\phi}$).
           \end{subex}
         \end{exercise}
-      \fi
 
-      % undefining local macros
-      \let\unknown\undefined
-      \let\orthpsi\undefined
-      \let\orthphi\undefined
+        \iffalse
+          \paragraph{The Weighted Helstrom Measurement for Non-Equal Priors.}
+            \hhnote{
+              skip this for now (got too involved); re-introduce if and
+              when needed
+            }
+            \begin{theorem}\label{thm:unequal-helstrom}
+              For unequal priors $p_\psi = p$, $p_\varphi = 1 - p$, the 
+              \emph{weighted} Helstrom measurement achieves the expected success rate 
+              \begin{multline*}
+                \expect{\text{success}} = p \prob{0 \gets \Helstrom(\ket{\psi})} 
+                + (1-p) \prob{1 \gets \Helstrom(\ket{\varphi})}
+                = \frac{1}{2} + \frac{1}{2} \sqrt{1 - 4 p (1-p) \abs{\braket{\psi|\varphi}}^2}\, ,
+              \end{multline*}
+              which is optimal.
+            \end{theorem}
 
-  \subsection{Entanglement}
+          \begin{exercise}
+            (\ldots)
+            \begin{subex}
+              \item The weighted Helstrom measurement for non-equal priors is given
+                by the PVM $\Helstrom = (\ldots)$. Show that this gives the
+                measurement statistics claimed in \cref{thm:unequal-helstrom}.
+            \end{subex}
+          \end{exercise}
+        \fi
+
+        % undefining local macros
+        \let\unknown\undefined
+        \let\orthpsi\undefined
+        \let\orthphi\undefined
+
+  \subsection{Entanglement}\label{sec:entanglement}
     Until now we have defined notation for computational basis states
       $\ket{x}$, general quantum states $\ket{\psi}$,
       unitary transformations $\unitary$, and the
@@ -1998,6 +2019,10 @@
           analyses, and we will meet them again in \cref{sec:proofs}. 
         \fi
       }
+
+    \subsubsection{No Cloning.}
+      \hhnote{put this here somewhere, with the point that ``straightforward
+      quantum copying creates entanglement''.}
 
   \subsection{Complexity}\label{sec:complexity}
     \subsubsection{Elementary Qubit Gates and the Universal Quantum Computer.}

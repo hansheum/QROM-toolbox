@@ -160,7 +160,7 @@
     (\cref{def:owcpa}), then $\KEM$ satisfies indistinguishability
     (\cref{def:indcca}), as captured in the following theorem.
 
-  \begin{theorem}[\dPKE is \owcpa $\To$ \KEM is \indcpa]
+  \begin{theorem}[\dPKE Is \owcpa $\To$ \KEM Is \indcpa]
     \label{thm:cparom}
     Let \dPKE be a deterministic PKE scheme, let \RO be a random oracle, 
     and let the $\KEM = \U[\dPKE, \RO]$.
@@ -692,7 +692,7 @@
     one-wayness game with probability $\nicefrac{1}{q}$. After a little
     manipulation of probabilities, we end up with the following bound.
 
-  \begin{theorem}[\PKE is \owcpa $\To$ \KEM is \indcpa]
+  \begin{theorem}[\PKE Is \owcpa $\To$ \KEM Is \indcpa]
     \label{thm:cparom-guess}
     Let \PKE be a probabilistic PKE scheme, let \RO be a random oracle, 
     and let the $\KEM = \U[\PKE, \RO]$.
@@ -757,7 +757,7 @@
     }
   \end{exercise}
 
-\subsection{One-way to Hiding}\label{sec:C-O2H}
+\subsection{One-Way to Hiding}\label{sec:C-O2H}
   \paragraph{Find-O2H.}
     \Cref{thm:cparom} may be about a specific construction (the
       \U-transform), but the take-away message is quite general: If a reduction
@@ -776,7 +776,7 @@
       %One for the case that the reduction can \emph{find} the value it
       %Is looking for, and one for the case that it has no choice but to \emph{guess}.
 
-    \begin{restatable}[Find-O2H, classical]{lemma}{cOWHfindsingle}\label{lemma:co2h-find-single}
+    \begin{restatable}[Find-O2H, Classical]{lemma}{cOWHfindsingle}\label{lemma:co2h-find-single}
       Let $\RO$, $\GO: \bin^n \to \bin^m$ be random
       oracles such that for every $x \neq x^*$, $\RO(x) = \GO(x)$, whereas
       $\RO(x^*)$ and $\GO(x^*)$ are independently uniform. 
@@ -898,7 +898,7 @@
       answer. Hence, Guess-O2H has a higher level of applicability than Find-O2H, at the
       cost of sacrificing tightness.
 
-    \begin{restatable}[Guess-O2H, classical]{lemma}{cOWHguesssingle}\label{lemma:co2h-guess-single}
+    \begin{restatable}[Guess-O2H, Classical]{lemma}{cOWHguesssingle}\label{lemma:co2h-guess-single}
       Let $\RO$, $\GO: \bin^n \to \bin^m$ be random
       oracles such that for every $x \neq x^*$, $\RO(x) = \GO(x)$, whereas
       $\RO(x^*)$ and $\GO(x^*)$ are independently uniform. 

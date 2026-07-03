@@ -33,7 +33,7 @@
       due later variants being strict generalisations. These include (\ldots)
     }
 
-  \subsection{A Classical One-way to Hiding Lemma}
+  \subsection{A Classical One-Way to Hiding Lemma}
     \hhnote{
       Extract both ``find'' and ``guess'' versions from the above proofs.
     }
@@ -152,7 +152,7 @@
       equivalent to the extractor having access to a quantum-accessible
       indicator function.
     
-    \begin{lemma}[Double-sided oracle access $\Leftrightarrow$ Indicator oracle access]
+    \begin{lemma}[Double-Sided Oracle Access $\Leftrightarrow$ Indicator Oracle Access]
       Let $\careset \subseteq \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
       be classical random oracles satisfying $\forall x \not\in \careset: \RO(x) =
       \GO(x)$, and let $\indfunc$ be an indicator oracle for $\careset$. 
@@ -235,7 +235,7 @@
       overhead of simulating at most $\qRO$ oracle responses.
     \end{lemma}
 
-    \begin{lemma}[Multi-point O2H~\cite{C:AmbHamUnr19}]
+    \begin{lemma}[Multi-Point O2H~\cite{C:AmbHamUnr19}]
       Let $\careset \subseteq \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
       be quantum random oracles satisfying $\forall x \not\in \careset: \RO(x) =
       \GO(x)$, let $\indfunc$ be a quantum-accessible indicator oracle for $\careset$, and let $z$ be arbitrary. Then 
@@ -263,7 +263,7 @@
       indicator oracle.
     \end{lemma}
 
-    \begin{lemma}[Single-point O2H, find~\cite{TCC:BHHHP19}]
+    \begin{lemma}[Single-Point O2H, Find~\cite{TCC:BHHHP19}]
       Let $\target \in \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
       be quantum random oracles satisfying $\forall x \neq \target: \RO(x) =
       \GO(x)$, let $\indfunc$ be a quantum-accessible indicator oracle for $\target$, and let $z$ be arbitrary. Then 
@@ -282,7 +282,7 @@
       indicator oracle.
     \end{lemma}
 
-    \begin{lemma}[Multi-point O2H with rewinding, find~\cite{AC:GeLiaXue24}]
+    \begin{lemma}[Multi-Point O2H with Rewinding, Find~\cite{AC:GeLiaXue24}]
       Let $\careset \subseteq \Xspace$, let $\RO, \GO: \Xspace \to \Yspace$
       be quantum random oracles satisfying $\forall x \not\in \careset: \RO(x) =
       \GO(x)$, let $\indfunc$ be a quantum-accessible indicator oracle for
@@ -306,7 +306,7 @@
     }
 
     \hhnote{Attempt at putting them all in one lemma}
-    \begin{lemma}[Non-adaptive O2H, state of the art]
+    \begin{lemma}[Non-Adaptive O2H, State of the Art]
       Let $\RO, \GO: \Xspace \to \Yspace$
       be quantum random oracles, let $\careset \subseteq \Xspace$ be such that
       $\forall x \not\in \careset: \RO(x) = \GO(x)$, let $\indfunc$ be a

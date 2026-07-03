@@ -141,7 +141,7 @@
       classical oracles to be quantum oracles that first measure the input
       register, collapsing it to some basis state $\ket{x}$. 
 
-    \begin{definition}[Quantum-Compatible Classicle Oracle]
+    \begin{definition}[Quantum-Compatible Classical Oracle]
       A quantum-compatible classical oracle
         is a function oracle for $f$ that, on input qubit registers $(\inputreg, \outputreg)$,
         first performs the computational-basis measurement $\meas{}{\inputreg}$,
@@ -220,7 +220,7 @@
       implemented. Following are several possible implementations, which turn
       out to all be equivalent~\cite{C:Zhandry19}.
 
-    \paragraph{Standard oracles.}
+    \paragraph{Standard Oracles.}
       This ``standard'' oracle, shown to the left in \cref{fig:qros}, is the
         oracle that simply implements our
         intuition from the start of the section: It first 
@@ -229,7 +229,7 @@
         state $\state$, and thereafter operates as the quantum-accessible
         function oracle $\Oracle_f$.
 
-    \paragraph{Phase oracles.}
+    \paragraph{Phase Oracles.}
       The ``phase'' oracle, shown in the middle of \cref{fig:qros}, operates
         exactly like the standard oracle, except that it
         performs a phase operation on the output register rather than an xor.
@@ -240,7 +240,7 @@
         transformation $\Hgate^{\otimes m}$ to the output register $\outputreg$
         before and after each query.
 
-    \paragraph{Superposition oracles.}
+    \paragraph{Superposition Oracles.}
       Instead of using a classically stochastic process to sample the random
         function at the outset, one can exploit the randomness inherent to
         quantum physics and simply provide a uniform superposition of
@@ -265,7 +265,7 @@
         sampling vs.\ superposition, there is also a ``superposition phase oracle''.
         We leave it to you to work out the details.
 
-    \paragraph{Compressed oracles.}
+    \paragraph{Compressed Oracles.}
       It turns out that there is a procedure through which we can efficiently
         implement a superposition oracle, as described above, in a manner
         completely analogous to the ubiquitous ``lazy-sampling'' technique for
