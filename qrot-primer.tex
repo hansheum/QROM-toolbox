@@ -1968,88 +1968,182 @@
         \let\orthphi\undefined
 
   \subsection{Entanglement}\label{sec:entanglement}
-    Until now we have defined notation for computational basis states
-      $\ket{x}$, general quantum states $\ket{\psi}$,
-      unitary transformations $\unitary$, and the
-      the result of applying a unitary transformation $\unitary$ on a
-      quantum state $\ket{\psi}$, written 
-      $\ket{\psi} \apply{\unitary} \ket{\varphi}$.
+    Just like classical probabilities can be correlated, so can quantum states
+      be \emph{entangled}. Consider the following, two-qubit product state:
+    \[
+      \ket{\psi} = \ket + \ket + 
+      = \left( \frac{
+        \ket{0} + \ket{1}
+      }{\sqrt 2}\right )
+      \left( \frac{
+        \ket{0} + \ket{1}
+      }{\sqrt 2}\right )
+      = \frac{
+        \ket{00} + \ket{01} + \ket{10} + \ket{11}
+      }{2}\, .
+    \]
+    Regardless of which measurement you apply to $\ket \psi$, the value
+      observed in the first qubit will bear no implication for the value 
+      that the second qubit will take. We say
+      that the state is \emph{separable}, which is to say that 
+      any measurement on $\ket\psi$ will induce a \emph{product distribution} along the
+      same separating line.
 
-    And still this isn't enough. This is because we are going to be talking
-      about communicating parties. Consider the situation that Alice has two
-      quantum bits initalized to the zero state, so that her state is
-      $\ket{\psi} = \ket{0}_0 \ket{0}_1$. Now she wants to send her second
-      qubit register, $\ket{0}_1$, over to Bob, who is going to apply some
-      single-qubit unitary to it, and then send it back. We might write this as
-      $\ket{0}_1 \apply{\unitary_1} \ket{\xi}_1$, where $\ket{\xi}_1$ is some
-      unknown, single-qubit state, and say that Bob returns $\ket{\xi}_1$ to
-      Alice at the end of the protocol.
+    Contrast with the following two-qubit state:
+    \[
+      \ket\varphi 
+      = \frac{
+        \ket{00} + \ket{11}
+      }{\sqrt 2}\, .
+    \]
+    With the middle $\ket{01}$ and $\ket{10}$ missing, there is no way to write
+      this state as a product of two single-qubit states; the state is
+      \emph{non-separable}, which is to say that observing the state will yield
+      outcome distributions with correlations between the values of the two
+      qubits. In this case it is easy to see, as the two qubits are perfectly
+      correlated: If you perform a computational-basis measurement, you will see
+      the string $00$ or the string $11$, never $01$ or $10$. Hence, if you
+      observe the first qubit and see $1$, you \emph{know} that observing the
+      second qubit will also yield the value $1$.
 
-    But what if Alice had prepared her two qubits in the state
-      $\ket{\varphi} = \frac{\ket{00} + \ket{11}}{\sqrt{2}}$ instead?
-      Then, the two-qubit state is \emph{non-separable}, meaning that it can no
-      longer be cleanly factored into a tensor product of two single-qubit
-      states. In the world of quantum
-      physics, this means that the two qubits are \emph{entangled}, a fancy
-      word describing a phenomenon with many deep consequences for physics and
-      philosophy alike, but which mathematically speaking is nothing but the quantum
-      generalization of correlated probabilities.\footnote{
-        In other words, the term ``separable'' here carries exactly the same
-        meaning as the term ``product'' does when talking about probability distributions.
-        More precisely, if an arbitrary quantum state is \emph{separable} along
-        some dividing line, such that $\ket{\psi} = \ket{\varphi} \otimes
-        \ket{\xi}$, then the probability distribution over the possible
-        outcomes of observing $\ket{\psi}$ will
-        form a product distribution, factoring along the
-        same dividing line. This remains true regardless of
-        which basis you use to observe the state, implying that
-        entanglement is an observation-independent (and therefore
-        ``objective'') property of the state.
-      } Alice can of course still send her second qubit to Bob, and Bob can still apply
-      the operation $\unitary$ to it; our problem merely one of notation,
-      as we have no way of writing the operation that Bob is
-      performing on $\ket{0}_1$ without referencing the entire
-      state, like so:
-      \[
-        \frac{\ket{00}_{0,1} + \ket{11}_{0,1}}{\sqrt{2}} \longrightarrow \left( 
-        \idmatrix_0 \otimes \unitary_1 \right) 
-        \left( \frac{\ket{00}_{0,1} + \ket{11}_{0,1}}{\sqrt{2}} \right)\, .
-      \] 
+    This is the phenomenon known as quantum \emph{entanglement}, and despite its
+      reputation as something deeply mysterious, it really is
+      just the quantum version of correlated probability distributions.
+      The apparent mysteriousness comes from the fact that the way we 
+      formalized measurements in \cref{sec:measurements}, observing one of the
+      qubits of the state $\ket\varphi$ above leads to collapse of the full
+      state, so that the second qubit -- which previously was in a superposition
+      of $0$ and $1$ -- is suddenly fully determined. The immediateness of this
+      effect means the state collapse will not even respect the light-speed
+      limit, so that Alice measuring a qubit on Earth will immediately collapse the
+      superposition of Bob's qubit, even if Bob finds himself at the opposite side of the
+      galaxy. This insight famously lead to Einstein's lament that quantum theory
+      contained ``spooky action at a distance''\footnote{\emph{Spukhafte
+      Fernwirkung} in the original German.}, and that it must therefore be
+      fundamentally flawed.
 
-    \noindent
-    What we want, is to be able to write the operations that Alice and Bob
-      perform, without having to reference qubits that they don't have access
-      to, regardless of any entanglement.
-      In other words, what we want is an entanglement-agnostic quantum \emph{pseudocode}.\footnote{
-        For readers ahead of the curve: Yes, one may reference one half of an
-        entangled state using the generalized notion of a 
-        \emph{mixed state}, by moving from Dirac's bra-ket notation to the
-        density matrix formulation of Von Neumann.
-        This formulation combines quantum states
-        with classical probabilities, and informally
-        speaking a density matrix (written $\rho \coloneqq
-        \sum_i p_i \ket{\psi_i}\otimes\bra{\psi_i})$ is just a clever way of expressing
-        classical probability distributions over quantum states.
-        Then, you can easily write down the state corresponding to one half of
-        an entangled state by observing that the state should look exactly the same 
-        to Bob whether Alice performed a measurement on Bob's qubit before
-        sending it, or an operation entangling her qubit with Bob's.
-        While such a formulation might be workable, we avoid this solution
-        since going from a pure state to a mixed states loses information about
-        the original state (since you can no longer tell from the state whether the qubit was
-        measured or entangled), which would mean extra bookkeeping keeping track of the global
-        state, which is precisely what we wanted to abstract away to begin with.
-        \ifdraftversion % for future version with the ``Under The Rug'' part
-          Nonetheless, density matrices are invaluable to quantum information-theoretical
-          analyses, and we will meet them again in \cref{sec:proofs}. 
-        \fi
-      }
+    \subsubsection{Entanglement vs.\ Randomness.}
+    The modern view is that the above is taking the pure-state formalism too
+      literally: The actual state that Bob would receive upon receiving the
+      second qubit would be a \emph{maximally mixed state}, which is to say a
+      state that is perfectly consistent with a classical coin-flip.
+      %the qubit in the $\ket 0$ or $\ket 1$ state with 50/50 probability; 
+      The only way to distinguish the entangled state from a random one would be
+      to bring the two qubits back together, which by assumption is beyond Bob's
+      capability. With this mixed-state formalism in hand, 
+      it becomes clear that measurements applied to the qubit on Earth are
+      completely irrelevant to the statistics observed by Bob at the other end of the
+      galaxy. 
+
+    We will work out the details of this thought experiment when we later
+      introduce the density-matrix formulation, but for now, the take-away message
+      is one that will turn out to be central to the compressed-oracle
+      technique\iffutureversion, covered in \cref{sec:compressed}\fi:
+
+    \begin{center}
+      \emph{Inaccessible entanglement is perfectly indistinguishable from classical randomness.}
+    \end{center}
+
+    \subsubsection{Entanglement the Resource.}
+    All this is not to undersell the \emph{power} of entanglement, as it is one of
+      the central resources of quantum algorithms and interactive quantum
+      protocols alike! Indeed, the word ``resource'' is justified by the fact that
+      entanglement is a \emph{basis-independent}, and
+      hence somehow ``objective'', property of the quantum state: 
+      the presence of correlations between different parts of the quantum system
+      does not depend on which measurement you choose to apply to the state.
+
+    \begin{exercise}
+      \begin{subex}
+        \item Show that measuring $\ket\varphi$ 
+          under a computational-basis and a Hadamard-basis
+          measurements lead to the same outcome statistics by showing the identity
+          \[
+            \ket{\varphi} = \frac{ \ket{00} + \ket{11} }{\sqrt 2} = 
+            \frac{ \ket{++} + \ket{--} }{\sqrt 2}\, .
+          \]
+        \item Entanglement may be measurement-independent, but outcome
+          statistics may not be: Let
+          \[
+            \ket{\xi} = \frac{ \ket{00} - \ket{11} }{\sqrt 2}\, .
+          \]
+          What are the distributions induced by performing a computational-basis
+          versus a Hadamard-basis measurement on $\ket \xi$?
+      \end{subex}
+    \end{exercise}
 
     \subsubsection{No Cloning.}
-      \hhnote{put this here somewhere, with the point that ``straightforward
-      quantum copying creates entanglement''.}
+      However, entanglement can in practice be as much a hinderance to quantum
+        algorithm design as a resource. The
+        simplest example of this is perhaps the case of copying, or ``cloning'',
+        quantum states. Say you are given a qubit in some unknown superposition state
+      \[
+        \ket{\psi} = \alpha\ket 0 + \beta\ket 1\, .
+      \]
+      Naturally, you might want to create a copy of it, i.e.\ to create the
+      state
+      \[
+        \ket{\psi}\ket{\psi} = 
+        \left(
+          \alpha\ket 0 + \beta\ket 1
+        \right)
+        \left(
+          \alpha\ket 0 + \beta\ket 1
+        \right)
+        = \alpha^2 \ket{00} + \alpha\beta \ket{01} + \alpha\beta \ket{10} +
+        \beta^2 \ket{11}\, .
+      \]
+      The first thing to try would be to prepare a second qubit in the $\ket 0$
+        state, then apply the controlled-not operation from the first to the
+        second qubit, which will flip the qubit to $\ket 1$ exactly in the $\beta$
+        branch of the original state. The result is: 
+      \[
+        \ket{\psi}\ket{0} = 
+        \left(
+          \alpha\ket 0 + \beta\ket 1
+        \right)
+        \ket 0 \apply{\CXgate} 
+        \alpha\ket{00} + \beta\ket{11}
+        \neq 
+        \ket{\psi}\ket{\psi}\, . 
+      \]
+      Rather than a product of two copies of the original state, we have ended
+      up with a maximally entangled state, fundamentally different from the
+      superposition state we started with! If only we could somehow remove the
+      entanglement by \emph{inserting} the missing
+      $\ket{01}$ and $\ket{10}$ terms, appropriately scaled, then perhaps we
+      could get to the desired product state. 
+
+    Alas, this turns out to be a fundamental constraint
+      of superposition states, known today as the \emph{no-cloning theorem}.
+
+      \begin{exercise}
+        In this exercise you will prove the no-cloning theorem.
+          Let $\unitary$ be a two-qubit unitary operation that
+          clones the single-qubit state $\ket\psi$ into an initialized qubit state,
+          as follows:
+          \[
+            \unitary \ket\psi \ket 0 = \ket\psi \ket\psi\, .
+          \]
+          The no-cloning theorem then states that no single unitary
+          $\unitary$ can clone several arbitrary qubit states.\footnote{
+            Trivially, there exists a unitary $\unitary$ that clones
+            $\ket{\psi}$ \emph{specifically}, namely the unitary implemented by
+            whatever circuit built $\ket\psi$ in the first place.
+          }
+        \begin{subex}
+          \item Let $\ket\varphi$ be a second state, also cloneable via 
+            $\unitary$ in the same manner as above. 
+            Prove the theorem by deriving a restriction on the possible values
+            that the inner product $\braket{\psi|\varphi}$ can take.
+          \item The previous result showed that, while cloning is not possible 
+            in general, some qubit states \emph{can} be cloned.
+            What are these ``clonable'' states? How should they be interpreted?
+        \end{subex}
+      \end{exercise}
 
   \subsection{Complexity}\label{sec:complexity}
+    \hhnote{cont}
     \subsubsection{Elementary Qubit Gates and the Universal Quantum Computer.}
       It is far from obvious that it should be possible to
         come up with a single device that \emph{provably} can simulate any kind

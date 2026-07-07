@@ -89,6 +89,90 @@
       \end{tabular}}
     \end{table}
 
+  \subsubsection{On the Need for a Quantum Register Pseudocode.}
+    \hhnote{
+      copy-pasted from primer; rewrite for consistency with entanglement
+      subchapter
+    }
+    We have established notation for computational basis states
+      $\ket{x}$, general superposition states $\ket{\psi}$,
+      unitary transformations $\unitary$, and the
+      the result of applying a unitary transformation $\unitary$ on a
+      quantum state $\ket{\psi}$, written 
+      $\ket{\psi} \apply{\unitary} \ket{\varphi}$.
+
+    And still this isn't enough. This is because we are going to be talking
+      about communicating parties. Consider the situation that Alice has two
+      quantum bits initalized to the zero state, so that her state is
+      $\ket{\psi} = \ket{0}_0 \ket{0}_1$. Now she wants to send her second
+      qubit register, $\ket{0}_1$, over to Bob, who is going to apply some
+      single-qubit unitary to it, and then send it back. We might write this as
+      $\ket{0}_1 \apply{\unitary_1} \ket{\xi}_1$, where $\ket{\xi}_1$ is some
+      unknown, single-qubit state, and say that Bob returns $\ket{\xi}_1$ to
+      Alice at the end of the protocol.
+
+    But what if Alice had prepared her two qubits in the state
+      $\ket{\varphi} = \frac{\ket{00} + \ket{11}}{\sqrt{2}}$ instead?
+      Then, the two-qubit state is \emph{non-separable}, meaning that it can no
+      longer be cleanly factored into a tensor product of two single-qubit
+      states. In the world of quantum
+      physics, this means that the two qubits are \emph{entangled}, a fancy
+      word describing a phenomenon with many deep consequences for physics and
+      philosophy alike, but which mathematically speaking is nothing but the quantum
+      generalization of correlated probabilities.\footnote{
+        In other words, the term ``separable'' here carries exactly the same
+        meaning as the term ``product'' does when talking about probability distributions.
+        More precisely, if an arbitrary quantum state is \emph{separable} along
+        some dividing line, such that $\ket{\psi} = \ket{\varphi} \otimes
+        \ket{\xi}$, then the probability distribution over the possible
+        outcomes of observing $\ket{\psi}$ will
+        form a product distribution, factoring along the
+        same dividing line. This remains true regardless of
+        which basis you use to observe the state, implying that
+        entanglement is an observation-independent (and therefore
+        ``objective'') property of the state.
+      } Alice can of course still send her second qubit to Bob, and Bob can still apply
+      the operation $\unitary$ to it; our problem merely one of notation,
+      as we have no way of writing the operation that Bob is
+      performing on $\ket{0}_1$ without referencing the entire
+      state, like so:
+      \[
+        \frac{\ket{00}_{0,1} + \ket{11}_{0,1}}{\sqrt{2}} \longrightarrow \left( 
+        \idmatrix_0 \otimes \unitary_1 \right) 
+        \left( \frac{\ket{00}_{0,1} + \ket{11}_{0,1}}{\sqrt{2}} \right)\, .
+      \] 
+
+    \noindent
+    What we want, is to be able to write the operations that Alice and Bob
+      perform, without having to reference qubits that they don't have access
+      to, regardless of any entanglement.
+      In other words, what we want is an entanglement-agnostic quantum \emph{pseudocode}.\footnote{
+        For readers ahead of the curve: Yes, one may reference one half of an
+        entangled state using the generalized notion of a 
+        \emph{mixed state}, by moving from Dirac's bra-ket notation to the
+        density matrix formulation of Von Neumann.
+        This formulation combines quantum states
+        with classical probabilities, and informally
+        speaking a density matrix (written $\rho \coloneqq
+        \sum_i p_i \ket{\psi_i}\otimes\bra{\psi_i})$ is just a clever way of expressing
+        classical probability distributions over quantum states.
+        Then, you can easily write down the state corresponding to one half of
+        an entangled state by observing that the state should look exactly the same 
+        to Bob whether Alice performed a measurement on Bob's qubit before
+        sending it, or an operation entangling her qubit with Bob's.
+        While such a formulation might be workable, we avoid this solution
+        since going from a pure state to a mixed states loses information about
+        the original state (since you can no longer tell from the state whether the qubit was
+        measured or entangled), which would mean extra bookkeeping keeping track of the global
+        state, which is precisely what we wanted to abstract away to begin with.
+        \ifdraftversion % for future version with the ``Under The Rug'' part
+          Nonetheless, density matrices are invaluable to quantum information-theoretical
+          analyses, and we will meet them again in \cref{sec:proofs}. 
+        \fi
+      }
+
+
+
   \subsubsection{Qubit Registers.}
     Let $\qubit$ be a physical qubit, in the sense of being some kind of
       particle or quantum system existing in
