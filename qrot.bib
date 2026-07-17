@@ -20,7 +20,8 @@
 
 @Article{Deutsch85,
   author =       "David Deutsch",
-  title =        "Quantum theory, the Church-Turing principle and the universal quantum computer",
+  title =        "Quantum theory, the {Church}-{Turing} principle and the
+                  universal quantum computer",
   pages =        {97--117},
   volume =       400,
   year =         1985,
@@ -29,7 +30,7 @@
 }
 
 @unpublished{KrawczykDistLect23,
-title= {``The Joy of Cryptography'', IACR Distinguished Lecture},
+title= {``{The Joy of Cryptography}'', {IACR} Distinguished Lecture},
 author = {Hugo Krawczyk},
 year = {2023},
 note= {Crypto},
@@ -43,11 +44,18 @@ URL= {https://www.youtube.com/watch?v=0Lt5Hr2FS_I},
   year={1993}
 }
 
-@article{Turing36,
-  title = {On computable numbers, with an application to the Entscheidungsproblem},
-  author = {Turing, Alan Mathison},
-  journal = {Journal of Mathematics},
-  year = {1936}
+@Article{Turing36,
+  author =       "Alan Mathison Turing",
+  title =        "On computable numbers, with an application to the
+                  {Entscheidungsproblem}",
+  pages =        "230--265",
+  volume =       "s2-42",
+  number =       1,
+  year =         1936,
+  journal =      "Proc. London Math. Soc.",
+  doi =          "10.1112/plms/s2-42.1.230",
+  note =         "Read 1936, printed 1937. Correction: {\emph{ibid.}}
+                  {s2-43}:544--546, 1938",
 }
 
 @Misc{FIPS203,
@@ -68,4 +76,188 @@ URL= {https://www.youtube.com/watch?v=0Lt5Hr2FS_I},
   howpublished = "National Institute of Standards and Technology,
                   {NIST FIPS PUB} 204, {U.S.} Department of Commerce",
   doi =          "10.6028/NIST.FIPS.204",
+}
+
+%%% Computability and the Church-Turing thesis %%%
+
+@Article{Church36,
+  author =       "Alonzo Church",
+  title =        "An unsolvable problem of elementary number theory",
+  pages =        "345--363",
+  volume =       58,
+  number =       2,
+  year =         1936,
+  journal =      "Amer. J. Math.",
+  doi =          "10.2307/2371045",
+}
+
+@Misc{Copeland23,
+  author =       "B. Jack Copeland",
+  title =        "{The Church-Turing Thesis}",
+  year =         2023,
+  howpublished = "{The Stanford Encyclopedia of Philosophy}
+                  ({Winter} 2023 Edition), {Edward N. Zalta} and
+                  {Uri Nodelman} (eds.),
+                  \url{https://plato.stanford.edu/archives/win2023/entries/church-turing/}",
+}
+
+%%% Reversible computing %%%
+
+@Article{Landauer61,
+  author =       "Rolf Landauer",
+  title =        "Irreversibility and heat generation in the computing
+                  process",
+  pages =        "183--191",
+  volume =       5,
+  number =       3,
+  year =         1961,
+  journal =      "{IBM} J. Res. Dev.",
+  doi =          "10.1147/rd.53.0183",
+}
+
+@Article{Bennett73,
+  author =       "Charles H. Bennett",
+  title =        "Logical reversibility of computation",
+  pages =        "525--532",
+  volume =       17,
+  number =       6,
+  year =         1973,
+  journal =      "{IBM} J. Res. Dev.",
+  doi =          "10.1147/rd.176.0525",
+}
+
+@Article{Bennett89,
+  author =       "Charles H. Bennett",
+  title =        "Time/space trade-offs for reversible computation",
+  pages =        "766--776",
+  volume =       18,
+  number =       4,
+  year =         1989,
+  journal =      "{SIAM} J. Comput.",
+  doi =          "10.1137/0218053",
+}
+
+@InProceedings{Toffoli80,
+  author =       "Tommaso Toffoli",
+  title =        "Reversible computing",
+  pages =        "632--644",
+  booktitle =    "Automata, Languages and Programming ({ICALP})",
+  volume =       85,
+  series =       "{LNCS}",
+  publisher =    "Springer",
+  year =         1980,
+  doi =          "10.1007/3-540-10003-2\_104",
+  note =         "Also {MIT} tech.\ report {MIT/LCS/TM-151}",
+}
+
+@Article{FreTof82,
+  author =       "Edward Fredkin and
+                  Tommaso Toffoli",
+  title =        "Conservative logic",
+  pages =        "219--253",
+  volume =       21,
+  number =       "3--4",
+  year =         1982,
+  journal =      "Int. J. Theor. Phys.",
+  doi =          "10.1007/BF01857727",
+}
+
+%%% Quantum computing: models and universality %%%
+
+@Article{Feynman82,
+  author =       "Richard P. Feynman",
+  title =        "Simulating physics with computers",
+  pages =        "467--488",
+  volume =       21,
+  number =       "6--7",
+  year =         1982,
+  journal =      "Int. J. Theor. Phys.",
+  doi =          "10.1007/BF02650179",
+}
+
+@Article{Deutsch89,
+  author =       "David Elieser Deutsch",
+  title =        "Quantum computational networks",
+  pages =        "73--90",
+  volume =       425,
+  number =       1868,
+  year =         1989,
+  journal =      "Proc. R. Soc. Lond. A",
+  doi =          "10.1098/rspa.1989.0099",
+}
+
+@Article{BerVaz97,
+  author =       "Ethan Bernstein and
+                  Umesh Vazirani",
+  title =        "Quantum complexity theory",
+  pages =        "1411--1473",
+  volume =       26,
+  number =       5,
+  year =         1997,
+  journal =      "{SIAM} J. Comput.",
+  doi =          "10.1137/S0097539796300921",
+}
+
+@Article{Shi03,
+  author =       "Yaoyun Shi",
+  title =        "Both {Toffoli} and controlled-{NOT} need little help to do
+                  universal quantum computation",
+  pages =        "84--92",
+  volume =       3,
+  number =       1,
+  year =         2003,
+  journal =      "Quantum Inf. Comput.",
+  doi =          "10.26421/QIC3.1-7",
+  note =         "\url{https://arxiv.org/abs/quant-ph/0205115}",
+}
+
+@Misc{Aharonov03,
+  author =       "Dorit Aharonov",
+  title =        "A simple proof that {Toffoli} and {Hadamard} are quantum
+                  universal",
+  year =         2003,
+  howpublished = "\url{https://arxiv.org/abs/quant-ph/0301040}",
+}
+
+%%% Quantum cryptography (Bennett & Brassard) %%%
+
+@InProceedings{BenBra84,
+  author =       "Charles H. Bennett and
+                  Gilles Brassard",
+  title =        "Quantum cryptography: {Public} key distribution and coin
+                  tossing",
+  pages =        "175--179",
+  booktitle =    "Proc. {IEEE} Int. Conf. on Computers, Systems and Signal
+                  Processing",
+  address =      "Bangalore",
+  month =        dec,
+  year =         1984,
+  note =         "Reprinted in {\emph{Theoret. Comput. Sci.}} 560:7--11, 2014",
+}
+
+@Article{BBCJPW93,
+  author =       "Charles H. Bennett and
+                  Gilles Brassard and
+                  Claude Cr{\'e}peau and
+                  Richard Jozsa and
+                  Asher Peres and
+                  William K. Wootters",
+  title =        "Teleporting an unknown quantum state via dual classical and
+                  {Einstein}-{Podolsky}-{Rosen} channels",
+  pages =        "1895--1899",
+  volume =       70,
+  number =       13,
+  year =         1993,
+  journal =      "Phys. Rev. Lett.",
+  doi =          "10.1103/PhysRevLett.70.1895",
+}
+
+@Misc{ACMTuring25,
+  key =          "ACM",
+  title =        "{Charles H. Bennett} and {Gilles Brassard} are the
+                  recipients of the 2025 {ACM} {A.M.} {Turing} {Award}",
+  year =         2026,
+  month =        mar,
+  howpublished = "{Association for Computing Machinery},
+                  \url{https://awards.acm.org/turing}",
 }
