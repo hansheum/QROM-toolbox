@@ -2243,7 +2243,35 @@
         ``number of Toffolis'' has arisen as a standard measure of the
         depth of near-term quantum circuits.
 
-    \subsubsection{How Universal Is Universal (Quantum) Computation?}
+    \subsubsection{The Magic of Quantum Computation.}
+      Another common universal gate set is
+      $\{\CXgate, \Hgate, \Sgate, \Tgate\}$, where\footnote{
+        Beware a common confusion: The $\Tgate$ gate $\neq$ the Toffoli
+        ($\CCXgate$) gate!
+      }
+      \[
+        \Sgate = \sqrt{\Zgate} = \begin{sqmatrix} 1 & 0 \\ 0 & i
+        \end{sqmatrix}\, , \qquad
+        \Tgate = \sqrt{\Sgate} = \begin{sqmatrix} 1 & 0 \\ 0 & e^{i \frac{\pi}{4}} \end{sqmatrix}\, .
+      \]
+      This gate set is sometimes called ``Clifford $+$ T'', with the Clifford
+        gates being $\{\CXgate, \Hgate, \Sgate\}$, which explains why
+        the $\Sgate$ gate is included despite it being equal to $\Tgate^2$, and
+        therefore seemingly redundant.
+
+      \hhnote{
+        Note: Only one- and two-qubit gates! 
+      }
+      \hhnote{
+        In an interesting parallel to the reversible case, if you leave out
+        $\Tgate$, then the quantum circuits you can generate turn out to all be
+        efficiently simulatable on classical computers! So ``quantumness''
+        $\neq$ ``hard to simulate''; you need something more, and that more is
+        exactly the power provided by the $\Tgate$ gates. This
+        ``T-ness'' actually has a name, and it is \emph{magic}. (No, seriously.)
+      }
+
+    \subsubsection{How Universal Is Universal?}
       \hhnote{fixes to prior misunderstandings todo}
       Going back to Turing for a moment, it is far from obvious that it should
         be possible to come up with a single device that is \emph{provably} able
@@ -2357,7 +2385,6 @@
 
         \hhnote{Equivalence of QTM and quantum circuits: \cite{Yao93}}
 
-    \subsubsection{Computability versus Complexity.}
       As a cryptographer, you know P vs.\ NP \ldots
       \hhnote{
         Quantum computers as a refutation of the \emph{extended}
@@ -2372,22 +2399,4 @@
         For an accessible and engaging introduction,
         Scott Aaronson's book ``Quantum Computing Since Democritus'' comes
         highly recommended.
-
-    %\subsubsection{Classical Simulatability, Quantum Magic.}
-    \subsubsection{The Magic of Quantum Computation.}
-      \hhnote{
-        Another popular choice of gate set is Clifford $+$ $\Tgate$: 
-        $\CXgate$, $\Sgate$, $\Hgate$. 
-        Make it universal by adding $\Tgate$
-        (not to be confused with Toffoli). 
-        Note: Only one- and two-qubit gates! 
-      }
-      \hhnote{
-        In an interesting parallel to the reversible case, if you leave out
-        $\Tgate$, then the quantum circuits you can generate turn out to all be
-        efficiently simulatable on classical computers! So ``quantumness''
-        $\neq$ ``hard to simulate''; you need something more, and that more is
-        exactly the power provided by the $\Tgate$ gates. This
-        ``T-ness'' actually has a name, and it is \emph{magic}. (No, seriously.)
-      }
 
