@@ -2142,7 +2142,7 @@
         \end{subex}
       \end{exercise}
 
-  \subsection{Complexity}\label{sec:complexity}
+  \subsection{Universality}\label{sec:complexity}
     We are concerned with (protecting against) quantum algorithms, and so, as
       with any algorithm, we need some way of measuring its runtime, known as its
       (time) \emph{complexity}.
@@ -2244,44 +2244,120 @@
         depth of near-term quantum circuits.
 
     \subsubsection{The Magic of Quantum Computation.}
-      Another common universal gate set is
-      $\{\CXgate, \Hgate, \Sgate, \Tgate\}$, where\footnote{
+      Another universal quantum gate set one often comes across is\footnote{
         Beware a common confusion: The $\Tgate$ gate $\neq$ the Toffoli
         ($\CCXgate$) gate!
       }
+      $\{\CXgate, \Hgate, \Sgate, \Tgate\}$, known as ``Clifford $+$ T'', the Clifford
+        gates being $\{\CXgate, \Hgate, \Sgate\}$. Here, the $\Sgate$ and $\Tgate$
+        gates are defined as
       \[
         \Sgate = \sqrt{\Zgate} = \begin{sqmatrix} 1 & 0 \\ 0 & i
         \end{sqmatrix}\, , \qquad
         \Tgate = \sqrt{\Sgate} = \begin{sqmatrix} 1 & 0 \\ 0 & e^{i \frac{\pi}{4}} \end{sqmatrix}\, .
       \]
-      This gate set is sometimes called ``Clifford $+$ T'', with the Clifford
-        gates being $\{\CXgate, \Hgate, \Sgate\}$, which explains why
-        the $\Sgate$ gate is included despite it being equal to $\Tgate^2$, and
-        therefore seemingly redundant.
+      As written, this set is slightly redundant, since one can implement the
+        $\Sgate$ gate by applying the $\Tgate$ gate twice; hence, the gate set 
+        $\{\CXgate, \Hgate, \Tgate\}$ would also be universal.\footnote{
+          Observe: No three-qubit gates!
+        }
 
-      \hhnote{
-        Note: Only one- and two-qubit gates! 
-      }
-      \hhnote{
-        In an interesting parallel to the reversible case, if you leave out
-        $\Tgate$, then the quantum circuits you can generate turn out to all be
-        efficiently simulatable on classical computers! So ``quantumness''
-        $\neq$ ``hard to simulate''; you need something more, and that more is
-        exactly the power provided by the $\Tgate$ gates. This
-        ``T-ness'' actually has a name, and it is \emph{magic}. (No, seriously.)
-      }
+      Could we get away with only the Clifford gate set, 
+        $\{\CXgate, \Hgate, \Sgate\}$? This gate set certainly \emph{looks} like
+        it has all the required ingredients: the CNOT gate gives us most of
+        classical computation, the Hadamard gate gives us superpositions, 
+        combining them gives us entanglement, and the $\Sgate$ gate gives us
+        not only negative, but also complex phases. (Recall that the
+        $\{\CCXgate, \Hgate\}$ gate set reached a kind of computational 
+        universality even without any use of complex phases.)
 
+      And yet this turns out to not be enough: Restricting to the Clifford gates
+        restricts the unitaries we can construct to a subgroup of the full unitary
+        group known as the Clifford group. Worse, a famous result known as the
+        Gottesman--Knill theorem~\cite{Gottesman98}
+        tells us that \emph{any unitary of the Clifford group can be efficiently
+        simulated on a classical computer}. In other words, if the Clifford
+        gates were all we had, then any super-polynomial quantum advantage would
+        vanish!
+
+      Adding the innocious-seeming $\Tgate = \sqrt{\Sgate}$ gate to the set
+        flips this picture on its head:
+        Suddenly, not only can the gate set escape the classically-simulatable Clifford
+        group, but it reaches full universality, quantum advantage and all.
+        This seems to indicate that there is something special about the
+        $\Tgate$ gate, since, when compiling circuits down to the Clifford $+$
+        $\Tgate$ gate set, if the circuit can be implemented without using any
+        (or using very few)
+        $\Tgate$ gates, then it can also be classically simulated;
+        contrapositively, if it can \emph{not} be classically simulated, then
+        the compiled circuit must make use of many $\Tgate$ gates!
+        Hence, the ``T-ness'' of a quantum circuit says something about
+        \emph{how far beyond classical simulation} the circuit is, indicating a
+        possible measure for its quantum advantage (assuming, of course, that
+        the compilation method down to elementary gates minimizes the number of
+        $\Tgate$ gates used, hence why it is useful to include both $\Sgate$ and
+        $\Tgate$ gates in the gate set).
+
+      This measure has a name, and it is \emph{quantum magic}. Besides
+        giving us a way to quantify exactly what we mean by ``quantum
+        advantage'', it has been recognized as a quantum \emph{resource} on par
+        with entanglement, central to developments in quantum error correction.
+
+    \subsubsection{Further Reading.}
+      This concludes our brief tour of the theory of quantum computing. The 
+        aim has been to introduce the notation and mathematical formalism that
+        we will employ, to the level of being able to 
+        follow arguments and perform simple computations on quantum states, 
+        while hopefully dispelling a few common misconceptions along the way. 
+        Of course, there is much this primer did not
+        touch upon, including quantum algorithms such as Grover's and Shor's,
+        rotation gates and the Bloch-sphere visualization of single-qubit states, 
+        quantum-classical mixedness, and more. If you want to learn more, 
+        Nielsen and Chuang's book \emph{Quantum Computation and
+        Quantum Information}~\cite{NieChu10} is \emph{the} standard
+        reference, and deservedly so, although the mathematically-minded among you
+        may prefer the introductory chapters of Mark Wilde's \emph{Quantum Information
+        Theory}~\cite{Wilde17}, which treats the subject with a higher level of
+        rigor than Nielsen and Chuang, still without sacrificing the helpful
+        explanations and intuititions.
+
+      When we compared classical and quantum computation in the last section,
+        we were actually touching upon the theory of quantum \emph{complexity}, 
+        the framework needed to understand \emph{if} and \emph{how} quantum
+        computers outperform classical ones.\footnote{
+          You may be familiar classes P
+          (``Polynomial'' time) and NP (``Non-deterministic Polynomial'' time)
+          from classical complexity theory,
+          and the million-dollar question of their (in)equality~\cite{Cook00}; the
+          corresponding quantum complexity classes are BQP (``Bounded Quantum
+          Polynomial'' time) and QMA (``Quantum Merlin--Arthur'') respectively.
+          In this view, asking ``is quantum better than classical?'' is
+          \emph{really} asking ``is P $=$ BQP?''
+        }
+        Needless to say, there is a lot more to say about these questions; if
+        you want to learn more, there is perhaps no better place to
+        start than Scott Aaronson's highly engaging book 
+        \emph{Quantum Computing Since Democritus}~\cite{Aaronson13}.
+        
+    \begin{comment}
     \subsubsection{How Universal Is Universal?}
       \hhnote{fixes to prior misunderstandings todo}
       Going back to Turing for a moment, it is far from obvious that it should
         be possible to come up with a single device that is \emph{provably} able
         to simulate any kind of ``computer'' you might cook up, be it digital,
         analogue, quantum, or some yet-to-be-discovered quantum gravitational
-        black hole supercomputer. And yet, this is exactly what
-        Alan Turing did when he introduced the world to the concept of the
+        black hole supercomputer. And yet \ldots
+        Turing introduced the world to the concept of the
         \emph{universal computer} in 1936~\cite{Turing36}.
+        %
+        \begin{center}
+          \emph{
+            For any computable function $f$, there is an input string (known as
+            a ``program'') such that the universal Turing machine computes it.
+          }
+        \end{center}
 
-        , today known as the
+        \ldots today known as the
         \emph{Church--Turing thesis.}\footnote{
           Alonzo Church independently proved a statement very similar to
           Turing's around the same time, but in terms of his $\lambda$-calculus
@@ -2290,15 +2366,8 @@
           only a few years earlier.
         } Informally, it may be stated as follows (where ``computable function''
         is used in the strictest Gödel-theorem sense of
-        computable-in-principle):
-        %
-        \begin{center}
-          \emph{
-            For any computable function $f$, there is an input string (known as
-            a ``program'') such that the universal Turing machine computes it.
-          }
-        \end{center}
-        %
+        computable-in-principle) \ldots
+
       The surprising fact is that this ``universal Turing machine'' is laughably
         simple by today's standards, involving a read/write head moving along a
         (possibly infinite) one-dimensional tape divided into cells, and a
@@ -2337,9 +2406,7 @@
           }
         \end{center}
         %
-      A few things to note: First, unlike the Church--Turing thesis, the
-        extended Church--Turing thesis is a \emph{conjecture}, not a theorem.
-        Second, the word ``reasonable'' is certainly carrying a lot of weight
+      The word ``reasonable'' is certainly carrying a lot of weight
         here: if we take it to include models of \emph{quantum} computation, then the thesis
         would appear to be \emph{false}, as to the best of our knowledge quantum
         computers cannot be efficiently simulated by classical ones.\footnote{
@@ -2352,6 +2419,8 @@
         computation, however, the hypothesis has survived half a century of
         attacks and unfulfilled promises from the analogue-computing
         camp.\cite{citation-needed} 
+
+      \hhnote{Equivalence of QTM and quantum circuits: \cite{Yao93}}
 
       Is quantum computation the peak, or are there new computational frontiers
         hiding in yet-to-be-discovered theories of physics such as quantum
@@ -2383,13 +2452,9 @@
           }
         \end{center}
 
-        \hhnote{Equivalence of QTM and quantum circuits: \cite{Yao93}}
 
       As a cryptographer, you know P vs.\ NP \ldots
-      \hhnote{
-        Quantum computers as a refutation of the \emph{extended}
-        Church--Turing thesis? $\to$ the Church-Turing-Deutsch thesis
-      }
+
       \hhnote{
         P vs.\ BQP, NP-hard vs.\ ``NP-intermediate''.
       }
@@ -2399,4 +2464,5 @@
         For an accessible and engaging introduction,
         Scott Aaronson's book ``Quantum Computing Since Democritus'' comes
         highly recommended.
+      \end{comment}
 
