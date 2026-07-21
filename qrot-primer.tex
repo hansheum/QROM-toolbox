@@ -2316,26 +2316,8 @@
         advantage'', it has been recognized as a quantum \emph{resource} on par
         with entanglement, central to developments in quantum error correction.
 
-  \subsection{Further Reading}
-    This concludes our brief tour of the theory of quantum computing. The 
-      aim has been to introduce the notation and mathematical formalism that
-      we will employ, to the level of being able to 
-      follow arguments and perform simple computations on quantum states, 
-      while hopefully dispelling a few common misconceptions along the way. 
-      Of course, there is much this primer did not
-      touch upon, including visualizations of quantum circuits, 
-      rotation gates and the Bloch-sphere visualization of single-qubit states, 
-      quantum algorithms such as Grover's and Shor's,
-      quantum-classical mixedness and more. If you want the full tour,
-      Nielsen and Chuang's book \emph{Quantum Computation and
-      Quantum Information}~\cite{NieChu10} is \emph{the} standard
-      reference (and deservedly so!), although the mathematically-minded among you
-      may prefer the introductory chapters of Mark Wilde's \emph{Quantum Information
-      Theory}~\cite{Wilde17}, which treats the subject with a higher level of
-      rigor than Nielsen and Chuang that still does not sacrifice the helpful
-      intuitions.
-
-    When we compared classical and quantum computation in the last section,
+  \subsection{Complexity}\label{sec:complexity}
+    When we compared classical and quantum computation above,
       we were actually touching upon the theory of quantum \emph{complexity}, 
       the framework needed to understand \emph{if} and \emph{how} quantum
       computers outperform classical ones. 
@@ -2348,22 +2330,50 @@
       \underline{Q}uantum \underline{P}olynomial time) and QMA
       (\underline{Q}uantum \underline{M}erlin--\underline{A}rthur)
       respectively, which come with their own foundational ``is BQP $=$ QMA?''
-      question.\footnote{
-        As well as theories of completeness: just like there are NP-complete problems,
-        there are QMA-complete problems, as well as BQP-complete problems.
-        The latter is a particularly interesting class of problems, since if
-        there is \emph{any} superpolynomial quantum advantage at all, then
-        these problems \emph{must} be classically hard!
-        In contrast, while Shor's algorithm shows that integer factorization is in BQP,
-        it is not (known to be) BQP-complete.
-      }
+      question.
       In this view, asking ``is quantum better than classical?'' is
-      \emph{really} asking ``is P $=$ BQP?''
+      \emph{really} asking ``is P $=$ BQP?''\footnote{
+        Technically the question is ``is BPP $=$ BQP?'', with \underline{B}ounded
+        \underline{P}robabilistic \underline{P}olynomial time being the class of
+        problems solvable by classical randomized algorithms.
+      }
 
-    Needless to say, there is a lot more to be said about these questions; if
-      you want to learn more, there is perhaps no better place to
-      start than Scott Aaronson's highly engaging book 
-      \emph{Quantum Computing Since Democritus}~\cite{Aaronson13}.
+    These classes also come with their own theories of completeness: just like
+      there are NP-complete problems,
+      there are QMA-complete problems, as well as BQP-complete problems.
+      The latter is a particularly interesting class of problems, since if
+      there is \emph{any} superpolynomial quantum advantage at all, then
+      these problems \emph{must} be classically hard!
+      In contrast, while Shor's algorithm shows that integer factorization is in BQP,
+      it is not (known to be) BQP-complete, leaving the door still open for that
+      classical factorization algorithm which has eluded mathematicians for
+      centuries.
+
+  \subsection{Further Reading}
+    This concludes our brief tour of the theory of quantum computing. The 
+      aim has been to introduce the notation and mathematical formalism that
+      we will employ, to the level of being able to 
+      follow arguments and perform simple computations on quantum states, 
+      while hopefully dispelling a few common misconceptions along the way. 
+      Of course, there is much this primer did not
+      touch upon, including illustrations of quantum circuits, 
+      rotation gates and the Bloch-sphere visualization of single-qubit states, 
+      quantum algorithms such as Grover's and Shor's,
+      quantum-classical mixedness and more. If you want the full tour,
+      Nielsen and Chuang's book \emph{Quantum Computation and
+      Quantum Information}~\cite{NieChu10} is \emph{the} standard
+      reference (and deservedly so!), although the mathematically-minded among you
+      may prefer the introductory chapters of Mark Wilde's \emph{Quantum Information
+      Theory}~\cite{Wilde17}, which treats the subject with a higher level of
+      rigor than Nielsen and Chuang that still does not sacrifice the helpful
+      intuitions.
+
+    Needless to say, there is also a lot more to be said about computational complexity than
+      the brief remarks given in \cref{sec:complexity}. Complexity theory is a deep
+      and endlessly fascinating subject, regularly taking us the outer edges of what
+      is knowable in the physical universe (and beyond!); if you want to know more, 
+      there is perhaps no better place to start than Scott Aaronson's highly
+      engaging book \emph{Quantum Computing Since Democritus}~\cite{Aaronson13}.
         
     \begin{comment}
     \subsubsection{How Universal Is Universal?}
