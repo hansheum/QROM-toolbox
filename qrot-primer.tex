@@ -16,18 +16,28 @@
   %    Or ask Hans about it! He loves explaining this stuff.
   %  }
 
-  The best way to get a \emph{feel} for the at-times esoteric logic of quantum physics is to play
+  This primer is written with two very different audiences in mind: The beginner
+    student, coming from a computer science and/or engineering background; and
+    the experienced cryptographer, coming from a pure-maths background or
+    similar. As a result, prose that may at times seem overly trivial or
+    pedantic to one kind of reader may help bringing understanding to
+    the other kind of reader. But should you find that you are either confused
+    or bored by a paragraph, you may assume it is pitched at the other
+    kind of reader and skip ahead (though try to at least grasp the
+    point of the paragraph).\footnote{
+      The exception to the rule is \cref{sec:dirac}, which is written to be
+      confusing because this stuff \emph{is} confusing!
+    }
+
+  Regardless of your background, the best way to get a \emph{feel} for the
+    at-times esoteric rules of quantum logic is to play
     around with it. This chapter contains several exercises meant to serve this purpose;
     %inserted at points in the text where you should be able to use them to test
     %your understanding of the material presented so far. 
     solutions for some (but not all) of the exercises are provided in
     \cref{sec:solutions}.
 
-  \hhnote{
-    Missing: How to use projectors for coherent if-else logic. (Needed?)
-  }
-
-  \subsection{Quantum Physics and the Dirac Notation}
+  \subsection{Quantum Physics and the Dirac Notation}\label{sec:dirac}
     In general, quantum states are complex-valued vectors in Hilbert space,
       which is to say, a vector space defined over functions. This Hilbert space
       may or may not be infinite-dimensional, though thankfully, we will only have
@@ -213,7 +223,7 @@
     \end{table}
 
 
-  \subsection{Qubit Basis States}
+  \subsection{Basis States}
     \subsubsection{Single-Qubit Basis States.}
       We are interested modelling quantum computers. A quantum computer must, of
         course, have some quantum memory, which is to say a collection of
@@ -570,7 +580,7 @@
         $x \cdot \hat{x}$ to be the obvious one that maps $\{+,-\}$
         to $\bin$ before evaluating the product.
  
-  \subsection{General Qubit States}
+  \subsection{Superposition States}
     \subsubsection{Greek vs.\ Roman Letters.}
       To distinguish computational basis states from more general quantum states, we will use
         roman letters like $x$, $y$, $z$ to represent classical binary
@@ -828,7 +838,7 @@
         $.
       }
 
-  \subsection{Unitary Operations}\label{sec:unitaries}
+  \subsection{Unitaries}\label{sec:unitaries}
     Since we are working over finite-dimensional Hilbert spaces, 
       operations that evolve our quantum state vectors may be represented as 
       $N \times N$ matrices. What properties should they have?
@@ -1096,7 +1106,7 @@
         %by applying those gates in series and parallel, implicitly 
         factoring the final unitary into tensor and matrix products of the
         elementary unitaries.
-        More on this in \cref{sec:complexity}, when we discuss
+        More on this in \cref{sec:universality}, when we discuss
         \emph{complexity}.
 
       To summarize, the tensor product represents unitaries applied in
@@ -2142,12 +2152,12 @@
         \end{subex}
       \end{exercise}
 
-  \subsection{Universality}\label{sec:complexity}
-    We are concerned with (protecting against) quantum algorithms, and so, as
-      with any algorithm, we need some way of measuring its runtime, known as its
-      (time) \emph{complexity}.
-
-    \subsubsection{Measuring Time and Space.} 
+  \subsection{Universality}\label{sec:universality}
+    %We are concerned with (protecting against) quantum algorithms, and so, as
+    %  with any algorithm, we need some way of measuring its resources, i.e.\ its
+    %  \emph{time} and \emph{space} (number of qubits) requirements.
+    %
+    %\subsubsection{Measuring Time and Space.} 
       Earlier, we argued that the matrix product of unitaries represents
         operations happening in series, i.e.\ at different time steps. 
         While true, this does not give a well-defined measure of time, as 
@@ -2160,11 +2170,11 @@
         in order to implement your unitary; this is known as the circuit
         \emph{depth}, corresponding to the algorithm's time complexity. 
         Gates that can be run in parallel need not count against
-        the circuits runtime, and the amount of parallelization your circuit
-        employs at its highest, is known as the circuit \emph{width}. 
-        The circuit width tells you how much space (meaning how many bits) your
-        circuit needs, and this is sometimes referred to as the algorithm's
-        \emph{space complexity}.
+        the circuit's runtime, and the amount of parallelization your circuit
+        employs at its highest is known as the circuit \emph{width}. 
+        The circuit width tells you how much space (how many qubits) your
+        circuit needs (sometimes referred to as the algorithm's
+        space complexity).
 
     \subsubsection{Universal Quantum Gate Sets.}
       Of course, in order for your set of elementary gates to be able to implement
@@ -2203,17 +2213,19 @@
         remember, can also implement any \emph{irreversible} circuit) can be
         built from a series of Toffoli gates~\cite{Toffoli80}. In other words, for
         classical reversible computing, a
-        universal elemantary gate set is simply $\{ \CCXgate \}$.\footnote{
-          The irreversible case had a universal gate set with only two-bit
-          gates, namely AND, OR and NOT. Is there a universal gate set for
-          classical, reversible computing that only contains two-bit gates? The
-          answer turns out to be \emph{no}: With two-bit gates, you could at most
-          simulate \emph{linear} Boolean circuits; simulating non-linear
-          circuits such as products requires at least one three-bit
-          gate~\cite{Toffoli80}.
-          Surprisingly, 
-          for quantum circuits this \emph{is} possible,
-          despite being a strict generalizations reversible circuits!
+        universal elementary gate set is simply $\{ \CCXgate \}$.\footnote{
+          The old, irreversible Boolean circuits had a universal gate set with
+          only two-bit gates, namely AND, OR and NOT. Is there a universal gate set for
+          (classical) reversible computing that only contains two-bit gates? The
+          answer turns out to be \emph{no}: Toffoli showed that given only one-
+          and two-bit gates, you could at most simulate \emph{linear} Boolean
+          circuits; simulating non-linear circuits, including products, requires
+          at least one three-bit gate~\cite{Toffoli80}.
+          Surprisingly, as we will shortly see, this is no longer true for
+          quantum circuits, where quantum universality \emph{can} be reached with
+          only one- and two-qubit gates -- which therefore also achieves classical
+          reversible universality!
+          %despite being a strict generalizations reversible circuits!
         } We may then measure the time and space required by your circuit by
         first compiling it down to a Toffoli-only circuit, 
         and then count the number of Toffolis the resulting circuit applies in
@@ -2227,16 +2239,17 @@
         exactly like before.\footnote{
           Strictly speaking, starting from a real-valued initial state, 
           the gate set $\{\CCXgate, \Hgate\}$ can only reach other real-valued states,
-          since $\CCXgate$ and $\Hgate$ are both real-valued matrices;
-          states like $(\ket{0} + i \ket{1})/\sqrt 2$ will be out of reach.
-          However, Bernstein and Vazirani showed any $n$-qubit quantum circuit can be
-          transformed into an equivalent, $n+1$-qubit real-values-only quantum
+          since $\CCXgate$ and $\Hgate$ are both real-valued matrices:
+          states like $(\ket{0} + i \ket{1})/\sqrt 2$ will be forever out of reach.
+          However, Bernstein and Vazirani showed that any $n$-qubit quantum circuit can be
+          transformed into a observationally-equivalent, $n+1$-qubit, real-values-only quantum
           circuit, where the extra ancilla effectively keeps track of whether a given           
-          amplitude should be read as real or imaginary~\cite{BerVaz97}; here,
-          ``equivalent'' refers to the probability distribution induced by
-          measuring the final state.
-          For this reason, the gate set $\{\CCXgate, \Hgate\}$ is sometimes said to be
-          ``computationally universal'' rather than strictly so.
+          amplitude should be read as real or imaginary~\cite{BerVaz97}.
+          %; here,
+          %``equivalent'' refers to the probability distribution induced by
+          %measuring the final state.
+          The gate set $\{\CCXgate, \Hgate\}$ is therefore sometimes said to be
+          ``computationally universal'', rather than strictly so.
         } In fact, with multi-qubit gates being much more
         resource-intensive in current quantum devices than single-qubit gates
         such as $\Hgate$,
@@ -2245,7 +2258,7 @@
 
     \subsubsection{The Magic of Quantum Computation.}
       Another universal quantum gate set one often comes across is\footnote{
-        Beware a common confusion: The $\Tgate$ gate $\neq$ the Toffoli
+        Beware a common confusion: The $\Tgate$ ($\sqrt{\Sgate}$) gate $\neq$ the Toffoli
         ($\CCXgate$) gate!
       }
       $\{\CXgate, \Hgate, \Sgate, \Tgate\}$, known as ``Clifford $+$ T'', the Clifford
@@ -2303,41 +2316,54 @@
         advantage'', it has been recognized as a quantum \emph{resource} on par
         with entanglement, central to developments in quantum error correction.
 
-    \subsubsection{Further Reading.}
-      This concludes our brief tour of the theory of quantum computing. The 
-        aim has been to introduce the notation and mathematical formalism that
-        we will employ, to the level of being able to 
-        follow arguments and perform simple computations on quantum states, 
-        while hopefully dispelling a few common misconceptions along the way. 
-        Of course, there is much this primer did not
-        touch upon, including quantum algorithms such as Grover's and Shor's,
-        rotation gates and the Bloch-sphere visualization of single-qubit states, 
-        quantum-classical mixedness, and more. If you want to learn more, 
-        Nielsen and Chuang's book \emph{Quantum Computation and
-        Quantum Information}~\cite{NieChu10} is \emph{the} standard
-        reference, and deservedly so, although the mathematically-minded among you
-        may prefer the introductory chapters of Mark Wilde's \emph{Quantum Information
-        Theory}~\cite{Wilde17}, which treats the subject with a higher level of
-        rigor than Nielsen and Chuang, still without sacrificing the helpful
-        explanations and intuititions.
+  \subsection{Further Reading}
+    This concludes our brief tour of the theory of quantum computing. The 
+      aim has been to introduce the notation and mathematical formalism that
+      we will employ, to the level of being able to 
+      follow arguments and perform simple computations on quantum states, 
+      while hopefully dispelling a few common misconceptions along the way. 
+      Of course, there is much this primer did not
+      touch upon, including visualizations of quantum circuits, 
+      rotation gates and the Bloch-sphere visualization of single-qubit states, 
+      quantum algorithms such as Grover's and Shor's,
+      quantum-classical mixedness and more. If you want the full tour,
+      Nielsen and Chuang's book \emph{Quantum Computation and
+      Quantum Information}~\cite{NieChu10} is \emph{the} standard
+      reference (and deservedly so!), although the mathematically-minded among you
+      may prefer the introductory chapters of Mark Wilde's \emph{Quantum Information
+      Theory}~\cite{Wilde17}, which treats the subject with a higher level of
+      rigor than Nielsen and Chuang that still does not sacrifice the helpful
+      intuitions.
 
-      When we compared classical and quantum computation in the last section,
-        we were actually touching upon the theory of quantum \emph{complexity}, 
-        the framework needed to understand \emph{if} and \emph{how} quantum
-        computers outperform classical ones.\footnote{
-          You may be familiar classes P
-          (``Polynomial'' time) and NP (``Non-deterministic Polynomial'' time)
-          from classical complexity theory,
-          and the million-dollar question of their (in)equality~\cite{Cook00}; the
-          corresponding quantum complexity classes are BQP (``Bounded Quantum
-          Polynomial'' time) and QMA (``Quantum Merlin--Arthur'') respectively.
-          In this view, asking ``is quantum better than classical?'' is
-          \emph{really} asking ``is P $=$ BQP?''
-        }
-        Needless to say, there is a lot more to say about these questions; if
-        you want to learn more, there is perhaps no better place to
-        start than Scott Aaronson's highly engaging book 
-        \emph{Quantum Computing Since Democritus}~\cite{Aaronson13}.
+    When we compared classical and quantum computation in the last section,
+      we were actually touching upon the theory of quantum \emph{complexity}, 
+      the framework needed to understand \emph{if} and \emph{how} quantum
+      computers outperform classical ones. 
+      You may be familiar with the classes P
+      (\underline{P}olynomial time) and NP (\underline{N}on-deterministic
+      \underline{P}olynomial time)
+      from classical complexity theory,
+      and the million-dollar question of their (in)equality~\cite{Cook00}. The
+      corresponding quantum complexity classes are BQP (\underline{B}ounded
+      \underline{Q}uantum \underline{P}olynomial time) and QMA
+      (\underline{Q}uantum \underline{M}erlin--\underline{A}rthur)
+      respectively, which come with their own foundational ``is BQP $=$ QMA?''
+      question.\footnote{
+        As well as theories of completeness: just like there are NP-complete problems,
+        there are QMA-complete problems, as well as BQP-complete problems.
+        The latter is a particularly interesting class of problems, since if
+        there is \emph{any} superpolynomial quantum advantage at all, then
+        these problems \emph{must} be classically hard!
+        In contrast, while Shor's algorithm shows that integer factorization is in BQP,
+        it is not (known to be) BQP-complete.
+      }
+      In this view, asking ``is quantum better than classical?'' is
+      \emph{really} asking ``is P $=$ BQP?''
+
+    Needless to say, there is a lot more to be said about these questions; if
+      you want to learn more, there is perhaps no better place to
+      start than Scott Aaronson's highly engaging book 
+      \emph{Quantum Computing Since Democritus}~\cite{Aaronson13}.
         
     \begin{comment}
     \subsubsection{How Universal Is Universal?}
