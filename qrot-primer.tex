@@ -652,28 +652,40 @@
       The above notation will at times allow us to greatly simplify our
         notation, making arguments clearer. Consider for example the state
         \[
-          \ket{\psi} = \frac{i}{\sqrt{2^n}} \ket{0}\
+          \ket{\psi} = 
+          -\frac{1}{\sqrt{2^n}} \ket{0}\
           +
           \sum_{x \in \ZZ_N \backslash \{0\}} 
           \frac{1}{\sqrt{2^n}} \ket{x}\, ,
         \]
         i.e.\ the uniform superposition state that singles out the $\ket{0}$ state (implicitly
         understood to be the $\ket{0^n}$ state since we are using decimal notation) 
-        and adds a complex phase to it. Computing the Hadamard transformation of
-        such a state can lead to a mess of double sums, but in the above notation
-        it is simply
+        and applies a negative phase to it. Computing the Hadamard transformation of
+        such a state can lead to a mess of double sums, but using the above
+        notation, not only is applying the transformation as simple as adding
+        hats everywhere,
         \[
-          \ket{\psi} \apply{\Hgate^{\otimes n}} \ket{\psi^\prime} 
-          = \frac{i}{\sqrt{2^n}} \ket{\hat{0}}\ +
+          %\ket{\psi} 
+          - \frac{1}{\sqrt{2^n}} \ket{0}\
+          +
+          \sum_{x \in \ZZ_N \backslash \{0\}} 
+          \frac{1}{\sqrt{2^n}} \ket{x}
+          \quad
+          \apply{\Hgate^{\otimes n}} 
+          \quad
+          - \frac{1}{\sqrt{2^n}} \ket{\hat{0}}\ +
           \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
           \frac{1}{\sqrt{2^n}} \ket{\hat{x}}\, ,
         \]
-        or we may even write it using mixed notation, ``unpacking'' the
-        complex-phase term that we actually care about while keeping 
-        the remaining terms in their compact Hadamard form:
+        but we can then even choose to write out the state using a mix of
+        notations, ``unpacking'' the complex-phase term for closer study while keeping 
+        the real-valued terms around in their Hadamard-bitstring form:
         \[
-          \ket{\psi^\prime} =
-          \sum_{x \in \ZZ_N} \frac{i}{2^n} \ket{x}\ +
+          -\frac{1}{\sqrt{2^n}} \ket{\hat{0}}\ +
+          \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
+          \frac{1}{\sqrt{2^n}} \ket{\hat{x}}
+          =
+          \sum_{x \in \ZZ_N} -\frac{1}{2^n} \ket{x}\ +
           \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
           \frac{1}{\sqrt{2^n}} \ket{\hat{x}}\, .
         \]
