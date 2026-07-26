@@ -546,7 +546,7 @@
 	      Either ``Are you $\ket 0$ or $\ket 1$?'', or 
 	      ``Are you $\ket +$ or $\ket -$?'' Either way, 
 	      the qubit will provide a definite answer, after which its state will 
-        collapse to the answer you got. 
+        ``collapse'' to the answer you got.
 
 	    This is a point worth internalizing, so let us repeat it: 
 	      \emph{The set of possible post-measurement states changes to match
@@ -554,8 +554,60 @@
 	      then the post-measurement state will be $\ket 0$ or $\ket 1$; 
 	      if you ask ``Are you $+$ or $-$'', then the post-measurement state will
         be $\ket +$ or $\ket -$. 
-        (And, of course, the outcome distribution also depends on which question
-        you choose to ask.)
+        So although at one level, the ``collapse'' of the quantum state is just
+        the quantum version of how one would use Bayes' theorem 
+        to update a prior probability distribution to a marginal distribution
+        conditioned on the outcome, at another level, it represents the
+        deepest and strangest mystery in all of quantum physics.
+        The grand mystery of quantum physics really comes down to this one fact, 
+        that the outcome statistics and the post-observation state both depend
+        on \emph{which measurement you chose to apply}, and it has led to a century
+        of heated philosophical debate over how quantum theory should be
+        interpreted. Ask five physicists for their opinion on the matter, and
+        you are likely to get five different answers!\footnote{
+          %After we have observed the outcome, 
+          %the superposition state ``collapses'' to the corresponding basis state
+          %$\ket b$, so that the updated physical system is guaranteed to be consistent with
+          %the value we observed. 
+          The term ``collapse'' that we
+          used above is typically associated with the rather conservative
+          \emph{Copenhagen interpretation}, championed by Niels Bohr, and commonly
+          characterized as the ``shut-up-and-calculate'' approach, since
+          it simply posits that ``such questions are disallowed''.
+          Another popular interpretation is the many-worlds interpretation due
+          to Hugh Everett, favoured by father of quantum computing theory
+          David Deutsch among others. Instead of the quantum state
+          ``collapsing'' to a ``classical'' state, this interpretation says that
+          both terms are ill-defined, and that the universe should instead be
+          understood to be nothing but one big quantum superposition over all
+          the worlds that could have possibly arisen from
+          the initial conditions of the universe.
+          (After all, we the observers are made of quantum particles too, so
+          should we not then also be considered part of the quantum state?)
+          %; from this point of view, when
+          %you made your observation, what \emph{actually} happened
+          %was that the quantum state describing the subsystem you
+          %were studying and the quantum state describing \emph{you} (after all,
+          %you \emph{are} made of quantum particles, are you not?), became
+          %completely \emph{entangled}, so that the part of the superposition
+          %in which the qubit takes the value $0$ is guaranteed to coincide with
+          %the part of the superposition in which you observed the outcome $0$.
+          %The world in which the qubit took the value $1$ and you also observed
+          %the value $1$ is still ``out there'' in the grand superposition of
+          %the universe, it's just been completely cut off from your subjective
+          %experience, so from your point of view it might as well not exist.
+          If you're curious to learn more about the various interpretations of
+          quantum mechanics, and the strengths and weaknesses of each attempt
+          at a consistent resolution, Carlo Rovelli's book \emph{Helgoland} provides an
+          excellent overview.
+          %, and even proposes its own fascinating resolution
+          %to the problem.)
+          %(In case you're wondering, Hans places his bet on a third option,
+          %namely the \emph{relational} interpretation due to Carlo Rovelli,
+          %which may be summarized as ``many-worlds without the many worlds''.)
+        }
+        %(And, of course, the outcome distribution also depends on which question
+        %you choose to ask.)
 
       What about a question like ``Are you $\ket 0$ or
         are you $\ket +$?'' Under our notion of measurement, this question is not
@@ -697,7 +749,6 @@
         %\end{exercise}
  
   \subsection{General Superposition States}
-    \hhnote{readthrough cont.}
     \subsubsection{Greek vs.\ Latin Letters.}
       To distinguish computational basis states from more general quantum states, we will use
         Latin letters like $x$, $y$, $z$ to represent classical binary
@@ -708,11 +759,12 @@
 
       General quantum states, on the other hand, are traditionally labelled by
         letters taken from the middle of the Greek alphabet, such as $\psi$,
-        $\varphi$, $\xi$, etc.  We will follow this tradition, or otherwise use a
-        more descriptive label specific to the current context.
-        Quantum \emph{amplitudes}, meanwhile, are traditionally represented with letters 
+        $\varphi$, $\xi$, etc.  We will follow this tradition whenever 
+        there isn't an obvious descriptive label to be used for the state.
+
+      Quantum \emph{amplitudes}, meanwhile, are traditionally represented with letters 
         from the start of the Greek alphabet, such as $\alpha$ or $\beta$, and
-        the amplitude corresponding to a basis state $\ket x$ will typically be written
+        the amplitude corresponding to a particular basis state $\ket x$ is typically written
         $\alpha_x$.
 
     \subsubsection{Expanding a State in Terms of a Basis.} 
@@ -727,60 +779,15 @@
           \coloneqq \alpha_0^*\alpha_0 + \alpha_1^*\alpha_1 = 1\, . 
       \]
 
-      Whenever both $\alpha_0$ and $\alpha_1$ that are both non-zero, we
-        say that the qubit is in a \emph{superposition} over the values ``$0$'' and
-        ``$1$''. If we then \emph{measure} the qubit, the probability that the
-        we observe either $0$ or $1$ is given by squaring the respective amplitude: 
+      As already covered, whenever $\alpha_0$ and $\alpha_1$ are both non-zero, 
+        the qubit is in a superposition over the $0$ and
+        $1$ values. If we observe the state via a computational-basis
+        measurement, the probability of outcome $0$ resp.\ $1$ is given by
+        the respective amplitude squared: 
       \[
-        \prob{\, \text{observe outcome } b\, } = \abs{\alpha_b}^2 
+        \prob{\, \text{outcome } b\, } = \abs{\alpha_b}^2 
           = \alpha_b^* \alpha_b = \abs{\braket{\psi |b}}^2\, .
       \]
-      After we have observed the outcome, 
-        the superposition state ``collapses'' to the corresponding basis state
-        $\ket b$, so that the updated physical system is guaranteed to be consistent with
-        the value we observed. At one level, this is just the quantum version of
-        how Bayes' theorem is used in hypothesis testing
-        to update a prior probability distribution to the marginal distribution
-        conditioned on the observed value; at another level, it is the
-        deepest and strangest mystery in all of quantum physics.\footnote{
-          Unlike the classical case, 
-          post-observation quantum state is noticeably \emph{different} than
-          it was before the observation took place. This single fact
-          has led to a century of heated philosophical debate over how quantum
-          theory should be interpreted, and if you ask five physicists you are
-          likely to get five different answers. The term ``collapse'' that we
-          used above is typically associated with the rather conservative
-          ``Copenhagen interpretation'', championed by Niels Bohr, and commonly
-          characterized as the ``shut-up-and-calculate'' interpretation, since
-          rather than trying to explain the problem, it simply posits that 
-          ``such questions are disallowed''.
-          Another popular interpretation is the many-worlds interpretation due
-          to Hugh Everett, and favoured by father of quantum computing theory
-          David Deutsch, among others. Instead of the quantum state
-          ``collapsing'' to a ``classical'' state, this interpretation says that
-          both terms are ill-defined, and that the universe should instead be
-          understood to be nothing but one big quantum superposition over all
-          the worlds that could have possibly arisen from
-          the initial conditions of the universe; from this point of view, when
-          you made your observation, what \emph{actually} happened
-          was that the quantum state describing the subsystem you
-          were studying and the quantum state describing \emph{you} (after all,
-          you \emph{are} made of quantum particles, are you not?), became
-          completely \emph{entangled}, so that the part of the superposition
-          in which the qubit takes the value $0$ is guaranteed to coincide with
-          the part of the superposition in which you observed the outcome $0$.
-          The world in which the qubit took the value $1$ and you also observed
-          the value $1$ is still ``out there'' in the grand superposition of
-          the universe, it's just been completely cut off from your subjective
-          experience, so from your point of view it might as well not exist.
-          (For more on the various interpretations of quantum mechanics, the
-          pop-sci book \emph{Helgoland} by Carlo Rovelli provides an
-          excellent overview, and even proposes its own fascinating resolution
-          to the problem.)
-          %(In case you're wondering, Hans places his bet on a third option,
-          %namely the \emph{relational} interpretation due to Carlo Rovelli,
-          %which may be summarized as ``many-worlds without the many worlds''.)
-        }
 
       Likewise, a general, $n$-qubit quantum state may be written in terms of the computational
         basis states:
@@ -790,19 +797,20 @@
           \alpha_{N-1} \ket{1 \dots 11}
           = \alpha_0 \ket{0} + \alpha_1 \ket{1} + \ldots +
           \alpha_{N-1} \ket{N-1}
-          = \sum_{i = 0}^{N-1} \alpha_i \ket{i}\, ,
+          = \sum_{x \in \ZZ_N} \alpha_x \ket{x}\, ,
       \]
-      where we switched the labels over to decimal notation, which we could do
-      since the number of qubits was clear from context (so that the bitstring $0^n$ could be
-      unambiguously identified with the number $0$, and so on).
+      where we have again made the switch to decimal notation.
+      %l, which we could do
+      %since the number of qubits was clear from context (so that the bitstring $0^n$ could be
+      %unambiguously identified with the number $0$, and so on).
       %, and where the amplitudes $\alpha_i$ again satisfy $\sum_{i = 0}^{N-1} \abs{\alpha_i}^2 = 1$.
 
       When expanded over the basis states, the inner product of two multi-qubit quantum
-        states $\ket{\psi} = \sum_{i = 0}^{N-1} \alpha_i \ket{i}$ and $\ket{\varphi} =
-        \sum_{j = 0}^{N-1} \beta_j \ket{j}$ may be written
+        states $\ket{\psi} = \sum_{x \in \ZZ_N} \alpha_x \ket{x}$ and $\ket{\varphi} =
+        \sum_{y \in \ZZ_N} \beta_y \ket{y}$ may be written
       \[
-        \braket{\psi|\varphi} = \sum_{i, j = 0}^{N-1} \alpha^*_i \beta_j \braket{i|j} =
-        \sum_{i, j = 0}^{N-1} \alpha^*_i \beta_j \delta_{ij} = \sum_{i, j = 0}^{N-1} \alpha^*_i \beta_i\, .
+        \braket{\psi|\varphi} = \sum_{x, y \in \ZZ_N} \alpha^*_x \beta_y \braket{x|y} =
+        \sum_{x, y \in \ZZ_N} \alpha^*_x \beta_y \delta_{xy} = \sum_{x \in \ZZ_N} \alpha^*_x \beta_x\, .
       \]
       We have recovered the inner product of two complex-valued vectors, which
         is just the usual vector inner product with an extra complex conjugation.
@@ -814,22 +822,22 @@
         %}
         We may therefore adopt the usual operational interpretation of the inner
         product, in which two unit vectors are orthogonal when their inner product is $0$
-        and parallel it is $1$. Together with the requirement that
+        and parallel if it is $1$. Together with the requirement that
         quantum states have unit norm, this means that if two quantum states
-        have an inner product of $1$, then they are actually identical --
-        at least up to the aforementioned unobservable phase factor.
+        have an inner product of $1$, then they are actually \emph{identical} \ldots
+        up to an unobservable phase factor.
 
-      When expanding quantum states in terms of basis states in the manner above,
-        we will sometimes implicitly exclude terms for which the amplitude is
-        $0$, writing instead 
+      %When expanding quantum states in terms of basis states in the manner above,
+      %  we will sometimes implicitly exclude terms for which the amplitude is
+      %  $0$, writing instead 
 
-      \[
-        \ket{\psi} 
-          %= \sum_i \alpha_{i} \ket{x_i}\, ,
-          = \sum_{x \in \Xspace} \alpha_{x} \ket{x} \coloneqq \sum_{x} \alpha_{x} \ket{x}\, , 
-      \]
-      where $\Xspace$ is the non-trivial subset $\{x\, | \braket{\psi|x} \neq
-      0\} \subseteq [N]$, which is just the subset of $x$ that have $\alpha_x \neq 0$.
+      %\[
+      %  \ket{\psi} 
+      %    %= \sum_i \alpha_{i} \ket{x_i}\, ,
+      %    = \sum_{x \in \Xspace} \alpha_{x} \ket{x} \coloneqq \sum_{x} \alpha_{x} \ket{x}\, , 
+      %\]
+      %where $\Xspace$ is the non-trivial subset $\{x\, | \braket{\psi|x} \neq
+      %0\} \subseteq [N]$, which is just the subset of $x$ that have $\alpha_x \neq 0$.
 
       \begin{exercise}\label{ex:global-phase}
         Let $\ket\psi$ be a quantum state, and let $\ket\varphi =
@@ -842,48 +850,46 @@
       \end{exercise}
 
     \subsubsection{The Set of Quantum States.}
-      \hhnote{
-        mention pure vs.\ mixed states somewhere, or remove mentions of pure
-      }
       Until now, we have used that quantum states $\ket\psi$ live in the Hilbert
         space $\Hspace$, which is correct but not very precise: The
         Hilbert space of $N$-dimensional complex vectors include vectors of arbitrary
         norm, whereas our quantum (pure) states are always unit-length. 
-        In most cases, this is not a problem, but what if we want to quantify over
-        all valid quantum states? Writing $\forall\ \ket\psi \in \Hspace$ 
+        
+      In most cases, this is not really a problem, but what if we want to quantify over
+        all possible quantum states for our system? Writing $\forall\, \ket\psi \in \Hspace$ 
         won't cut it, since this would seem to imply that $\ket\psi$ can take
         any norm.
         %break the convention that $\ket\psi$ denotes pure quantum states. 
-
-      We might instead want to write something like
-      \[
-        \forall\, \ket\psi \in \mathcal{S}(\Hspace) \coloneqq 
-        \{ \ket{\psi} \in \Hspace\ |\, \norm{\ket{\psi}} = 1 \}\, ,
-        %= \mathcal{S}(\Hspace)\, ,
-      \]
-      i.e.\ quantify over the unit sphere of $\Hspace$.
+        We might instead want to write something like
+        \[
+          \forall\, \ket\psi \in \mathcal{S}(\Hspace) \coloneqq 
+          \{ \ket{\psi} \in \Hspace\ |\, \norm{\ket{\psi}} = 1 \}\, ,
+          %= \mathcal{S}(\Hspace)\, ,
+        \]
+        i.e.\ quantify over the unit sphere of $\Hspace$.
         However, you saw in \cref{ex:global-phase} that quantum states that only
         differ by a global phase factor cannot be distinguished by observation, so
-        quantifying over the unit sphere would lead to a kind of observational 
-        double-counting -- again, perhaps not a problem in most contexts, but can we do better? 
+        quantifying over the unit sphere would lead to double-counting -- again,
+        not a problem most of the time, but not very satisfactory either. 
+        Can we do better? 
 
       What we really want is a set that contains exactly \emph{one} element 
-        per observationally-distinct quantum state,
-        and the standard way to construct such a set is to invoke the 
+        per observationally-distinct quantum state.
+        The standard way to construct such a set is to invoke the 
         machinery of equivalence classes. Let $\sim$ be the equivalence relation
         given by 
       \[
         \ket\psi \sim \ket\varphi\ \Longleftrightarrow\ 
-        \exists_{\theta\, \in[0,2\pi)} e^{i\theta} \ket\psi = \ket\varphi\, ,
+        \exists\, {\theta\, \in[0,2\pi)} \text{ s.th. } \ket\psi = e^{i\theta} \ket\varphi\, ,
       \]
       i.e.\ $\ket\psi \sim \ket\varphi$ iff the two states only differ by a
-      global phase fector. Next, let $[\ket\psi]$ denote the corresponding
+      global phase factor. Then let $[\ket\psi]$ denote the corresponding
       equivalence class:
       \[
         [\ket\psi] \coloneqq \{ \ket\varphi\, |\, \ket\varphi \sim \ket\psi \}\, ,
         %= \{ \ket\varphi\ |\ \exists_{\theta\, \in[0,2\pi)} e^{i\theta} \ket\psi = \ket\varphi \}\, ,
       \]
-      which is then exactly the set of states observationally equivalent to $\ket\psi$.
+      i.e.\ the set of states observationally equivalent to $\ket\psi$.
       Then the set of observationally-distinct quantum states is captured by the set of
       equivalence classes of states on the unit sphere of the Hilbert space $\Hspace$:
       \[
@@ -892,21 +898,22 @@
       \]
       We may then write $\forall \ket{\psi} \in \states$, and be sure that we
         only quantify over each observably-distinct state only once,
-        by doing the standard trick of leaving implicit the fact that what we are
-        actually quantifying over are \emph{equivalence classes} of objects in place
-        of the original objects themselves, which is a well-defined
-        simplification exactly because ``differ by at most a global phase'' and
-        ``cannot be distinguished by any measurement'' imply each other perfectly.
+        %by doing the standard trick of 
+        leaving implicit the fact that we are
+        actually quantifying over \emph{equivalence classes} of objects rather
+        than the objects themselves, which is well-defined
+        exactly because ``differ by at most a global phase'' and
+        ``cannot be distinguished by any measurement'' perfectly imply each other.
 
   \subsection{Qubit Registers}
     If the qubit a quantum state is describing is not clear from context,
       we may use subscripts to specify which qubit it describes: 
-      For example, if $\ket{\psi}$ describes the state of the $i$'th qubit
-      $\qubit_i$, we may write $\ket{\psi}_i$. 
+      For example, if $\ket{\psi}$ describes the state of the $i$'th qubit,
+      we may write $\ket{\psi}_i$. 
 
     To see how this is useful, say we have $n$ qubits all initialized to $\ket{0}$,
-      and say we want to put the $i$'th qubit in the state $\ket{\psi}$ and the
-      $j$'th qubit in the state state $\ket{\varphi}$. We could write this
+      and say we want to put the $i$'th qubit in some single-qubit state $\ket{\psi}$ and the
+      $j$'th qubit in another state $\ket{\varphi}$. We could write this
       operation as
     \begin{align*}
       \ket{0}^{\otimes n} 
@@ -916,46 +923,51 @@
       &\longrightarrow 
       \ket{0}^{\otimes i} \ket{\psi} 
       \ket{0}^{\otimes (j-i)} \ket{\varphi} 
-      \ket{0}^{\otimes (n-j)}\, .
+      \ket{0}^{\otimes (n-j)}\, ,
     \end{align*}
-    If we index the qubit states by the corresponding qubit \emph{number},
-    this may be expressed much more concisely as:
+    but indexing by qubit number allows us to express the same operation much more
+    concisely:
     \[
       \ket{0}_i \ket{0}_j \longrightarrow \ket{\psi}_i \ket{\varphi}_j\, ,
     \]
-    where by convention the state of any qubit not listed is
-    unchanged by the operation.\footnote{
-      If qubit $i$ and/or $j$ started out entangled with any other
-      qubits, this notation would not be well-defined.
-      Given that there in many cases we care about, we do not know whether any given
-      qubit is entangled with any others, this is a real weakness of the Dirac
-      notation. We will tackle this issue head-on 
-      when we introduce our quantum-register pseudocode
-      \iffutureversion
-        in \cref{sec:pseudocode}.
-      \else
-        in a future chapter.
-      \fi
-    }
+    where by convention the operation acts like the identity on the state of any
+    qubit not listed.
+    %\footnote{
+    %  If qubit $i$ and/or $j$ started out entangled with any other
+    %  qubits, this notation would not be well-defined.
+    %  Given that there in many cases we care about, we do not know whether any given
+    %  qubit is entangled with any others, this is a real weakness of the Dirac
+    %  notation. We will tackle this issue head-on 
+    %  when we introduce our quantum-register pseudocode
+    %  \iffutureversion
+    %    in \cref{sec:pseudocode}.
+    %  \else
+    %    in a future chapter.
+    %  \fi
+    %}
 
-    Given a collection of $n$ qubits $(\qubit_i)_{i\in [n]}$, we will also find it
-      useful to divide them into \emph{registers}, for example to separate
-      distincts elements of an operation. Qubit registers are simply lists of
-      qubits, so a register $\register$ may for example contain the three qubits 
-      $\qubit_1, \qubit_2, \qubit_3$, in which case
+    Given a collection of $n$ qubits, 
+      %$(\qubit_i)_{i\in [n]}$, 
+      we may divide them into \emph{registers}.
+      %distincts elements of an operation. 
+      Qubit registers are simply lists of
+      qubits, so if $\qubit_1, \qubit_2, \qubit_3$ are three qubits,
+      then collecting them into a list would define a qubit register 
       $\register = (\qubit_1, \qubit_2, \qubit_3)$.
-      As above, if $\ket{\varphi}$ describes the quantum state of this
-      three-qubit register $\register$, we may specify this by writing
-      $\ket{\psi}_{\register}$.\footnote{
-        And what space do the qubits $\qubit_i$ live in? Well, this
-        is where our mathematical rigor bottoms out, and all we can say is
-        that
+      Here and elsewhere, we use boldface to indicate that an object such as a
+      list (and later, oracles) should be considered \emph{quantum}.\footnote{
+        And what kind of mathematical objects are the qubits $\qubit_i$? Well, this
+        is where our formal treatment bottoms out: all we can say is that
         $
-          \qubit_i \in \{ \text{physical system that admits a two-level quantum-mechanical description} \}
+          \qubit_i \in \{ \text{physical systems that admit a two-level quantum-mechanical description} \}
         $.
       }
+      If the register $\register$ is in the quantum state $\ket{\varphi}$,
+      we may specify that $\ket\psi$ is a description of $\register$ by writing
+      $\ket{\psi}_{\register}$, or even $\ket{\register}$.
 
   \subsection{Unitaries}\label{sec:unitaries}
+      \hhnote{readthrough cont.}
     Since we are working over finite-dimensional Hilbert spaces, 
       operations that evolve our quantum state vectors may be represented as 
       $N \times N$ matrices. What properties should they have?
