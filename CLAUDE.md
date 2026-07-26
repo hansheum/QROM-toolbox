@@ -98,6 +98,11 @@ Indentation pattern (2 spaces per level):
 - Content: 6 spaces
 - Continuation lines: +2 spaces from first line
 
+Cross-references: always `\cref` / `\Cref` (never `\autoref` — it is redefined
+in `main-qrot.tex` to halt the build). Names are set by the `\crefname` block
+in `main-qrot.tex`; appendices render as "App. A" via `\crefalias{section}{appendix}`
+issued right after `\appendix`, so no separate appendix-reference macro is needed.
+
 ## Notes for Development
 
 - Uses LLNCS document class

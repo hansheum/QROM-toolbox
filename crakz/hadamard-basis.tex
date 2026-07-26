@@ -1,0 +1,44 @@
+% needs \usetikzlibrary{arrows.meta}
+\begin{tikzpicture}[>=Stealth, line cap=round]
+  % --- unit circle: every basis state is a unit vector ---
+  %\draw[dotted, black!35] (0,0) circle (3);
+
+  % --- computational basis ---
+  \draw[very thick, ->] (0,0) -- (0:3)  node[right] {$\ket 0$};
+  \draw[very thick, ->] (0,0) -- (90:3) node[above] {$\ket 1$};
+
+  % --- Hadamard basis: the same axes, turned by 45 degrees.
+  %     |-> = (|0> - |1>)/sqrt2 has a negative |1>-component, hence -45. ---
+  \draw[very thick, ->, blue!55!black] (0,0) -- (45:3)
+  % \draw[very thick, ->] (0,0) -- (45:3)
+        node[above right=-2pt] {$\ket +$};
+  \draw[very thick, ->, blue!55!black] (0,0) -- (-45:3)
+  % \draw[very thick, ->] (0,0) -- (-45:3)
+        node[below right=-2pt] {$\ket -$};
+
+  % --- projections onto the computational axes ---
+  \coordinate (O) at (0,0);
+  \coordinate (P) at (45:3);
+  \coordinate (M) at (-45:3);
+
+  % negative halves of the computational axes, out to (almost) -1
+  % (for -1, set values to -3.0)
+  \draw[thin] (O) -- (0,-2.7);
+  \draw[thin] (O) -- (-2.7,0);
+
+  % |+> = (|0> + |1>)/sqrt2: both components are +1/sqrt2
+  \draw[dashed, black!60] (P) -- (P |- O)
+        node[below, font=\small, black!60] {$\tfrac{1}{\sqrt 2}$};
+  \draw[dashed, black!60] (P) -- (P -| O)
+        node[left, font=\small] {$\tfrac{1}{\sqrt 2}$};
+
+  % |-> = (|0> - |1>)/sqrt2: the |1>-component is negative
+  \draw[dashed, black!60] (M) -- (M -| O)
+        node[left, font=\small] {$-\tfrac{1}{\sqrt 2}$};
+
+  % --- the 45-degree turn ---
+  %\draw[<->, black!70] (0:1.2) arc[start angle=0, end angle=45, radius=1.2];
+  %\node[black!70, font=\small] at (22.5:1.55) {$45^\circ$};
+  %\draw[<->, black!70] (0:1.2) arc[start angle=0, end angle=-45, radius=1.2];
+  %\node[black!70, font=\small] at (-22.5:1.55) {$45^\circ$};
+\end{tikzpicture}

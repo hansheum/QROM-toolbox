@@ -20,13 +20,12 @@
     student, coming from a computer science and/or engineering background; and
     the experienced cryptographer, coming from a pure-maths background or
     similar. As a result, prose that may at times seem overly trivial or
-    pedantic to one kind of reader may help bringing understanding to
-    the other kind of reader. But should you find that you are either confused
-    or bored by a paragraph, you may assume it is pitched at the other
-    kind of reader and skip ahead (though try to at least grasp the
-    point of the paragraph).\footnote{
+    pedantic to one group of readers may serve to bring understanding to
+    the other group of readers, so should you find a particular paragraph overly
+    trivial or overly dense, feel free to skip ahead (though you should try to
+    at least grasp the point the paragraph is getting at).\footnote{
       The exception to the rule is \cref{sec:dirac}, which is written to be
-      confusing because this stuff \emph{is} confusing!
+      confusing, because this stuff \emph{is} confusing!
     }
 
   Regardless of your background, the best way to get a \emph{feel} for the
@@ -38,7 +37,7 @@
     \cref{sec:solutions}.
 
   \subsection{Quantum Physics and the Dirac Notation}\label{sec:dirac}
-    In general, quantum states are complex-valued vectors in Hilbert space,
+    In brief: Quantum states are complex-valued vectors in Hilbert space,
       which is to say, a vector space defined over functions. This Hilbert space
       may or may not be infinite-dimensional, though thankfully, we will only have
       to contend with the finite-dimensional case.\footnote{
@@ -66,51 +65,77 @@
 
     This calculus is fine, but one may wonder, what \emph{is} a quantum
       state? Meaning, what kind of mathematical object is it? The answer
-      can be found in the statement that they live in an $N$-dimensional \emph{Hilbert
-      space:} Hilbert spaces are vector spaces defined over \emph{functions}
-      rather than vectors. Here, the inner product between two functions $f$ and
+      can be found in the statement that they live in a possibly-infinite-dimensional 
+      \emph{Hilbert space,} which are vector spaces defined over
+      \emph{functions.}. Here, the inner product between two functions $f$ and
       $g$ on the interval $[a,b]$ is defined as $\int_{a}^{b}
-      f(x)^* g(x) dx$. This inner product defines a norm, as well as a notion of
+      f(x)^* g(x)\, dx$; this inner product defines a norm, as well as a notion of
       orthogonality, from which a vector space may be constructed.
-      Quantum states, then, are the functions that arise as solutions to a
-      differential equation describing the dynamics of the system. 
-      This is the famous Schrödinger equation, which covers the non-relativistic,
-      non-spin case. For fermions like electrons (which do have spin), we need the
+      Quantum states, then, are the functions of this Hilbert space, arising as
+      solutions to some differential equation describing the dynamics of the system. 
+      One such differential equation is the famous Schrödinger equation, 
+      which covers the non-relativistic, non-spin case. 
+      For fermions like electrons (which do have spin), we need the
       \emph{Pauli equation}, and making quantum physics consistent with
-      Einstein's theory of special relitivity requires the \emph{Dirac
+      Einstein's theory of special relitivity further requires the \emph{Dirac
       equation}.\footnote{
         Of course, combining quantum physics with \emph{general}
         relativity constitutes \emph{the} open problem of theoretical physics,
         and has given us a half-century of stagnant debate over which
-        as-of-yet unsuccessful approach is more ``natural'', such as string theory vs.\ loop quantum
-        gravity. (For more on this, see the popular science
-        section in your local book store.)
-      } These functions take some
-      input value corresponding to a possible observation, such as a particular
-      position $x$, and returns an \emph{amplitude} corresponding to that
-      position; squaring this amplitude may then for example give you the
-      probability that you will observe the particle to be in position $x$.
-
-    \hhnote{
-      Quantum states are to probability distributions what quantum
-      amplitudes are to probabilities.
-    }
+        as-yet unsuccessful approach (string theory, loop quantum gravity,
+        \ldots) is bound to one day grant us the coveted Theory of Everything. 
+        (For more on this, see the popular science
+        section of your local book store.)
+      } These differential equations happen to describe the dynamics of waves,
+      and so their solutions are often referred to as the ``wave function'' of
+      the system. They take some input value corresponding to a possible
+      observation, such as a particular position $x$, and returns an
+      \emph{amplitude} corresponding to that position; squaring this amplitude
+      will then give you the probability that the particle
+      is observed to be in position $x$.
 
     If all of this sounds terribly complicated, then you may appreciate why
-      physicists grew so fond of Dirac's notation, which neatly sweeps all of
-      these horrible details under a rug of neat, algebraic clarity.
-      Thankfully, things can be made much simpler in the discrete case: the Hilbert
+      physicists grew so fond of Dirac's notation, which neatly sweeps the
+      heavy machinery under a rug of neat, algebraic clarity.
+
+    Thankfully, things are much simpler in the discrete case: the Hilbert
       space is now finite, and so it can be expressed in terms of a finite set of basis
-      ``vectors'' (i.e., functions), and inner
-      products are now sums rather than integrals. Further, since our functions
-      now have finite domains, they may be written as $N$-length vectors
-      instead, where each element corresponds to one of the possible inputs to
+      ``vectors'' (i.e.\ finite-domain functions), and inner
+      products are now defined in terms of sums rather than integrals. 
+      %Further, since our ``wave functions'' now have finite domains, they may be
+      %written as $N$-length vectors
+      Each element of a ``state vector'' corresponds to one of the possible inputs to
       the function (i.e., one of the possible observable outcomes), enabling us to
-      employ our toolbox from linear algebra to study them by leveraging
+      employ our toolbox from linear algebra to study them, leveraging
       the isomorphism between the set of functions from $\bin^n$ to $\CC$ 
       and $\CC^{2^n}$. 
+      This is the approach adopted in the quantum information sciences.
 
-    This is the approach adopted by the quantum information sciences.
+    You may have noticed that if the input to our system is an $n$-length
+      bitstring, then the corresponding quantum state vector will be of length
+      $2^n$, since vector elements correspond to the possible inputs to the
+      function. From one point of view, this is no more mysterious than
+      the fact that a discrete probability distribution can be expressed as an
+      exponential-length vector, listing one probability for each element in its
+      domain; in fact, you may find it helpful to think of quantum state vectors
+      as a kind of generalized probability distribution. 
+
+    Another view is that it is exactly in this exponentiality of state vectors
+      that the power of quantum
+      computation lies. This is because, unlike classical probabilities, amplitudes may
+      \emph{interfere} with each other, cancelling and reinforcing exactly like water
+      waves meeting in a pond, opening a whole new world of calculation
+      possibilities. And yet, at the end of the day, what we actually observe 
+      will still be a probability distribution, derived from the squares of
+      the amplitudes. It is like nature gave us \emph{some} limited access to
+      the exponential nature of quantum physics, yet stopping short of letting us
+      observe it directly, lest our power grow too great.\footnote{
+        If we could directly access the ever-splitting branches of 
+        quantum states, and pick and choose the outcomes we would most like to
+        see rather than hope that they appear by chance upon measurement,
+        then we could easily solve NP-complete problems~\cite{Aaronson05}.
+      }
+
     \begin{table}%[b]
       \caption{
         \label{tab:notation}
@@ -129,22 +154,22 @@
         %
         Hilbert space & Calligraphic H & $\Hspace$ & Complete, complex inner-prod.\ space \\
         &&& Single qubit $\To \Hspace \cong \CC^2$ \\
-        Hilbert space dimension & Uppercase roman, middle & $N$ & $\in\NN$ \\
+        Hilbert space dimension & Uppercase Latin, middle & $N$ & $\in\NN$ \\
         & of alphabet && $\Hspace$ finite-dim.\ $\To \Hspace \cong \CC^N$ \\
-        Qubit count & Lowercase roman, middle & $n$ & $\in\NN$ \\
+        Qubit count & Lowercase Latin, middle & $n$ & $\in\NN$ \\
         & of alphabet && $n$ qubits $\To \Hspace \cong (\CC^2)^{\otimes n} \cong \CC^{2^n}$ \\
         Unit sphere & Calligraphic S & $\sphere$ & Unit-norm subset of inner-prod.\ space \\
         &&& $\sphere(\Xspace) = \{\vec{x} \in \Xspace\, |\, \norm{\vec x} = 1 \}$ \\
         %
         \midrule
         %
-        Bitstring & Lowercase roman, end & $x$ & $\in\bin^n$ \\
+        Bitstring & Lowercase Latin, end & $x$ & $\in\bin^n$ \\
         & of alphabet && \\
         Hadamard string & Bitstring with hat & $\hat x$ & $\in\{+,-\}^n$ \\
         &&& $\ket{\hat x} = 2^{-n}\sum_{x} (-1)^{\hat x \cdot x} \ket x$ \\
-        Quantum amplitude & Lowercase greek, start & $\alpha$ & $\in\CC$, $\abs{\alpha} \leq 1$ \\
+        Quantum amplitude & Lowercase Greek, start & $\alpha$ & $\in\CC$, $\abs{\alpha} \leq 1$ \\
         & of alphabet && \\
-        State label & Lowercase greek, middle & $\psi$ & (any label is permissible) \\
+        State label & Lowercase Greek, middle & $\psi$ & (any label is permissible) \\
         & of alphabet && \\
         Conjugate transpose & Dagger superscript & $\unitary[A]^\dagger$ & $\coloneqq (\unitary[A]^*)^T$ \\
         &&& Note: $(\unitary[A]\unitary[B])^\dagger = \unitary[B]^\dagger \unitary[A]^\dagger$ \\
@@ -167,7 +192,7 @@
         %
         \midrule
         %
-        Unitary transformation & Uppercase roman, late alphabet & $\unitary$ &
+        Unitary transformation & Uppercase Latin, late alphabet & $\unitary$ &
           $\in \CC^{N \times N}$ s.th.\ $\unitary^\dagger \unitary = 1$ \\
         &&& $\unitary$ is an $n$-qubit op.\ $\To \unitary \in \CC^{2^n \times 2^n}$ \\
         Controlled unitary & $\unitary[C]\text{(unitary)}$ & $\unitary[CU]$ &
@@ -177,7 +202,7 @@
         %
         \midrule
         %
-        Orthogonal projector & Uppercase roman, middle-late & $\projector$ & 
+        Orthogonal projector & Uppercase Latin, middle-late & $\projector$ & 
           $\in \CC^{N \times N}$ s.th.\ $\projector^2 = \projector = \projector^\dagger$ \\
         & alphabet && Single-state projector: $\projector_\psi = \ketbra{\psi}$ \\
         PVM (Projector-valued & Calligraphic M & $\measurement$ & Complete, orthogonal set $\{ \projector_i \}_{i \in [k]}$ \\
@@ -191,14 +216,14 @@
         %
         \midrule
         %
-        Qubit & Lowercase roman, bold sans-serif & $\qubit$ & Two-level physical system \\
+        Qubit & Lowercase Latin, bold sans-serif & $\qubit$ & Two-level physical system \\
         &&& \\
         %Single-qubit register & Register $\bitReg$ & $\bitReg$ & List of one qubit \\ 
         %Global quantum system & Register $\qcomp$ & $\qcomp$ & List of all qubits \\ 
         %\midrule
         Qubit state & State with index subscript & $\ket{\psi}_i$ & $= \ket{\qubit_i} \in \CC^2$ \\
         &&& \\
-        Register & Uppercase roman, bold sans-serif & $\register$ & List of qubits \\
+        Register & Uppercase Latin, bold sans-serif & $\register$ & List of qubits \\
         &&& \\
         Register state & State with register subscript &
           $\ket{\psi}_{\register}$ & $= \ket{\register} \in \CC^{2^n}$ for $n$-qubit register \\
@@ -242,45 +267,46 @@
           procedure. We prefer ``observation'' when speaking informally,
           as the term captures the fact that you don't need fancy lab equipment to
           collapse a quantum state -- coming in contact with it in any way 
-          is usually enough -- but we will follow the standard nomenclature of ``measurement''
+          is enough -- but we will follow the standard nomenclature of ``measurement''
           when talking about the technical formalism.
         } procedure that perfectly distinguishes them.
 
       With exactly two possible outcomes, the qubit \emph{state} lives
         in the two-dimensional Hilbert space $\CC^2$, which we characterize by
-        the basis states $\ket{0}$ and $\ket{1}$, similarly to how two orthogonal unit
-        vectors will span the real plane. 
-
-      It is worth emphasizing that in these states, the numbers ``$0$'' and ``$1$'' 
+        the basis states $\ket{0}$ and $\ket{1}$. 
+        %similarly to how two orthogonal unit vectors will span the real plane. 
+        It is worth emphasizing that in these states, the numbers ``$0$'' and ``$1$'' 
         are \emph{labels}, and do not say anything about the physical
         system in question other than that it supports (at least) two orthogonal
         quantum states, which we have the
-        ability to distinguish, and which we choose to map to the values $0$ and $1$.
+        ability to distinguish, and which we \emph{choose} to interpret as the
+        symbols $0$ and $1$.
         In particular, the $\ket 0$ state could certainly not be the zero
-        \emph{vector}, since all quantum states must be unit-length, and the
-        zero vector has zero length. 
+        \emph{vector}, since all quantum states must be unit-length for
+        probabilities to sum to one, and the zero vector has zero length. 
 
       Let $\ket{b_1}$ and $\ket{b_2}$ be two qubit basis states, where $b_1, b_2 \in
         \{0,1\}$. Since these must be either identical or orthogonal, we have that
       \[
         \braket{b_1|b_2} = \delta_{b_1 b_2}\, ,
       \]
-      where $\delta_{ij}$ is the Kronecker delta, equal to $1$ if $i = j$ and $0$
-        otherwise.
+      where $\delta_{ij}$ is the Kronecker delta (equal to $1$ if $i = j$ and $0$
+        otherwise).
         Expressing the qubit states (which, remember, are functions from a binary
-        set of observable values to a complex amplitude of magnitude at most
+        set of observable values to a complex number with magnitude at most
         $1$) as vectors, we see that we can express our qubit basis states as
         the column vectors
         \[
           \ket0 = \begin{bmatrix} 1 \\ 0 \end{bmatrix}\, ,\ 
-          \ket1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\, ,
+          \ket1 = \begin{bmatrix} 0 \\ 1 \end{bmatrix}\, .
         \]
-        making their conjugate transposes row vectors:
+        Then, their conjugate transposes become row vectors:
         \begin{align*}
           \bra0 &= \ket0^{\dagger} = (\ket0^*)^T = \begin{bmatrix} 1 & 0 \end{bmatrix}\, ,\ \\
           \bra1 &= \ket1^{\dagger} = (\ket1^*)^T = \begin{bmatrix} 0 & 1 \end{bmatrix}\, .
         \end{align*}
-        As a sanity check, the inner product of two single-qubit basis states becomes
+        As a sanity check, the inner product of two single-qubit basis states is
+        then
         \[
           \braket{b_1|b_2} = \begin{bmatrix} b_1 && 1-b_1 \end{bmatrix}
             \begin{bmatrix} b_2 \\ 1-b_2 \end{bmatrix}
@@ -290,11 +316,12 @@
         \]
         as desired.
 
-      If you are ever confused about a derivation on these Dirac
+      If you are ever confused about a derivation using these Dirac
         ``bra-kets'', it can be very useful to make the translation into vectors
         and matrices, and go through the
-        explicit calculation using the familiar language of linear algebra;
-        \cref{tab:notation} provides an overview with definitions.
+        explicit calculation using the familiar language of linear algebra.
+        \cref{tab:notation} provides a helpful overview of our conventions and
+        their definitions.
       
     \subsubsection{Multi-Qubit Basis States.}
       In general, two quantum systems (i.e.\ states describing 
@@ -310,10 +337,11 @@
       If $\ket{\psi}$ describes an $N$-dimensional quantum system, and
         $\ket{\varphi}$ describes an $M$-dimensional quantum system, then the
         combined state $\ket{\psi, \varphi}$ describing the combined system will be
-        $NM$-dimensional. Note how the dimensions are \emph{multiplied} rather
-        than \emph{added}, as one might na\"ively expect.
+        $NM$-dimensional. (Note how dimensions are \emph{multiplied} rather
+        than \emph{added}, as one might have na\"ively expected; the addition
+        happens in the \emph{qubit count}, which lives in the exponent.)
   
-      Applying this to qubits, we get that given a collection of $n$ qubits $\ket{b_i}$, each initialized to
+      Given a collection of $n$ qubits $\ket{b_i}$, each initialized to
         one of the two basis states $\ket0$ or $\ket1$ (so that $b_i \in \bin$), we may construct
         the combined state 
         \begin{align*}
@@ -325,9 +353,9 @@
 
       \noindent
       We will use any and all of the above conventions when denoting combined quantum
-        states, choosing whichever one we deem brings the most clarity and
-        eligibility to the given context. For example, non-binary labels 
-        will typically be separated by commas, while binary-valued labels will
+        states, choosing whichever one we deem clearest 
+        for the given context. For example, non-binary labels like $\psi$ and
+        $\varphi$ will typically be separated by commas, while binary-valued labels will
         typically not be, to match the standard nomenclature for bit-string
         concatenation: $b_0 b_1 \coloneqq b_0 \concat b_1$.
 
@@ -340,16 +368,18 @@
           \}_{b_0, \ldots, b_{n-1} \in \bin}\, .
       \]
       Of course, any vector space permits an infinitude of basis
-        choices; the above choice of basis is just the simplest one. We refer
-        to this as the ``computational'' basis, since
+        choices by rotating the basis vectiors; the above choice of basis is
+        just the simplest one. We refer
+        to this as the ``computational basis'', since
         we have set our basis vectors up in such a way that they map to
-        classical bitstrings.
+        classical bitstrings. (We will meet another common choice of basis
+        in \cref{sec:uniform} below.)
 
-      The fact that the dimension of quantum states increases exponentially as
+      As indicated, the fact that the dimension of quantum states increases exponentially as
         the number of qubits increases sits at the core of quantum computers'
-        advantage over classical computers. As an illustrative
-        example, if we add a third qubit to our system, we now need eight basis
-        states to span the Hilbert space:
+        advantage over classical computers. An illustrative
+        example is the simple three-qubit system: for two qubits, we only needed
+        four basis states, but for three qubits this has now doubled to eight:
       \begin{align*}
         \{ \ket{i} \}_{i \in [2^3]} 
         &= \{\ket{000},
@@ -371,8 +401,7 @@
       \end{align*}
 
       \noindent
-      As expected, we see that the multi-qubit computational basis states also
-        satisfy orthonormality:
+      As you can see, multi-qubit basis states also satisfy orthonormality:
       \[ 
         \braket{x|y} = \delta_{xy}\, . 
       \]
@@ -382,50 +411,61 @@
         state; this can be written in either of the following ways:
       \[
         \bigotimes_{i = 0}^{n-1} \ket{0} \coloneqq
-        \ket{0}^{\otimes n} \coloneqq \ket{0 \ldots 0} \coloneqq \ket{0^n}\, .
+        \ket{0}^{\otimes n} \coloneqq \ket{0^n} \coloneqq \underbrace{\ket{0 \ldots 0}}_{n}\, .
       \]
 
-    \subsubsection{Superpositions.}
+  \subsection{Uniform Superposition States}\label{sec:uniform}
       Of course, this is \emph{quantum} computing, and so we are interested in
-        qubit states which are more than just rewritten bitstrings like the
-        above. The unique thing about qubits is that they can be in
+        qubit states which are more than just classical bitstrings written in
+        kets. The unique thing about qubits is that they can be in
         \emph{superpositions} of $\ket 0$ and $\ket 1$, usually popularized to
-        the qubit somehow being ``both $0$ and $1$ at once'' (before inevitably
-        failing to explain what makes this any different from classical
-	randomness). For
-        a single qubit, the simplest superposition states are common enough to
-        warrant their own names, and they are known as the
-        $\ket +$ (``plus'') and $\ket -$ (``minus'') states. They are:
+        the qubit somehow being ``both $0$ and $1$ at once'', before inevitably
+        failing to explain what makes this situation any different from simply
+        being ignorant about the qubit's ``true'' value until we observe it,
+        which is just stochastic computing. Let us demonstrate.
+
+    \subsubsection{Plus and Minus.}
+      For a single qubit, the simplest superposition states are common enough to
+        warrant their own names: they are the
+        ``plus'' and ``minus'' states
         \[
           \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, , \quad 
           \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}\, .
         \]
         If you were to observe these states directly, you would see $0$ or $1$
         with equal probability (since $\prob{\text{observed } 0} =
-        \prob{\text{observed } 1} = (\nicefrac{1}{\sqrt 2})^2 = \half$).
-        If this were all, then this would be no different from tossing a coin.
+        \prob{\text{observed } 1} = (\nicefrac{1}{\sqrt 2})^2 = \half$),
+        and if this were all, then these states would be no different from the
+        probability distribution of a coin-toss.
 
       What makes quantum superpositions different from classical stochastics is
         that despite both states being uniform superpositions of $0$ and $1$,
         they can be \emph{perfectly distinguished from each other}. This is
         because, unlike the classical world, we are no longer stuck with only
         computational-basis measurements. 
-        One of the elementary quantum operations that we can apply to a qubit is
+
+      One of the elementary quantum operations that we can apply to a qubit is
         the \emph{Hadamard gate} $\Hgate$, and it applies the self-inverse map
       \[
         \ket{0} \apply{\Hgate} \ket{+} \apply{\Hgate} \ket{0}\, , \quad
         \ket{1} \apply{\Hgate} \ket{-} \apply{\Hgate} \ket{1}\, .
       \]
-      So, if we are given a qubit in state either $\ket +$ or $\ket -$,
-        measuring the qubit directly would give us no information about which
-        state it was in. But if we \emph{first} apply $\Hgate$ and \emph{then}
-        measure it, we learn which state it was with certainty,
-        with the outcome $0$ mapping to $\ket +$ and the outcome $1$ mapping to
-        $\ket -$.
-        We will refer to this procedure as a ``Hadamard-basis measurement'', to contrast
-        with the standard computational-basis measurement. 
+      So, if we are given a qubit, and we are told that it is either in the
+        state $\ket +$ or in the state $\ket -$, then
+        measuring the qubit directly (in the computational basis) 
+        would give us no information about which
+        of the two it was in. But if we \emph{first} apply $\Hgate$ and \emph{then}
+        measure it, then we learn with certainty which state it was in,
+        since now observing $0$ can only happen if we were given the state $\ket +$,
+        and observing $1$ can only happen if we were given the state $\ket -$.
 
-      For $n$ qubits, the uniform superposition over all bitstrings $x$ is the
+      We will refer to the procedure of first applying a Hadamard gate to a
+        qubit and then measuring it in the computational basis as a
+        ``Hadamard-basis measurement'', for reasons that will become clear
+        shortly.
+
+    \subsubsection{The Hadamard Transformation.}
+      For $n$ qubits, the uniform superposition over every length-$n$ bitstring is the
       state
       \[
         \frac{\ket{0 \ldots 00}
@@ -433,7 +473,7 @@
         = 
         \sum_{x \in \bin^n} \frac{1}{\sqrt{2^n}}\ket{x}\, .
       \]
-      This is equal to the state
+      As it happens, this is equal to the state
       \[
         \ket{+}^{\otimes n}
         \coloneqq 
@@ -445,11 +485,14 @@
         \left( \frac{\ket{0} + \ket{1}}{\sqrt{2}} \right)\, ,
       \]
       since multiplying out the paranthesis gives a sum over all possible
-      bitstrings. Of course, this is exactly the state that will be reached if
-      we apply the gate $\Hgate$ to each of the qubits that make up $x$:
+      bitstrings. This is exactly the state that we will get if
+      we have the apply the gate $\Hgate$ to each of $n$ qubits in the $\ket 0$
+      state:
       \[
         \ket{0^n} \apply{\Hgate} \ket{+^n} \apply{\Hgate} \ket{0^n}\, .
       \]
+      We will refer to the procedure of applying the $\Hgate$ operation to every
+        qubit of a system as the \emph{Hadamard transformation}. 
       
       What happens do we get if we start with computational basis states other
         than $0^n$? Say we have five qubits, arranged to represent
@@ -468,133 +511,195 @@
           = \sum_{x \in \bin^5} \frac{(-1)^{x \cdot [21]_2}}{\sqrt{2^5}} \ket x\, ,
         \]
         where $x \cdot [21]_2$ denotes the inner product of the two bitstrings
-        modulo $2$, e.g.\ $[5]_2 \cdot [21]_2 = 10101 \cdot 00101 = 0$.
-        This is also a uniform superposition, with all the information about the
-        original number $21$ stored in the \emph{relative phases} of the
-        bitstrings, which can be recovered by applying the Hadamard gates a
-        second time.
-
-      We will refer to the act of applying one Hadamard gate to each of the $n$
-        qubits as the ``Hadamard transformation'', and it will be one of the
-        main tools at our disposal. As we hinted above, the effect of the
-        Hadamard basis on an arbitrary computational basis state $\ket x$ will be a
-        uniform superposition state, with the bits of $x$ stored in
-        binary phases:
-      \[
-        \ket x 
-        \apply{\Hgate^{\otimes n}}
-        \sum_{y \in \bin^n} \frac{(-1)^{x \cdot y}}{\sqrt{2^n}} \ket y\, ,
-      \]
+        modulo $2$ (so for example, $[5]_2 \cdot [21]_2$ evaluates to 
+        $00101 \cdot 10101 = 0 \cdot 1 \xor 0 \cdot 0 \xor 1 \cdot 1 \xor 0
+        \cdot 0 \xor 1 \cdot 1 = 0$, so the branch $\ket 5$ will have a positive phase).
+        This is also a uniform superposition, and measuring it directly
+        would again just give the uniform distribution. Yet nothing is lost: 
+        all the information about the original number $21$ is preserved in
+        the \emph{relative phases} of the different branches of the
+        superposition, and can be recovered exactly by
+        applying the Hadamard transformation a second time.
+        Generalizing, we can write the effect of the Hadamard transformation on
+        a computational-basis state as
+        \[
+          \ket x 
+          \apply{\Hgate^{\otimes n}}
+          \sum_{y \in \bin^n} \frac{(-1)^{x \cdot y}}{\sqrt{2^n}} \ket y\, .
+        \]
       The multi-qubit Hadamard-basis measurement is then the procedure that
-        first applies the Hadamard transformation, then measures the state in
-        the computational basis.
+        first applies the Hadamard transformation to the state, then measures it
+        in the computational basis.
+
+      %When reasoning about quantum random oracles, the Hadamard transformation will
+      %  be one of the main tools at our disposal. 
 
     \subsubsection{The Hadamard Basis.}
-      Actually, we don't have to
-        imagine explicitly applying the $\Hgate$ gates to our qubits before
-        measuring them, as Hadamard-basis measurements
+      Actually, we don't have to imagine explicitly applying the $\Hgate$ gates
+        to our qubits before measuring them, as Hadamard-basis measurements
         are perfectly well-defined on their own merits, as one choice among a
-        continuous infinity of measurements we could choose to apply
-	(we will make this formal in \cref{sec:measurements}).
+        continuous infinity of measurements we could choose to apply.
+	      %(we will make this formal in \cref{sec:measurements}).
         Perhaps it is better, then, to view the Hadamard basis as a sort of
         ``dual domain'' under which we can view our qubit,
-	with two possible questions we can ask our state: 
-	Either ``are you $\ket 0$ or $\ket 1$?'', or 
-	``are you $\ket +$ or $\ket -$?'' Either way, 
-	the qubit will provide a definite answer, after which its state will 
-	collapse to whatever answer you got.
+	      with two possible questions we can ask our state: 
+	      Either ``Are you $\ket 0$ or $\ket 1$?'', or 
+	      ``Are you $\ket +$ or $\ket -$?'' Either way, 
+	      the qubit will provide a definite answer, after which its state will 
+        collapse to the answer you got. 
 
-	This is a point worth internalizing, so let us repeat it: 
-	\emph{The set of possible post-measurement states changes to match
-	the question you choose to ask.} If you ask ``are you $0$ or $1$?'', 
-	then the possible outcomes are $\ket 0$ and $\ket 1$; 
-	if you ask ``are you $+$ or $-$'', then the possible outcomes are 
-	$\ket +$ and $\ket -$. 
-	(And of course, the outcome statistics also change
-	depending on what question you ask.)
+	    This is a point worth internalizing, so let us repeat it: 
+	      \emph{The set of possible post-measurement states changes to match
+	      the question you chose to ask.} If you ask ``Are you $0$ or $1$?'', 
+	      then the post-measurement state will be $\ket 0$ or $\ket 1$; 
+	      if you ask ``Are you $+$ or $-$'', then the post-measurement state will
+        be $\ket +$ or $\ket -$. 
+        (And, of course, the outcome distribution also depends on which question
+        you choose to ask.)
 
-	Of course, any vector space has a continuous infinity of 
-	bases to choose from, each of which define a binary ``question'' we
-	can pose to our qubit, and the Hadamard
-	basis is just one particularly nice choice;
-	geometrically, it is just the basis rotated by $45^\circ$ 
-	relative to the original one.
-	\hhnote{insert fig}
-	To appreciate how this makes for a perspective
+      What about a question like ``Are you $\ket 0$ or
+        are you $\ket +$?'' Under our notion of measurement, this question is not
+        well-defined, since $\ket 0$ and $\ket +$ are not orthogonal states and
+        therefore do not lead to mutually-exclusive outcomes. More on this in
+        \cref{sec:measurements}, but for now, think of a measurement as always
+        being defined in terms of a set of mutually-exclusive outcomes.
+
+	    Of course, any vector space has a continuous infinity of 
+	      bases to choose from, each of which define a binary ``question'' we
+	      can pose to our qubit, and the Hadamard
+	      basis is just one particularly nice choice:
+	      geometrically, it is just the basis rotated by $45^\circ$
+	      relative to the original one, as illustrated in
+	      \cref{fig:hadamard-basis}.
+        %
+	      \crakzfigcode{hadamard-basis}{
+	        The computational basis $\{\ket 0, \ket 1\}$ and the Hadamard basis
+	        $\{\ket +, \ket -\}$ describe the same qubit, seen along axes turned
+	        by $45^\circ$ relative to each other. 
+          %Note how $\ket 0$ bisects
+	        %$\ket +$ and $\ket -$ exactly as $\ket +$ bisects $\ket 0$ and
+	        %$\ket 1$: the two views are duals of one another.
+	      }
+        %
+	      To appreciate how this makes for a perspective
          ``dual'' to the computational basis,
-	 take a look at the following identities:
+	      take a look at the following identities:
         \[
-          \ket{0} \coloneqq \frac{\ket{+} + \ket{-}}{\sqrt{2}}\, , \quad 
-          \ket{1} \coloneqq \frac{\ket{+} - \ket{-}}{\sqrt{2}}\, .
+          \ket{+} = \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, , \quad 
+          \ket{-} = \frac{\ket{0} - \ket{1}}{\sqrt{2}}
+          \qquad
+          \Longleftrightarrow
+          \qquad
+          \ket{0} = \frac{\ket{+} + \ket{-}}{\sqrt{2}}\, , \quad 
+          \ket{1} = \frac{\ket{+} - \ket{-}}{\sqrt{2}}\, .
         \]
-        You can verify that these hold by inserting for $\ket +$
-        and $\ket -$ and seeing that the extra terms cancel out exactly.
-        Notice their shape: The computational basis states $\ket 0$ and $\ket 1$
+        Notice the symmetry: The computational basis states $\ket 0$ and $\ket 1$
         are to the Hadamard basis \emph{exactly} what the plus state and minus
         states are to the computational basis; they really are \emph{dual views},
-        which we can translate between by the map $\Hgate$.\footnote{
+        which can be translated between via the map $\Hgate$.\footnote{
           The notion of a ``dual domain'' will sound familiar to anyone who has
           ever come across Fourier analysis, and not without reason: The Hadamard
           map is exactly the single-qubit Fourier transformation.
         }
+        %It is worth verifying the equivalence by inserting for $\ket +$
+        %and $\ket -$ and checking that the extra terms cancel out exactly.
 
-      How can we make this work for multi-qubit states?
-        %In analogy to the single-qubit case, 
-        With $\{\ket 0, \ket 1\}$ and $\{\ket +, \ket -\}$ being exact duals of
-        each other, if
+      How does this duality generalize to multi-qubit states?
+        We had that
         \[
           \ket{+^n} 
           = \frac{\ket{0 \ldots 00} + \ket{0 \ldots 01} + \ldots + \ket{1 \ldots 11}}{\sqrt{2^n}}
           = \sum_{x \in \bin^n} \frac{1}{\sqrt{2^n}}\ket x
         \]
-        then it must also be true that 
+        With $\{\ket 0, \ket 1\}$ and $\{\ket +, \ket -\}$ being exact duals of
+        each other, then it must also be true that 
         \[
           \ket{0^n} 
           = \frac{\ket{+ \ldots ++} + \ket{+ \ldots +-} + \ldots + \ket{- \ldots --}}{\sqrt{2^n}}
           = \sum_{\hat{x} \in \{+,-\}^n} \frac{1}{\sqrt{2^n}} \ket{\hat x}\, .
         \]
-        We see that we have a new kind of bitstring, one that represents numbers
-        using the alphabet $\{+, -\}$ in place of $\bin$. We will use the
+        Here, we have introduced a new kind of bitstring, one that is defined
+        over the alphabet $\{+, -\}$ rather than the alphabet $\bin$. We will use the
         convention that whenever a number or variable is represented with a hat,
-        then it is to be understood as a Hadamard-basis bitstring. For example,
-        whereas the decimal $21$ was represented by the string $[21]_2 = 10101$, writing
-        $\widehat{21}$ would imply the string $\big[\, \widehat{21}\, \big]_2 = -+-+-$. 
-        As we might have anticipated, just like the all-zero state $\ket{0^n}$
-        maps to the decimal state $\ket 0$, and the all-ones state $\ket{1^n}$
-        maps to the decimal $N$-state $\ket N$ (where $N = 2^n$ as usual),
-        the uniform superposition $\ket{+^n}$
-        then maps to the Hadamard-zero state $\ket{\hat 0}$, while the all-minus state
-        $\ket{-^n}$ maps to the state $\ket{\hat{N}}$.
+        then it is understood to be a \emph{Hadamard-bitstring} like above. For example,
+        whereas we previously represented the decimal $21$ by the bitstring
+        $[21]_2 = 10101$, writing $\widehat{21}$ would imply that it is
+        represented by the Hadamard-bitstring $\big[\, \widehat{21}\, \big]_2 = -+-+-$. 
 
-      This gives us our two equivalent (but not equal!) views on our quantum
+      As we might have anticipated, just like the all-zero state $\ket{0^n}$
+        maps to the decimal state $\ket 0$, 
+        %and the all-ones state $\ket{1^n}$
+        %maps to the decimal $(N-1)$-state $\ket{N-1}$ (where $N = 2^n$ as usual),
+        the uniform superposition $\ket{+^n}$
+        then maps to the Hadamard-zero state $\ket{\hat 0}$.
+        %, while the all-minus state
+        %$\ket{-^n}$ maps to the state $\ket{\hat{N}-\hat{1}}$.
+        Thus, we recover our dual views on the quantum
         state space, which we can translate between as desired via the Hadamard
-        maps, now expressed in decimal:
-      \[
-        \ket{\hat x} = \sum_{x \in [N]} 
-        \frac{(-1)^{\hat x \cdot x}}{\sqrt{2^n}} \ket x\, ,
-        \quad
-        \ket{x} = \sum_{\hat x \in [\hat{N}]} \frac{(-1)^{x \cdot
-        \hat x}}{\sqrt{2^n}} \ket{\hat{x}}\, ,
-      \]
-      where we define the dual-alphabet inner bitstring product
-        $x \cdot \hat{x}$ to be the obvious one that maps $\{+,-\}$
-        to $\bin$ before evaluating the product.
+        transformation. Defining $\hat{\ZZ}_N \coloneqq \{ \hat{x}\ |\ x \in
+        \ZZ_N\}$, and letting the dual-alphabet inner bitstring product
+        $\hat x \cdot x$ simply treat $\{+,-\}$ as if it were $\bin$,
+        we can then express both directions of the Hadamard transformation in
+        purely decimal notation:
+        \[
+          \ket{\hat x} = \sum_{x \in \ZZ_N} 
+          \frac{(-1)^{\hat x \cdot x}}{\sqrt{2^n}} \ket x\, ,
+          \quad
+          \ket{x} = \sum_{\hat x \in \hat{\ZZ}_N} \frac{(-1)^{x \cdot
+          \hat x}}{\sqrt{2^n}} \ket{\hat{x}}\, .
+        \]
+        
+      The above notation will at times allow us to greatly simplify our
+        notation, making arguments clearer. Consider for example the state
+        \[
+          \ket{\psi} = \frac{i}{\sqrt{2^n}} \ket{0}\
+          +
+          \sum_{x \in \ZZ_N \backslash \{0\}} 
+          \frac{1}{\sqrt{2^n}} \ket{x}\, ,
+        \]
+        i.e.\ the uniform superposition state that singles out the $\ket{0}$ state (implicitly
+        understood to be the $\ket{0^n}$ state since we are using decimal notation) 
+        and adds a complex phase to it. Computing the Hadamard transformation of
+        such a state can lead to a mess of double sums, but in the above notation
+        it is simply
+        \[
+          \ket{\psi} \apply{\Hgate^{\otimes n}} \ket{\psi^\prime} 
+          = \frac{i}{\sqrt{2^n}} \ket{\hat{0}}\ +
+          \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
+          \frac{1}{\sqrt{2^n}} \ket{\hat{x}}\, ,
+        \]
+        or we may even write it using mixed notation, ``unpacking'' the
+        complex-phase term that we actually care about while keeping 
+        the remaining terms in their compact Hadamard form:
+        \[
+          \ket{\psi^\prime} =
+          \sum_{x \in \ZZ_N} \frac{i}{2^n} \ket{x}\ +
+          \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
+          \frac{1}{\sqrt{2^n}} \ket{\hat{x}}\, .
+        \]
+
+        %\begin{exercise}
+        %  Compute the Hadamard transformation of $\ket{\psi}$ using purely
+        %  standard bitstring notation, expressed without double sums. You will
+        %  need \ldots
+        %\end{exercise}
  
-  \subsection{Superposition States}
-    \subsubsection{Greek vs.\ Roman Letters.}
+  \subsection{General Superposition States}
+    \hhnote{readthrough cont.}
+    \subsubsection{Greek vs.\ Latin Letters.}
       To distinguish computational basis states from more general quantum states, we will use
-        roman letters like $x$, $y$, $z$ to represent classical binary
+        Latin letters like $x$, $y$, $z$ to represent classical binary
         strings. Thus, a state $\ket{x}$ will always be understood to be a
         computational basis state. Whenever we are talking specifically about single-qubit
         computational basis states, we will use $b$ to represent a single bit, 
         and write $\ket{b}$. 
 
       General quantum states, on the other hand, are traditionally labelled by
-        letters taken from the middle of the greek alphabet, such as $\psi$,
+        letters taken from the middle of the Greek alphabet, such as $\psi$,
         $\varphi$, $\xi$, etc.  We will follow this tradition, or otherwise use a
         more descriptive label specific to the current context.
         Quantum \emph{amplitudes}, meanwhile, are traditionally represented with letters 
-        from the start of the greek alphabet, such as $\alpha$ or $\beta$, and
+        from the start of the Greek alphabet, such as $\alpha$ or $\beta$, and
         the amplitude corresponding to a basis state $\ket x$ will typically be written
         $\alpha_x$.
 
@@ -863,7 +968,7 @@
       %(See \cref{sec:solutions:unitarity} for the solution.)
     \end{exercise}
 
-      %We will use (sans-serif) capital roman letters to refer to quantum operations, in
+      %We will use (sans-serif) capital Latin letters to refer to quantum operations, in
       %  reference to their matrix representation.
       %(see \cref{tab:notation} for a summary of our notational conventions). 
     Whenever which qubit or qubit register
