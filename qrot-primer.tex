@@ -22,11 +22,12 @@
     similar. As a result, prose that may at times seem overly trivial or
     pedantic to one group of readers may serve to bring understanding to
     the other group of readers, so should you find a particular paragraph overly
-    trivial or overly dense, feel free to skip ahead (though you should try to
-    at least grasp the point the paragraph is getting at).\footnote{
-      The exception to the rule is \cref{sec:dirac}, which is written to be
-      confusing, because this stuff \emph{is} confusing!
-    }
+    trivial or overly dense, feel free to skip ahead.
+    %(though you should try to
+    %at least grasp the point the paragraph is getting at).\footnote{
+    %  The exception to the rule is \cref{sec:dirac}, which is written to be
+    %  confusing, because this stuff \emph{is} confusing!
+    %}
 
   Regardless of your background, the best way to get a \emph{feel} for the
     at-times esoteric rules of quantum logic is to play
@@ -967,7 +968,6 @@
       $\ket{\psi}_{\register}$, or even $\ket{\register}$.
 
   \subsection{Unitaries}\label{sec:unitaries}
-      \hhnote{readthrough cont.}
     Since we are working over finite-dimensional Hilbert spaces, 
       operations that evolve our quantum state vectors may be represented as 
       $N \times N$ matrices. What properties should they have?
@@ -976,11 +976,13 @@
       should yield another valid quantum state. 
       Since quantum states must be unit-norm, this means
       that any operation we perform on them
-      (other than measuring -- we will get back to that) 
+      (other than measuring -- we will get back to that in
+      \cref{sec:measurements}) 
       must be norm-preserving.
       This fact turns out to be sufficient
       to restrict the space of allowed operations to the unitary matrices,
       i.e.\ the set of invertible square matrices $\unitary$ that satisfy
+      $\unitary^\dagger \unitary = \idmatrix$, or in other words that 
       $\unitary^{-1} = \unitary^\dagger$.
 
     \begin{exercise}\label{ex:unitarity}
@@ -996,46 +998,48 @@
       %  reference to their matrix representation.
       %(see \cref{tab:notation} for a summary of our notational conventions). 
     Whenever which qubit or qubit register
-      operation is being applied to is not clear from context, we specify using
-      subscripts. For example, $\unitary_i$ would denote a
+      an operation is being applied to is not sufficiently clear from context, 
+      we can specify this via subscripts. For example, $\unitary_i$ would denote a
       single-qubit operation applied to qubit $i$, $\unitary_{i,j}$ would
       denote a two-qubit operation applied to qubit $i$ and $j$
       (where generally $\unitary_{i,j} \neq \unitary_{j,i}$), 
       and $\unitary_{\register}$ would denote an operation applied to
-      register $\register$.
+      the multi-qubit register $\register$.
 
-    It is also often useful to refer to operations in terms of the effect they have
-      on the state, and so we define $\ket{\psi} \apply{\unitary} \ket{\psi^\prime}$ to
-      mean that we transform the state according to 
-      $\ket{\psi} \to \ket{\psi^\prime} = \unitary \ket{\psi}$.
+    %It is also often useful to refer to operations in terms of the effect they have
+    %  on the state, and so we define $\ket{\psi} \apply{\unitary} \ket{\psi^\prime}$ to
+    %  mean that we transform the state according to 
+    %  $\ket{\psi} \to \ket{\psi^\prime} = \unitary \ket{\psi}$.
 
-    Here are some common, elementary qubit unitaries, known as single-qubit
-    \emph{gates}, in reference to the logic gates of logical circuits:
+    Here are some common single-qubit unitaries, or qubit
+      \emph{gates}, in reference to the logical gates of Boolean circuits:
     \[
       \Xgate = \begin{sqmatrix} 0 & 1 \\ 1 & 0 \end{sqmatrix}\, , \quad
       \Ygate = \begin{sqmatrix} 0 & -i \\ i & 0 \end{sqmatrix}\, , \quad
       \Zgate = \begin{sqmatrix} 1 & 0 \\ 0 & -1 \end{sqmatrix}\, , \quad
-      \Hgate = \frac{1}{\sqrt{2}} \begin{sqmatrix} 1 & 1 \\ 1 & -1 \end{sqmatrix}\, ,
+      \Hgate = \frac{1}{\sqrt{2}} \begin{sqmatrix} 1 & 1 \\ 1 & -1 \end{sqmatrix}\, .
     \]
-    %where the matrices shown are the computational-basis representations of the general
-    %  unitary transformations.
-    where $\Xgate$ is known as the ``not-gate'', and the $\Xgate, \Ygate,
-    \Zgate$ gates are collectively known as the Pauli matrices;
-    the $\Hgate$ is known as the Hadamard gate, and is the fundamental
-    superposition-generating gate.
+    The $\Xgate$ gate is also known as the ``not'' gate, since it has the effect
+    $\ket 0 \to \ket 1$, $\ket 1 \to \ket 0$; the $\Zgate$ gate is
+    known as the phase-flip gate, since it has the effect $\ket 0 \to \ket 0$,
+    $\ket 1 \to - \ket 1$); with the $\Ygate$ gate rarely referenced by name, as
+    it is equal to $i \Xgate \Zgate$;
+    finally, the $\Hgate$ gate is the Hadamard gate, and represents the
+    superposition-generating Hadamard transformation
+    that we already met in \cref{sec:uniform}.
 
-    \hhnote{todo: update given new Hadamard section}
     \begin{exercise}\label{ex:HadamardBasis}
-      Write a new truth table for $\Xgate$, $\Zgate$, and $\Hgate$, only now in
-      terms of the alternative ``Hadamard'' basis 
+      Write the effect of $\Xgate$, $\Zgate$, and $\Hgate$ on the
+      basis states of the Hadamard basis,
       \[
-        \left\{ \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}},\ 
-        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}} \right\}\, .
+        \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, ,\quad
+        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}\, .
       \]
-      Compare with the truth table from \cref{ex:truthtable}. What has changed?
+      Compare with the effect of each gate on the computational basis states. 
+      What has changed?
     \end{exercise}
 
-    Here is the most common two-qubit gate, known as the ``controlled-not'':
+    The most common two-qubit gate is the ``controlled-not'' gate:
     \[
       \CXgate = 
       \begin{sqmatrix} 
@@ -1045,23 +1049,16 @@
         0 & 0 & 1 & 0 
       \end{sqmatrix}\, .
     \]
-    \begin{exercise}\label{ex:truthtable}
-      Write down ``truth tables'' for each of the above gates by writing down
-      their effect on each of the computational basis states.
-      ($\ket{0} \apply{\Xgate} \ket{1}$, $\ket{00} \apply{\CXgate}
-      \ket{00}$, and so on.)
-    \end{exercise}
 
-    \hhnote{todo: update given new Hadamard section}
-    \begin{exercise}
-      Give the computational-basis matrix representation of the unitary
-      that has the same effect on the
-      Hadamard basis states (given in \cref{ex:HadamardBasis}) as
-      $\CXgate$ has on the computational basis. What should we call this
-      unitary, following the conventions introduced so far?
-    \end{exercise}
+    %\begin{exercise}\label{ex:truthtable}
+    %  Write down ``truth tables'' for each of the above gates by writing down
+    %  their effect on each of the computational basis states.
+    %  ($\ket{0} \apply{\Xgate} \ket{1}$, $\ket{00} \apply{\CXgate}
+    %  \ket{00}$, and so on.)
+    %\end{exercise}
+    %If you completed \cref{ex:HadamardBasis} and \cref{ex:cnotHadamard},
 
-
+    \hhnote{readthrough cont}
     You may have noticed that $\CXgate$ has the effect of 
       the first qubit \emph{controlling} an $\Xgate$ operation on the second
       qubit: if the starting state is $\ket{b_1 b_2}$, then the  
@@ -1069,6 +1066,13 @@
       acting like the identity otherwise. Crucially, unlike classical if-else
       logic, this ``check'' happens coherently, i.e.\ inside of the superposition --
       no need to measure the state and check.
+
+    \begin{exercise}\label{ex:cnotHadamard}
+      %Give the computational-basis matrix representation of the unitary
+      Find the unitary that has the same effect on the
+      Hadamard basis as $\CXgate$ has on the computational basis. 
+      What should we call this unitary?
+    \end{exercise}
 
     In fact, any operation $\unitary$ acting on $n$ qubits implies a controlled version $\unitary[CU]$ of the same
       operation acting on $n+1$ qubits. If the first qubit acts like a control for the rest, this will have the shape:
