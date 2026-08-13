@@ -202,7 +202,7 @@
         $\primitive$ whose security we want to express.
       	E.g., we might want to write an experiment to express that encryptions of a PKE scheme \PKE
       	are ``one-way'' in the sense that they are hard to invert without the secret key.
-      	To express this, the ``one-wayness under chosen-plaintext attacks'' game
+      	To express this, the ``\textbf{\underline{O}}ne-\textbf{\underline{W}}ayness under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' game
         \owcpa would encrypt a random plaintext message \chalmssg into a ciphertext \chalctxt,
       	hand \chalctxt to $\adv$,
       	have $\adv$ output a guess \advmssg,
@@ -211,11 +211,11 @@
 
       Security games are typically named by the convention that the letters
         preceding the hyphen defines a security \emph{goal} that we would like our 
-        primitive \primitive to achieve, and the letters after the hyphen lists the
+        primitive \primitive to achieve\khnote{use xspace in macro for \primitive}, and the letters after the hyphen lists the
         attack \emph{power} of the adversaries with respect to which it will
         achieve that security goal: so $\goalpow$. In the example of $\owcpa$, the
         \emph{goal} is the one-wayness of encryption, while the adversary's \emph{power} is
-        chosen plaintext attacks (CPA), i.e.\ the power to generate encryptions
+        chosen plaintext attacks (\pcnotionstyle{CPA}), i.e.\ the power to generate encryptions
         at will of any message it likes. Since this example deals with public-key
         encryption, this power is given for free, and so this is the minimal
         power that the adversary can have for a well-defined notion of PKE
@@ -298,7 +298,7 @@
         	\end{center}
         	\caption{\label{fig:example-game}
         		Example for a security game:
-        		The ``one-wayness under chosen plaintext attacks'' (\owcpa) game for
+        		``\textbf{\underline{O}}ne-\textbf{\underline{W}}ayness under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' (\owcpa) game for
             a PKE scheme with key generation $\KG$,
         		encryption algorithm $\Enc$, and supported message space $\Mspace$.
         	}
