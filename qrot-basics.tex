@@ -229,9 +229,9 @@
         This weakest notion for symmetric encryption might then be
         called \ownma, for ``no message attack''.
 
-      Since this definition of security is intended to be \emph{generic},
-      	meaning it can capture this type of security for \emph{any} kind of PKE scheme,
-      	the game's template uses abstract placeholders for the specifics of \PKE, like
+      Like all common definitions of security, the $\owcpa$ definition is intended to be \emph{generic},
+      	meaning it can capture this type of security for \emph{any} kind of PKE scheme.
+      	To account for that, the game's template uses abstract placeholders for the specifics of \PKE, like
       	\KG for the key generation, \Enc for the encryption algorithm,
       	and \Mspace for the space of messages that \PKE can encrypt.
       	If we want to express security of, say, ElGamal encryption, we would
