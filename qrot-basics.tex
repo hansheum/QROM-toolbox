@@ -222,7 +222,11 @@
         security. For other primitives the adversary
         could have less attack power: consider for example symmetric
         encryption, where you need to know the secret key to encrypt.
-        The weakest notion for symmetric encryption might then be
+        In other words, if attackers are not handed the secret key,
+        than they cannot produce encryptions on their own.
+        It would thus be plausible to formalize the idea that a symmetric scheme is one-way,
+        restricted to the requirement that the attacker never got to see an encryption.
+        This weakest notion for symmetric encryption might then be
         called \ownma, for ``no message attack''.
 
       Since this definition of security is intended to be \emph{generic},
