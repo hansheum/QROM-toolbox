@@ -209,26 +209,6 @@
         and return 1 if $\adv$ guessed the correct encrypted message (so if $\advmssg =
         \chalmssg$). This is the example formalized in \cref{fig:example-game}.
 
-      Security games are typically named by the convention that the letters
-        preceding the hyphen defines a security \emph{goal} that we would like our 
-        primitive \primitive to achieve\khnote{use xspace in macro for \primitive}, and the letters after the hyphen lists the
-        attack \emph{power} of the adversaries with respect to which it will
-        achieve that security goal: so $\goalpow$. In the example of $\owcpa$, the
-        \emph{goal} is the one-wayness of encryption, while the adversary's \emph{power} is
-        chosen plaintext attacks (\pcnotionstyle{CPA}), i.e.\ the power to generate encryptions
-        at will of any message it likes. Since this example deals with public-key
-        encryption, this power is given for free, and so this is the minimal
-        power that the adversary can have for a well-defined notion of PKE
-        security. For other primitives the adversary
-        could have less attack power: consider for example symmetric
-        encryption, where you need to know the secret key to encrypt.
-        In other words, if attackers are not handed the secret key,
-        than they cannot produce encryptions on their own.
-        It would thus be plausible to formalize the idea that a symmetric scheme is one-way,
-        restricted to the requirement that the attacker never got to see an encryption.
-        This weakest notion for symmetric encryption might then be
-        called \ownma, for ``no message attack''.
-
       Like all common definitions of security, the $\owcpa$ definition is intended to be \emph{generic},
       	meaning it can capture this type of security for \emph{any} kind of PKE scheme.
       	To account for that, the game's template uses abstract placeholders for the specifics of \PKE, like
@@ -245,6 +225,26 @@
         In that case, we will also say that adversary $\adv$ broke the
         $\experiment{Game}{}[]$ security of primitive $\primitive$.
         
+      Security games are typically named by the convention that the letters
+	      preceding the hyphen defines a security \emph{goal} that we would like our 
+	      primitive \primitive to achieve\khnote{use xspace in macro for \primitive}, and the letters after the hyphen lists the
+	      attack \emph{power} of the adversaries with respect to which it will
+	      achieve that security goal: so $\goalpow$. In the example of $\owcpa$, the
+	      \emph{goal} is the one-wayness of encryption, while the adversary's \emph{power} is
+	      chosen plaintext attacks (\pcnotionstyle{CPA}), i.e.\ the power to generate encryptions
+	      at will of any message it likes. Since this example deals with public-key
+	      encryption, this power is given for free, and so this is the minimal
+	      power that the adversary can have for a well-defined notion of PKE
+	      security. For other primitives the adversary
+	      could have less attack power: consider for example symmetric
+	      encryption, where you need to know the secret key to encrypt.
+	      In other words, if attackers are not handed the secret key,
+	      than they cannot produce encryptions on their own.
+	      It would thus be plausible to formalize the idea that a symmetric scheme is one-way,
+	      restricted to the requirement that the attacker never got to see an encryption.
+	      This weakest notion for symmetric encryption might then be
+	      called \ownma, for ``no message attack''.
+      
       \paragraph{The Strength of a Security Notion.}
         What do we mean when we say that a notion such as \ownma would be ``weak''? Well,
           in general the \emph{strength} of the notion scales with how ``easy'' it
