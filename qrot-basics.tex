@@ -248,12 +248,16 @@
       \paragraph{The Strength of a Security Notion.}
         What do we mean when we say that a notion such as \ownma would be ``weak''? Well,
           in general the \emph{strength} of the notion scales with how ``easy'' it
-          would be for a sufficiently strong adversary to win the game:
-          A security notion with a simpler \emph{goal}, such as guessing
+          would be for a sufficiently strong adversary to win the game.
+          As an example, look at a security notion for PKE with a simpler \emph{goal}, such as guessing
           which of two known messages are encrypted (this is known as
-          \emph{indistinguishability}, or \ind) is stronger than one with a more complex
+          \emph{indistinguishability}, or \ind). This is a stronger definition than one with a more complex
           goal, such as recovering the full message from scratch like in the above
-          example: We have lowered the bar for what counts as ``breaking'' the scheme, so if
+          example.
+          (You can convince yourself that any attacker who is capable of recovering the full message
+          can easily determine which of two known messages was encrypted,
+          by inverting the received ciphertext and seeing which of the two messages was recovered.)
+          We have lowered the bar for what counts as ``breaking'' the scheme. If
           no adversary can win at the easier game, then
           there certainly aren't any adversaries that can win at the harder one
           either. Hence, claiming security under an easier-to-break goal gives a
@@ -268,11 +272,13 @@
           The claim that the game \emph{still} can not be won by any adversary is
           stronger than claiming that it can not be won without this ability.
 
-        So: \ownma is a weaker notion of security than \owcpa, with \indcpa
-          stronger still. Meanwhile, \owcpa and \indnma would in general be
-          \emph{incomparable} in terms of strength: A symmetric encryption scheme
+        So: \ownma is a weaker notion of security than \owcpa, and \indcpa
+          is stronger than \owcpa (and thus also stronger than \ownma). 
+          Just for fun, you could also add \indnma to the zoo.
+          As it so happens, for \emph{symmetric} schemes, \owcpa and \indnma would in general be
+          \emph{incomparable} in terms of strength: A (symmetric) encryption scheme
           might be secure with respect to one notion while being
-          completely broken in terms of the other.\footnote{
+          completely broken in terms of the other!\footnote{
             It is a fun puzzle to try to come up with encryption schemes that exemplify this
             behaviour (secure under one notion, insecure under the other);
             a little creative thinking should allow you to find some. (Hint:
