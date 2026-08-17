@@ -328,29 +328,62 @@
         }
         
       \subsubsection{Advantages.}
-        Intuitively, a primitive $\primitive$ is ``broken'' if there exists an
-          ``efficient'' adversary (i.e., an ``efficient'' attack algorithm)
-	        that wins the game with a ``significant'' probability,
-	        and it is ``secure'' if no such adversary exists.
-	        (You could think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
-	    	  if we increase the construction's parameters, like, e.g., the key length.
-	    	  Similarly, you could think of ``significant'' probabilities as probabilities that do not speed-run towards 0
-	    	  upon parameter increase.)
+        When designing cryptographic constructions, we will sometimes find a design that is quite nice, but vulnerable ``in principle''.
+        By that we mean that in principle, there exists some theoretical attack (i.e., an attack algorithm) that would break the construction,
+        but it will never be useful in practice, because that attack 
+        \begin{itemize}
+        	\item is so slow that no-one can execute it in a reasonable amount of time, or
+        	\item  has so little chance at actually succeeding that no-one can execute it and reasonably hope to achieve anything.
+        \end{itemize}
+        Would we want to throw away that design just because there exists a theoretical attack that will never matter in practice?
+        That would be quite a waste.
+        % 
+        When studying the security of a primitive, we thus want to be able to draw a line between attacks that are
+        \begin{itemize}
+        	\item feasible or ``efficient'' (which we want to protect against); and ones that are
+        	\item infeasible or ``inefficient'' (which we don't need to care about),
+        \end{itemize}
+        so that we can express security against ``just the feasible attacks''.
+        %
+        Similarly, we want to be able to draw a line between attacks whose chances at success are 
+        \begin{itemize}
+        	\item dangerously high or ``significant''; and ones that are
+        	\item not credibly threatening or ``insignificant'',
+        \end{itemize}
+        so that we can express security against ``just the credibly threatening attacks''.
+        
+        Intuitively, a primitive $\primitive$ is considered ``broken'' if there exists an
+          ``efficient'' adversary 
+	        that wins the game with a ``significant'' probability.
+	        Conversely, $\primitive$ is ``secure'' if no such adversary exists.
+	        But what does it mean to be ``efficient'' or ``significant''?
+	        Intuitively, you can think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
+	    	if we increase the construction's parameters, like, e.g., the key length.
+	    	Similarly, you can think of ``significant'' probabilities as probabilities that do not speed-run towards 0
+	    	  upon parameter increase.
 
         Under the paradigm of \emph{asymptotic security}, one would identify
           ``efficient'' with ``scales as a polynomial in the security
-          parameter'', with similar definitions for ``significant''
-          probabilities. In practice, however, cryptographic designs need to
+          parameter'', and ``significant'' as ``decays faster than any inverse polynomial''.
+          As an example, if we have security parameter $\lambda$
+          and the attack has running time $\lambda^2$,
+          it is polynomial, meaning it does not blow up catastrophically and we classify it as ``efficient''.
+          If it is exponential, such as $2^\lambda$,
+          then it is super-polynomial and we discard is as too slow.
+          Similarly, we view a success probability $\nicefrac{1}{2^\lambda}$ as insignificant because it speed-runs towards 0,
+          whereas we view $\nicefrac{1}{\lambda^2}$ as ``significant''.
+        
+        In practice, however, cryptographic designs need to
           make concrete parameter choices,
 	        and such asymptotic notions do not necessarily help with assessing how secure the concrete design is in practice.
 	        We will thus follow the \emph{concrete security} approach, 
           expressing security via explicit bounds that relate the adversary’s
           resources to its probability of successfully breaking our scheme.
-          This success probability is captured by the notion of an \emph{advantage},
-          which could for example be the probability that an attacker can find the original
+          This success probability is captured by the notion of an \emph{advantage}.
+          In our prior example, this would be the probability that an attacker can find the original
           message \chalmssg belonging to a ciphertext \chalctxt.
           
-        How the advantages are defined depends on what kind of security
+        How the advantages are defined, concretely, depends on what kind of security
           notion we are talking about.
           The security notions we care about all fall into one of two categories:
         
@@ -377,12 +410,13 @@
         \end{itemize}
         
         \noindent
-        In ``distinguishing'' notions, any adversary can win with probability
-          $\half$ by simply making a random guess (since it will be in each of the
-          two worlds with equal probability).
-          Thus, we would like the adversary's \emph{advantage} to capture how much
+        In ``distinguishing'' notions, the security game often chooses one of the two scenarios, with equal probability.
+        Consequently, any adversary could win with probability
+          $\half$ by simply making a random guess.
+          We would like the adversary's \emph{advantage} to capture how much
           \emph{better} the adversary can do than randomly guessing.
-          There are several, equivalent ways to do this, and it will 
+          There are several ways to do this.
+          While they all are equivalent, it will 
           sometimes be useful to switch between them.
 
         One standard way of defining distinguishing advantages is the following:
@@ -399,12 +433,13 @@
           better than guessing) to $1$ (for strategies that always win),
           matching the ``finding'' case.
 
-        Equivalently, you could split the experiment into the two
-          to-be-distinguished scenarios.
+        Alternatively yet equivalently, you could split the experiment into the two
+          to-be-distinguished scenarios
+          and quantify how much more (un)likely it is that $\adv$ outputs $1$
+          in the one setting than the other.
           To do so, you can capture the outcome of the coin toss as a
           ``challenge bit'' $b$, condition the experiment on $b$,
-          and quantifying how much more (un)likely it is that $\adv$ outputs $1$
-          in the one setting than the other:
+          and set
           \[
           	\advantage{\distnotion}{\primitive} \coloneqq \abs{
           		\condprobsample{
@@ -433,7 +468,7 @@
 
       \noindent
       We again get a formula that scales from $0$ to $1$: If $\adv$ always
-        guesses, then the two probabilities are equal, and the advantage is $0$;
+        makes a random guess, then the two probabilities are equal, and the advantage is $0$;
         while if it always guesses correctly, then one of the two probabilities is
         $0$ and the other one is $1$, making for an advantage of $1$.
       
