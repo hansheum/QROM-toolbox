@@ -202,32 +202,16 @@
         $\primitive$ whose security we want to express.
       	E.g., we might want to write an experiment to express that encryptions of a PKE scheme \PKE
       	are ``one-way'' in the sense that they are hard to invert without the secret key.
-      	To express this, the ``one-wayness under chosen-plaintext attacks'' game
+      	To express this, the ``\textbf{\underline{O}}ne-\textbf{\underline{W}}ayness under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' game
         \owcpa would encrypt a random plaintext message \chalmssg into a ciphertext \chalctxt,
       	hand \chalctxt to $\adv$,
       	have $\adv$ output a guess \advmssg,
         and return 1 if $\adv$ guessed the correct encrypted message (so if $\advmssg =
         \chalmssg$). This is the example formalized in \cref{fig:example-game}.
 
-      Security games are typically named by the convention that the letters
-        preceding the hyphen defines a security \emph{goal} that we would like our 
-        primitive \primitive to achieve, and the letters after the hyphen lists the
-        attack \emph{power} of the adversaries with respect to which it will
-        achieve that security goal: so $\goalpow$. In the example of $\owcpa$, the
-        \emph{goal} is the one-wayness of encryption, while the adversary's \emph{power} is
-        chosen plaintext attacks (CPA), i.e.\ the power to generate encryptions
-        at will of any message it likes. Since this example deals with public-key
-        encryption, this power is given for free, and so this is the minimal
-        power that the adversary can have for a well-defined notion of PKE
-        security. For other primitives the adversary
-        could have less attack power: consider for example symmetric
-        encryption, where you need to know the secret key to encrypt.
-        The weakest notion for symmetric encryption might then be
-        called \ownma, for ``no message attack''.
-
-      Since this definition of security is intended to be \emph{generic},
-      	meaning it can capture this type of security for \emph{any} kind of PKE scheme,
-      	the game's template uses abstract placeholders for the specifics of \PKE, like
+      Like all common definitions of security, the $\owcpa$ definition is intended to be \emph{generic},
+      	meaning it can capture this type of security for \emph{any} kind of PKE scheme.
+      	To account for that, the game's template uses abstract placeholders for the specifics of \PKE, like
       	\KG for the key generation, \Enc for the encryption algorithm,
       	and \Mspace for the space of messages that \PKE can encrypt.
       	If we want to express security of, say, ElGamal encryption, we would
@@ -241,15 +225,39 @@
         In that case, we will also say that adversary $\adv$ broke the
         $\experiment{Game}{}[]$ security of primitive $\primitive$.
         
+      Security games are typically named by the convention that the letters
+	      preceding the hyphen defines a security \emph{goal} that we would like our 
+	      primitive \primitive to achieve\khnote{use xspace in macro for \primitive}, and the letters after the hyphen lists the
+	      attack \emph{power} of the adversaries with respect to which it will
+	      achieve that security goal: so $\goalpow$. In the example of $\owcpa$, the
+	      \emph{goal} is the one-wayness of encryption, while the adversary's \emph{power} is
+	      chosen plaintext attacks (\pcnotionstyle{CPA}), i.e.\ the power to generate encryptions
+	      at will of any message it likes. Since this example deals with public-key
+	      encryption, this power is given for free, and so this is the minimal
+	      power that the adversary can have for a well-defined notion of PKE
+	      security. For other primitives the adversary
+	      could have less attack power: consider for example symmetric
+	      encryption, where you need to know the secret key to encrypt.
+	      In other words, if attackers are not handed the secret key,
+	      than they cannot produce encryptions on their own.
+	      It would thus be plausible to formalize the idea that a symmetric scheme is one-way,
+	      restricted to the requirement that the attacker never got to see an encryption.
+	      This weakest notion for symmetric encryption might then be
+	      called \ownma, for ``no message attack''.
+      
       \paragraph{The Strength of a Security Notion.}
         What do we mean when we say that a notion such as \ownma would be ``weak''? Well,
           in general the \emph{strength} of the notion scales with how ``easy'' it
-          would be for a sufficiently strong adversary to win the game:
-          A security notion with a simpler \emph{goal}, such as guessing
+          would be for a sufficiently strong adversary to win the game.
+          As an example, look at a security notion for PKE with a simpler \emph{goal}, such as guessing
           which of two known messages are encrypted (this is known as
-          \emph{indistinguishability}, or \ind) is stronger than one with a more complex
+          \emph{indistinguishability}, or \ind). This is a stronger definition than one with a more complex
           goal, such as recovering the full message from scratch like in the above
-          example: We have lowered the bar for what counts as ``breaking'' the scheme, so if
+          example.
+          (You can convince yourself that any attacker who is capable of recovering the full message
+          can easily determine which of two known messages was encrypted,
+          by inverting the received ciphertext and seeing which of the two messages was recovered.)
+          We have lowered the bar for what counts as ``breaking'' the scheme. If
           no adversary can win at the easier game, then
           there certainly aren't any adversaries that can win at the harder one
           either. Hence, claiming security under an easier-to-break goal gives a
@@ -264,11 +272,13 @@
           The claim that the game \emph{still} can not be won by any adversary is
           stronger than claiming that it can not be won without this ability.
 
-        So: \ownma is a weaker notion of security than \owcpa, with \indcpa
-          stronger still. Meanwhile, \owcpa and \indnma would in general be
-          \emph{incomparable} in terms of strength: A symmetric encryption scheme
+        So: \ownma is a weaker notion of security than \owcpa, and \indcpa
+          is stronger than \owcpa (and thus also stronger than \ownma). 
+          Just for fun, you could also add \indnma to the zoo.
+          As it so happens, for \emph{symmetric} schemes, \owcpa and \indnma would in general be
+          \emph{incomparable} in terms of strength: A (symmetric) encryption scheme
           might be secure with respect to one notion while being
-          completely broken in terms of the other.\footnote{
+          completely broken in terms of the other!\footnote{
             It is a fun puzzle to try to come up with encryption schemes that exemplify this
             behaviour (secure under one notion, insecure under the other);
             a little creative thinking should allow you to find some. (Hint:
@@ -298,7 +308,7 @@
         	\end{center}
         	\caption{\label{fig:example-game}
         		Example for a security game:
-        		The ``one-wayness under chosen plaintext attacks'' (\owcpa) game for
+        		``\textbf{\underline{O}}ne-\textbf{\underline{W}}ayness under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' (\owcpa) game for
             a PKE scheme with key generation $\KG$,
         		encryption algorithm $\Enc$, and supported message space $\Mspace$.
         	}
@@ -318,29 +328,62 @@
         }
         
       \subsubsection{Advantages.}
-        Intuitively, a primitive $\primitive$ is ``broken'' if there exists an
-          ``efficient'' adversary (i.e., an ``efficient'' attack algorithm)
-	        that wins the game with a ``significant'' probability,
-	        and it is ``secure'' if no such adversary exists.
-	        (You could think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
-	    	  if we increase the construction's parameters, like, e.g., the key length.
-	    	  Similarly, you could think of ``significant'' probabilities as probabilities that do not speed-run towards 0
-	    	  upon parameter increase.)
+        When designing cryptographic constructions, we will sometimes find a design that is quite nice, but vulnerable ``in principle''.
+        By that we mean that in principle, there exists some theoretical attack (i.e., an attack algorithm) that would break the construction,
+        but it will never be useful in practice, because that attack 
+        \begin{itemize}
+        	\item is so slow that no-one can execute it in a reasonable amount of time, or
+        	\item  has so little chance at actually succeeding that no-one can execute it and reasonably hope to achieve anything.
+        \end{itemize}
+        Would we want to throw away that design just because there exists a theoretical attack that will never matter in practice?
+        That would be quite a waste.
+        % 
+        When studying the security of a primitive, we thus want to be able to draw a line between attacks that are
+        \begin{itemize}
+        	\item feasible or ``efficient'' (which we want to protect against); and ones that are
+        	\item infeasible or ``inefficient'' (which we don't need to care about),
+        \end{itemize}
+        so that we can express security against ``just the feasible attacks''.
+        %
+        Similarly, we want to be able to draw a line between attacks whose chances at success are 
+        \begin{itemize}
+        	\item dangerously high or ``significant''; and ones that are
+        	\item not credibly threatening or ``insignificant'',
+        \end{itemize}
+        so that we can express security against ``just the credibly threatening attacks''.
+        
+        Intuitively, a primitive $\primitive$ is considered ``broken'' if there exists an
+          ``efficient'' adversary 
+	        that wins the game with a ``significant'' probability.
+	        Conversely, $\primitive$ is ``secure'' if no such adversary exists.
+	        But what does it mean to be ``efficient'' or ``significant''?
+	        Intuitively, you can think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
+	    	if we increase the construction's parameters, like, e.g., the key length.
+	    	Similarly, you can think of ``significant'' probabilities as probabilities that do not speed-run towards 0
+	    	  upon parameter increase.
 
         Under the paradigm of \emph{asymptotic security}, one would identify
           ``efficient'' with ``scales as a polynomial in the security
-          parameter'', with similar definitions for ``significant''
-          probabilities. In practice, however, cryptographic designs need to
+          parameter'', and ``significant'' as ``decays faster than any inverse polynomial''.
+          As an example, if we have security parameter $\lambda$
+          and the attack has running time $\lambda^2$,
+          it is polynomial, meaning it does not blow up catastrophically and we classify it as ``efficient''.
+          If it is exponential, such as $2^\lambda$,
+          then it is super-polynomial and we discard is as too slow.
+          Similarly, we view a success probability $\nicefrac{1}{2^\lambda}$ as insignificant because it speed-runs towards 0,
+          whereas we view $\nicefrac{1}{\lambda^2}$ as ``significant''.
+        
+        In practice, however, cryptographic designs need to
           make concrete parameter choices,
 	        and such asymptotic notions do not necessarily help with assessing how secure the concrete design is in practice.
 	        We will thus follow the \emph{concrete security} approach, 
           expressing security via explicit bounds that relate the adversary’s
           resources to its probability of successfully breaking our scheme.
-          This success probability is captured by the notion of an \emph{advantage},
-          which could for example be the probability that an attacker can find the original
+          This success probability is captured by the notion of an \emph{advantage}.
+          In our prior example, this would be the probability that an attacker can find the original
           message \chalmssg belonging to a ciphertext \chalctxt.
           
-        How the advantages are defined depends on what kind of security
+        How the advantages are defined, concretely, depends on what kind of security
           notion we are talking about.
           The security notions we care about all fall into one of two categories:
         
@@ -367,12 +410,13 @@
         \end{itemize}
         
         \noindent
-        In ``distinguishing'' notions, any adversary can win with probability
-          $\half$ by simply making a random guess (since it will be in each of the
-          two worlds with equal probability).
-          Thus, we would like the adversary's \emph{advantage} to capture how much
+        In ``distinguishing'' notions, the security game often chooses one of the two scenarios, with equal probability.
+        Consequently, any adversary could win with probability
+          $\half$ by simply making a random guess.
+          We would like the adversary's \emph{advantage} to capture how much
           \emph{better} the adversary can do than randomly guessing.
-          There are several, equivalent ways to do this, and it will 
+          There are several ways to do this.
+          While they all are equivalent, it will 
           sometimes be useful to switch between them.
 
         One standard way of defining distinguishing advantages is the following:
@@ -389,12 +433,13 @@
           better than guessing) to $1$ (for strategies that always win),
           matching the ``finding'' case.
 
-        Equivalently, you could split the experiment into the two
-          to-be-distinguished scenarios.
+        Alternatively yet equivalently, you could split the experiment into the two
+          to-be-distinguished scenarios
+          and quantify how much more (un)likely it is that $\adv$ outputs $1$
+          in the one setting than the other.
           To do so, you can capture the outcome of the coin toss as a
           ``challenge bit'' $b$, condition the experiment on $b$,
-          and quantifying how much more (un)likely it is that $\adv$ outputs $1$
-          in the one setting than the other:
+          and set
           \[
           	\advantage{\distnotion}{\primitive} \coloneqq \abs{
           		\condprobsample{
@@ -423,7 +468,7 @@
 
       \noindent
       We again get a formula that scales from $0$ to $1$: If $\adv$ always
-        guesses, then the two probabilities are equal, and the advantage is $0$;
+        makes a random guess, then the two probabilities are equal, and the advantage is $0$;
         while if it always guesses correctly, then one of the two probabilities is
         $0$ and the other one is $1$, making for an advantage of $1$.
       
@@ -511,11 +556,11 @@
           (\pk,\sk) \sample \KG, \ctxt \sample \Enc_\pk(\mssg)
         }{
           \Dec_\sk(\ctxt) = \mssg
-        } = 1\, ,
+        } = 1\, .
       \]
 
       \noindent
-      and we also require perfect
+      We also require perfect
       \emph{rigidity}~\cite{EPRINT:BerPer18,EC:HHMS25}, which can be thought of
       as the reverse direction of perfect correctness,
       and which says that there are no ciphertexts in $\CSpace$ that successfully decrypt
@@ -557,8 +602,10 @@
 	    \end{definition}
 
       \noindent
-      It is easy to see that a KEM can be built from any PKE, by first sampling
-        a symmetric key and then encrypting it. In the other direction, a PKE can be built
+      It is easy to see that at least syntactically, a KEM can be built from any PKE, by first sampling
+        a symmetric key and then encrypting it. 
+        \khnote{Sure, syntactically. But is it secure? ;P }
+        In the other direction, a PKE can be built
         from a KEM by combining it with any symmetric encryption scheme (such as
         AES), so that the KEM encapsulates a symmetric key, and the symmetric
         scheme encrypts the message. In this context, the symmetric scheme
@@ -594,6 +641,7 @@
     \subsubsection{PKE Security.}
       There are many ways that one could define security for
         public-key encryption, but a few have emerged as standard.
+        \khnote{Suggestion to move the security notions to the corresponding primitives}
 
       \paragraph{One-Wayness.}
         At minimum, a secure PKE scheme must hide the message being encrypted.
@@ -601,6 +649,7 @@
           or $\owcpa$, where ``under Chosen-Plaintext Attacks'' is simply
           to say that anyone with access to a public key can use it to generate
           ciphertexts for any message they wish.
+          (In other words, the \pcnotionstyle{CPA} capability comes for free.)
 
         The one-wayness game is shown to the left in \cref{fig:pke-games}. As
           you can see, the game is defined in pseudocode. With experience, you
@@ -609,20 +658,20 @@
           here are a few things to notice:
           \begin{itemize}
             \item The encrypted message $\mssg$ is sampled uniformly at random 
-              at the start of the game, before the adversary is ever invoked,
-              and so the adversary can not influence the distribution that the
+              at the start of the game, before the adversary $\adv$ is ever invoked,
+              and so $\adv$ can not influence the distribution that the
               message was sampled from at all.
               This should be considered a weakness of the notion, since less
               adversarial power $\to$ weaker security guarantees:
-              What if some messages are known to give insecure ciphertexts?
-            \item The adversary (who is a Turing machine) is called as a subroutine exactly
-              once in a black-box manner, meaning that once they are given an input,
-              the game only continues once they halt with an output. Also
-              notice that the adversary is not given access to any oracles.
-            \item The adversary is only given a single challenge ciphertext, in
-              addition to the public key. More general security notions might
-              allow the adversary to receive many challenge ciphertexts, and maybe even
-              multiple public keys, and allow it to win if it reverses any one of them.
+              What if $\adv$ can influence the choice of message somehow and some messages are known to give insecure ciphertexts?
+            \item The adversary $\adv$ (who is a Turing machine) is called as a subroutine exactly
+              once in a black-box manner, meaning that once $\adv$ is given an input,
+              the game only continues once $\adv$ halts with an output. 
+            \item The adversary is only given a single challenge    
+              ciphertext, in addition to the public key.
+              More general security notions might allow $\adv$ to receive many challenge ciphertexts, and maybe even multiple public keys, and allow $\adv$ to win if it reverses any one of them.
+            \item  Also notice that $\adv$ is not given any information
+              beyond the public key and the challenge ciphertext it is tasked with breaking. In particular, it is not given access to any additional oracles that provide extra capabilities, such as, e.g., an oracle that the attacker can invoke to obtain decryptions.
           \end{itemize}
 
         \begin{definition}[OW-CPA]\label{def:owcpa}
@@ -634,14 +683,12 @@
         \end{definition}
 
         \newcommand{\skucpa}{\pcnotionstyle{SKU}\hy\cpa}
-        One question that one might ask is, in terms of computational security
-          notions for public-key encryption, is it not more natural to define a
-          game where the adversary wins if it can compute the secret key from the public key? 
+        You might wonder if it would not be a more natural notion
+          for PKE that is is hard to compute the secret key from the public key? 
           Well, this is a perfectly valid notion of security---let's call
-          it SKU, for ``Secret-Key Unrecoverability''. 
+          it \pcnotionstyle{SKU}, for ``\textbf{\underline{S}}ecret-\textbf{\underline{K}}ey \textbf{\underline{U}}nrecoverability''. 
           As before, since anyone can encrypt messages, 
-          the adversary has the power of Chosen-Plaintext Attacks, and so we get
-          the security notion $\skucpa$.
+          the adversary has the power of Chosen-Plaintext Attacks, this leads to security notion $\skucpa$.
 
         Notice, though, that anyone who can compute the secret key from the public
           key, can also decrypt any ciphertext that were created using that public
@@ -650,33 +697,33 @@
           the opposite does not seem to hold in general (since there might be
           ways to attack a ciphertext that does not rely on knowing the secret
           key). Hence, $\owcpa$ gives a \emph{stronger} security guarantee than
-          $\skucpa$, since if one-wayness is satisfied, then 
+          $\skucpa$ -- if one-wayness is satisfied, then 
           secret-key unrecoverability must also be satisfied.
           We say that $\owcpa$ \emph{implies} $\skucpa$.
 
-        Proving implications like the above is one of the core activities of provable
-          security, so though the statement may seem trivial, let's try our hand
-          at proving it.
-
+        
     \paragraph{Indistinguishability.}
-      \hhnote{outdated under}
 
-      The standard notion of security for public-key encryption is 
-        ``Indistinguishability under Chosen-Ciphertext Attacks'', or $\indcca$,
-        but for the sake of this tutorial we will stick to the weaker but simpler
-        ``Indistinguishability under Chosen-\emph{Plaintext} Attacks'' ($\indcpa$). Since
-        this is public-key encryption, any adversary can generate as many
-        encryptions it wants of whatever message it chooses, so the ``CPA'' 
-        capability is provided for free. (For symmetric schemes, this would
+      Another standard notion of security for public-key encryption is 
+%        ``\textbf{\underline{Ind}}istinguishability under \textbf{\underline{C}}hosen-\textbf{\underline{C}}iphertext \textbf{\underline{A}}ttacks'', or $\indcca$,
+%        but for the sake of this tutorial we will stick to the weaker but simpler
+        \textbf{\underline{Ind}}istinguishability under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' ($\indcpa$).
+        Again, the \pcnotionstyle{CPA} capability comes for free since
+        with public-key encryption, any adversary can generate as many
+        encryptions as it wants, for whatever message it chooses.
+        (For symmetric schemes, this would
         have to be provided via an encryption oracle.)
-        % Eh, it gets this anyway, by letting m0 = m1, making the point moot.
 
-      On the left of \cref{fig:ind-ow} is the experiment
+      On the left of \cref{fig:ind-ow} \khnote{missing ref}
+      is the experiment
         defining our (single-user) $\indcpa$ security notion. The game starts by sampling
-        parameters $\params$, a keypair
+        parameters $\params$,
+        \khnote{why suddenly parameters?}
+        a keypair
         $(\pk,\sk)$, and a challenge bit $\chalbit$, before handing the public
         key to the adversary $\adv$. If the construction in question uses a
         random oracle $\RO$, then $\adv$ also gets oracle access to $\RO$.
+        \khnote{We never mentioned ROs, in particular not in the OW notion, why suddenly here? I'd completely gloss over ROs for now.}   
 
       At some point, the adversary decides on two equal-length messages
         $\mssg_0$ and $\mssg_1$, and call its \emph{challenge encryption} oracle $\Oenc$
@@ -687,8 +734,9 @@
         special ``fail'' symbol $\fail$ instead; this is due to the
         assertion that a scheme should be considered
         secure even if ciphertexts leak information about message lengths.
-        In fact, you may notice from \cref{fig:bre} that
-        our BRE scheme leaks the message length exactly, since $\demctxt$
+        In fact, you may notice from \cref{fig:bre} \khnote{missing ref}
+        that
+        our BRE scheme \khnote{undefined?} leaks the message length exactly, since $\demctxt$
         must necessarily have the same length as $\mssg$.
 
       We are in the \emph{multi-challenge} setting, and so the adversary may
@@ -882,6 +930,18 @@
         to find two inputs with the same fingerprint. 
 
   \subsection{Reductions}
+  
+  	While looking at security notions for PKE, we saw that some notions can be related in a way.
+  	As one example, we argued that $\owcpa$ \emph{implies} $\skucpa$ -- if one-wayness is satisfied, then 
+  	secret-key unrecoverability must also be satisfied.
+  	As another example, we argued that $\owcpa$ \emph{implies} $\indcpa$ -- if indistinguishability is satisfied, then 
+  	one-wayness must also be satisfied.
+  	
+  	Proving implications like the above is one of the core activities of provable security.
+  	\khnote{I still wanna add motivation here}
+  	So though the statement may seem trivial, let's try our hand
+  	at proving it.
+  	
     The main tool we have in proving security is that of a \emph{security
       reduction} (\ldots)
     

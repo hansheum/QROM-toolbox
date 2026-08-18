@@ -22,6 +22,11 @@
   \tutorialtrue
   %\tutorialfalse
 
+\newif\ifMarginsForTodo % adapts margins for non-inline todonotes
+\MarginsForTodotrue
+%\MarginsForTodofalse
+
+
 %%% BEGINNING OF DO NOT EDIT ZONE %%%
 
 \newif\ifsubmission % best not to manually change this flag
@@ -197,7 +202,7 @@
 \definechangesauthor[name={Hans}, color=darkgreen]{HH}
 
 \newcommand{\hhnote}[2][]{\todo[inline,color=Linen]{\textbf{Hans:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
-\newcommand{\khnote}[2][]{\todo[inline,color=violet,textcolor=white]{\textbf{Kathrin:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
+\newcommand{\khnote}[2][]{\todo[color=violet,textcolor=white]{\small\textbf{K:} \if!#1! #2 \else (#1)\\ #2\fi}\xspace}
 \newcommand{\revnote}[1]{\todo[inline]{\textbf{Reviewer:} #1}\xspace}
 
 \newcommand\todoenum[2][]{\todo[inline,color=Cornsilk,caption={2do}]{
@@ -277,6 +282,15 @@
 % \newcommand{\defer}[1]{Appendix~\ref{#1}}   %full version
 \newcommand{\defer}[1]{\ref{#1}}              %submission
 % \newcommand{\defer}[1]{the full version}      %camera ready
+
+
+% Change the paper format so I can do non-inline comments
+\ifMarginsForTodo 
+	\paperwidth=\dimexpr \paperwidth + 4cm\relax
+	\oddsidemargin=\dimexpr\oddsidemargin + 2cm\relax
+	\evensidemargin=\dimexpr\evensidemargin + 2cm\relax
+	\marginparwidth=\dimexpr \marginparwidth + 1cm\relax
+\fi 
 
 % Start of document
 %-------------------------------------------------------------------------------%
