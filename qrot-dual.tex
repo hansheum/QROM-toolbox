@@ -1,0 +1,77 @@
+\section{The Dual-Alphabet System of Notation}\label{sec:dual}
+  \subsection{Dual Alphabets}
+    We introduce the dual-alphabet notation, which allows us to reason about qubit
+      states in both the computational and the Hadamard basis without the need to
+      explicitly apply the Hadamard transformation every time.
+
+     Recall the the Hadamard basis states $\ket +$ and $\ket -$. For 
+      $b \in \{0,1\}$, define
+      \[
+        \ket{\hat{b}} \coloneqq \frac{\ket 0 + (-1)^b \ket 1}{\sqrt 2}\, ,
+      \]
+      i.e.\ $\ket{\hat{b}} = \ket +$ if $b=0$, and $\ket{\hat{b}} = \ket -$ if
+      $b=1$. Thus, we are invited to think of the variable $\hat{b}$ as a bit
+      defined over the alphabet $\{+,-\}$ in place of our usual alphabet $\{0,1\}$.
+
+    In other words, we may identify the Hadamard basis states $\ket +$ and 
+      $\ket -$ with the states $\ket{\hat{0}}$ and $\ket{\hat{1}}$. Notice how
+      this generalizes to multiple qubits: Hadamard-transforming a
+      computational basis state $\ket{x} = \ket{101 \ldots 01}$ is just 
+      applying Hadamard gates to each qubit individually, so this yields the state
+      $\ket{- + - \ldots + -} = \ket{\hat{1} \hat{0} \hat{1} \ldots \hat{0}
+      \hat{1}} \eqqcolon \ket{\hat{x}}$, where we now have a bitstring 
+      $\hat{x}$ defined over the dual alphabet, $\hat{x} \in \{+,-\}^n$.
+
+    As you may know, the computational basis and Hadamard basis really are
+      \emph{dual} bases (in the sense that they are mutually unbiased bases),
+      and hence so are their alphabets: Writing out the state $\ket{\hat{x}}$ in
+      terms of the computational basis, we have:
+    \[
+      \ket{\hat{x}} = 2^{-\nicefrac{n}{2}} \sum_{y} (-1)^{x \cdot
+      y} \ket{y}\, .
+    \]
+    This identity also holds the other way around:
+    \[
+      \ket{x} = 2^{-\nicefrac{n}{2}} \sum_{y} (-1)^{x \cdot
+      y} \ket{\hat{y}}\, .
+    \]
+    In particular, for the single-qubit states:
+    \[
+      \ket{b} = \frac{\ket{\hat{0}} + (-1)^b \ket{\hat{1}}}{\sqrt 2}
+      = \frac{\ket{+} + (-1)^b \ket{-}}{\sqrt 2}\, .
+    \]
+    Being able to apply this translation on the fly, expressing any given state
+    under whichever alphabet it is most simply expressed, will turn out to be very
+    useful in simplifying intermediate calculations. As a bonus, it brings to
+    the forefront many of the unique aspects that separate quantum algorithms
+    from classical ones!
+
+  \subsection{Dual-Alphabet Pseudocode}
+    We have introduced the notation $\register[B] \xstore \register[A]$ for the
+      operation that, if register $\register[A]$ is in state $\ket a$ and
+      register $\register[B]$ is in state $\ket b$, applies the operation 
+      \[
+        \ket{a,b} \to \ket{a, b \xor a}\, .
+      \]
+      If $a$ and $b$ are bits, $a,b \in \{0,1\}$, then this is just a CNOT
+      operation from register $\register[A]$ to register $\register[B]$.
+
+    What is the equivalent operation for Hadamard states? Well, you may be aware
+      that the $\Zgate$ gate plays the role of the $\Xgate$ gate in the Hadamard
+      basis; in fact, $\Zgate$ and $\Xgate$ switch roles exactly when moving
+      between bases:
+      \begin{align*}
+        \ket{0} \apply{\Xgate} \ket{1}\, ,\ \ket{1} \apply{\Xgate} \ket{0} 
+          &\qquad \ket{0} \apply{\Zgate} \ket{0}\, ,\ \ket{1} \apply{\Zgate} -\ket{1} \\
+        \ket{+} \apply{\Zgate} \ket{-}\, ,\ \ket{-} \apply{\Zgate} \ket{+}
+          &\qquad \ket{+} \apply{\Xgate} \ket{+}\, ,\ \ket{-} \apply{\Xgate} -\ket{-}
+      \end{align*}
+      which in our notation may be written more succinctly as
+      \begin{align*}
+        \ket{b} \apply{\Xgate} \ket{b \xor 1}\, &,\quad \ket{b} \apply{\Zgate} (-1)^b \ket{b} \\
+        \ket{\hat{b}} \apply{\Zgate} \ket{\hat{b} \xor \hat{1}}\, &,\quad \ket{\hat{b}} \apply{\Xgate} (-1)^b \ket{\hat{b}}
+      \end{align*}
+
+  \subsection{Grover's Algorithm}
+    As a demonstration of the expressiveness of the dual-alphabet system of
+      notation, 
