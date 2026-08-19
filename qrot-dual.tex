@@ -1,4 +1,4 @@
-\section{The Dual-Alphabet System of Notation}\label{sec:dual}
+\section{Dual-Alphabet Notation}\label{sec:dual}
   \hhnote{
     New convention is that hats only appear as labels.
     Let's see if that suffices, or if we still get in trouble.
@@ -78,15 +78,22 @@
       operation that, if register $\register[A]$ is in state $\ket a$ and
       register $\register[B]$ is in state $\ket b$, applies the operation 
       \[
-        \ket{a,b} \to \ket{a, b \xor a}\, .
+        \ket{a,b}_{\register[AB]} \to \ket{a, b \xor a}_{\register[AB]}\, .
       \]
       If $a$ and $b$ are bits, $a,b \in \{0,1\}$, then this is just a CNOT
-      operation from register $\register[A]$ to register $\register[B]$.
+      from register $\register[A]$ to register $\register[B]$.
+      On the other hand, for any function $f$ that we know how to compute, 
+      writing $\register[B] \xstore f(\register[A])$ denotes the standard 
+      reversible funciton evaluation 
+      \[
+        \ket{a,b}_{\register[AB]} \to \ket{a, b \xor f(a)}_{\register[AB]}\, .
+      \]
 
-    What is the equivalent operation for Hadamard states? Well, you may be aware
-      that the $\Zgate$ gate plays the role of the $\Xgate$ gate in the Hadamard
-      basis; in fact, $\Zgate$ and $\Xgate$ switch roles exactly when moving
-      between bases:
+    What are the equivalent operations for Hadamard-basis states? Well, we know
+      that the $\Zgate$ (phase-flip) gate plays the role of the $\Xgate$ (not)
+      gate in the Hadamard basis; in fact, with the bases being dual, $\Zgate$
+      and $\Xgate$ switch roles exactly when moving between the computational
+      and Hadamard bases:
       \begin{align*}
         \ket{0} \apply{\Xgate} \ket{1}\, ,\ \ket{1} \apply{\Xgate} \ket{0} 
           &\qquad \ket{0} \apply{\Zgate} \ket{0}\, ,\ \ket{1} \apply{\Zgate} -\ket{1} \\
@@ -98,10 +105,46 @@
         \ket{b} \apply{\Xgate} \ket{b \xor 1}\, &,\quad \ket{b} \apply{\Zgate} (-1)^b \ket{b} \\
         \ket{\hat{b}} \apply{\Zgate} \ket{\hat{b} \xor \hat{1}}\, &,\quad \ket{\hat{b}} \apply{\Xgate} (-1)^b \ket{\hat{b}}
       \end{align*}
+      Staying with single-qubit states for now, we want to identify the
+      equivalent of the CNOT operation,
+      a.k.a.\ $\CXgate$, in the Hadamard domain, i.e.\ the operation
+      \[
+        \ket{\hat{a}, \hat{b}} \to \ket{\hat{a}, \hat{b} \xor \hat{a}}\, .
+      \]
+      This \emph{almost} looks like a controlled-$\Zgate$, or $\CZgate$, except that we
+      are controlling on $\ket{\hat a} = \ket{\hat 1}$, in other words that
+      register $\register[A]$ is in state $\ket{-}$. Call this operation
+      $\hCZgate$; it is defined as:
+      \[
+        \hCZgate_{\register[AB]} = 
+          \ketbra{+}_{\register[A]} \otimes \unitary[I]_{\register[B]}
+          + \ketbra{-}_{\register[A]} \otimes \Zgate_{\register[B]}\, ,
+      \]
+      i.e.\ the unitary that applies $\Zgate$ to register $\register[B]$
+        if register $\register[A]$ is in the state $\ket -$, and acts as the identity
+        otherwise. Let us see explicitly what happens when we apply $\hCZgate$
+        to the state $\ket{\hat a, \hat b}$:
+      \begin{multline*}
+        \hCZgate \ket{\hat a, \hat b} 
+          = \hCZgate \ket{\hat a} \left( \frac{\ket 0 + (-1)^b \ket 1}{\sqrt 2} \right)
+          = \ket{\hat a} \left( \frac{\ket 0 + (-1)^a(-1)^b \ket 1}{\sqrt 2} \right) \\
+          = \ket{\hat a} \left( \frac{\ket 0 + (-1)^{a \xor b} \ket 1}{\sqrt 2} \right)
+          = \ket{\hat a, \widehat{b \xor a}} \eqqcolon \ket{\hat a, \hat{b} \xor \hat{a}}\, ,
+      \end{multline*}
+      where we have defined the xor between two dual-alphabet strings 
+        $\hat a \xor \hat b$ to be the dual-alphabet translation of the
+        xored value $a \xor b$. We have found the operation we sought: The dual-domain
+        equivalent of the CNOT (or $\CXgate$) operation. (This is perhaps even
+        more easily seen if we write $\Zgate = \hat{\Xgate}$, in which case
+        $\hCZgate$ just becomes $\hat{\unitary[C]}\hat\Xgate$.)
+
+      Going back to multi-qubit states,
 
   \subsection{Grover's Algorithm}
-    As a demonstration of the expressiveness of the dual-alphabet system of
-      notation, 
+    We next provide demonstrations of the helpfulness and expressiveness of the
+      dual-alphabet system of notation.
+    \subsubsection{Compressed Oracles}
+    \subsubsection{Grover's Algorithm}
 
   \subsection{The Primer Paragraphs}
     \hhnote{
