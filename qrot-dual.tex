@@ -1,50 +1,77 @@
 \section{The Dual-Alphabet System of Notation}\label{sec:dual}
+  \hhnote{
+    New convention is that hats only appear as labels.
+    Let's see if that suffices, or if we still get in trouble.
+  }
   \subsection{Dual Alphabets}
     We introduce the dual-alphabet notation, which allows us to reason about qubit
-      states in both the computational and the Hadamard basis without the need to
+      states in both the computational and the Hadamard basis without having to
       explicitly apply the Hadamard transformation every time.
-
-     Recall the the Hadamard basis states $\ket +$ and $\ket -$. For 
-      $b \in \{0,1\}$, define
+      Recall the the Hadamard basis states: 
+      \[
+        \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, ,\quad
+        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}\, .
+      \]
+      For $b \in \{0,1\}$, define the state
       \[
         \ket{\hat{b}} \coloneqq \frac{\ket 0 + (-1)^b \ket 1}{\sqrt 2}\, ,
       \]
       i.e.\ $\ket{\hat{b}} = \ket +$ if $b=0$, and $\ket{\hat{b}} = \ket -$ if
-      $b=1$. Thus, we are invited to think of the variable $\hat{b}$ as a bit
-      defined over the alphabet $\{+,-\}$ in place of our usual alphabet $\{0,1\}$.
+      $b=1$. Notice how we are invited to think of the variable $\hat{b}$ as a bit
+      defined over the alphabet $\{\hat 0, \hat 1 \} \coloneqq \{+,-\}$, in place
+      of our usual alphabet $\{0,1\}$, since $\ket{\hat 0} = \ket +$ and 
+      $\ket{\hat 1} = \ket -$. We will refer to this as the \emph{dual} alphabet.
 
-    In other words, we may identify the Hadamard basis states $\ket +$ and 
-      $\ket -$ with the states $\ket{\hat{0}}$ and $\ket{\hat{1}}$. Notice how
-      this generalizes to multiple qubits: Hadamard-transforming a
-      computational basis state $\ket{x} = \ket{101 \ldots 01}$ is just 
-      applying Hadamard gates to each qubit individually, so this yields the state
-      $\ket{- + - \ldots + -} = \ket{\hat{1} \hat{0} \hat{1} \ldots \hat{0}
-      \hat{1}} \eqqcolon \ket{\hat{x}}$, where we now have a bitstring 
-      $\hat{x}$ defined over the dual alphabet, $\hat{x} \in \{+,-\}^n$.
+    Going to multiple qubits, Hadamard-transforming an
+      $n$-qubit computational-basis state $\ket{x} = \ket{101 \ldots 01}$ just 
+      applies the Hadamard gate to each qubit individually, which gives us:
+    \[
+      \ket{x} = \ket{101 \ldots 01}
+        \apply{\Hgate^{\otimes n}}\ket{- + - \ldots + -} 
+        = \ket{\hat{1} \hat{0} \hat{1} \ldots \hat{0} \hat{1}} 
+        \eqqcolon \ket{\hat{x}}\, .
+    \]
+    The result is a state labelled by a bitstring $\hat{x}$ defined over the
+    dual alphabet: $\hat{x} \in \{\hat 0, \hat 1\}^n = \{+,-\}^n$.
 
-    As you may know, the computational basis and Hadamard basis really are
-      \emph{dual} bases (in the sense that they are mutually unbiased bases),
-      and hence so are their alphabets: Writing out the state $\ket{\hat{x}}$ in
+    The computational basis and Hadamard basis really are
+      \emph{dual} bases,\footnote{
+        More precisely, they are \emph{mutually unbiased} bases.
+      } and so are their alphabets: Writing out the state $\ket{\hat{x}}$ in
       terms of the computational basis, we have:
     \[
       \ket{\hat{x}} = 2^{-\nicefrac{n}{2}} \sum_{y} (-1)^{x \cdot
-      y} \ket{y}\, .
+      y} \ket{y}\, ,
     \]
-    This identity also holds the other way around:
+    which also holds the other way around:
     \[
       \ket{x} = 2^{-\nicefrac{n}{2}} \sum_{y} (-1)^{x \cdot
       y} \ket{\hat{y}}\, .
     \]
-    In particular, for the single-qubit states:
+    In particular, for single-qubit states, 
     \[
-      \ket{b} = \frac{\ket{\hat{0}} + (-1)^b \ket{\hat{1}}}{\sqrt 2}
-      = \frac{\ket{+} + (-1)^b \ket{-}}{\sqrt 2}\, .
+      \ket{b} = \frac{\ket{\hat{0}} + (-1)^b \ket{\hat{1}}}{\sqrt 2}\, ,
+      %= \frac{\ket{+} + (-1)^b \ket{-}}{\sqrt 2}\, ,
     \]
+    which is the dual to our definition of $\ket{\hat{b}}$ above.
+
+    Hence, while measuring a state $\ket x$ in the computational basis yields
+      outcome $x$ with certainty, measuring a state $\ket{\hat{x}}$ in the
+      computational basis yields a uniformly random outcome $x^\prime \sample \{0,1\}^n$;
+      and while measuring a state $\ket{\hat{x}}$ in the Hadamard basis yields
+      outcome $x$ with certainty, measuring a computational-basis state $\ket{x}$ in the
+      Hadamard basis yields a uniformly random outcome $x^\prime \in \{0,1\}^n$.
+      (Note how hats only ever show up in \emph{state labels},
+      and are never used to denote the outcome; our classical bitstrings are still only
+      defined over the alphabet $\bin$.)
+
     Being able to apply this translation on the fly, expressing any given state
-    under whichever alphabet it is most simply expressed, will turn out to be very
-    useful in simplifying intermediate calculations. As a bonus, it brings to
-    the forefront many of the unique aspects that separate quantum algorithms
-    from classical ones!
+      in whichever alphabet it is most simply expressed, will turn out to be a
+      useful trick that simplifies many intermediate calculations. As a bonus,
+      it brings to the forefront many of the unique aspects that separate
+      quantum algorithms from classical ones, and experience tells us that
+      playing around with the dual-alphabet system of notation can be very 
+      helpful in building your quantum intuition! 
 
   \subsection{Dual-Alphabet Pseudocode}
     We have introduced the notation $\register[B] \xstore \register[A]$ for the
@@ -75,3 +102,221 @@
   \subsection{Grover's Algorithm}
     As a demonstration of the expressiveness of the dual-alphabet system of
       notation, 
+
+  \subsection{The Primer Paragraphs}
+    \hhnote{
+      copy-pasted while I decide what to keep where
+    }
+    \subsubsection{The Hadamard Basis.}
+      Actually, we don't have to imagine explicitly applying the $\Hgate$ gates
+        to our qubits before measuring them, as Hadamard-basis measurements
+        are perfectly well-defined on their own merits, as one choice among a
+        continuous infinity of measurements we could choose to apply.
+	      %(we will make this formal in \cref{sec:measurements}).
+        Perhaps it is better, then, to view the Hadamard basis as a sort of
+        ``dual domain'' under which we can view our qubit,
+	      with two possible questions we can ask our state: 
+	      Either ``Are you $\ket 0$ or $\ket 1$?'', or 
+	      ``Are you $\ket +$ or $\ket -$?'' Either way, 
+	      the qubit will provide a definite answer, after which its state will 
+        ``collapse'' to the answer you got.
+
+	    This is a point worth internalizing, so let us repeat it: 
+	      \emph{The set of possible post-measurement states changes to match
+	      the question you chose to ask.} If you ask ``Are you $0$ or $1$?'', 
+	      then the post-measurement state will be $\ket 0$ or $\ket 1$; 
+	      if you ask ``Are you $+$ or $-$'', then the post-measurement state will
+        be $\ket +$ or $\ket -$. 
+        So although at one level, the ``collapse'' of the quantum state is just
+        the quantum version of how one would use Bayes' theorem 
+        to update a prior probability distribution to a marginal distribution
+        conditioned on the outcome, at another level, it represents the
+        deepest and strangest mystery in all of quantum physics.
+        The grand mystery of quantum physics really comes down to this one fact, 
+        that the outcome statistics and the post-observation state both depend
+        on \emph{which measurement you chose to apply}, and it has led to a century
+        of heated philosophical debate over how quantum theory should be
+        interpreted. Ask five physicists for their opinion on the matter, and
+        you are likely to get five different answers!\footnote{
+          %After we have observed the outcome, 
+          %the superposition state ``collapses'' to the corresponding basis state
+          %$\ket b$, so that the updated physical system is guaranteed to be consistent with
+          %the value we observed. 
+          The term ``collapse'' that we
+          used above is typically associated with the rather conservative
+          \emph{Copenhagen interpretation}, championed by Niels Bohr, and commonly
+          characterized as the ``shut-up-and-calculate'' approach, since
+          it simply posits that ``such questions are disallowed''.
+          Another popular interpretation is the many-worlds interpretation due
+          to Hugh Everett, favoured by father of quantum computing theory
+          David Deutsch among others. Instead of the quantum state
+          ``collapsing'' to a ``classical'' state, this interpretation says that
+          both terms are ill-defined, and that the universe should instead be
+          understood to be nothing but one big quantum superposition over all
+          the worlds that could have possibly arisen from
+          the initial conditions of the universe.
+          (After all, we the observers are made of quantum particles too, so
+          should we not then also be considered part of the quantum state?)
+          %; from this point of view, when
+          %you made your observation, what \emph{actually} happened
+          %was that the quantum state describing the subsystem you
+          %were studying and the quantum state describing \emph{you} (after all,
+          %you \emph{are} made of quantum particles, are you not?), became
+          %completely \emph{entangled}, so that the part of the superposition
+          %in which the qubit takes the value $0$ is guaranteed to coincide with
+          %the part of the superposition in which you observed the outcome $0$.
+          %The world in which the qubit took the value $1$ and you also observed
+          %the value $1$ is still ``out there'' in the grand superposition of
+          %the universe, it's just been completely cut off from your subjective
+          %experience, so from your point of view it might as well not exist.
+          If you're curious to learn more about the various interpretations of
+          quantum mechanics, and the strengths and weaknesses of each attempt
+          at a consistent resolution, Carlo Rovelli's book \emph{Helgoland} provides an
+          excellent overview.
+          %, and even proposes its own fascinating resolution
+          %to the problem.)
+          %(In case you're wondering, Hans places his bet on a third option,
+          %namely the \emph{relational} interpretation due to Carlo Rovelli,
+          %which may be summarized as ``many-worlds without the many worlds''.)
+        }
+        %(And, of course, the outcome distribution also depends on which question
+        %you choose to ask.)
+
+      What about a question like ``Are you $\ket 0$ or
+        are you $\ket +$?'' Under our notion of measurement, this question is not
+        well-defined, since $\ket 0$ and $\ket +$ are not orthogonal states and
+        therefore do not lead to mutually-exclusive outcomes. More on this in
+        \cref{sec:measurements}, but for now, think of a measurement as always
+        being defined in terms of a set of mutually-exclusive outcomes.
+
+	    Of course, any vector space has a continuous infinity of 
+	      bases to choose from, each of which define a binary ``question'' we
+	      can pose to our qubit, and the Hadamard
+	      basis is just one particularly nice choice:
+	      geometrically, it is just the basis rotated by $45^\circ$
+	      relative to the original one, as illustrated in
+	      \cref{fig:hadamard-basis}.
+        %
+	      \crakzfigcode{hadamard-basis}{
+	        The computational basis $\{\ket 0, \ket 1\}$ and the Hadamard basis
+	        $\{\ket +, \ket -\}$ describe the same qubit, seen along axes turned
+	        by $45^\circ$ relative to each other. 
+          %Note how $\ket 0$ bisects
+	        %$\ket +$ and $\ket -$ exactly as $\ket +$ bisects $\ket 0$ and
+	        %$\ket 1$: the two views are duals of one another.
+	      }
+        %
+	      To appreciate how this makes for a perspective
+         ``dual'' to the computational basis,
+	      take a look at the following identities:
+        \[
+          \ket{+} = \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, , \quad 
+          \ket{-} = \frac{\ket{0} - \ket{1}}{\sqrt{2}}
+          \qquad
+          \Longleftrightarrow
+          \qquad
+          \ket{0} = \frac{\ket{+} + \ket{-}}{\sqrt{2}}\, , \quad 
+          \ket{1} = \frac{\ket{+} - \ket{-}}{\sqrt{2}}\, .
+        \]
+        Notice the symmetry: The computational basis states $\ket 0$ and $\ket 1$
+        are to the Hadamard basis \emph{exactly} what the plus state and minus
+        states are to the computational basis; they really are \emph{dual views},
+        which can be translated between via the map $\Hgate$.\footnote{
+          The notion of a ``dual domain'' will sound familiar to anyone who has
+          ever come across Fourier analysis, and not without reason: The Hadamard
+          map is exactly the single-qubit Fourier transformation.
+        }
+        %It is worth verifying the equivalence by inserting for $\ket +$
+        %and $\ket -$ and checking that the extra terms cancel out exactly.
+
+      How does this duality generalize to multi-qubit states?
+        We had that
+        \[
+          \ket{+^n} 
+          = \frac{\ket{0 \ldots 00} + \ket{0 \ldots 01} + \ldots + \ket{1 \ldots 11}}{\sqrt{2^n}}
+          = \sum_{x \in \bin^n} \frac{1}{\sqrt{2^n}}\ket x
+        \]
+        With $\{\ket 0, \ket 1\}$ and $\{\ket +, \ket -\}$ being exact duals of
+        each other, then it must also be true that 
+        \[
+          \ket{0^n} 
+          = \frac{\ket{+ \ldots ++} + \ket{+ \ldots +-} + \ldots + \ket{- \ldots --}}{\sqrt{2^n}}
+          = \sum_{\hat{x} \in \{+,-\}^n} \frac{1}{\sqrt{2^n}} \ket{\hat x}\, .
+        \]
+        Here, we have introduced a new kind of bitstring, one that is defined
+        over the alphabet $\{+, -\}$ rather than the alphabet $\bin$. We will use the
+        convention that whenever a number or variable is represented with a hat,
+        then it is understood to be a \emph{Hadamard-bitstring} like above. For example,
+        whereas we previously represented the decimal $21$ by the bitstring
+        $[21]_2 = 10101$, writing $\widehat{21}$ would imply that it is
+        represented by the Hadamard-bitstring $\big[\, \widehat{21}\, \big]_2 = -+-+-$. 
+
+      As we might have anticipated, just like the all-zero state $\ket{0^n}$
+        maps to the decimal state $\ket 0$, 
+        %and the all-ones state $\ket{1^n}$
+        %maps to the decimal $(N-1)$-state $\ket{N-1}$ (where $N = 2^n$ as usual),
+        the uniform superposition $\ket{+^n}$
+        then maps to the Hadamard-zero state $\ket{\hat 0}$.
+        %, while the all-minus state
+        %$\ket{-^n}$ maps to the state $\ket{\hat{N}-\hat{1}}$.
+        Thus, we recover our dual views on the quantum
+        state space, which we can translate between as desired via the Hadamard
+        transformation. Defining $\hat{\ZZ}_N \coloneqq \{ \hat{x}\ |\ x \in
+        \ZZ_N\}$, and letting the dual-alphabet inner bitstring product
+        $\hat x \cdot x$ simply treat $\{+,-\}$ as if it were $\bin$,
+        we can then express both directions of the Hadamard transformation in
+        purely decimal notation:
+        \[
+          \ket{\hat x} = \sum_{x \in \ZZ_N} 
+          \frac{(-1)^{\hat x \cdot x}}{\sqrt{2^n}} \ket x\, ,
+          \quad
+          \ket{x} = \sum_{\hat x \in \hat{\ZZ}_N} \frac{(-1)^{x \cdot
+          \hat x}}{\sqrt{2^n}} \ket{\hat{x}}\, .
+        \]
+        
+      The above notation will at times allow us to greatly simplify our
+        notation, making arguments clearer. Consider for example the state
+        \[
+          \ket{\psi} = 
+          -\frac{1}{\sqrt{2^n}} \ket{0}\
+          +
+          \sum_{x \in \ZZ_N \backslash \{0\}} 
+          \frac{1}{\sqrt{2^n}} \ket{x}\, ,
+        \]
+        i.e.\ the uniform superposition state that singles out the $\ket{0}$ state (implicitly
+        understood to be the $\ket{0^n}$ state since we are using decimal notation) 
+        and applies a negative phase to it. Computing the Hadamard transformation of
+        such a state can lead to a mess of double sums, but using the above
+        notation, not only is applying the transformation as simple as adding
+        hats everywhere,
+        \[
+          %\ket{\psi} 
+          - \frac{1}{\sqrt{2^n}} \ket{0}\
+          +
+          \sum_{x \in \ZZ_N \backslash \{0\}} 
+          \frac{1}{\sqrt{2^n}} \ket{x}
+          \quad
+          \apply{\Hgate^{\otimes n}} 
+          \quad
+          - \frac{1}{\sqrt{2^n}} \ket{\hat{0}}\ +
+          \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
+          \frac{1}{\sqrt{2^n}} \ket{\hat{x}}\, ,
+        \]
+        but we can then even choose to write out the state using a mix of
+        notations, ``unpacking'' the complex-phase term for closer study while keeping 
+        the real-valued terms around in their Hadamard-bitstring form:
+        \[
+          -\frac{1}{\sqrt{2^n}} \ket{\hat{0}}\ +
+          \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
+          \frac{1}{\sqrt{2^n}} \ket{\hat{x}}
+          =
+          \sum_{x \in \ZZ_N} -\frac{1}{2^n} \ket{x}\ +
+          \sum_{\hat x \in \hat{\ZZ}_N \backslash \{\hat{0}\}} 
+          \frac{1}{\sqrt{2^n}} \ket{\hat{x}}\, .
+        \]
+
+        %\begin{exercise}
+        %  Compute the Hadamard transformation of $\ket{\psi}$ using purely
+        %  standard bitstring notation, expressed without double sums. You will
+        %  need \ldots
+        %\end{exercise}
