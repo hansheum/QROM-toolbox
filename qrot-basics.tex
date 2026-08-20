@@ -14,6 +14,16 @@
   \hhnote{
     Commenting out for now; here's a list of things that should be introduced/mentioned.
   }
+  \hhnote{
+    Follow Mike Rosulek and use the font $\bits{0} 0, \bits{1}, \bits{10},
+    \ldots$ for bitstrings and reserve the standard font for natural numbers $0,
+    1, 2, \ldots$?
+    Could extend to variables: 
+    $\bits{x} \in \{\bits{0}, \bits{1}\}^{\log_2 N}$ 
+    is the bitstring representation of $x \in \ZZ_N$.
+    Being clear about which one we mean at any point in time could be very
+    helpful at the level of a tutorial.
+  }
   \todoenum[Notation and conventions]{
     \item The natural numbers start at $1$.
     \item $[n] = \{1, \ldots, n\}$
@@ -31,7 +41,7 @@
     \item $\abs{x}$ is bitstring length, $\abs{\Xspace}$ is set cardinality;
       likewise for lists
     \item The $i$th list element is written $\Xlist(i)$
-    \item Lists may be combined by concatenation: $\Xlist\ \concat \Ylist$
+    \item Lists may be combined by concatenation: $\Xlist\ \concat \Ylist$
     \item It will at times be useful to treat bitstrings as lists of binary
       values
     \item Assignment and sampling:

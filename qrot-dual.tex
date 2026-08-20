@@ -184,19 +184,14 @@
         $\ket{a, \hat b}$? In other words, we would like to fill out the missing
         cells in the following table.
 
-      \begin{table}[h!]
-        \caption{
-          \label{tab:xzstore-empty}
-          How do $\xstore$ and $\zstore$ affect the four choices of
-          dual-alphabet initial states?
-        }
-        \centering
-        %\scriptsize
+      \begin{steptable}
+        \setlength{\extrarowheight}{2pt}
         \rowcolors{2}{}{gray!10} % zebra striping
-        %\resizebox{\textwidth}{!}{
-          \begin{tabular}{ccc}
+        \begin{tabular}{ccc}
             \toprule
-            $\register[AB]$ initial state & $\register[B] \xstore \register[A]$ yields & $\register[B] \zstore \register[A]$ yields\\
+            $\register[AB]$ initial state & 
+              $\quad$ $\register[B] \xstore \register[A]$ yields $\quad$ & 
+              $\register[B] \zstore \register[A]$ yields\\
             \midrule
             $\ket{a,b}$ & $\ket{a,b \xor a}$ & \\
             $\ket{a,\hat b}$ &  &  \\
@@ -204,8 +199,7 @@
             $\ket{\hat a, \hat b}$ &  & $\ket{\hat a, \hat b \xor \hat a}$ \\
             \bottomrule
           \end{tabular}
-        %} % end resizebox
-      \end{table}
+      \end{steptable}
 
       Let us begin by asking how $\zstore$ affects the computational-basis initial
         state $\ket{a,b}$: $\register[A]$ is a single-qubit register 
@@ -241,28 +235,23 @@
       to the Hadamard basis (dual alphabet), we can also conclude right away
       that the operand $\xstore$ must take the state $\ket{\hat a, \hat b}$ to
       $\ket{\hat a \xor \hat b, \hat b}$.
-      Let's add them to the table:
-      \begin{table}[h!]
-        \caption{
-          \label{tab:xzstore-partial1}
-          Filling in the table with what we've learned so far.
-        }
-        \centering
-        %\scriptsize
+      Let's add them to our table:
+      \begin{steptable}
+        \setlength{\extrarowheight}{2pt}
         \rowcolors{2}{}{gray!10} % zebra striping
-        %\resizebox{\textwidth}{!}{
-          \begin{tabular}{ccc}
-            \toprule
-            $\register[AB]$ initial state & $\register[B] \xstore \register[A]$ yields & $\register[B] \zstore \register[A]$ yields\\
-            \midrule
-            $\ket{a,b}$ & $\ket{a,b \xor a}$ & $\ket{a \xor b, b}$ \\
-            $\ket{a,\hat b}$ &  &  \\
-            $\ket{\hat a, b}$ &  &  \\
-            $\ket{\hat a, \hat b}$ & $\ket{\hat a, \hat b \xor \hat a}$ & $\ket{\hat a, \hat b \xor \hat a}$ \\
-            \bottomrule
-          \end{tabular}
-        %} % end resizebox
-      \end{table}
+        \begin{tabular}{ccc}
+          \toprule
+          $\register[AB]$ initial state & 
+            $\quad$ $\register[B] \xstore \register[A]$ yields $\quad$ & 
+            $\register[B] \zstore \register[A]$ yields\\
+          \midrule
+          $\ket{a,b}$ & $\ket{a,b \xor a}$ & $\ket{a \xor b, b}$ \\
+          $\ket{a,\hat b}$ &  &  \\
+          $\ket{\hat a, b}$ &  &  \\
+          $\ket{\hat a, \hat b}$ & $\ket{\hat a, \hat b \xor \hat a}$ & $\ket{\hat a, \hat b \xor \hat a}$ \\
+          \bottomrule
+        \end{tabular}
+      \end{steptable}
 
       Notice the symmetries: First, the table gets a hat/non-hat symmetry
         diagonally from the lower-left to the upper-right, and from the lower-right to the
@@ -294,135 +283,163 @@
         \]
       \end{lemma}
 
-      This may seem like something of a surprise, but \cref{lemma:xzstore} is
-        actually just a reformulation of the well-known fact that
+      \cref{lemma:xzstore} may seem surprising, but it is
+        actually just a restatement of the well-known fact that
         CNOT switches direction under the Hadamard transformation -- the target
         becomes the control, and the control becomes the target. Written in
         terms of the unitaries:
       \[
-        \Hgate\, \CXgate_{\register[AB]}\, \Hgate = \CXgate_{\register[BA]}\, .
+        \Hgate^{\otimes 2}\, \CXgate_{\register[AB]}\, \Hgate^{\otimes 2} = \CXgate_{\register[BA]}\, .
       \]
 
-      Going back to our table, let us investigate multi-alphabet state
-        $\ket{a, \hat b}$ next.
+      Next up in our table is the multi-alphabet state
+        $\ket{a, \hat b}$. What is the effect of the operation 
+        $\register[B] \xstore \register[A]$ on this state, 
+        i.e.\ a CNOT from $\ket a$ to $\ket{\hat b}$?
+        Well, recall that the $\Xgate$ and $\Zgate$ play opposite roles in the
+        two domains, so applying a (controlled) $\Xgate$ gate to $\ket{\hat b}$
+        will have the same effect as if we applied a (controlled) $\Zgate$ gate
+        to $\ket{b}$: If $b=1$ (so that $\hat b = \hat 1$), then the
+        phase is flipped, and otherwise nothing happens.
+        Since the operation is further only applied if $a = 1$, we need that
+        their \emph{product} is $1$ for the phase to be flipped. In other words,
+        we have the following effect:
+      \[
+        \ket{a, \hat b} \apply{\CXgate} (-1)^{a \cdot b}\ket{a,\hat b}\, .
+      \]
+      The only possible effect is a flip of the global phase.
+        With global phases being unphysical, this means that
+        in isolation, the operation acts on the state like the
+        \emph{identity}.\footnote{
+          Another way to say this is that $\ket{\hat a, b}$ is an
+          eigenstate of the $\hCZgate$ operator, which actually follows
+          trivially from the fact that $\ket b$ is an eigenstate of the $\Zgate$
+          operator.
+        }
+        But of course, we will often \emph{not} be applying $\zstore$ in isolation, and
+        the moment the operation is controlled on other qubit states (such as
+        when appearing inside a $\pcfor \pcbranch$ ``loop''), the phase
+        is no longer global, and it may certainly \emph{not} be ignored.
 
+      Using the diagonal symmetry of our table, we may immediately conclude that
+        the operation $\register[B] \zstore \register[A]$ with initial state
+        $\ket{\hat a, b}$ will have the same net effect 
+        (we could also have seen this from \cref{lemma:xzstore}):
+      \[
+        \ket{\hat a, b} \apply{\hCZgate} (-1)^{a \cdot b}\ket{\hat a, b}\, .
+      \]
+      Let's add both to the table:
+      \begin{steptable}
+        \centering
+        \setlength{\extrarowheight}{2pt}
+        \rowcolors{2}{}{gray!10} % zebra striping
+        \begin{tabular}{ccc}
+          \toprule
+          $\register[AB]$ initial state & 
+            $\quad$ $\register[B] \xstore \register[A]$ yields $\quad$ & 
+            $\register[B] \zstore \register[A]$ yields\\
+          \midrule
+          $\ket{a,b}$ & $\ket{a,b \xor a}$ & $\ket{a \xor b, b}$ \\
+          $\ket{a,\hat b}$ & $(-1)^{a \cdot b} \ket{a, \hat b}$ &  \\
+          $\ket{\hat a, b}$ &  & $(-1)^{a \cdot b} \ket{\hat a, b}$ \\
+          $\ket{\hat a, \hat b}$ & $\ket{\hat a, \hat b \xor \hat a}$ & $\ket{\hat a, \hat b \xor \hat a}$ \\
+          \bottomrule
+        \end{tabular}
+      \end{steptable}
 
-        $\ket{x, \hat y}$ and $\ket{\hat x, y}$? How do our two operands affect
-        those? Let's find out by once again considering the single-qubit cases.
-        To start, an operation that should seem familiar to you: Let
-        register $\register[A]$ be in state $\ket{\hat a}$ and register
-        $\register[B]$ be in state $\ket b$. Then the operation 
-        $\register[B] \xstore \register[A]$ will produce the following state:
+      Finally, how does $\register[A] \xstore \register[B]$ affect the initial
+        state $\ket{\hat a, b}$? This operation should look familiar to you: We
+        are applying a CNOT from a qubit in superposition to a qubit in a
+        computational basis state, which is exactly how entangled qubit pairs are
+        usually prepared, with $a=0$, $b=0$ being the canonical choice,
+        in which case we end up with the maximally-entangled ``Bell state'' 
+        $\nicefrac{1}{\sqrt 2}\, (\ket{00} + \ket{11})$.
+
+      Let's look at the general case:
+        register $\register[A]$ is initialized to $\ket{\hat a}$ and register
+        $\register[B]$ is initialized to $\ket b$. Then 
+        $\register[B] \xstore \register[A]$ acts as follows:
         \[
           \ket{\hat a, b} 
             = \frac{\ket{0} + (-1)^a \ket{1}}{\sqrt 2}\ket b\ 
             \apply{\CXgate}\ \frac{\ket{0, b} + (-1)^a \ket{1, b \xor 1}}{\sqrt 2}\, .
         \]
-        The result is one of the four maximally-entangled \emph{Bell states}:
+        The result is one of the four states  of the \emph{Bell basis} $\{
+          \ket{\mathrm{\Phi}^+}, \ket{\mathrm{\Phi}^-}, \ket{\mathrm{\Psi}^+},
+          \ket{\mathrm{\Psi}^-} \}$, depending on the values of $a$ and $b$:
         \begin{align*}
-          a = 0\, ,\ b = 0\ \implies\ \frac{\ket{00} + \ket{11}}{\sqrt 2} \eqqcolon \ket{\mathrm{\Phi}^+}\, ,
+          (a,b) = (0,0)\ \implies\ \ket{\mathrm{\Phi}^+} \coloneqq \frac{\ket{00} + \ket{11}}{\sqrt 2}\, ,
           &\qquad
-          a = 1\, ,\ b = 0\ \implies\ \frac{\ket{00} - \ket{11}}{\sqrt 2} \eqqcolon \ket{\mathrm{\Phi}^-} 
+          (a,b) = (1,0)\ \implies\ \ket{\mathrm{\Phi}^-} \coloneqq \frac{\ket{00} - \ket{11}}{\sqrt 2}\, , 
           \\
-          a = 0\, ,\ b = 1\ \implies\ \frac{\ket{01} + \ket{10}}{\sqrt 2} \eqqcolon \ket{\mathrm{\Psi}^+}\, ,
+          (a,b) = (0,1)\ \implies\ \ket{\mathrm{\Psi}^+} \coloneqq \frac{\ket{01} + \ket{10}}{\sqrt 2}\, ,
           &\qquad
-          a = 1\, ,\ b = 1\ \implies\ \frac{\ket{01} - \ket{10}}{\sqrt 2} \eqqcolon \ket{\mathrm{\Psi}^-}\, .
+          (a,b) = (1,1)\ \implies\ \ket{\mathrm{\Psi}^-} \coloneqq \frac{\ket{01} - \ket{10}}{\sqrt 2}\, .
         \end{align*}
-        The equivalent Hadamard-domain operation is to let register
-        $\register[A]$ be in the state $\ket{a}$ and register
-        $\register[B]$ start in the state $\ket{\hat b}$, then apply the operation
-        $\register[B] \zstore \register[A]$:
+
+      Let's adopt the notation of Nielsen and Chuang~\cite{NieChu10} and write
+        $\ket{\beta_{ab}}$ for the Bell state we get when starting from $\ket{\hat a, b}$
+        and applying $\register[A] \xstore \register[B]$.
+        The same diagonal table-symmetry then tells us that applying
+        $\register[B] \zstore \register[A]$ on the initial state $\ket{a, \hat b}$
+        must yield the same Bell state, except with hats:
         \[
           \ket{a, \hat b} 
             = \frac{\ket{\hat 0} + (-1)^a \ket{\hat 1}}{\sqrt 2}\ket{\hat b}\ 
-            \apply{\hCZgate}\ 
-            \frac{\ket{\hat 0, \hat b} + (-1)^a \ket{\hat 1, \hat b \xor \hat 1}}{\sqrt 2}\, .
+            \apply{\hCZgate}\ \frac{\ket{\hat 0, \hat b} + (-1)^a \ket{\hat 1, \hat b \xor \hat 1}}{\sqrt 2}
+            \eqqcolon \ket{\hat{\beta}_{ab}}\, .
         \]
-        Interestingly, using \cref{lemma:xzstore}, we know that this is equivalent to applying the
-        operation $\register[A] \xstore \register[B]$, yielding the same Bell
-        state as before, except with the roles of $a$ and $b$ swapped:
+        %where we have defined $\ket{\hat{\beta}_{ab}}$ to be the same state with hats.
+        %
+      Interestingly, using \cref{lemma:xzstore}, we also know that this is exactly 
+        equivalent to the operation $\register[A] \xstore \register[B]$, which
+        would yield the same Bell state as before except with $a$ and $b$ swapped:
         \[
-          \ket{a, \hat b}\ \to\
-            \frac{\ket{a, 0} + (-1)^b \ket{a \xor 1, 1}}{\sqrt 2}\, ,
+          \ket{a, \hat b}\ \apply{\CXgate_{\register[BA]}}\
+            \frac{\ket{a, 0} + (-1)^b \ket{a \xor 1, 1}}{\sqrt 2} =
+            \ket{\beta_{ba}}\, ,
         \]
-        which means that these two states must in fact be identical:
+        which means that these two states must actually be the same state:
         \[
-          \frac{\ket{\hat 0, \hat b} + (-1)^a \ket{\hat 1, \hat b \xor \hat 1}}{\sqrt 2}
-          = \frac{\ket{a, 0} + (-1)^b \ket{a \xor 1, 1}}{\sqrt 2}\, .
+          \ket{\hat{\beta}_{ab}} = \frac{\ket{\hat 0, \hat b} + (-1)^a \ket{\hat 1, \hat b \xor \hat 1}}{\sqrt 2}
+          = \frac{\ket{a, 0} + (-1)^b \ket{a \xor 1, 1}}{\sqrt 2} =
+          \ket{\beta_{ba}}\, .
         \]
-        What we just discovered is the well-known fact that the Hadamard
-          transformation acts like a permutation on the set of Bell states:
-          Inserting for different values of $a$ and $b$, we see that (up to a
-          global phase which we ignore):
-        \[
-          \ket{\mathrm{\Phi}^+} \apply{\Hgate^{\otimes 2}} \ket{\mathrm{\Phi}^+}\, ,
-          \quad
-          \ket{\mathrm{\Psi}^-} \apply{\Hgate^{\otimes 2}} \ket{\mathrm{\Psi}^-}\, ,
-          \quad
-          \ket{\mathrm{\Phi}^-} \lrapply{\Hgate^{\otimes 2}} \ket{\mathrm{\Psi}^+}\, .
-        \]
+        What we have just discovered is another well-known fact, namely that the Hadamard
+          transformation acts like a permutation on the set of Bell states -- and
+          without ever touching a double sum! 
+        %\[
+        %  \ket{\mathrm{\Phi}^+} \lrapply{\Hgate^{\otimes 2}} \ket{\mathrm{\Phi}^+}\, ,
+        %  \quad
+        %  \ket{\mathrm{\Phi}^-} \lrapply{\Hgate^{\otimes 2}} \ket{\mathrm{\Psi}^+}\, ,
+        %  \quad
+        %  \ket{\mathrm{\Psi}^-} \lrapply{\Hgate^{\otimes 2}} \ket{\mathrm{\Psi}^-}\, .
+        %\]
+          
+        With these additions, then, our \cref{tab:xzstore} is finally complete.
 
-      That settles two of the cases of how $\register[B] \xstore \register[A]$
-        acts on $\ket{\hat a, b}$  and how $\register[B] \zstore \register[A]$ 
-        acts on $\ket{a, \hat b}$. 
-        Next up, let us look at how $\register[B] \zstore \register[A]$ 
-        affects the starting state $\ket{\hat a, b}$. 
-        %As before, we have a choice to make in which basis 
-        Since we are applying the $\Zgate$ gate iff $a = 1$ 
-        (that is to say, $\hat a = \hat 1$), and since $\Zgate$ acts
-        non-trivially on a state $\ket b$ iff $b = 1$ (in which case it picks up
-        a minus sign), the result must be that $\register[B] \zstore \register[A]$
-        has the effect
-        \[
-          \ket{\hat a, b} \apply{\hCZgate} (-1)^{a \cdot b}\ket{\hat a, b}\, .
-        \]
-        The only effect is that the operation gives the state a global phase of $-1$ \emph{if} $a$
-        and $b$ are both $1$. With global phases being unphysical, this means that
-        in isolation, operation acts on the state like the \emph{identity}.\footnote{
-          Another way to see this is that $\ket{\hat a, b}$ is an
-          eigenstate of the $\hCZgate$ operator, which follows from
-          the fact that $\ket b$ is an eigenstate of the $\Zgate$ operator.
-        }
-        But of course, we will often \emph{not} apply $\zstore$ in isolation, and
-        the moment the operation is controlled on other qubit states (such as
-        when appearing inside a $\pcfor \pcbranch$ ``loop''), the phase
-        is no longer global, and may certainly \emph{not} be ignored.
-        Finally, we may again use \cref{lemma:xzstore} to immediately conclude that the
-        operation starting with the state $\ket{\hat{a}, b}$, the operation 
-        $\register[A] \xstore \register[B]$ must have the same effect as applying 
-        $\register[B] \zstore \register[A]$, which in this case 
-        just yields the same state $(-1)^{a \cdot b}\ket{a,b}$
-        (since multiplication is commutative).
-
-      That covers the four possible dual-alphabet basis states for two single qubits. 
-
-      \begin{table}[h!]
+      \begin{table}[t]
         \caption{
           \label{tab:xzstore}
-          The effect of applying the $\xstore$ and $\zstore$ operator
-          on the four dual-basis initial states, the single-qubit case.
+          The effect of $\xstore$ and $\zstore$ 
+          on the four single-qubit, dual-basis states.
         }
         \centering
-        %\scriptsize
+        \setlength{\extrarowheight}{2pt}
         \rowcolors{2}{}{gray!10} % zebra striping
-        %\resizebox{\textwidth}{!}{
           \begin{tabular}{ccc}
             \toprule
-            Initial state & $\register[B] \xstore \register[A]$ yields & $\register[B] \zstore \register[A]$ yields\\
+            $\register[AB]$ initial state & 
+              $\quad$ $\register[B] \xstore \register[A]$ yields $\quad$ & 
+              $\register[B] \zstore \register[A]$ yields\\
             \midrule
             $\ket{a,b}$ & $\ket{a,b \xor a}$ & $\ket{a \xor b, b}$ \\
-            $\ket{a,\hat b}$ & $(-1)^{a \cdot b}\ket{a, \hat b}$ 
-              % & $\nicefrac{1}{\sqrt 2} ( \ket{\hat 0, \hat b} + (-1)^a \ket{\hat 1, \hat b \xor \hat 1} )$ \\
-              & Bell state \\
-            $\ket{\hat a, b}$ 
-              % & $\nicefrac{1}{\sqrt 2} ( \ket{0, b} + (-1)^a \ket{1, b \xor 1} )$ 
-              & Bell state & $(-1)^{a \cdot b}\ket{\hat a, b}$ \\
+            $\ket{a,\hat b}$ & $(-1)^{a \cdot b}\ket{a, \hat b}$ & $\ket{\hat{\beta}_{ab}} = \ket{\beta_{ba}}$ \\
+            $\ket{\hat a, b}$ & $\ket{\beta_{ab}}$ = $\ket{\hat{\beta}_{ba}}$ & $(-1)^{a \cdot b}\ket{\hat a, b}$ \\
             $\ket{\hat a, \hat b}$ & $\ket{\hat a \xor \hat b, \hat b}$ & $\ket{\hat a, \hat b \xor \hat a}$ \\
             %\midrule
-            % repeat the table with outputs written in the Hadamard basis?
             \bottomrule
           \end{tabular}
-        %} % end resizebox
       \end{table}
 
     \subsubsection{The Multi-Qubit Case.}

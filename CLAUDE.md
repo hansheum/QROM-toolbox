@@ -103,8 +103,43 @@ in `main-qrot.tex` to halt the build). Names are set by the `\crefname` block
 in `main-qrot.tex`; appendices render as "App. A" via `\crefalias{section}{appendix}`
 issued right after `\appendix`, so no separate appendix-reference macro is needed.
 
+## Fonts
+
+`\bits{0101}` (in `qrot-latex.tex`) sets bit strings in JetBrains Mono, which
+is far more distinct from body text than `\texttt`. It is a thin wrapper over
+`\monofont` from the **cryptocodeh submodule**, which owns both the macro and
+the Type1 font files (`cryptocodeh/texmf/`) – so Kathrin gets it by pulling the
+submodule, no local font install. Renders identically in text and math mode
+(verified pixel-identical at 600 dpi).
+
+`\bits` was already defined in `cryptocodeh.tex` as `\beta`, a notion
+parameter that is unused in this document, hence the `\renewcommand`.
+
+The one piece of local wiring is `.latexmkrc`, which points kpathsea at the
+submodule's font tree:
+
+```perl
+$ENV{'TEXMFAUXTREES'} = './cryptocodeh/texmf,';   # trailing comma required
+```
+
+kpathsea searches the project root non-recursively, so without this the build
+dies on a missing `JetBrainsMono-Regular-tlf-t1` font. That error means the
+path is unset, **not** that the submodule is missing.
+
+For collaborators who do not build with latexmk, `cryptocodeh/install-fonts.sh`
+installs the fonts into their TeX installation once and for all (detects OS and
+TeX Live vs MiKTeX; `--check` verifies without changing anything). See the
+cryptocodeh `CLAUDE.md` for how the font files were generated.
+
 ## Notes for Development
 
+- **If a build fails or page counts flap, ask Hans whether he has a continuous
+  compilation running in another tab** – he often does (`mk` =
+  `latexmk -pdf -pvc`). It races any build of mine over the shared
+  `main-qrot.aux`, producing `! File ended while scanning use of \@newl@bel`,
+  missing PDFs and oscillating page counts that look exactly like a regression
+  from the last edit. `ps aux | grep latexmk` confirms it; see **LaTeX Builds**
+  in the global `CLAUDE.md` for the isolation and comparison recipe.
 - Uses LLNCS document class
 - Compilation requires multiple passes (bibliography, cross-references)
 - Build script uses Skim PDF viewer for continuous compilation

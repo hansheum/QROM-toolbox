@@ -1,6 +1,14 @@
 %%% Commands go here
 %\renewcommand{\perp}{\, \perp}
 
+%%% Fonts
+% \bits{0101} sets bit strings in JetBrains Mono, so they cannot be confused
+% with the surrounding text.  All the font machinery lives in the cryptocodeh
+% submodule (\monofont, plus the Type1 files under cryptocodeh/texmf/); the
+% search path is set in .latexmkrc.  cryptocodeh also defines \bits as \beta,
+% which is unused in this document, hence the \renewcommand.
+\renewcommand{\bits}[1]{\monofont{#1}}
+
 %%% Merging with Kat's macros wip
 \newcommand{\rand}{\red{\rnd}}
 
@@ -243,4 +251,8 @@
 %\newcommand{\FOImp}{\ensuremath{\FO^\notp}\xspace}
 %\newcommand{\FOMess}{\ensuremath{\FO_m}\xspace}
 %\newcommand{\FOMessExp}{\ensuremath{\FOExp_m}\xspace}
-%\newcommand{\FOMessImp}{\ensuremath{\FOImp_m}\xspace}
+
+% to use with tables that are built iteratively
+\newenvironment{steptable}
+  {\par\addvspace{\intextsep}\centering}
+  {\par\addvspace{\intextsep}}
