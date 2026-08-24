@@ -1,4 +1,4 @@
-\section{The Dual-Alphabet Notational System}\label{sec:dual}
+\section{Thinking in Dual Alphabets}\label{sec:dual}
   \hhnote{
     New convention is that hats only appear as labels.
     Let's see if that suffices, or if we still get in trouble.
@@ -479,6 +479,8 @@
         \label{tab:xzstore}
         The effect of applying the $\xstore$ and $\zstore$ operator
         on the four possible dual-basis initial states.
+        Here, $\ket{\beta_{xy}}$ denotes the generalized Bell states 
+        $\ket{\beta_{xy}} \coloneqq 2^{-\nicefrac{n}{2}} \sum_z (-1)^{x \cdot z} \ket{z, y \xor z}$.
       }
       \centering
       %\scriptsize
@@ -489,8 +491,8 @@
           Initial state & $\register[Y] \xstore \register[X]$ yields & $\register[Y] \zstore \register[X]$ yields\\
           \midrule
           $\ket{x,y}$ & $\ket{x,y \xor x}$ & $\ket{x \xor y, y}$ \\
-          $\ket{x,\hat y}$ & $(-1)^{x \cdot y}\ket{x, \hat y}$ & Generalized Bell state \\
-          $\ket{\hat x, y}$ & Generalized Bell state & $(-1)^{x \cdot y}\ket{\hat x, y}$ \\
+          $\ket{x,\hat y}$ & $(-1)^{x \cdot y}\ket{x, \hat y}$ & $\ket{\hat{\beta}_{xy}}$ \\
+          $\ket{\hat x, y}$ & $\ket{\beta_{xy}}$ & $(-1)^{x \cdot y}\ket{\hat x, y}$ \\
           $\ket{\hat x,\hat y}$ & $\ket{\hat x \xor \hat y, \hat y}$ & $\ket{\hat x, \hat y \xor \hat x}$ \\
           %\midrule
           % repeat the table with outputs written in the Hadamard basis?
@@ -499,16 +501,247 @@
       %} % end resizebox
     \end{table}
 
+  \subsection{Function Evaluation With $\xstore$ and $\zstore$}
+    See \cref{tab:fxzstore}.
+
+    \begin{table}[h]
+      \caption{
+        \label{tab:fxzstore}
+        Function evaluation table.
+        Clearly, some of these expressions are more desirable to work with than
+        others. Notice how letting $f$ to be the identity recovers
+        \cref{tab:xzstore}.
+      }
+      \centering
+      %\scriptsize
+      \rowcolors{2}{}{gray!10} % zebra striping
+      %\resizebox{\textwidth}{!}{
+        \begin{tabular}{ccc}
+          \toprule
+          Initial state & $\register[Y] \xstore f(\register[X])$ yields & $\register[Y] \zstore f(\register[X])$ yields\\
+          \midrule
+          $\ket{x,y}$ & $\ket{x,y \xor f(x)}$ & 
+            $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z \xor f(z) \cdot y}\ket{\hat{z}, y}$ \\
+          $\ket{x,\hat y}$ & $(-1)^{y \cdot f(x)}\ket{x, \hat y}$ & 
+            $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z}\ket{\hat z, \hat y \xor f(\hat z)}$
+            \\
+          $\ket{\hat x, y}$ & 
+            $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z}\ket{z, y \xor f(z)}$
+            & $(-1)^{y \cdot f(x)}\ket{\hat x, y}$ \\
+          $\ket{\hat x,\hat y}$ & 
+            $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z \xor f(z) \cdot y}\ket{z, \hat y}$
+            & $\ket{\hat x, \hat y \xor f(\hat x)}$ \\
+          %\midrule
+          % repeat the table with outputs written in the Hadamard basis?
+          \bottomrule
+        \end{tabular}
+      %} % end resizebox
+    \end{table}
   \subsection{Demonstration}
     We next provide demonstrations of the helpfulness and expressiveness of the
       dual-alphabet system of notation.
 
-    \subsubsection{Compressed Oracles.}
-      Lorem ipsum.
+    \subsubsection{The Deutsch--Jozsa Algorithm.}
+      The Deutsch--Josza algorithm learns in a single function call whether a function
+        $f: \bin^n \to \bin$ is constant or balanced (evaluates to $\bits 0$ and
+        $\bits 1$ on exactly half of the inputs each), under the promise that it
+        is either one or the other. The algorithm is a multi-qubit
+        generalization of Deutsch's algorithm, which is notable for being
+        the first example of a task on which a quantum computer can provably outperform 
+        a classical computer, in the sense that any classical algorithm would need
+        two function evaluations (or up to $\nicefrac{2^n}{2}$ in the worst case
+        for the more general case) to arrive at the answer.
+
+      The procedure is given in pseudocode in \cref{fig:DeutschJozsa}, shown in two
+        equivalent implementations depending on whether you start in the
+        Hadamard basis and apply computational-basis function evaluations (which
+        is how the algorithm is usually presented), or if you start from the
+        computational basis and apply a Hadamard-basis function evaluation,
+        which brings a slightly different perspective to the same basic
+        operation.
+
+      %\begin{figure}[t]
+   	  %  \begin{center}
+  	  %	  \fbox{
+  	  %	  	\small
+  	  %	  	\nicoresetlinenr
+  	  %	  	\begin{minipage}[t]{4cm}
+      %        \underline{Deutsch$_{\text{H}}(f)$}
+  	  %	  		\begin{nicodemus}
+      %          \smallskip
+      %          \item $\register[AB] \gets \ket{\hat{\bits{0}}, \hat{\bits{1}}}$
+      %          \smallskip
+      %          \item $\register[B] \xstore f(\register[A])$
+      %          \smallskip
+      %          \item $a \hobstore \register[A]$
+      %          \smallskip
+      %          \item $\pcif a = \bits{1} \pcthen$ 
+      %            \item \quad \pcreturn Balanced
+  	  %	  			\item \pcelse \pcreturn Constant
+  	  %	  		\end{nicodemus}
+  	  %	  	\end{minipage}
+      %      \quad 
+  	  %	  	\nicoresetlinenr
+  	  %	  	\begin{minipage}[t]{4cm}
+      %        \underline{Deutsch$_{\text{C}}(f)$}
+  	  %	  		\begin{nicodemus}
+      %          \smallskip
+      %          \item $\register[AB] \gets \ket{\bits{0}, \bits{1}}$
+      %          \smallskip
+      %          \item $\register[B] \zstore f(\register[A])$
+      %          \smallskip
+      %          \item $a \obstore \register[A]$
+      %          \smallskip
+      %          \item $\pcif a = \bits{1} \pcthen$ 
+      %            \item \quad \pcreturn Balanced
+  	  %	  			\item \pcelse \pcreturn Constant
+  	  %	  		\end{nicodemus}
+  	  %	  	\end{minipage}
+      %    }
+      %  \end{center}
+      %  \caption{
+      %    Deutsch's algorithm, on the left expressed in the canonical way as an
+      %    operation on Hadamard-basis states, with a Hadamard measurement at the
+      %    end. On the right is an equivalent implementation operating on
+      %    computational-basis states, with a computational-basis measurement at
+      %    the end. It is up to the reader to decide which implementation they find
+      %    brings greater intuitition.
+      %  }
+      %\end{figure}
+
+      \begin{figure}[t]
+   	    \begin{center}
+  	  	  \fbox{
+  	  	  	\small
+  	  	  	\nicoresetlinenr
+  	  	  	\begin{minipage}[t]{4cm}
+              \underline{Deutsch--Jozsa$_{\text{H}}(f)$}
+  	  	  		\begin{nicodemus}
+                \smallskip
+                \item $\register[XB] \gets \ket{\hat{\bits{0}}^n, \hat{\bits{1}}}$
+                \smallskip
+                \item $\register[B] \xstore f(\register[X])$
+                \smallskip
+                \item $x \hobstore \register[X]$
+                \smallskip
+                \item $\pcreturn x$
+  	  	  		\end{nicodemus}
+  	  	  	\end{minipage}
+            \quad 
+  	  	  	\nicoresetlinenr
+  	  	  	\begin{minipage}[t]{4cm}
+              \underline{Deutsch--Jozsa$_{\text{C}}(f)$}
+  	  	  		\begin{nicodemus}
+                \smallskip
+                \item $\register[XB] \gets \ket{\bits{0}^n, \bits{1}}$
+                \smallskip
+                \item $\register[B] \zstore f(\register[X])$
+                \smallskip
+                \item $x \obstore \register[X]$
+                \smallskip
+                \item $\pcreturn x$
+  	  	  		\end{nicodemus}
+  	  	  	\end{minipage}
+          }
+        \end{center}
+        \caption{
+          \label{fig:DeutschJozsa}
+          The Deutsch-Josza algorithm for determining whether a given function
+          $f: \bin^n \to \bin$ is constant or balanced.
+        }
+      \end{figure}
+
+      Let us analyze the algorithm via its computational-basis implementation,
+        shown on the right. The operation $\zstore$ applies the $\hCZgate$
+        bitwise from the control to the target, conditioned on the control being
+        in state $\ket{\hat{\bits{0}}}$, so let us start by rewriting the
+        initial state of the $\register[X]$ in the Hadamard basis. Writing $N$
+        for $2^n$ as usual, we have:
+      \[
+        \ket{\bits{0}^n, \bits{1}} 
+          %= \ket{0, \bits{1}} 
+          %= \frac{1}{\sqrt{2^n}} \sum_{x \in \{\bits{0}^n, \ldots, \bits{1}^n\}}
+          %  \ket{\hat{x}, \bits{1}}
+          %= \frac{1}{\sqrt{2^n}} \sum_{x = 0}^{2^n - 1}
+          %  \ket{\hat{x}, \bits{1}}
+          = \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}}
+            \ket{\hat{x}, \bits{1}}\, .
+      \]
+      Recall that the operation $\register[B] \zstore f(\register[X])$ is
+        shorthand for the operation that computes and stores $\ket{f(x)}$ in an
+        ancilla register, then applies $\zstore$ from that register to the
+        target register, before uncomputing the ancilla register state and
+        discarding it. This gives us (as shown in \cref{tab:fxzstore}):
+      \[
+        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
+          \ket{\hat{x}, \bits{1}}
+        \apply{\hCZgate^{\otimes n}} 
+        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
+          (-1)^{f(x)} \ket{\hat x, \bits 1}\, .
+      \]
+      If $f(x) = c$ for some constant $c$, then we have the state
+      \[
+        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
+          (-1)^{f(x)} \ket{\hat x, \bits 1}\, .
+        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
+          (-1)^{c} \ket{\hat x, \bits 1}
+        \equiv 
+        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
+          \ket{\hat x, \bits 1}
+        = \ket{\bits{0}^n, 1}\, ,
+      \]
+      where we have factored out the global phase. Hence,
+      measuring the $\register[X]$ register yields the outcome $\bits{0}^n$
+      with probability one.
+
+    To see what happens in the case that $f(x)$ is \emph{balanced}, first
+      translate the state back to the computational basis:
+      \[
+        \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}} 
+          (-1)^{f(x)} \ket{\hat x, \bits 1}
+        = \frac{1}{\sqrt{2^n}} 
+          \sum_{z \in \ZZ_{N}} 
+          \frac{1}{\sqrt{2^n}} 
+          \sum_{x \in \ZZ_{N}}
+          (-1)^{f(x) \xor x \cdot z} \ket{z, \bits 1}\, ,
+      \]
+      flip the order of summation and define the amplitudes $\alpha_z$ for the 
+      outcomes of a computational-basis measurement,
+      \[
+        = \frac{1}{\sqrt{2^n}} 
+          \sum_{z \in \ZZ_{N}} 
+          \frac{1}{\sqrt{2^n}} 
+          \sum_{x \in \ZZ_{N}}
+          (-1)^{f(x) \xor x \cdot z} \ket{z, \bits 1}
+        \eqqcolon \frac{1}{\sqrt{2^n}} 
+          \sum_{z \in \ZZ_{N}} 
+          \alpha_z \ket{z, \bits 1}\, ,
+      \]
+      then insert for $z=0$ to find the amplitude $\alpha_0$ that the outcome $\bits{0}^n$
+      is observed:
+      \[
+        \alpha_0 = \frac{1}{\sqrt{N}} 
+          \sum_{x \in \ZZ_{N}} (-1)^{f(x)} = 0\, .
+      \]
+      The sum evaluates to zero precisely because $f$ is balanced \emph{and} we
+      are summing over an even number of $x$ values, so every term cancels.
+      Hence, we are guaranteed to \emph{not} observe the
+      outcome $\bits{0}^n$ in the balanced case, which shows that $f$ is constant 
+      \emph{if and only if} the Deutsch-Jozsa algorithm returns $0$.
+
+    \subsubsection{Bernstein--Vaszirani.}
+      Dolor sit amet.
 
     \subsubsection{Grover's Algorithm.}
       Dolor sit amet.
 
+    \subsubsection{Quantum Teleportation.}
+      Dolor sit amet.
+
+    \subsubsection{Compressed Oracles.}
+      Lorem ipsum.
+
+  \clearpage
   \subsection{The Primer Paragraphs}
     \hhnote{
       copy-pasted while I decide what to keep where
