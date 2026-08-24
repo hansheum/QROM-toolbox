@@ -560,62 +560,13 @@
         which brings a slightly different perspective to the same basic
         operation.
 
-      %\begin{figure}[t]
-   	  %  \begin{center}
-  	  %	  \fbox{
-  	  %	  	\small
-  	  %	  	\nicoresetlinenr
-  	  %	  	\begin{minipage}[t]{4cm}
-      %        \underline{Deutsch$_{\text{H}}(f)$}
-  	  %	  		\begin{nicodemus}
-      %          \smallskip
-      %          \item $\register[AB] \gets \ket{\hat{\bits{0}}, \hat{\bits{1}}}$
-      %          \smallskip
-      %          \item $\register[B] \xstore f(\register[A])$
-      %          \smallskip
-      %          \item $a \hobstore \register[A]$
-      %          \smallskip
-      %          \item $\pcif a = \bits{1} \pcthen$ 
-      %            \item \quad \pcreturn Balanced
-  	  %	  			\item \pcelse \pcreturn Constant
-  	  %	  		\end{nicodemus}
-  	  %	  	\end{minipage}
-      %      \quad 
-  	  %	  	\nicoresetlinenr
-  	  %	  	\begin{minipage}[t]{4cm}
-      %        \underline{Deutsch$_{\text{C}}(f)$}
-  	  %	  		\begin{nicodemus}
-      %          \smallskip
-      %          \item $\register[AB] \gets \ket{\bits{0}, \bits{1}}$
-      %          \smallskip
-      %          \item $\register[B] \zstore f(\register[A])$
-      %          \smallskip
-      %          \item $a \obstore \register[A]$
-      %          \smallskip
-      %          \item $\pcif a = \bits{1} \pcthen$ 
-      %            \item \quad \pcreturn Balanced
-  	  %	  			\item \pcelse \pcreturn Constant
-  	  %	  		\end{nicodemus}
-  	  %	  	\end{minipage}
-      %    }
-      %  \end{center}
-      %  \caption{
-      %    Deutsch's algorithm, on the left expressed in the canonical way as an
-      %    operation on Hadamard-basis states, with a Hadamard measurement at the
-      %    end. On the right is an equivalent implementation operating on
-      %    computational-basis states, with a computational-basis measurement at
-      %    the end. It is up to the reader to decide which implementation they find
-      %    brings greater intuitition.
-      %  }
-      %\end{figure}
-
       \begin{figure}[t]
    	    \begin{center}
   	  	  \fbox{
   	  	  	\small
   	  	  	\nicoresetlinenr
-  	  	  	\begin{minipage}[t]{4cm}
-              \underline{Deutsch--Jozsa$_{\text{H}}(f)$}
+  	  	  	\begin{minipage}[t]{3cm}
+              \underline{Deutsch--Jozsa}
   	  	  		\begin{nicodemus}
                 \smallskip
                 \item $\register[XB] \gets \ket{\hat{\bits{0}}^n, \hat{\bits{1}}}$
@@ -629,8 +580,8 @@
   	  	  	\end{minipage}
             \quad 
   	  	  	\nicoresetlinenr
-  	  	  	\begin{minipage}[t]{4cm}
-              \underline{Deutsch--Jozsa$_{\text{C}}(f)$}
+  	  	  	\begin{minipage}[t]{3cm}
+              \underline{Alt.\ implementation}
   	  	  		\begin{nicodemus}
                 \smallskip
                 \item $\register[XB] \gets \ket{\bits{0}^n, \bits{1}}$
@@ -728,6 +679,128 @@
       Hence, we are guaranteed to \emph{not} observe the
       outcome $\bits{0}^n$ in the balanced case, which shows that $f$ is constant 
       \emph{if and only if} the Deutsch-Jozsa algorithm returns $0$.
+
+    \subsubsection{Simon's Algorithm.}
+      Simon's algorithm is an early example of a quantum period-finding
+        algorithm. Given a periodic two-to-one function $f$ with a hidden period
+        $s$, so that $f(x) = f(x \xor s)$, it recovers $s$.
+
+      The main quantum step is in recovering a value $x_i$ which is guaranteed to
+        satisfy $x_i \cdot s = 0$. This subroutine is then repeated until enough
+        such $x_i$ have been recovered that the equation system is fully determined,
+        at which point $s$ may be recovered via basic linear algebra.
+
+      \begin{figure}[h]
+   	    \begin{center}
+  	  	  \fbox{
+  	  	  	\small
+  	  	  	\nicoresetlinenr
+  	  	  	\begin{minipage}[t]{3cm}
+              \underline{Simon's subroutine}
+  	  	  		\begin{nicodemus}
+                \smallskip
+                \item $\register[XY] \gets \ket{\hat{\bits{0}}^n, \bits{0}^n}$
+                \smallskip
+                \item $\register[Y] \xstore f(\register[X])$
+                \smallskip
+                \item $x \hobstore \register[X]$
+                \smallskip
+                \item $\pcreturn x$
+  	  	  		\end{nicodemus}
+  	  	  	\end{minipage}
+            \quad
+  	  	  	\nicoresetlinenr
+  	  	  	\begin{minipage}[t]{3cm}
+              \underline{Alt.\ implementation}
+  	  	  		\begin{nicodemus}
+                \smallskip
+                \item $\register[XY] \gets \ket{\bits{0}^n, \hat{\bits{0}}^n}$
+                \smallskip
+                \item $\register[Y] \zstore f(\register[X])$
+                \smallskip
+                \item $x \obstore \register[X]$
+                \smallskip
+                \item $\pcreturn x$
+  	  	  		\end{nicodemus}
+  	  	  	\end{minipage}
+          }
+        \end{center}
+        \caption{
+          \label{fig:Simon}
+          The quantum subroutine for Simon's algorithm.
+        }
+      \end{figure}
+
+      The quantum subroutine is shown in \cref{fig:Simon}. Let us see how it
+        gives us an $x$ that is guaranteed to satisfy $x \cdot s = 0$.
+      \begin{align*}
+        &\ket{\hat{\bits{0}}^n, \bits{0}} 
+          = \frac{1}{\sqrt{2^n}} \sum_{z \in \ZZ_N} \ket{z, \bits{0}} 
+          \apply{\outReg \xstore f(\inReg)} 
+          \frac{1}{\sqrt{2^n}} \sum_{z \in \ZZ_N} \ket{z, f(z)}\, .
+      \end{align*}
+      After this, none of the following operations depend on the state of the $\outReg$ register, 
+      so though the procedure in \cref{fig:Simon} is never shown to measure it, it
+      makes our analysis a lot easier if we just measure it and discard the
+      $\outReg$ register. For each value $y$ that we might observe, there are
+      two input values $z$ such that $f(z) = y$, so this is not enough to
+      completely collapse the superposition:
+      \begin{align*}
+        \apply{y \obstore \outReg}
+          &\frac{
+            \ket{z} + \ket{z \xor s}
+          }{\sqrt{2}}\, ,
+          %\qquad
+          %\text{s.th.}\
+          %f(z) = y\, .
+      \end{align*}
+      where $z$ satisfies that $f(z) = f(z \xor s) = y$.
+      We will be applying a Hadamard-measurement, so translate this state to
+      the dual domain so that we can inspect the amplitudes directly:
+      \[
+          \frac{
+            \ket{z} + \ket{z \xor s}
+          }{\sqrt{2}}
+          = \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_N}
+          \frac{
+            (-1)^{z \cdot x}\ket{\hat x} + (-1)^{(z \xor s) \cdot x}\ket{\hat x}
+          }{\sqrt{2}} 
+          = \sum_{x \in \ZZ_N}
+          \frac{
+            (-1)^{z \cdot x}
+          }{\sqrt{2^{n+1}}} (1 + (-1)^{x \cdot s}) \ket{\hat x} 
+          \eqqcolon \sum_{x \in \ZZ_N} \hat{\alpha}_{x} \ket{\hat x}\, .
+      \]
+      Look at the amplitude $\hat{\alpha}_x$. Which values of $x$ are we more 
+      likely to observe? Well, $\hat{\alpha}_x$ is proportional to the sum $1 +
+      (-1)^{x \cdot s}$, where $x \cdot s$ denotes the bitstring inner product.
+      There are only two cases: If $x \cdot s = 1$, then $\hat{\alpha}_x = 1-1 = 0$, which means
+      that the probability of observing such an outcome is also zero!
+      Hence, for any $x$ we actually do observe, we must have that $x \cdot s =
+      0$. Indeed, restricting to $x \cdot s = 0$, we see that we have the state
+      \[
+        \sum_{x\, :\, x \cdot s = 0}
+        \frac{
+          (-1)^{z \cdot x}
+        }{\sqrt{2^{n+1}}} (1 + 1) \ket{\hat x}
+        = \sum_{x\, :\, x \cdot s = 0}
+        \frac{
+          (-1)^{z \cdot x}
+        }{\sqrt{2^{n-1}}} \ket{\hat x}\, ,
+      \]
+      which we can verify as a sanity check is normalized, since there are
+      $2^{n-1}$ values of $x$, i.e.\ half of all $x$, that
+      satisfy that $x \cdot s = 0$. (Otherwise, that would mean we must have
+      done something wrong.)
+
+    Applying a Hadamard-basis measurement to this state, then, is a procedure to 
+      sample uniformly from the set of $x$ that satisfy $x \cdot s = 0$.
+      Importantly, this shows that not only do we get a sample that satisfies
+      our requirement, but we are also very unlikely to get the
+      \emph{same} $x$ when we later repeat the subroutine, so that with
+      overwhelming probability we will only need to repeat the procedure $n$
+      times to get $n$ independent values $x_i$ that all satisfy 
+      $x_i \cdot s = 0$.
 
     \subsubsection{Bernstein--Vaszirani.}
       Dolor sit amet.
