@@ -1,83 +1,137 @@
 \section{Thinking in Dual Alphabets}\label{sec:dual}
-  \hhnote{
-    New convention is that hats only appear as labels.
-    Let's see if that suffices, or if we still get in trouble.
-  }
-  \hhnote{
-    \emph{Or} simply say something along the lines of ``We use hats to refer to
-    the variables also outside of state labels, and even in arithmetic. Whenever hats appear in
-    arithmetic expressions, we simply treat them normal bitstrings, making
-    expressions like $a \cdot \hat{b}$ well-defined''?
-  }
+  \begin{table}[b!]
+    \centering
+    %
+    \caption{
+      \label{tab:dual-conventions}
+      Our dual-alphabet convention, and how to use it.
+    }
+    %
+    \rowcolors{2}{}{gray!10}
+    {\setlength{\tabcolsep}{6pt}
+    \begin{tabularx}{\textwidth}{XXX}
+      \toprule
+      \textbf{Convention} & \textbf{Rule/definition} & \textbf{Notes/examples} \\
+      \midrule
+      Hat $=$ alphabet flag 
+        & $\hat{x}$ is the same value as $x$, expressed as a 
+          bitstring over the dual alphabet $\{+,-\} = \hbin$.
+        & Example: If $x = 5 = \bits{101}$, then 
+          $\ket{\hat{x}} = \ket{\hat{5}}
+          = \ket{\hone \hnil \hone} = \ket{-+-}\, .$ \\
+      Dual-domain states 
+        & $\ket{\hat{b}} \coloneqq \frac{1}{\sqrt 2} (\ket{\nil} + (-1)^b \ket{\one})$,
+          $\ket{\hat{x}} = \Hgate^{\otimes n} \ket{x}$.
+        & Related to how the QKD literature writes $\Hgate^\theta \ket x$ for a state
+          expressed in the $\theta$ basis. \\
+      Hats are state labels
+        & Hatted values never appear in arithmetic outside of kets.
+        & Forbidden: $(-1)^{\hat{x} \cdot y}$, $f(\hat{x})$. \\
+      Wide hats go over arithmetic expressions.
+        & Hats are applied \emph{last}.
+        & Examples: $\ket{\widehat{f(x)}}$, $\ket{\widehat{x \xor y}}$. \\
+      Xor of labels
+        & $\hat{x} \xor \hat{y} \coloneqq \widehat{x \xor y}$.
+        & The one exception to the above ``no
+          arithmetic'' rule; $\widehat{(\cdot)}$ is a group homomorphism. \\
+      Fresh letters for dummy indices
+        & Write $\ket{x} = \nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z} \ket{\hat z}$.
+        & $\ket{x} = \nicefrac{1}{\sqrt{2^n}} \sum_{\hat{x}} (-1)^{x \cdot \hat{x}} \ket{\hat x}$ 
+          would not be well-defined under our convention. \\
+      Outcomes are plain
+        & Measurement results always live in $\bin^n$.
+        & Write $x \hobstore \register[X]$, not $\hat x \hobstore \register[X]$. \\
+      \bottomrule
+    \end{tabularx}}
+  \end{table}
+
   \subsection{Dual Alphabets}
     We introduce the dual-alphabet notation, which allows us to reason about qubit
       states in both the computational and the Hadamard basis without having to
       explicitly apply the Hadamard transformation every time.
       Recall the the Hadamard basis states: 
       \[
-        \ket{+} \coloneqq \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, ,\quad
-        \ket{-} \coloneqq \frac{\ket{0} - \ket{1}}{\sqrt{2}}\, .
+        \ket{+} \coloneqq \frac{\ket{\nil} + \ket{\one}}{\sqrt{2}}\, ,\quad
+        \ket{-} \coloneqq \frac{\ket{\nil} - \ket{\one}}{\sqrt{2}}\, .
       \]
-      For $b \in \{0,1\}$, define the state
+      For $b \in \bin$, define the state
       \[
-        \ket{\hat{b}} \coloneqq \frac{\ket 0 + (-1)^b \ket 1}{\sqrt 2}\, ,
+        \ket{\hat{b}} \coloneqq \frac{\ket{\nil} + (-1)^b \ket{\one}}{\sqrt 2}\, ,
       \]
-      i.e.\ $\ket{\hat{b}} = \ket +$ if $b=0$, and $\ket{\hat{b}} = \ket -$ if
-      $b=1$. Notice how we are invited to think of the variable $\hat{b}$ as a bit
-      defined over the alphabet $\{\hat 0, \hat 1 \} \coloneqq \{+,-\}$, in place
-      of our usual alphabet $\{0,1\}$, since $\ket{\hat 0} = \ket +$ and 
-      $\ket{\hat 1} = \ket -$. We will refer to this as the \emph{dual} alphabet.
+      i.e.\ $\ket{\hat{b}} = \ket +$ if $b=\nil$, and $\ket{\hat{b}} = \ket -$ if
+      $b=\one$. Notice how we are invited to think of the variable $\hat{b}$ as a bit
+      defined over the alphabet $\hbin \coloneqq \{+,-\}$ in place
+      of our usual alphabet $\bin$, since $\ket{\hnil} = \ket +$ and 
+      $\ket{\hone} = \ket -$. We will refer to this as the \emph{dual} alphabet.
+      And just as $\ket{\hat{b}}$ can be expressed in the usual alphabet $\bin$
+      using the definition above, so can a state $\ket b$ be expressed in terms
+      of the dual alphabet $\hbin$:
+      \[
+        \ket{\hat{b}} = \frac{\ket{\nil} + (-1)^b \ket{\one}}{\sqrt 2}\, ,
+        \quad
+        \ket{b} = \frac{\ket{\hnil} + (-1)^b \ket{\hone}}{\sqrt 2}\, .
+      \]
 
     Going to multiple qubits, Hadamard-transforming an
-      $n$-qubit computational-basis state $\ket{x} = \ket{101 \ldots 01}$ just 
-      applies the Hadamard gate to each qubit individually, which gives us:
+      $n$-qubit computational-basis state $\ket{x} = \ket{\bits{101} \ldots \bits{01}}$ just 
+      applies the Hadamard gate to each qubit individually:
     \[
-      \ket{x} = \ket{101 \ldots 01}
+      \ket{x} = \ket{\bits{101} \ldots \bits{01}}
         \apply{\Hgate^{\otimes n}}\ket{- + - \ldots + -} 
-        = \ket{\hat{1} \hat{0} \hat{1} \ldots \hat{0} \hat{1}} 
+        = \ket{\hone \hnil \hone \ldots \hnil \hone} 
         \eqqcolon \ket{\hat{x}}\, .
     \]
-    The result is a state labelled by a bitstring $\hat{x}$ defined over the
-    dual alphabet: $\hat{x} \in \{\hat 0, \hat 1\}^n = \{+,-\}^n$.
+    The result is a state labelled by a \emph{bitstring} $\hat{x}$, 
+      again defined over the dual alphabet: $\hat{x} \in \hbin^n = \{+,-\}^n$.
+      Hence, our convention generalizes straightforwardly:
+      Writing out the state $\ket{\hat{x}}$ in
+      terms of the computational basis, we see that we can \emph{translate} a
+      state between alphabets using the usual rule for applying a
+      Hadamard-transformation, expressed in the below definition.
+    \begin{definition}\label{def:HadamardTranslation}
+      Let $x \in \bin^n$. Then,
+      \[
+        \ket{\hat{x}} = \frac{1}{\sqrt{2^n}} \sum_{z \in \bin^n} (-1)^{x \cdot
+        z} \ket{z}\, ,
+        \quad 
+        \ket{x} = \frac{1}{\sqrt{2^n}} \sum_{z \in \bin^n} (-1)^{x \cdot
+        z} \ket{\hat{z}}\, .
+      \]
+    \end{definition}
+    Note how hats only ever show up inside kets: they are to be used as
+      \emph{state labels}, never in the surrounding arithmetic.
+      Relatedly, since the operation $\widehat{(\cdot)}$ takes any value
+      expressed over $\bin$ and translates it to that same value expressed over
+      $\hbin$, dummy variables must get a new letter $z$. Finally, classical
+      values such as observed outcomes are always defined over $\bin$ and may never carry hats. 
+      See \cref{tab:dual-conventions} for a helpful
+      overview of how to use our conventions.
 
-    The computational basis and Hadamard basis really are
-      \emph{dual} bases,\footnote{
-        More precisely, they are \emph{mutually unbiased} bases.
-      } and so are their alphabets: Writing out the state $\ket{\hat{x}}$ in
-      terms of the computational basis, we have:
-    \[
-      \ket{\hat{x}} = 2^{-\nicefrac{n}{2}} \sum_{y} (-1)^{x \cdot
-      y} \ket{y}\, ,
-    \]
-    which also holds the other way around:
-    \[
-      \ket{x} = 2^{-\nicefrac{n}{2}} \sum_{y} (-1)^{x \cdot
-      y} \ket{\hat{y}}\, .
-    \]
-    In particular, for single-qubit states, 
-    \[
-      \ket{b} = \frac{\ket{\hat{0}} + (-1)^b \ket{\hat{1}}}{\sqrt 2}\, ,
-      %= \frac{\ket{+} + (-1)^b \ket{-}}{\sqrt 2}\, ,
-    \]
-    which is the dual to our definition of $\ket{\hat{b}}$ above.
+    To re-iterate the point: We are not \emph{transforming} the states in the
+      above identities
+      %\emph{translating} a state is not the same as \emph{transforming} it 
+      -- not a single qubit gate was applied -- 
+      we are merely looking at the same state with a new pair of glasses!
+      This is what allows us to express these as \emph{identities},
+      rather than as an \emph{update} (with arrows in place of equality signs).
 
-    Hence, while measuring a state $\ket x$ in the computational basis yields
+    So, measuring a state $\ket x$ in the computational basis yields
       outcome $x$ with certainty, measuring a state $\ket{\hat{x}}$ in the
-      computational basis yields a uniformly random outcome $x^\prime \sample \{0,1\}^n$;
+      computational basis yields a uniformly random outcome $x^\prime \sample \bin^n$;
       and while measuring a state $\ket{\hat{x}}$ in the Hadamard basis yields
       outcome $x$ with certainty, measuring a computational-basis state $\ket{x}$ in the
-      Hadamard basis yields a uniformly random outcome $x^\prime \in \{0,1\}^n$.
-      (Note how hats only ever show up in \emph{state labels},
-      and are never used to denote the outcome; our classical bitstrings are still only
-      defined over the alphabet $\bin$.)
+      Hadamard basis will \emph{also} yield a uniformly random outcome $x^\prime \in \bin^n$.
 
-    Being able to apply this translation on the fly, expressing any given state
-      in whichever alphabet it is most simply expressed, will turn out to be a
-      useful trick that simplifies many intermediate calculations. As a bonus,
-      it brings to the forefront many of the unique aspects that separate
-      quantum algorithms from classical ones, and experience tells us that
-      playing around with the dual-alphabet system of notation can be very 
-      helpful in building your quantum intuition! 
+    Over the course of this section, we hope to convince you that
+      the ability to translate between alphabets on the fly, expressing any
+      given state in whichever basis it is the simplest (even at times using
+      different alphabets for different registers), will turn out to be a
+      very useful trick that simplifies many intermediate calculations, 
+      while bringing to the forefront many of the unique aspects that separate
+      the quantum and classical worlds.
+      Indeed, experience tells us that
+      playing around with the dual alphabets can be very 
+      helpful in building that coveted quantum intuition! 
 
   \subsection{Dual-Alphabet Pseudocode}
     We have introduced the notation $\register[B] \xstore \register[A]$ for the
@@ -86,11 +140,11 @@
       \[
         \ket{a,b}_{\register[AB]} \to \ket{a, b \xor a}_{\register[AB]}\, .
       \]
-      If $a$ and $b$ are bits, $a,b \in \{0,1\}$, then this is just a CNOT
-      from register $\register[A]$ to register $\register[B]$.
-      On the other hand, for any function $f$ that we know how to compute, 
+      If $a$ and $b$ are bits ($a,b \in \bin$), then this is just a CNOT
+      from qubit $\register[A]$ to qubit $\register[B]$.
+      For any function $f$ that we know how to compute, 
       writing $\register[B] \xstore f(\register[A])$ denotes the standard 
-      reversible funciton evaluation 
+      reversible function evaluation:
       \[
         \ket{a,b}_{\register[AB]} \to \ket{a, b \xor f(a)}_{\register[AB]}\, .
       \]
@@ -101,59 +155,67 @@
       and $\Xgate$ switch roles exactly when moving between the computational
       and Hadamard bases:
       \begin{align*}
-        \ket{0} \apply{\Xgate} \ket{1}\, ,\ \ket{1} \apply{\Xgate} \ket{0} 
-          &\qquad \ket{0} \apply{\Zgate} \ket{0}\, ,\ \ket{1} \apply{\Zgate} -\ket{1} \\
+        \ket{\nil} \apply{\Xgate} \ket{\one}\, ,\ \ket{\one} \apply{\Xgate} \ket{\nil} 
+          &\qquad \ket{\nil} \apply{\Zgate} \ket{\nil}\, ,\ \ket{\one} \apply{\Zgate} -\ket{\one} \\
         \ket{+} \apply{\Zgate} \ket{-}\, ,\ \ket{-} \apply{\Zgate} \ket{+}
           &\qquad \ket{+} \apply{\Xgate} \ket{+}\, ,\ \ket{-} \apply{\Xgate} -\ket{-}
       \end{align*}
       which in our notation may be written more succinctly as
       \begin{align*}
-        \ket{b} \apply{\Xgate} \ket{b \xor 1}\, &,\quad \ket{b} \apply{\Zgate} (-1)^b \ket{b} \\
-        \ket{\hat{b}} \apply{\Zgate} \ket{\hat{b} \xor \hat{1}}\, &,\quad \ket{\hat{b}} \apply{\Xgate} (-1)^b \ket{\hat{b}}
+        \ket{b} \apply{\Xgate} \ket{b \xor \one}\, &,\quad \ket{b} \apply{\Zgate} (-1)^b \ket{b} \\
+        \ket{\hat{b}} \apply{\Zgate} \ket{\hat{b} \xor \hone}\, &,\quad \ket{\hat{b}} \apply{\Xgate} (-1)^b \ket{\hat{b}}
       \end{align*}
-      Staying with single-qubit states for now, we want to identify the
-      equivalent of the CNOT operation,
+      We want to identify the equivalent of the CNOT operation,
       a.k.a.\ $\CXgate$, in the Hadamard domain, i.e.\ the operation
       \[
         \ket{\hat{a}, \hat{b}} \to \ket{\hat{a}, \hat{b} \xor \hat{a}}\, .
       \]
       This \emph{almost} looks like a controlled-$\Zgate$, or $\CZgate$, except that we
-      are controlling on $\ket{\hat a} = \ket{\hat 1}$, in other words that
-      register $\register[A]$ is in state $\ket{-}$. Call this operation
-      $\hCZgate$; it is defined as:
+      are controlling on $\ket{\hat a} = \ket{\hone}$. In other words, the
+      $\Zgate$ operation is only applied in the branches of the superposition
+      where register $\register[A]$ finds itself in state $\ket{\hone} = \ket{-}$ state. 
+      Call this operation $\hCZgate$, defined as:
       \[
         \hCZgate_{\register[AB]} = 
           \ketbra{+}_{\register[A]} \otimes \unitary[I]_{\register[B]}
           + \ketbra{-}_{\register[A]} \otimes \Zgate_{\register[B]}\, ,
       \]
-      i.e.\ the unitary that applies $\Zgate$ to register $\register[B]$
-        if register $\register[A]$ is in the state $\ket -$, and acts as the identity
-        otherwise. Let us see explicitly what happens when we apply $\hCZgate$
-        to the state $\ket{\hat a, \hat b}$:
+      i.e.\ the unitary that picks out the $\ket{-}_{\register[A]}$ branches and
+        applies $\Zgate$ to register $\register[B]$ there, and elsewhere applies the
+        identity. To see that this is the correct operation, simply notice that since 
+        $\Xgate$ and $\Zgate$ switch roles between domains, 
+        we might as well write $\Zgate = \hat{\Xgate}$, in which case
+        $\hCZgate = \hat{\unitary[C]}\hat\Xgate$.
+
+      Still, it is instructive to see explicitly how it all works out, so let us apply
+        $\hCZgate$ to the state $\ket{\hat a, \hat b}$ and see what happens
+        by relying on the standard phase-flipping effect of $\Zgate$ on
+        computational-basis states:
       \begin{multline*}
-        \hCZgate \ket{\hat a, \hat b} 
-          = \hCZgate \ket{\hat a} \left( \frac{\ket 0 + (-1)^b \ket 1}{\sqrt 2} \right)
-          = \ket{\hat a} \left( \frac{\ket 0 + (-1)^b(-1)^a \ket 1}{\sqrt 2} \right) \\
-          = \ket{\hat a} \left( \frac{\ket 0 + (-1)^{b \xor a} \ket 1}{\sqrt 2} \right)
+        \ket{\hat a, \hat b} 
+          = \ket{\hat a} \left( \frac{\ket{\nil} + (-1)^b \ket{\one}}{\sqrt 2} \right) \\
+          \apply{\hCZgate} \ket{\hat a} \left( \frac{\ket{\nil} + (-1)^b(-1)^a \ket{\one}}{\sqrt 2} \right) 
+          = \ket{\hat a} \left( \frac{\ket{\nil} + (-1)^{b \xor a} \ket{\one}}{\sqrt 2} \right)
           = \ket{\hat a, \widehat{b \xor a}} \eqqcolon \ket{\hat a, \hat{b} \xor \hat{a}}\, ,
       \end{multline*}
       where we have defined the xor between two dual-alphabet strings 
         $\hat a \xor \hat b$ to simply be the dual-alphabet expression of the
-        xored value $a \xor b$. We have found the operation we sought: The dual-domain
-        equivalent of the CNOT (or $\CXgate$) operation. (This is perhaps even
-        easier to see if we write $\Zgate = \hat{\Xgate}$, in which case
-        $\hCZgate$ just becomes $\hat{\unitary[C]}\hat\Xgate$.)
+        xored value $\widehat{a \xor b}$. (In other words,
+        $\widehat{(\cdot)}$ is
+        a group homomorphism over $(\ZZ_2, \xor)$.) By translating back to the dual
+        alphabet in the last step, we find that this is indeed the operation we
+        sought, namely the dual-domain equivalent of the CNOT (or $\CXgate$) operation. 
 
-      Going back to multi-qubit states, recall that the operation 
+      For multi-qubit states, recall that the operation 
         $\outReg \xstore \inReg$ on two equally-sized registers $\inReg$ and
         $\outReg$, denotes the operation:
         \[
           \ket{x,y} \to \ket{x,y \xor x}\, ,
         \]
-        where now, $y \xor x$ denotes the bitwise xor of $x$ and $y$
-        (or equivalently, the sum $x + y \pmod{2}$, if we choose to
-        interpret $x$ and $y$ as integers over $\ZZ_{2^n}$ instead of
-        as fixed-length bitstrings over $\bin^n$).
+        where now, $y \xor x$ denotes the bitwise xor of $x$ and $y$.
+        %(or equivalently, the sum $x + y \pmod{2}$, if we choose to
+        %interpret $x$ and $y$ as integers over $\ZZ_{2^n}$ instead of
+        %as fixed-length bitstrings over $\bin^n$).
         Hence, this operation can be implemented by simply applying $\CXgate$
         gates between corresponding qubits, so that $\ket{x_i,y_i} \to \ket{x_i,
         y_i \xor x_i}$. It is clear that the corresponding
@@ -165,77 +227,85 @@
           \ket{\hat x, \hat y} \to \ket{\hat x, \widehat{x \xor y}} 
           \eqqcolon \ket{\hat x, \hat{x} \xor \hat{y}}\, . 
         \]
-        Denote this operation $\outReg \zstore \inReg$, to distinguish it from
-        the bitwise CNOT operation $\outReg \zstore \inReg$.
-
-      \subsubsection{The Hadamard Translation}
-        \hhnote{explain this here?}
+        We will denote this operation $\outReg \zstore \inReg$, where the $\ominus$
+        indicates the $\Zgate$ operation (in reference to its association with
+        phase-flipping), and the hat serves as a reminder that we are
+        controlling on the states $\ket\hone$ rather than $\ket\one$.\footnote{
+          This suggests the additional operators $\czstore$ and $\hxstore$, which
+          would indeed be perfectly well-defined, though we will not need them.
+        }
 
   \subsection{Properties of $\xstore$ and $\zstore$.}
-    \subsubsection{The Single-Qubit Case.}
-      Let us explore how $\xstore$ and $\zstore$ act on various initial states,
-        starting with single qubits.
-        By design, the $\xstore$ operand takes states $\ket{a, b}$ to
-        $\ket{a, b \xor a}$, while 
-        $\zstore$ takes states $\ket{\hat a, \hat b}$ to 
-        $\ket{\hat a, \hat b \xor \hat a}$. 
-        What about the other way around?
-        Or for that matter, mixed-alphabet states like $\ket{\hat a, b}$ and
-        $\ket{a, \hat b}$? In other words, we would like to fill out the missing
-        cells in the following table.
+    Let us explore how $\xstore$ and $\zstore$ act on various initial states,
+      starting with single qubits.
+      By design, the $\xstore$ operator takes states $\ket{a, b}$ to
+      $\ket{a, b \xor a}$, while 
+      $\zstore$ takes states $\ket{\hat a, \hat b}$ to 
+      $\ket{\hat a, \hat b \xor \hat a}$. 
+      What about the other way around?
+      Or for that matter, mixed-alphabet states like $\ket{\hat a, b}$ and
+      $\ket{a, \hat b}$? 
+      In other words, we would like to fill out the missing
+      cells in the following table:
 
-      \begin{steptable}
-        \setlength{\extrarowheight}{2pt}
-        \rowcolors{2}{}{gray!10} % zebra striping
-        \begin{tabular}{ccc}
-            \toprule
-            $\register[AB]$ initial state & 
-              $\quad$ $\register[B] \xstore \register[A]$ yields $\quad$ & 
-              $\register[B] \zstore \register[A]$ yields\\
-            \midrule
-            $\ket{a,b}$ & $\ket{a,b \xor a}$ & \\
-            $\ket{a,\hat b}$ &  &  \\
-            $\ket{\hat a, b}$ &  &  \\
-            $\ket{\hat a, \hat b}$ &  & $\ket{\hat a, \hat b \xor \hat a}$ \\
-            \bottomrule
-          \end{tabular}
-      \end{steptable}
+    \begin{steptable}
+      \setlength{\extrarowheight}{2pt}
+      \rowcolors{2}{}{gray!10} % zebra striping
+      \begin{tabular}{ccc}
+          \toprule
+          $\register[AB]$ initial state & 
+            $\quad$ $\register[B] \xstore \register[A]$ yields $\quad$ & 
+            $\register[B] \zstore \register[A]$ yields\\
+          \midrule
+          $\ket{a,b}$ & $\ket{a,b \xor a}$ & \\
+          $\ket{a,\hat b}$ &  &  \\
+          $\ket{\hat a, b}$ &  &  \\
+          $\ket{\hat a, \hat b}$ &  & $\ket{\hat a, \hat b \xor \hat a}$ \\
+          \bottomrule
+        \end{tabular}
+    \end{steptable}
 
-      Let us begin by asking how $\zstore$ affects the computational-basis initial
-        state $\ket{a,b}$: $\register[A]$ is a single-qubit register 
-        initialized to $\ket a$, and $\register[B]$ is a single-qubit
-        register initialized to $\ket b$, and $a,b \in \bin$. 
-        
-      First, recall that $\zstore$ does not control on $a = 1$, but rather on
-        $\register[A]$ being in state $\ket{\hat 1} = \ket{-}$, so start by 
-        Hadamard-translating the state $\ket a$ to express it in the
-        dual alphabet:
-        \[
-          \ket{a,b} = \frac{\ket{\hat 0} + (-1)^a \ket{\hat 1}}{\sqrt 2}\ket b\, .
-        \]
+    \subsubsection{Case 1: $\ket{a, b}$, $\register[B] \zstore \register[A]$.}
+      Let us begin by asking what is perhaps the most pressing question: How
+        does $\zstore$ affect computational-basis 
+        states like $\ket{a,b}$? 
+        %$\register[A]$ is a single-qubit register 
+        %initialized to $\ket a$, and $\register[B]$ is a single-qubit
+        %register initialized to $\ket b$, and $a,b \in \bin$. 
+        Recall that $\zstore$ does not control on $\ket a = \ket \one$, but
+        rather on $\ket{\hat a} = \ket{\hat 1}$, so this does
+        \emph{not} act like a standard controlled-$\Zgate$ operation.
+        To reveal the relevant controls, begin by 
+        translating $\ket a$ to the dual alphabet:
+      \[
+        \ket{a,b} = \frac{\ket{\hnil} + (-1)^a \ket{\hone}}{\sqrt 2}\ket b\, .
+      \]
       For single-qubit registers, the operation $\register[B] \zstore
-      \register[A]$ simply applies the $\hCZgate$ operation from $\register[A]$ to $\register[B]$.
-      The $\Zgate$ gate applied to a computational-basis state $\ket b$ flips the phase iff 
-      $b = 1$, and it is only applied in the $\hat 1$-branch of the
-      superposition, so we get:
+        \register[A]$ just applies the $\hCZgate$ operation we defined earlier,
+        which only fires in the $\ket \hone$ branch of the superposition.
+        Meanwhile, $\Zgate$ applied to a computational-basis state $\ket
+        b$ flips the phase iff $b = \one$. The result:
       \[
-        \frac{\ket{\hat 0} + (-1)^a \ket{\hat 1}}{\sqrt 2}\ket b
+        \frac{\ket{\hnil} + (-1)^a \ket{\hone}}{\sqrt 2}\ket b
           \apply{\hCZgate} 
-          \frac{\ket{\hat 0} + (-1)^{a} (-1)^{b} \ket{\hat 1}}{\sqrt 2}\ket b
-          = \frac{\ket{\hat 0} + (-1)^{a \xor b} \ket{\hat 1}}{\sqrt 2}\ket b\, .
+          \frac{\ket{\hnil} + (-1)^{a} (-1)^{b} \ket{\hone}}{\sqrt 2}\ket b
+          = \frac{\ket{\hnil} + (-1)^{a \xor b} \ket{\hone}}{\sqrt 2}\ket b
+          = \ket{a \xor b, b}\, ,
       \]
-      Finally, Hadamard-translate the $\register[A]$ state back to the standard alphabet:
-      \[
-          \frac{\ket{\hat 0} + (-1)^{a \xor b} \ket{\hat 1}}{\sqrt 2}\ket b
-          = \ket{a \xor b, b}\, .
-      \]
-      So, the operand $\zstore$ takes a state $\ket{a,b}$ to the state 
-      $\ket{a \xor b, b}$. Since the operands $\zstore$ and $\xstore$ switch
-      roles exactly when moving from the computational basis (standard alphabet)
-      to the Hadamard basis (dual alphabet), we can also conclude right away
-      that the operand $\xstore$ must take the state $\ket{\hat a, \hat b}$ to
-      $\ket{\hat a \xor \hat b, \hat b}$.
-      Let's add them to our table:
+      where we used the translation rule a second time to translate the state back to the
+        computational-basis.
+
+      So, the operation $\register[B] \zstore \register[A]$ takes a state
+        $\ket{a,b}$ to the state $\ket{a \xor b, b}$. In other words, it acts
+        exactly like the operation $\register[A] \xstore \register[B]$, our
+        previous operation with the registers flipped! 
+        Since operators $\zstore$ and $\xstore$ switch
+        roles when moving from the computational basis (standard alphabet)
+        to the Hadamard basis (dual alphabet), we may conclude right away 
+        that the operation $\register[B] \xstore \register[A]$ must similarly
+        take a state $\ket{\hat a, \hat b}$ to the state $\ket{\hat a \xor \hat b, \hat b}$,
+        i.e.\ the same as $\register[A] \zstore \register[B]$.
+        Let's add both to our table:
       \begin{steptable}
         \setlength{\extrarowheight}{2pt}
         \rowcolors{2}{}{gray!10} % zebra striping
@@ -253,23 +323,22 @@
         \end{tabular}
       \end{steptable}
 
-      Notice the symmetries: First, the table gets a hat/non-hat symmetry
-        diagonally from the lower-left to the upper-right, and from the lower-right to the
-        upper-left, in the sense that switching $a$, $\hat a$, and $\xstore$ for
-        $\hat a$, $\hat b$, and $\zstore$ (or vice versa) leaves the operation
-        invariant. This is simply saying that the computational basis and the
-        Hadamard basis are duals of each other, with $\xstore$ and $\zstore$
-        switching roles between bases.
+      The table surfaces two symmetries: First, the diagonal hat/non-hat symmetry
+        from swapping $a,b,\xstore \leftrightarrow \hat a, \hat b, \zstore$, 
+        which is simply saying that the computational basis and the
+        Hadamard basis are dual, and that $\xstore$ and $\zstore$ play the role
+        of the other in the other domain.
 
-      The more interesting symmetry is the fact that switching $\xstore$ for
-        $\zstore$ and $\register[A]$ for $\register[B]$ \emph{also} leaves the
-        operation invariant. In other words, applying $\zstore$ from $\inReg$ to
-        $\outReg$ \emph{has the same effect as} applying $\xstore$ from
-        $\outReg$ to $\inReg$.
-        Since we have shown that this symmetry holds for every state in the qubit
-        basis $\{\ket 0, \ket 1\}$, the symmetry must hold for \emph{every}
+      The more interesting symmetry is the one we just discovered, that switching $\xstore$ for
+        $\zstore$ \emph{and} reversing direction leaves the
+        operation invariant. 
+        %In other words, applying $\zstore$ from $\inReg$ to
+        %$\outReg$ \emph{has the same effect as} applying $\xstore$ from
+        %$\outReg$ to $\inReg$.
+        Since the symmetry holds for every state in the qubit
+        basis $\{\ket{\nil}, \ket{\one}\}$, the symmetry must hold for \emph{every}
         qubit state; and since the $\xstore$ and $\zstore$ operations are
-        implement bitwise for multi-qubit registers, the same must be true in
+        implemented bitwise for multi-qubit registers, the same must be true in
         general. %Let us state this as a lemma.
 
       \begin{lemma}\label{lemma:xzstore}
@@ -286,45 +355,44 @@
       \cref{lemma:xzstore} may seem surprising, but it is
         actually just a restatement of the well-known fact that
         CNOT switches direction under the Hadamard transformation -- the target
-        becomes the control, and the control becomes the target. Written in
-        terms of the unitaries:
-      \[
+        becomes the control, and the control becomes the target:
+      $
         \Hgate^{\otimes 2}\, \CXgate_{\register[AB]}\, \Hgate^{\otimes 2} = \CXgate_{\register[BA]}\, .
-      \]
+      $
 
-      Next up in our table is the multi-alphabet state
+    \subsubsection{Case 2: $\ket{a, \hat b}$, $\register[B] \xstore \register[A]$.}
+      Next up is our first multi-alphabet state,
         $\ket{a, \hat b}$. What is the effect of the operation 
         $\register[B] \xstore \register[A]$ on this state, 
         i.e.\ a CNOT from $\ket a$ to $\ket{\hat b}$?
-        Well, recall that the $\Xgate$ and $\Zgate$ play opposite roles in the
-        two domains, so applying a (controlled) $\Xgate$ gate to $\ket{\hat b}$
-        will have the same effect as if we applied a (controlled) $\Zgate$ gate
-        to $\ket{b}$: If $b=1$ (so that $\hat b = \hat 1$), then the
-        phase is flipped, and otherwise nothing happens.
-        Since the operation is further only applied if $a = 1$, we need that
-        their \emph{product} is $1$ for the phase to be flipped. In other words,
-        we have the following effect:
+        Well, recall that $\Xgate$ and $\Zgate$ play opposite roles in the
+        two domains, so applying an $\Xgate$ gate to a state $\ket{\hat b}$
+        will have the same effect on it as if we had applied a $\Zgate$ gate
+        to $\ket{b}$: If $\hat b = \hone$, then the
+        phase flips, and otherwise nothing happens.
+        Since this operation is controlled on $a = \one$, we need that
+        \emph{both} $a$ and $b$ are $\one$ for the phase to flip; in other
+        words, we need that their \emph{product} is $1$:
       \[
         \ket{a, \hat b} \apply{\CXgate} (-1)^{a \cdot b}\ket{a,\hat b}\, .
       \]
       The only possible effect is a flip of the global phase.
         With global phases being unphysical, this means that
         in isolation, the operation acts on the state like the
-        \emph{identity}.\footnote{
+        identity.\footnote{
           Another way to say this is that $\ket{\hat a, b}$ is an
-          eigenstate of the $\hCZgate$ operator, which actually follows
-          trivially from the fact that $\ket b$ is an eigenstate of the $\Zgate$
+          eigenstate of the $\hCZgate$ operator, which follows
+          from the fact that $\ket b$ is an eigenstate of the $\Zgate$
           operator.
         }
-        But of course, we will often \emph{not} be applying $\zstore$ in isolation, and
+        But of course, we will often \emph{not} be applying these operations in isolation, and
         the moment the operation is controlled on other qubit states (such as
-        when appearing inside a $\pcfor \pcbranch$ ``loop''), the phase
-        is no longer global, and it may certainly \emph{not} be ignored.
+        when applied inside a ``branch loop''), the phase
+        is no longer global, and may certainly \emph{not} be ignored.
 
-      Using the diagonal symmetry of our table, we may immediately conclude that
-        the operation $\register[B] \zstore \register[A]$ with initial state
-        $\ket{\hat a, b}$ will have the same net effect 
-        (we could also have seen this from \cref{lemma:xzstore}):
+      Using the diagonal symmetry of our table, we may again immediately
+        conclude that the operation $\register[B] \zstore \register[A]$ with
+        initial state $\ket{\hat a, b}$ will have the same overall effect:
       \[
         \ket{\hat a, b} \apply{\hCZgate} (-1)^{a \cdot b}\ket{\hat a, b}\, .
       \]
@@ -347,67 +415,91 @@
         \end{tabular}
       \end{steptable}
 
-      Finally, how does $\register[A] \xstore \register[B]$ affect the initial
-        state $\ket{\hat a, b}$? This operation should look familiar to you: We
+    \subsubsection{Case 3: $\ket{\hat a, b}$, $\register[B] \xstore \register[A]$.}
+      Finally, what is the effect of applying $\register[B] \xstore
+        \register[A]$ on the initial state $\ket{\hat a, b}$? 
+        This one \emph{should} look familiar to you: We
         are applying a CNOT from a qubit in superposition to a qubit in a
-        computational basis state, which is exactly how entangled qubit pairs are
-        usually prepared, with $a=0$, $b=0$ being the canonical choice,
-        in which case we end up with the maximally-entangled ``Bell state'' 
-        $\nicefrac{1}{\sqrt 2}\, (\ket{00} + \ket{11})$.
-
-      Let's look at the general case:
+        computational basis state -- which is exactly how entangled qubit pairs are
+        usually prepared, just with $a=\nil$, $b=\nil$!
+        In that case, we get the familiar maximally-entangled ``Bell state'' 
+        $\nicefrac{1}{\sqrt 2}\, (\ket{\bits{00}} + \ket{\bits{11}})$.
+        Let's look at the general case:
         register $\register[A]$ is initialized to $\ket{\hat a}$ and register
-        $\register[B]$ is initialized to $\ket b$. Then 
-        $\register[B] \xstore \register[A]$ acts as follows:
+        $\register[B]$ is initialized to $\ket b$. Since $\xstore$ controls on
+        computational-basis values, begin by expressing $\ket{\hat a}$ in the
+        standard alphabet. We get:
         \[
           \ket{\hat a, b} 
-            = \frac{\ket{0} + (-1)^a \ket{1}}{\sqrt 2}\ket b\ 
-            \apply{\CXgate}\ \frac{\ket{0, b} + (-1)^a \ket{1, b \xor 1}}{\sqrt 2}\, .
+            = \frac{\ket{\nil} + (-1)^a \ket{\one}}{\sqrt 2}\ket b\ 
+            \apply{\CXgate}\ \frac{\ket{\nil, b} + (-1)^a \ket{\one, b \xor \one}}{\sqrt 2}\, .
         \]
-        The result is one of the four states  of the \emph{Bell basis} $\{
-          \ket{\mathrm{\Phi}^+}, \ket{\mathrm{\Phi}^-}, \ket{\mathrm{\Psi}^+},
-          \ket{\mathrm{\Psi}^-} \}$, depending on the values of $a$ and $b$:
+        The result is one of the four states  of the \emph{Bell basis}, 
+          %$\{ \ket{\mathrm{\Phi}^+}, \ket{\mathrm{\Phi}^-}, \ket{\mathrm{\Psi}^+}, \ket{\mathrm{\Psi}^-} \}$, 
+          depending on the values of $a$ and $b$:
         \begin{align*}
-          (a,b) = (0,0)\ \implies\ \ket{\mathrm{\Phi}^+} \coloneqq \frac{\ket{00} + \ket{11}}{\sqrt 2}\, ,
+          (a,b) = (\nil,\nil)\ \implies\ \frac{\ket{\bits{00}} + \ket{\bits{11}}}{\sqrt 2} \eqqcolon \ket{\beta_{00}}\, ,
           &\qquad
-          (a,b) = (1,0)\ \implies\ \ket{\mathrm{\Phi}^-} \coloneqq \frac{\ket{00} - \ket{11}}{\sqrt 2}\, , 
+          (a,b) = (\one,\nil)\ \implies\ \frac{\ket{\bits{00}} - \ket{\bits{11}}}{\sqrt 2} \eqqcolon \ket{\beta_{10}}\, , 
           \\
-          (a,b) = (0,1)\ \implies\ \ket{\mathrm{\Psi}^+} \coloneqq \frac{\ket{01} + \ket{10}}{\sqrt 2}\, ,
+          (a,b) = (\nil,\one)\ \implies\ \frac{\ket{\bits{01}} + \ket{\bits{10}}}{\sqrt 2} \eqqcolon \ket{\beta_{01}}\, ,
           &\qquad
-          (a,b) = (1,1)\ \implies\ \ket{\mathrm{\Psi}^-} \coloneqq \frac{\ket{01} - \ket{10}}{\sqrt 2}\, .
+          (a,b) = (\one,\one)\ \implies\ \frac{\ket{\bits{01}} - \ket{\bits{10}}}{\sqrt 2} \eqqcolon \ket{\beta_{11}}\, .
         \end{align*}
-
-      Let's adopt the notation of Nielsen and Chuang~\cite{NieChu10} and write
-        $\ket{\beta_{ab}}$ for the Bell state we get when starting from $\ket{\hat a, b}$
-        and applying $\register[A] \xstore \register[B]$.
-        The same diagonal table-symmetry then tells us that applying
-        $\register[B] \zstore \register[A]$ on the initial state $\ket{a, \hat b}$
-        must yield the same Bell state, except with hats:
+      %Let's adopt the notation of Nielsen and Chuang~\cite{NieChu10} and write
+      So, applying $\xstore$ to $\ket{\hat a, b}$ gives the Bell state
+        $\ket{\beta_{ab}}$. Diagonal table-symmetry then tells us that applying
+        $\zstore$ to the state $\ket{a, \hat b}$
+        must yield the same Bell state, but with hats:
         \[
           \ket{a, \hat b} 
-            = \frac{\ket{\hat 0} + (-1)^a \ket{\hat 1}}{\sqrt 2}\ket{\hat b}\ 
-            \apply{\hCZgate}\ \frac{\ket{\hat 0, \hat b} + (-1)^a \ket{\hat 1, \hat b \xor \hat 1}}{\sqrt 2}
+            = \frac{\ket{\hnil} + (-1)^a \ket{\hone}}{\sqrt 2}\ket{\hat b}\ 
+            \apply{\hCZgate}\ \frac{\ket{\hnil, \hat b} + (-1)^a \ket{\hone, \hat b \xor \hone}}{\sqrt 2}
             \eqqcolon \ket{\hat{\beta}_{ab}}\, .
         \]
         %where we have defined $\ket{\hat{\beta}_{ab}}$ to be the same state with hats.
+        %With these added our table is full:
+        %\begin{steptable}
+        %  \centering
+        %  \setlength{\extrarowheight}{2pt}
+        %  \rowcolors{2}{}{gray!10} % zebra striping
+        %  \begin{tabular}{ccc}
+        %    \toprule
+        %    $\register[AB]$ initial state & 
+        %      $\quad$ $\register[B] \xstore \register[A]$ yields $\quad$ & 
+        %      $\register[B] \zstore \register[A]$ yields\\
+        %    \midrule
+        %    $\ket{a,b}$ & $\ket{a,b \xor a}$ & $\ket{a \xor b, b}$ \\
+        %    $\ket{a,\hat b}$ & $(-1)^{a \cdot b} \ket{a, \hat b}$ & $\ket{\hat{\beta}_{ab}}$ \\
+        %    $\ket{\hat a, b}$ & $\ket{\beta_{ab}}$ & $(-1)^{a \cdot b} \ket{\hat a, b}$ \\
+        %    $\ket{\hat a, \hat b}$ & $\ket{\hat a, \hat b \xor \hat a}$ & $\ket{\hat a, \hat b \xor \hat a}$ \\
+        %    \bottomrule
+        %  \end{tabular}
+        %\end{steptable}
         %
-      Interestingly, using \cref{lemma:xzstore}, we also know that this is exactly 
-        equivalent to the operation $\register[A] \xstore \register[B]$, which
-        would yield the same Bell state as before except with $a$ and $b$ swapped:
+      Interestingly, \cref{lemma:xzstore} tells us that the state
+        $\ket{\hat{\beta}_{ab}}$ must \emph{also} be what we'd get if we
+        had applied the $\xstore$ operation in reverse, 
+        $\register[A] \xstore \register[B]$,
+        starting from the same initial state $\ket{a, \hat b}$.
+        But clearly, this would just give us
+        the same Bell state as before, except with the roles of $a$ and $b$ swapped:
         \[
           \ket{a, \hat b}\ \apply{\CXgate_{\register[BA]}}\
-            \frac{\ket{a, 0} + (-1)^b \ket{a \xor 1, 1}}{\sqrt 2} =
-            \ket{\beta_{ba}}\, ,
+            = \frac{\ket{a, \nil} + (-1)^b \ket{a \xor \one, \one}}{\sqrt 2} =
+            (-1)^{a \cdot b}\ket{\beta_{ba}}\, ,
         \]
-        which means that these two states must actually be the same state:
+        where the extra minus sign in the $a = b = 1$ case accounts for the reversed order.
+        We are led to conclude that these two states must in fact be \emph{the
+        same state}:
         \[
-          \ket{\hat{\beta}_{ab}} = \frac{\ket{\hat 0, \hat b} + (-1)^a \ket{\hat 1, \hat b \xor \hat 1}}{\sqrt 2}
-          = \frac{\ket{a, 0} + (-1)^b \ket{a \xor 1, 1}}{\sqrt 2} =
-          \ket{\beta_{ba}}\, .
+          \ket{\hat{\beta}_{ab}} = \frac{\ket{\hnil, \hat b} + (-1)^a \ket{\hone, \hat b \xor \hone}}{\sqrt 2}
+          = \frac{\ket{a, \nil} + (-1)^b \ket{a \xor \one, \one}}{\sqrt 2} =
+          (-1)^{a \cdot b}\ket{\beta_{ba}}\, .
         \]
         What we have just discovered is another well-known fact, namely that the Hadamard
           transformation acts like a permutation on the set of Bell states -- and
-          without ever touching a double sum! 
+          that without ever touching a double sum! 
         %\[
         %  \ket{\mathrm{\Phi}^+} \lrapply{\Hgate^{\otimes 2}} \ket{\mathrm{\Phi}^+}\, ,
         %  \quad
@@ -415,10 +507,10 @@
         %  \quad
         %  \ket{\mathrm{\Psi}^-} \lrapply{\Hgate^{\otimes 2}} \ket{\mathrm{\Psi}^-}\, .
         %\]
-          
-        With these additions, then, our \cref{tab:xzstore} is finally complete.
 
-      \begin{table}[t]
+        With these additions, our \cref{tab:xzstore} is finally complete.
+
+      \begin{table}[h!]
         \caption{
           \label{tab:xzstore}
           The effect of $\xstore$ and $\zstore$ 
@@ -434,8 +526,8 @@
               $\register[B] \zstore \register[A]$ yields\\
             \midrule
             $\ket{a,b}$ & $\ket{a,b \xor a}$ & $\ket{a \xor b, b}$ \\
-            $\ket{a,\hat b}$ & $(-1)^{a \cdot b}\ket{a, \hat b}$ & $\ket{\hat{\beta}_{ab}} = \ket{\beta_{ba}}$ \\
-            $\ket{\hat a, b}$ & $\ket{\beta_{ab}}$ = $\ket{\hat{\beta}_{ba}}$ & $(-1)^{a \cdot b}\ket{\hat a, b}$ \\
+            $\ket{a,\hat b}$ & $(-1)^{a \cdot b}\ket{a, \hat b}$ & $\ket{\hat{\beta}_{ab}} = (-1)^{a \cdot b}\ket{\beta_{ba}}$ \\
+            $\ket{\hat a, b}$ & $\ket{\beta_{ab}}$ = $(-1)^{a \cdot b}\ket{\hat{\beta}_{ba}}$ & $(-1)^{a \cdot b}\ket{\hat a, b}$ \\
             $\ket{\hat a, \hat b}$ & $\ket{\hat a \xor \hat b, \hat b}$ & $\ket{\hat a, \hat b \xor \hat a}$ \\
             %\midrule
             \bottomrule
@@ -443,40 +535,19 @@
       \end{table}
 
     \subsubsection{The Multi-Qubit Case.}
-      \hhnote{
-        Gonna take a little more explaining than I initially thought:
-        the Hadamard (not transformation but) \emph{translation} 
-        $\ket{\hat x} \coloneqq \sum_{z \in \bin} (-1)^{\hat x \cdot z} \ket{z}
-        \implies 
-        \ket{x} = \sum_{\hat z \in \{\hat 0, \hat 1\}} (-1)^{x \cdot \hat z} \ket{\hat z}
-        $; 
-        how to (and how not to) use hats in arithmetic ($x$ and $\hat{x}$ are
-        \emph{not} independent variables, but rather the same value expressed
-        under two different alphabets, which just happen to be treated the same
-        for the sake of arithmetic); generalized Bell states 
-        $\sum_{z \in \bin} (-1)^{\hat x \cdot z} \ket{z, y \xor z}
-        $, \ldots
-      }
-      \hhnote{
-        Still can't decide if it is \emph{more} or \emph{less} helpful to put
-        hats in exponents \ldots
-        may the demonstrations decide.
-      }
       Since the operations are applied bitwise, this
         immediately generalizes to multi-qubit states:
       \[
-        \outReg \zstore \inReg : \ket{x,y} \to \ket{x \xor y, y}\, .
+        \outReg \xstore \inReg : \ket{x,y} \to \ket{x, y \xor x}\, ,
+        \quad
+        \outReg \zstore \inReg : \ket{\hat x, \hat y} \to \ket{\hat x, \hat y \xor \hat x}\, .
       \]
-      Compare with:
-      \[
-        \inReg \xstore \outReg : \ket{x,y} \to \ket{x \xor y, y}\, .
-      \]
+      \cref{tab:multixzstore} provides a summary.
+      \hhnote{Todo: Expand.}
 
-      \cref{tab:xzstore} provides a summary.
-
-    \begin{table}[t]
+    \begin{table}[h!]
       \caption{
-        \label{tab:xzstore}
+        \label{tab:multixzstore}
         The effect of applying the $\xstore$ and $\zstore$ operator
         on the four possible dual-basis initial states.
         Here, $\ket{\beta_{xy}}$ denotes the generalized Bell states 
@@ -491,8 +562,8 @@
           Initial state & $\register[Y] \xstore \register[X]$ yields & $\register[Y] \zstore \register[X]$ yields\\
           \midrule
           $\ket{x,y}$ & $\ket{x,y \xor x}$ & $\ket{x \xor y, y}$ \\
-          $\ket{x,\hat y}$ & $(-1)^{x \cdot y}\ket{x, \hat y}$ & $\ket{\hat{\beta}_{xy}}$ \\
-          $\ket{\hat x, y}$ & $\ket{\beta_{xy}}$ & $(-1)^{x \cdot y}\ket{\hat x, y}$ \\
+          $\ket{x,\hat y}$ & $(-1)^{x \cdot y}\ket{x, \hat y}$ & $\ket{\hat{\beta}_{xy}} = (-1)^{x \cdot y}\ket{\beta_{yx}}$ \\
+          $\ket{\hat x, y}$ & $\ket{\beta_{xy}} = (-1)^{x \cdot y}\ket{\hat{\beta}_{yx}}$ & $(-1)^{x \cdot y}\ket{\hat x, y}$ \\
           $\ket{\hat x,\hat y}$ & $\ket{\hat x \xor \hat y, \hat y}$ & $\ket{\hat x, \hat y \xor \hat x}$ \\
           %\midrule
           % repeat the table with outputs written in the Hadamard basis?
@@ -501,16 +572,20 @@
       %} % end resizebox
     \end{table}
 
-  \subsection{Function Evaluation With $\xstore$ and $\zstore$}
-    See \cref{tab:fxzstore}.
+  \subsubsection{Function Evaluation.}
+    We originally introduced $\xstore$ to do reversible function evaluation,
+    $\outReg \xstore f(\inReg)$, so it is natural to wonder how such an
+    operation behaves for the various initial-state cases;
+    see \cref{tab:fxzstore}.
+    \hhnote{Todo: Expand.}
+    \hhnote{make filling out \cref{tab:fxzstore} an exercise?}
 
-    \begin{table}[h]
+    \begin{table}[h!]
       \caption{
         \label{tab:fxzstore}
         Function evaluation table.
-        Clearly, some of these expressions are more desirable to work with than
-        others. Notice how letting $f$ to be the identity recovers
-        \cref{tab:xzstore}.
+        Notice how setting $f$ to the identity recovers
+        \cref{tab:multixzstore}.
       }
       \centering
       %\scriptsize
@@ -523,44 +598,45 @@
           $\ket{x,y}$ & $\ket{x,y \xor f(x)}$ & 
             $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z \xor f(z) \cdot y}\ket{\hat{z}, y}$ \\
           $\ket{x,\hat y}$ & $(-1)^{y \cdot f(x)}\ket{x, \hat y}$ & 
-            $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z}\ket{\hat z, \hat y \xor f(\hat z)}$
+            $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z}\ket{\hat z, \hat y \xor \widehat{f(z)}}$
             \\
           $\ket{\hat x, y}$ & 
             $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z}\ket{z, y \xor f(z)}$
             & $(-1)^{y \cdot f(x)}\ket{\hat x, y}$ \\
           $\ket{\hat x,\hat y}$ & 
             $\nicefrac{1}{\sqrt{2^n}} \sum_z (-1)^{x \cdot z \xor f(z) \cdot y}\ket{z, \hat y}$
-            & $\ket{\hat x, \hat y \xor f(\hat x)}$ \\
+            & $\ket{\hat x, \hat y \xor \widehat{f(x)}}$ \\
           %\midrule
           % repeat the table with outputs written in the Hadamard basis?
           \bottomrule
         \end{tabular}
       %} % end resizebox
     \end{table}
-  \subsection{Demonstration}
-    We next provide demonstrations of the helpfulness and expressiveness of the
-      dual-alphabet system of notation.
+
+  \subsection{Demonstrations}
+    We next provide some examples of quantum algorithms and protocols expressed
+      and analyzed using the conventions we have introduced, in order to
+      demonstrate their expressiveness and helpfulness.
 
     \subsubsection{The Deutsch--Jozsa Algorithm.}
-      The Deutsch--Josza algorithm learns in a single function call whether a function
-        $f: \bin^n \to \bin$ is constant or balanced (evaluates to $\bits 0$ and
-        $\bits 1$ on exactly half of the inputs each), under the promise that it
+      The Deutsch--Jozsa algorithm learns in a single function call whether a function
+        $f: \bin^n \to \bin$ is constant or balanced (evaluates to $\nil$ and
+        $\one$ on exactly half of the inputs each), under the promise that it
         is either one or the other. The algorithm is a multi-qubit
         generalization of Deutsch's algorithm, which is notable for being
         the first example of a task on which a quantum computer can provably outperform 
         a classical computer, in the sense that any classical algorithm would need
-        two function evaluations (or up to $\nicefrac{2^n}{2}$ in the worst case
-        for the more general case) to arrive at the answer.
+        two function evaluations (or up to $2^{n-1} + 1$ in
+        the general case) to arrive at the answer.
 
       The procedure is given in pseudocode in \cref{fig:DeutschJozsa}, shown in two
         equivalent implementations depending on whether you start in the
         Hadamard basis and apply computational-basis function evaluations (which
         is how the algorithm is usually presented), or if you start from the
         computational basis and apply a Hadamard-basis function evaluation,
-        which brings a slightly different perspective to the same basic
-        operation.
+        which brings a slightly different perspective to the same procedure.
 
-      \begin{figure}[t]
+      \begin{figure}[h!]
    	    \begin{center}
   	  	  \fbox{
   	  	  	\small
@@ -569,7 +645,7 @@
               \underline{Deutsch--Jozsa}
   	  	  		\begin{nicodemus}
                 \smallskip
-                \item $\register[XB] \gets \ket{\hat{\bits{0}}^n, \hat{\bits{1}}}$
+                \item $\register[XB] \gets \ket{\hnil^n, \hone}$
                 \smallskip
                 \item $\register[B] \xstore f(\register[X])$
                 \smallskip
@@ -584,7 +660,7 @@
               \underline{Alt.\ implementation}
   	  	  		\begin{nicodemus}
                 \smallskip
-                \item $\register[XB] \gets \ket{\bits{0}^n, \bits{1}}$
+                \item $\register[XB] \gets \ket{\nil^n, \one}$
                 \smallskip
                 \item $\register[B] \zstore f(\register[X])$
                 \smallskip
@@ -597,64 +673,69 @@
         \end{center}
         \caption{
           \label{fig:DeutschJozsa}
-          The Deutsch-Josza algorithm for determining whether a given function
+          The Deutsch-Jozsa algorithm for determining whether a given function
           $f: \bin^n \to \bin$ is constant or balanced.
         }
       \end{figure}
 
-      Let us analyze the algorithm via its computational-basis implementation,
-        shown on the right. The operation $\zstore$ applies the $\hCZgate$
+      Let us analyze the algorithm via its computational-basis implementation
+        shown on the right.
+        %(\cref{fig:DeutschJozsa}, right).
+        The operation $\zstore$ applies the $\hCZgate$
         bitwise from the control to the target, conditioned on the control being
-        in state $\ket{\hat{\bits{0}}}$, so let us start by rewriting the
+        in state $\ket{\hone}$, so let us start by rewriting the
         initial state of the $\register[X]$ in the Hadamard basis. Writing $N$
         for $2^n$ as usual, we have:
       \[
-        \ket{\bits{0}^n, \bits{1}} 
+        \ket{\nil^n, \one} 
           %= \ket{0, \bits{1}} 
-          %= \frac{1}{\sqrt{2^n}} \sum_{x \in \{\bits{0}^n, \ldots, \bits{1}^n\}}
-          %  \ket{\hat{x}, \bits{1}}
+          %= \frac{1}{\sqrt{2^n}} \sum_{x \in \{\nil^n, \ldots, \one^n\}}
+          %  \ket{\hat{x}, \one}
           %= \frac{1}{\sqrt{2^n}} \sum_{x = 0}^{2^n - 1}
-          %  \ket{\hat{x}, \bits{1}}
-          = \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}}
-            \ket{\hat{x}, \bits{1}}\, .
+          %  \ket{\hat{x}, \one}
+          = \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}}
+            \ket{\hat{x}, \one}\, .
       \]
-      Recall that the operation $\register[B] \zstore f(\register[X])$ is
-        shorthand for the operation that computes and stores $\ket{f(x)}$ in an
-        ancilla register, then applies $\zstore$ from that register to the
-        target register, before uncomputing the ancilla register state and
-        discarding it. This gives us (as shown in \cref{tab:fxzstore}):
+      %Recall that the operation $\register[B] \zstore f(\register[X])$ is
+      %  shorthand for the operation that computes and stores $\ket{f(x)}$ in an
+      %  ancilla register, then applies $\zstore$ from that register to the
+      %  target register, before uncomputing the ancilla register state and
+      %  discarding it. 
+      As shown in \cref{tab:fxzstore} (third row, second column), this gives us:
       \[
-        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
-          \ket{\hat{x}, \bits{1}}
+        \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}} 
+          \ket{\hat{x}, \one}
         \apply{\hCZgate^{\otimes n}} 
-        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
-          (-1)^{f(x)} \ket{\hat x, \bits 1}\, .
+        \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}} 
+          (-1)^{f(x)} \ket{\hat x, \one}\, .
       \]
+      (We could also have used the second column of the first row to arrive at
+      this state directly.)
       If $f(x) = c$ for some constant $c$, then we have the state
       \[
-        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
-          (-1)^{f(x)} \ket{\hat x, \bits 1}\, .
-        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
-          (-1)^{c} \ket{\hat x, \bits 1}
-        \equiv 
-        \frac{1}{\sqrt{N}} \sum_{x \in \ZZ_{N}} 
-          \ket{\hat x, \bits 1}
-        = \ket{\bits{0}^n, 1}\, ,
+        \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}} 
+          (-1)^{f(x)} \ket{\hat x, \one}
+        = \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}} 
+          (-1)^{c} \ket{\hat x, \one}
+        \cong 
+        \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}} 
+          \ket{\hat x, \one}
+        = \ket{\nil^n, \one}\, ,
       \]
-      where we have factored out the global phase. Hence,
-      measuring the $\register[X]$ register yields the outcome $\bits{0}^n$
+      where we factored away the global phase. Hence,
+      measuring the $\register[X]$ register yields the outcome $\nil^n$
       with probability one.
 
     To see what happens in the case that $f(x)$ is \emph{balanced}, first
       translate the state back to the computational basis:
       \[
         \frac{1}{\sqrt{2^n}} \sum_{x \in \ZZ_{N}} 
-          (-1)^{f(x)} \ket{\hat x, \bits 1}
+          (-1)^{f(x)} \ket{\hat x, \one}
         = \frac{1}{\sqrt{2^n}} 
           \sum_{z \in \ZZ_{N}} 
           \frac{1}{\sqrt{2^n}} 
           \sum_{x \in \ZZ_{N}}
-          (-1)^{f(x) \xor x \cdot z} \ket{z, \bits 1}\, ,
+          (-1)^{f(x) \xor x \cdot z} \ket{z, \one}\, ,
       \]
       flip the order of summation and define the amplitudes $\alpha_z$ for the 
       outcomes of a computational-basis measurement,
@@ -663,22 +744,102 @@
           \sum_{z \in \ZZ_{N}} 
           \frac{1}{\sqrt{2^n}} 
           \sum_{x \in \ZZ_{N}}
-          (-1)^{f(x) \xor x \cdot z} \ket{z, \bits 1}
+          (-1)^{f(x) \xor x \cdot z} \ket{z, \one}
         \eqqcolon \frac{1}{\sqrt{2^n}} 
           \sum_{z \in \ZZ_{N}} 
-          \alpha_z \ket{z, \bits 1}\, ,
+          \alpha_z \ket{z, \one}\, .
       \]
-      then insert for $z=0$ to find the amplitude $\alpha_0$ that the outcome $\bits{0}^n$
-      is observed:
+      To find the amplitude $\alpha_0$ that the outcome $\nil^n$
+      is observed, insert for $z = 0$:
       \[
-        \alpha_0 = \frac{1}{\sqrt{N}} 
+        \alpha_0 = \frac{1}{\sqrt{2^n}} 
           \sum_{x \in \ZZ_{N}} (-1)^{f(x)} = 0\, .
       \]
       The sum evaluates to zero precisely because $f$ is balanced \emph{and} we
-      are summing over an even number of $x$ values, so every term cancels.
+      are summing over an even number of $x$ values, so every term cancels
+      against a partner.
       Hence, we are guaranteed to \emph{not} observe the
-      outcome $\bits{0}^n$ in the balanced case, which shows that $f$ is constant 
-      \emph{if and only if} the Deutsch-Jozsa algorithm returns $0$.
+      outcome $\nil^n$ in the balanced case. When combined with the
+      above, this shows that the procedure returns $\nil^n$
+      if \emph{and only if} $f$ is constant.
+
+    \subsubsection{Bernstein--Vazirani.}
+      Given oracle access to a function $f: \bin^n \to \bin$ such that 
+        $f(x) = s \cdot x$ for some secret $s$, 
+        the Bernstein--Vazirani algorithm recovers $s$ with a single call to
+        the function, where any classical algorithm needs at least $n$ calls. (The
+        standard way to solve the problem classically would be to call 
+        $f(10 \ldots 0)$ to recover the first bit of $s$, $f(010 \ldots 0)$ to recover
+        the second bit, and so on.) 
+
+      The algorithm can be seen as a variant of the
+        Deutsch--Jozsa algorithm, and it is notable for having been used to provide the
+        first (relativized) separation between the classical complexity class BPP
+        and the quantum complexity class BQP~\cite{BerVaz97}.
+        The algorithm is given in pseudocode in \cref{fig:BernsteinVazirani}.
+
+      \begin{figure}[h!]
+   	    \begin{center}
+  	  	  \fbox{
+  	  	  	\small
+  	  	  	\nicoresetlinenr
+  	  	  	\begin{minipage}[t]{3cm}
+              \underline{Bernstein--Vazirani}
+  	  	  		\begin{nicodemus}
+                \smallskip
+                \item $\register[XB] \gets \ket{\nil^n, \one}$
+                \smallskip
+                \item $\register[B] \zstore f(\register[X])$
+                \smallskip
+                \item $s \obstore \register[X]$
+                \smallskip
+                \item $\pcreturn s$
+  	  	  		\end{nicodemus}
+  	  	  	\end{minipage}
+            \quad 
+  	  	  	\nicoresetlinenr
+  	  	  	\begin{minipage}[t]{3cm}
+              \underline{Alt.\ implementation}
+  	  	  		\begin{nicodemus}
+                \smallskip
+                \item $\register[XB] \gets \ket{\hnil^n, \hone}$
+                \smallskip
+                \item $\register[B] \xstore f(\register[X])$
+                \smallskip
+                \item $s \hobstore \register[X]$
+                \smallskip
+                \item $\pcreturn s$
+  	  	  		\end{nicodemus}
+  	  	  	\end{minipage}
+          }
+        \end{center}
+        \caption{
+          \label{fig:BernsteinVazirani}
+          The Bernstein-Vazirani algorithm for recovering a secret $s$ given
+          oracle access to a function $f = s \cdot x$.
+        }
+      \end{figure}
+
+      Let us analyze it, starting from the implementation on the left.
+        The second cell of the first row of \cref{tab:fxzstore} tells us the
+        effect of the $\zstore$ operator on a computational basis state;
+        inserting for $x = 0$, $y=1$ gives us:
+      \[
+        \ket{\nil^n, \one}
+        \apply{\register[B] \zstore f(\register[X])}
+        \frac{1}{\sqrt{2^n}} \sum_{z \in \bin^n} (-1)^{f(z)} \ket{\hat{z}, \one}
+        = \frac{1}{\sqrt{2^n}} \sum_{z \in \bin^n} (-1)^{s \cdot z} \ket{\hat{z}, \one}\, ,
+      \]
+      where we inserted the definition of $f$ in the last step. But looking at
+      the state on the right, we can recognize it as simply a
+      Hadamard-translated state $\ket{x}$, except that $x = s$:
+      \hhnote{Add definition number that I can reference?}
+      \[
+        \frac{1}{\sqrt{2^n}} \sum_{z \in \bin^n} (-1)^{s \cdot z} \ket{\hat{z}, \one}
+        = \ket{s, \one}\, .
+      \]
+      Applying a computational-basis measurement to the $\register[X]$ register,
+      then, immediately yields the secret $s$.
 
     \subsubsection{Simon's Algorithm.}
       Simon's algorithm is an early example of a quantum period-finding
@@ -686,11 +847,11 @@
         $s$, so that $f(x) = f(x \xor s)$, it recovers $s$.
 
       The main quantum step is in recovering a value $x_i$ which is guaranteed to
-        satisfy $x_i \cdot s = 0$. This subroutine is then repeated until enough
+        satisfy $x_i \cdot s = \nil$. This subroutine is then repeated until enough
         such $x_i$ have been recovered that the equation system is fully determined,
         at which point $s$ may be recovered via basic linear algebra.
 
-      \begin{figure}[h]
+      \begin{figure}[h!]
    	    \begin{center}
   	  	  \fbox{
   	  	  	\small
@@ -699,7 +860,7 @@
               \underline{Simon's subroutine}
   	  	  		\begin{nicodemus}
                 \smallskip
-                \item $\register[XY] \gets \ket{\hat{\bits{0}}^n, \bits{0}^n}$
+                \item $\register[XY] \gets \ket{\hnil^n, \nil^n}$
                 \smallskip
                 \item $\register[Y] \xstore f(\register[X])$
                 \smallskip
@@ -714,7 +875,7 @@
               \underline{Alt.\ implementation}
   	  	  		\begin{nicodemus}
                 \smallskip
-                \item $\register[XY] \gets \ket{\bits{0}^n, \hat{\bits{0}}^n}$
+                \item $\register[XY] \gets \ket{\nil^n, \hnil^n}$
                 \smallskip
                 \item $\register[Y] \zstore f(\register[X])$
                 \smallskip
@@ -732,10 +893,12 @@
       \end{figure}
 
       The quantum subroutine is shown in \cref{fig:Simon}. Let us see how it
-        gives us an $x$ that is guaranteed to satisfy $x \cdot s = 0$.
+        gives us an $x$ that is guaranteed to satisfy $x \cdot s = \nil$,
+        starting from
+        the implementation shown on the left of \cref{fig:Simon}.
       \begin{align*}
-        &\ket{\hat{\bits{0}}^n, \bits{0}} 
-          = \frac{1}{\sqrt{2^n}} \sum_{z \in \ZZ_N} \ket{z, \bits{0}} 
+        &\ket{\hnil^n, \nil} 
+          = \frac{1}{\sqrt{2^n}} \sum_{z \in \ZZ_N} \ket{z, \nil} 
           \apply{\outReg \xstore f(\inReg)} 
           \frac{1}{\sqrt{2^n}} \sum_{z \in \ZZ_N} \ket{z, f(z)}\, .
       \end{align*}
@@ -746,16 +909,18 @@
       two input values $z$ such that $f(z) = y$, so this is not enough to
       completely collapse the superposition:
       \begin{align*}
-        \apply{y \obstore \outReg}
-          &\frac{
+        \frac{1}{\sqrt{2^n}} \sum_{z \in \ZZ_N} \ket{z, f(z)}
+        &\apply{y \obstore \outReg}
+          \frac{
             \ket{z} + \ket{z \xor s}
           }{\sqrt{2}}\, ,
           %\qquad
           %\text{s.th.}\
           %f(z) = y\, .
       \end{align*}
-      where $z$ satisfies that $f(z) = f(z \xor s) = y$.
-      We will be applying a Hadamard-measurement, so translate this state to
+      where $z$ satisfies that $f(z) = f(z \xor s) = y$ for the value $y$ that
+      we measured.
+      We are building towards a Hadamard-measurement, so translate this state to
       the dual domain so that we can inspect the amplitudes directly:
       \[
           \frac{
@@ -774,45 +939,37 @@
       Look at the amplitude $\hat{\alpha}_x$. Which values of $x$ are we more 
       likely to observe? Well, $\hat{\alpha}_x$ is proportional to the sum $1 +
       (-1)^{x \cdot s}$, where $x \cdot s$ denotes the bitstring inner product.
-      There are only two cases: If $x \cdot s = 1$, then $\hat{\alpha}_x = 1-1 = 0$, which means
-      that the probability of observing such an outcome is also zero!
-      Hence, for any $x$ we actually do observe, we must have that $x \cdot s =
-      0$. Indeed, restricting to $x \cdot s = 0$, we see that we have the state
+      There are only two cases: If $x \cdot s = \one$, then $\hat{\alpha}_x = 1-1 = 0$, which means
+      that the probability of observing such an outcome is also zero.
+      Hence, for any $x$ that we actually do observe, we must have that $x \cdot s =
+      \nil$. Indeed, restricting to $x \cdot s = \nil$, we see that we have the state
       \[
-        \sum_{x\, :\, x \cdot s = 0}
+        \sum_{x\, :\, x \cdot s = \nil}
         \frac{
           (-1)^{z \cdot x}
         }{\sqrt{2^{n+1}}} (1 + 1) \ket{\hat x}
-        = \sum_{x\, :\, x \cdot s = 0}
+        = \sum_{x\, :\, x \cdot s = \nil}
         \frac{
           (-1)^{z \cdot x}
         }{\sqrt{2^{n-1}}} \ket{\hat x}\, ,
       \]
-      which we can verify as a sanity check is normalized, since there are
-      $2^{n-1}$ values of $x$, i.e.\ half of all $x$, that
-      satisfy that $x \cdot s = 0$. (Otherwise, that would mean we must have
-      done something wrong.)
+      which as a sanity check we can see is normalized, since there are
+      $2^{n-1}$ values of $x$ %, i.e.\ half of all $x$, 
+      that satisfy $x \cdot s = \nil$. (Otherwise, that would have meant we had
+      made an error somewhere.)
 
     Applying a Hadamard-basis measurement to this state, then, is a procedure to 
-      sample uniformly from the set of $x$ that satisfy $x \cdot s = 0$.
+      sample uniformly from the set of $x$ that satisfy $x \cdot s = \nil$.
       Importantly, this shows that not only do we get a sample that satisfies
       our requirement, but we are also very unlikely to get the
-      \emph{same} $x$ when we later repeat the subroutine, so that with
-      overwhelming probability we will only need to repeat the procedure $n$
-      times to get $n$ independent values $x_i$ that all satisfy 
-      $x_i \cdot s = 0$.
-
-    \subsubsection{Bernstein--Vaszirani.}
-      Dolor sit amet.
+      \emph{same} $x$ when we later repeat the subroutine, and that
+      in all likelihood we will only need to repeat the procedure roughly $n$
+      times to get $n$ linearly independent values $x_i$ that all satisfy 
+      $x_i \cdot s = \nil$.
 
     \subsubsection{Grover's Algorithm.}
-      Dolor sit amet.
 
     \subsubsection{Quantum Teleportation.}
-      Dolor sit amet.
-
-    \subsubsection{Compressed Oracles.}
-      Lorem ipsum.
 
   \clearpage
   \subsection{The Primer Paragraphs}
@@ -828,15 +985,15 @@
         Perhaps it is better, then, to view the Hadamard basis as a sort of
         ``dual domain'' under which we can view our qubit,
 	      with two possible questions we can ask our state: 
-	      Either ``Are you $\ket 0$ or $\ket 1$?'', or 
+	      Either ``Are you $\ket{\nil}$ or $\ket{\one}$?'', or 
 	      ``Are you $\ket +$ or $\ket -$?'' Either way, 
 	      the qubit will provide a definite answer, after which its state will 
         ``collapse'' to the answer you got.
 
 	    This is a point worth internalizing, so let us repeat it: 
 	      \emph{The set of possible post-measurement states changes to match
-	      the question you chose to ask.} If you ask ``Are you $0$ or $1$?'', 
-	      then the post-measurement state will be $\ket 0$ or $\ket 1$; 
+	      the question you chose to ask.} If you ask ``Are you $\nil$ or $\one$?'', 
+	      then the post-measurement state will be $\ket{\nil}$ or $\ket{\one}$; 
 	      if you ask ``Are you $+$ or $-$'', then the post-measurement state will
         be $\ket +$ or $\ket -$. 
         So although at one level, the ``collapse'' of the quantum state is just
@@ -894,9 +1051,9 @@
         %(And, of course, the outcome distribution also depends on which question
         %you choose to ask.)
 
-      What about a question like ``Are you $\ket 0$ or
+      What about a question like ``Are you $\ket{\nil}$ or
         are you $\ket +$?'' Under our notion of measurement, this question is not
-        well-defined, since $\ket 0$ and $\ket +$ are not orthogonal states and
+        well-defined, since $\ket{\nil}$ and $\ket +$ are not orthogonal states and
         therefore do not lead to mutually-exclusive outcomes. More on this in
         \cref{sec:measurements}, but for now, think of a measurement as always
         being defined in terms of a set of mutually-exclusive outcomes.
@@ -910,7 +1067,7 @@
 	      \cref{fig:hadamard-basis}.
         %
 	      \crakzfigcode{hadamard-basis}{
-	        The computational basis $\{\ket 0, \ket 1\}$ and the Hadamard basis
+	        The computational basis $\{\ket{\nil}, \ket{\one}\}$ and the Hadamard basis
 	        $\{\ket +, \ket -\}$ describe the same qubit, seen along axes turned
 	        by $45^\circ$ relative to each other. 
           %Note how $\ket 0$ bisects
@@ -922,15 +1079,15 @@
          ``dual'' to the computational basis,
 	      take a look at the following identities:
         \[
-          \ket{+} = \frac{\ket{0} + \ket{1}}{\sqrt{2}}\, , \quad 
-          \ket{-} = \frac{\ket{0} - \ket{1}}{\sqrt{2}}
+          \ket{+} = \frac{\ket{\nil} + \ket{\one}}{\sqrt{2}}\, , \quad 
+          \ket{-} = \frac{\ket{\nil} - \ket{\one}}{\sqrt{2}}
           \qquad
           \Longleftrightarrow
           \qquad
-          \ket{0} = \frac{\ket{+} + \ket{-}}{\sqrt{2}}\, , \quad 
-          \ket{1} = \frac{\ket{+} - \ket{-}}{\sqrt{2}}\, .
+          \ket{\nil} = \frac{\ket{+} + \ket{-}}{\sqrt{2}}\, , \quad 
+          \ket{\one} = \frac{\ket{+} - \ket{-}}{\sqrt{2}}\, .
         \]
-        Notice the symmetry: The computational basis states $\ket 0$ and $\ket 1$
+        Notice the symmetry: The computational basis states $\ket{\nil}$ and $\ket{\one}$
         are to the Hadamard basis \emph{exactly} what the plus state and minus
         states are to the computational basis; they really are \emph{dual views},
         which can be translated between via the map $\Hgate$.\footnote{
@@ -945,13 +1102,13 @@
         We had that
         \[
           \ket{+^n} 
-          = \frac{\ket{0 \ldots 00} + \ket{0 \ldots 01} + \ldots + \ket{1 \ldots 11}}{\sqrt{2^n}}
+          = \frac{\ket{\nil \ldots \nil\nil} + \ket{\nil \ldots \nil\one} + \ldots + \ket{\one \ldots \one\one}}{\sqrt{2^n}}
           = \sum_{x \in \bin^n} \frac{1}{\sqrt{2^n}}\ket x
         \]
-        With $\{\ket 0, \ket 1\}$ and $\{\ket +, \ket -\}$ being exact duals of
+        With $\{\ket{\nil}, \ket{\one}\}$ and $\{\ket +, \ket -\}$ being exact duals of
         each other, then it must also be true that 
         \[
-          \ket{0^n} 
+          \ket{\nil^n} 
           = \frac{\ket{+ \ldots ++} + \ket{+ \ldots +-} + \ldots + \ket{- \ldots --}}{\sqrt{2^n}}
           = \sum_{\hat{x} \in \{+,-\}^n} \frac{1}{\sqrt{2^n}} \ket{\hat x}\, .
         \]
@@ -960,10 +1117,10 @@
         convention that whenever a number or variable is represented with a hat,
         then it is understood to be a \emph{Hadamard-bitstring} like above. For example,
         whereas we previously represented the decimal $21$ by the bitstring
-        $[21]_2 = 10101$, writing $\widehat{21}$ would imply that it is
+        $[21]_2 = \bits{10101}$, writing $\widehat{21}$ would imply that it is
         represented by the Hadamard-bitstring $\big[\, \widehat{21}\, \big]_2 = -+-+-$. 
 
-      As we might have anticipated, just like the all-zero state $\ket{0^n}$
+      As we might have anticipated, just like the all-zero state $\ket{\nil^n}$
         maps to the decimal state $\ket 0$, 
         %and the all-ones state $\ket{1^n}$
         %maps to the decimal $(N-1)$-state $\ket{N-1}$ (where $N = 2^n$ as usual),
@@ -996,7 +1153,7 @@
           \frac{1}{\sqrt{2^n}} \ket{x}\, ,
         \]
         i.e.\ the uniform superposition state that singles out the $\ket{0}$ state (implicitly
-        understood to be the $\ket{0^n}$ state since we are using decimal notation) 
+        understood to be the $\ket{\nil^n}$ state since we are using decimal notation) 
         and applies a negative phase to it. Computing the Hadamard transformation of
         such a state can lead to a mess of double sums, but using the above
         notation, not only is applying the transformation as simple as adding
