@@ -105,15 +105,17 @@ issued right after `\appendix`, so no separate appendix-reference macro is neede
 
 ## Fonts
 
-`\bits{0101}` (in `qrot-latex.tex`) sets bit strings in JetBrains Mono, which
-is far more distinct from body text than `\texttt`. It is a thin wrapper over
-`\monofont` from the **cryptocodeh submodule**, which owns both the macro and
-the Type1 font files (`cryptocodeh/texmf/`) – so Kathrin gets it by pulling the
-submodule, no local font install. Renders identically in text and math mode
-(verified pixel-identical at 600 dpi).
+`\bits{0101}` sets bit strings in JetBrains Mono, which is far more distinct
+from body text than `\texttt`. It is a thin wrapper over `\monofont`, and
+both live in the **cryptocodeh submodule** together with the Type1 font files
+(`cryptocodeh/texmf/`) – so Kathrin gets everything by pulling the submodule,
+no local font install. Renders identically in text and math mode (verified
+pixel-identical at 600 dpi).
 
-`\bits` was already defined in `cryptocodeh.tex` as `\beta`, a notion
-parameter that is unused in this document, hence the `\renewcommand`.
+The whole bit-string family sits there: `\bits`, the single bits `\nil` and
+`\one`, their alphabet `\bin`, and the dual-alphabet variants `\hnil`,
+`\hone`, `\hbin` (moved out of `qrot-latex.tex` 2026-08-28). Nothing
+bit-string-related is defined locally any more.
 
 The one piece of local wiring is `.latexmkrc`, which points kpathsea at the
 submodule's font tree:

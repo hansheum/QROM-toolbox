@@ -2,18 +2,9 @@
 %\renewcommand{\perp}{\, \perp}
 
 %%% Fonts
-% \bits{0101} sets bit strings in JetBrains Mono, so they cannot be confused
-% with the surrounding text.  All the font machinery lives in the cryptocodeh
-% submodule (\monofont, plus the Type1 files under cryptocodeh/texmf/); the
-% search path is set in .latexmkrc.  cryptocodeh also defines \bits as \beta,
-% which is unused in this document, hence the \renewcommand.
-\renewcommand{\bits}[1]{\monofont{#1}}
-\newcommand{\nil}{\ensuremath{\bits 0}}
-\newcommand{\one}{\ensuremath{\bits 1}}
-\newcommand{\hnil}{\ensuremath{\hat{\bits 0}}}
-\newcommand{\hone}{\ensuremath{\hat{\bits 1}}}
-\renewcommand{\bin}{\ensuremath{\{\nil, \one\}}}
-\newcommand{\hbin}{\ensuremath{\{ \hnil, \hone\}}}
+% \bits{0101} and friends (\nil, \one, \bin, \hnil, \hone, \hbin) now live in
+% the cryptocodeh submodule, next to the \monofont machinery and the Type1
+% font files under cryptocodeh/texmf/; the search path is set in .latexmkrc.
 
 %%% Merging with Kat's macros wip
 \newcommand{\rand}{\red{\rnd}}
