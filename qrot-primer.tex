@@ -1019,12 +1019,12 @@
       \Zgate = \begin{sqmatrix} 1 & 0 \\ 0 & -1 \end{sqmatrix}\, , \quad
       \Hgate = \frac{1}{\sqrt{2}} \begin{sqmatrix} 1 & 1 \\ 1 & -1 \end{sqmatrix}\, .
     \]
-    The $\Xgate$ gate is also known as the ``not'' gate, since it has the effect
-    $\ket 0 \to \ket 1$, $\ket 1 \to \ket 0$; the $\Zgate$ gate is
+    The $\Xgate$ gate is also known as the ``NOT'' gate, since it has the effect
+    $\ket 0 \to \ket 1$, $\ket 1 \to \ket 0$, and the $\Zgate$ gate is
     known as the phase-flip gate, since it has the effect $\ket 0 \to \ket 0$,
-    $\ket 1 \to - \ket 1$); with the $\Ygate$ gate rarely referenced by name, as
-    it is equal to $i \Xgate \Zgate$;
-    finally, the $\Hgate$ gate is the Hadamard gate, and represents the
+    $\ket 1 \to - \ket 1$; the $\Ygate$ gate appears more rarely, since
+    it can be implement as $i \Xgate \Zgate$.
+    Finally, the $\Hgate$ gate is the Hadamard gate, and represents the
     superposition-generating Hadamard transformation
     that we already met in \cref{sec:uniform}.
 
@@ -1039,7 +1039,7 @@
       What has changed?
     \end{exercise}
 
-    The most common two-qubit gate is the ``controlled-not'' gate:
+    The most common two-qubit gate is the ``Controlled-NOT'' gate:
     \[
       \CXgate = 
       \begin{sqmatrix} 
@@ -1058,45 +1058,54 @@
     %\end{exercise}
     %If you completed \cref{ex:HadamardBasis} and \cref{ex:cnotHadamard},
 
-    \hhnote{readthrough cont}
-    You may have noticed that $\CXgate$ has the effect of 
-      the first qubit \emph{controlling} an $\Xgate$ operation on the second
-      qubit: if the starting state is $\ket{b_1 b_2}$, then the  
-      operation is equivalent to $\Xgate_2 \ket{b_1 b_2}$ \emph{provided} $b_1 = 1$,
-      acting like the identity otherwise. Crucially, unlike classical if-else
-      logic, this ``check'' happens coherently, i.e.\ inside of the superposition --
-      no need to measure the state and check.
+    \noindent
+    This gate operates as if the first qubit \emph{controls} an $\Xgate$
+      operation on the second qubit: if the starting state is $\ket{b_1, b_2}$, then the  
+      operation is equivalent to $\Xgate_2 \ket{b_1, b_2} = \ket{b_1, b_2 \xor
+      1}$, \emph{provided} $b_1 = 1$. If $b_1 = 0$, then it acts like the
+      identity, in which case we get the same state back, which may be written
+      $\ket{b_1, b_2 \xor 0}$. Taking the two cases together, we can see that
+      the operator has the effect 
+      $\ket{b_1, b_2} \apply{\CXgate}\ket{b_1, b_2 \xor b_1}$.
 
-    \begin{exercise}\label{ex:cnotHadamard}
-      %Give the computational-basis matrix representation of the unitary
-      Find the unitary that has the same effect on the
-      Hadamard basis as $\CXgate$ has on the computational basis. 
-      What should we call this unitary?
-    \end{exercise}
+    %\begin{exercise}\label{ex:cnotHadamard}
+    %  %Give the computational-basis matrix representation of the unitary
+    %  Find the unitary that has the same effect on the
+    %  Hadamard basis as $\CXgate$ has on the computational basis. 
+    %  What should we call this unitary?
+    %\end{exercise}
 
-    In fact, any operation $\unitary$ acting on $n$ qubits implies a controlled version $\unitary[CU]$ of the same
-      operation acting on $n+1$ qubits. If the first qubit acts like a control for the rest, this will have the shape:
+    Notice how controlling on the state of a qubit is like performing an
+      ``if-else check'' \emph{coherently}, by which we mean that we don't have to measure
+      the first qubit to know whether or we should apply a NOT operation on
+      the second qubit, as the check happens \emph{inside} the superposition.
+      In fact, given any operation $\unitary$ on $n$ qubits, we can easily build
+      a controlled operation $\unitary[CU]$, acting on $n+1$
+      qubits, such that the first qubit acts like a control for applying
+      $\unitary$ on the rest. Written like a block-matrix, the corresponding
+      unitary matrix will look like this (where $N = 2^n$):
     \[
       \unitary[CU] = 
       \begin{sqmatrix} 
-        1 & 0 \\ 
-        0 & \unitary 
+        \idmatrix_{2 \times 2} & 0_{2 \times N} \\ 
+        0_{N \times 2} & \unitary 
       \end{sqmatrix}\, .
     \]
 
     \begin{exercise}\label{ex:truthtable}
       Write down a matrix for the $\unitary[CCX]$ gate, known as the
-      Toffoli gate. Which classically-irreversible logic gate does this gate
-      reversibly implement?
+      Toffoli gate. Which classically-irreversible logic gate does this
+      operation correspond to?
     \end{exercise}
 
     \begin{exercise}
-      Starting with the two-qubit state $\ket{\psi} = \ket{\qubit_1 \qubit_2} = \ket{0}_1\ket{0}_2$, apply
-      $\Hgate_1$ followed by $\CXgate$. What are the possible outcomes of observing the resulting
-      state, and what are their probabilities? Compare with the result of
+      Starting with the two-qubit state $\ket{\psi} = \ket{0, 0}$, apply
+      $\Hgate_1$, followed by $\CXgate$ as defined above. 
+      What are the possible outcomes of observing the resulting
+      state? With what probabilities? Compare with the result of
       instead applying the two single-qubit gates $\Hgate_1$ and $\Hgate_2$.\\
-      \emph{Hint: Recall that the probability of observing each outcome is found by 
-      squaring its amplitude.}
+      \emph{Hint: Recall that the probability of observing each outcome is equal
+      to its amplitude squared.}
     \end{exercise}
 
     Another two-qubit unitary that will turn out to be useful is the $\SWAPgate$
@@ -1106,37 +1115,38 @@
     \]
     Watch its effect on two general single-qubit states:
     \begin{align*}
-      \ket{\psi\varphi} &= (\alpha_0 \ket{0} + \alpha_1 \ket{1}) \otimes (\beta_0 \ket{0} + \beta_1 \ket{1}) 
+      \ket{\psi\varphi} &= (\alpha_0 \ket{0} + \alpha_1 \ket{1}) (\beta_0 \ket{0} + \beta_1 \ket{1}) 
         = \alpha_0 \beta_0 \ket{00} + \alpha_0 \beta_1 \ket{01} +
         \alpha_1 \beta_0 \ket{10} + \alpha_1 \beta_1 \ket{11} \\
       &\apply{\SWAPgate} \alpha_0 \beta_0 \ket{00} + \alpha_0 \beta_1 \ket{10} +
         \alpha_1 \beta_0 \ket{01} + \alpha_1 \beta_1 \ket{11} = 
-        (\beta_0 \ket{0} + \beta_1 \ket{1}) \otimes (\alpha_0 \ket{0} +
+        (\beta_0 \ket{0} + \beta_1 \ket{1}) (\alpha_0 \ket{0} +
         \alpha_1 \ket{1}) = \ket{\varphi\psi}\, .
     \end{align*}
-    We see that the $\SWAPgate$ gate has the effect of swapping the \emph{general} states of two
-      qubits with each other, earning its name.\footnote{
-        Were the \emph{states} swapped, or did the \emph{qubits} physically
-        switch places? The answer is ``either works!'', which is why we
-        delibaretly avoided specifying registers in this
-        example.%: in our model, the is metaphysical question without relevance to our model. 
-        Fundamentally, this is because qubits must be made of physically
-        indistinguishable particles. If they weren't, the fact that they
-        could be distinguished from each other could be used to
-        construct a larger basis, say, $\{ \ket{0_a}, \ket{1_a}, \ket{0_b},
-        \ket{1_b} \}$, at which point this is no longer a qubit system at all. 
-        What's more, if particle $a$ can only be observed to be in the $a$ basis
-        states, and particle $b$ can only be observed in the $b$ basis states, then 
-        there is no way for their quantum states to interfere!
-        %their quantum states can not even interfere with each other!
-        %Similar observations remain true in real-world systems, although there the
-        %continuity of positions and momenta in space (with their corresponding
-        %infinite-dimensional Hilbert spaces) usually means that one \emph{can}
-        %tell whether the particles from which the qubits are constructed were
-        %physically moved (as for atomic qubits), or
-        %whether the qubits were made to interact via a particular mechanism
-        %(as for superconducting qubits).
-      }
+    We see that the $\SWAPgate$ gate not only swaps computational basis states,
+      but in fact any superposition state the two qubits may find themselves in.
+      %\footnote{
+      %  Were the \emph{states} swapped, or did the \emph{qubits} physically
+      %  switch places? The answer is ``either works!'', which is why we
+      %  delibaretly avoided specifying registers in this
+      %  example. %: in our model, the is metaphysical question without relevance to our model. 
+      %  Fundamentally, this is because qubits must be made of physically
+      %  indistinguishable particles. If they weren't, the fact that they
+      %  could be distinguished from each other could be used to
+      %  construct a larger basis, say, $\{ \ket{0_a}, \ket{1_a}, \ket{0_b},
+      %  \ket{1_b} \}$, at which point this is no longer a qubit system at all. 
+      %  What's more, if particle $a$ can only be observed to be in the $a$ basis
+      %  states, and particle $b$ can only be observed in the $b$ basis states, then 
+      %  there is no way for their quantum states to interfere!
+      %  %their quantum states can not even interfere with each other!
+      %  %Similar observations remain true in real-world systems, although there the
+      %  %continuity of positions and momenta in space (with their corresponding
+      %  %infinite-dimensional Hilbert spaces) usually means that one \emph{can}
+      %  %tell whether the particles from which the qubits are constructed were
+      %  %physically moved (as for atomic qubits), or
+      %  %whether the qubits were made to interact via a particular mechanism
+      %  %(as for superconducting qubits).
+      %}
 
     \begin{exercise}
       Give a matrix representation of the $\SWAPgate$ gate.\\
@@ -1144,7 +1154,8 @@
       off'' the matrix.}
     \end{exercise}
 
-    \subsubsection{Transformations across Space and Time.}
+    \subsubsection{Transformations Across Space and Time.}
+      \hhnote{readthrough continue}
       You may have noticed that we have been dealing with two different kinds of
         product for unitary matrices: the usual matrix product
         $\unitary \unitary[V]$, and the tensor product 
