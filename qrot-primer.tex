@@ -1155,14 +1155,13 @@
     \end{exercise}
 
     \subsubsection{Transformations Across Space and Time.}
-      \hhnote{readthrough continue}
       You may have noticed that we have been dealing with two different kinds of
         product for unitary matrices: the usual matrix product
         $\unitary \unitary[V]$, and the tensor product 
         $\unitary \otimes \unitary[V]$. What does each kind of product represent?
 
       To illustrate, let $\ket{\psi}$ and $\ket{\varphi}$ be two single-qubit
-        states, combined in the two-qubit state $\ket{\psi, \varphi}$.
+        states, which may be combined to form the two-qubit state $\ket{\psi, \varphi}$.
         Then, if $\unitary$ and $\unitary[V]$ are single-qubit operations,
         so represented by $2 \times 2$ unitary matrices, 
         and you want to apply $\unitary$ to $\ket{\psi}$ and
@@ -1174,9 +1173,9 @@
       \]
       The unitary matrix formed by the tensor product 
         $\unitary \otimes \unitary[V]$
-        will be a $4 \times 4$ unitary, 
+        will be a $4 \times 4$ matrix, 
         a two-qubit operation that combine the effects
-        of both single-qubit unitaries in parallel,
+        of both single-qubit unitaries in parallel
         (that is, in the same time step).
 
       Following the register-subscript convention introduced earlier, if we wanted to
@@ -1190,7 +1189,10 @@
         \coloneqq (\unitary \otimes \idmatrix)(\ket{\psi} \otimes
         \ket{\varphi})\, ,
       \]
-      and likewise if we want to only apply $\unitary[V]$ to the second qubit:
+      i.e., $\unitary_1$ is the $4 \times 4$ unitary matrix that acts like $\unitary$ on
+      the first qubit and like the identity on the second qubit.
+      Likewise if we want to only apply $\unitary[V]$ to the second qubit, we
+      can define
       \[
         \unitary[V]_2 \ket{\psi, \varphi}
         \coloneqq (\idmatrix \otimes \unitary[V])(\ket{\psi} \otimes \ket{\varphi})\, .
@@ -1198,19 +1200,20 @@
 
       Extending to multi-qubit registers is straightforward: 
         Let $\ket{\psi} = \ket{\psi}_{\register[R],\register[S],\register[T]}$ 
-        be defined over a number of qubits that can be
-        split into three sub-registers $\register[R]$, $\register[S]$, and
+        be defined over a number of qubits contained in the three
+        registers $\register[R]$, $\register[S]$, and
         $\register[T]$, comprising $n$, $m$, and $k$ qubits, respectively.
-        Say you have a $2^m \times 2^m$-unitary $\unitary$, and you would like to apply
+        Say you have a $2^m \times 2^m$ unitary $\unitary$, and you would like to apply
         it to the qubits in register $\register[S]$. Then we may write:
       \[
         \unitary[U]_{\register[S]} \ket{\psi}
         \coloneqq (\idmatrix_{2^n \times 2^n} \otimes \unitary \otimes 
         \idmatrix_{2^k \times 2^k}) \ket{\psi}\, .
       \]
-
-      In this sense, the tensor product represents combinations of operations
-        happening at the same moment in time, but across different points in the
+      %
+      In this sense, the tensor product $\otimes$ represents parallel
+        computation: operations
+        happening at the same moment in time, but at different points in the
         \emph{space} of qubit registers.
 
       Now, imagine that you instead have two (single- or multi-qubit) unitaries
@@ -1221,41 +1224,45 @@
         \ket{\psi} \apply{\unitary} \ket{\psi^\prime}
           \apply{\unitary[V]} \ket{\psi^{\prime\prime}}\, .
       \]
-      This is given by the following product.
+      This is given by the usual matrix product:
       \[
         \unitary[V] \unitary \ket{\psi}
-        = \unitary[V] (\unitary \ket{\psi})
         = \unitary[V] \ket{\psi^\prime}
         = \ket{\psi^{\prime\prime}}\, .
       \]
-      Hence, the matrix product represents operations happening in different
-        moments in time, in this case across two time steps, with the right
-        unitary applied first and the left one thereafter. 
+      In this way, the matrix product represents operations applied in
+        \emph{series}, i.e.\ in different moments in time, 
+        with the right unitary applied first and the left one thereafter. 
 
       Note the reverse time-ordering! Given that most matrices don't commute,
-        this order clearly matters, and the above operational interpretation
+        the ordering of $\unitary$ and $\unitary[V]$ clearly matters here, 
+        and the operational interpretation
         tells us why: Two unitaries commute if and only if
-        applying the operations in either order always yields the same result,
-        regardless of state.
+        applying the operations they represent can be done in either order with
+        no effect on the result, regardless of the initial state. (As an
+        example, consider applying both $\unitary_1$ and $\unitary[V]_2$ from the
+        previous paragraph. Would the order of operation matter here? Can we be
+        sure that the two matrices commute?)
 
-      But hold on -- is ``time step'' even a well-defined unit here? 
+    \subsubsection{Elementary Gates.}
+      But hold on -- is ``time step'' even a well-defined unit of measurement? 
         After all, with $\unitary$ and $\unitary[V]$ being arbitrary unitary
         matrices, we could always define a new unitary $\unitary[W] = \unitary[V]
-        \unitary$, and say that \emph{this} is the operation that was applied,
-        now apparently in unit time!
-        This is why before analysing the time it would take to run a quantum
-        algorithm, we first have to agree on an \emph{elementary gate set}, so
-        that we can take those to be unit-time, and let the algorithm we actually
-        analyze be the implementation ``compiled'' to this gate set,
-        %by applying those gates in series and parallel, implicitly 
-        factoring the final unitary into tensor and matrix products of the
-        elementary unitaries.
-        More on this in \cref{sec:universality}, when we discuss
-        \emph{complexity}.
+        \unitary$, and say that \emph{this} is the operation that was applied.
+        But the way we have treated time steps so far, as ``one unitary $=$ one
+        time step'', it would seem that we can now perform both operations in
+        one time step!
 
-      To summarize, the tensor product represents unitaries applied in
-        \emph{parallel}, while the matrix product represents unitaries applied in
-        \emph{series}.
+      This is why, before analyzing the time it would take to run a quantum
+        algorithm, we first have to agree on an \emph{elementary gate set},
+        i.e.\ a small set of unitary operations that all other operations can be
+        built from. Then we can simply define that each of \emph{those} gates
+        take one time-step to apply, and let the algorithm we actually
+        analyze be the ``compilation'' to this gate set,
+        which is effectively the same as ``factoring'' the unitary we want to apply into tensor
+        and matrix products of these elementary unitaries.
+
+      More on this in \cref{sec:universality}, when we discuss \emph{complexity}.
 
       % too hard?
       %\begin{exercise}
@@ -1268,15 +1275,14 @@
       We mentioned earlier that measurements
       constitute an exception to the rule that any operation performed on a
       quantum state must be unitary. We will give two explanations:
-      First, the easily-applied intuition, then the more powerful mathematical
-      formalism.
+      First, the easy-to-apply intuition, then the formal treatment.
 
     \subsubsection{State Collapse.}
       If you perform a standard, computational-basis measurement on a state 
-        $\ket \psi = \sum_x \alpha_x \ket x$, then you will observe value $x$ with
+        $\ket \psi = \sum_x \alpha_x \ket x$, then you will observe a specific value $x$ with
         probability $\abs{\alpha_x}^2 = \alpha_x^* \alpha_x$. After observation,
         if you continue to perform the same measurement on the state, you will continue to
-        see the same value $x$ -- we say that the superposition state $\ket \psi$
+        see the same value $x$: we say that the superposition state $\ket \psi$
         has \emph{collapsed} to the basis state $\ket x$. In other words, this
         post-collapse state has $\alpha_x = 1$, with all the other $\alpha$ set to
         $0$.
@@ -1285,11 +1291,11 @@
         \ket x\, .
       \]
       Note the irreversibility: Once the state
-        collapses, any information about the prior state is \emph{deleted},
+        collapses, any information about the starting state is \emph{gone},
         except for the single bit of information
         that $\alpha_x$ had non-zero magnitude. 
 
-      That is really all you need to know about measurements to get started with
+      That is really all that you need to know about measurements to get started with
         quantum computing.
         But if you'd like a peek at the machinery required to place measurements
         on formal ground, read on -- for if observing a quantum state is not a
@@ -1320,15 +1326,15 @@
     \subsubsection{Projectors.} 
       To see what kind of non-unitary matrix is needed to represent the act of
         measuring a state, recall that after state collapse, further
-        observations is guaranteed to just yield the same result.
-        %(using the same measurement basis, to be defined shortly), 
-        %then the outcome will be the same.
-        The state has already collapsed; it cannot collapse
+        observations is guaranteed to give back the same result:
+        the state has already collapsed; it cannot collapse
         \emph{further}.\footnote{
-          Unless you switch your measurement basis, that is; more on this in a minute.
+          Unless you switch the measurement basis, that is; more on this in a minute.
         }
 
-      Let $\projector$ represent such an \emph{idempotent} operation. Then,
+      Let $\projector$ represent such an \emph{idempotent} operation. 
+        That repeated applications of $\projector$ is the same as a single
+        application of $\projector$ can be written:
         \[ 
           \projector (\projector \ket{\psi}) =
           %\projector^2 \ket{\psi} 
@@ -1339,74 +1345,117 @@
 
       \noindent
       Operators like $\projector$ are known as \emph{projectors}, so named because they 
-        effectively project higher dimensional objects onto some lower-dimensional
-        hyperplane.
-        %---or, in the case of measuring all the qubits at once,
-        %all the way down to one of the basis vectors.
+        effectively \emph{project} higher-dimensional objects onto some lower-dimensional
+        hyperplane, much like how 3D objects cast 2D shadows.
         For single-qubit states, it is easy to verify that the outer product 
-        of a basis state with itself will satisfy the definition: Let
-        $\projector_0$ and $\projector_1$ be given by
+        of a basis state with itself will satisfy the definition: 
+        %Let $\projector_0$ and $\projector_1$ be given by
       \[
-        \projector_0 = \ketbra{0}
+        \ketbra{0}
         = \begin{bmatrix} 1 \\ 0 \end{bmatrix} \begin{bmatrix} 1 & 0 \end{bmatrix}
         = \begin{sqmatrix} 
           1 & 0 \\ 
           0 & 0 
         \end{sqmatrix}\, , \quad
-        \projector_1 \coloneqq \ketbra{1}
+        \ketbra{1}
         = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \begin{bmatrix} 0 & 1 \end{bmatrix}
         = \begin{sqmatrix} 
           0 & 0 \\ 
           0 & 1 
         \end{sqmatrix}\, . \quad
       \]
-      From these matrix representations, we can see that effect of applying
-        $\projector_b$ to a single-qubit state is to single out the
+      Call these projectors $\projector_0$ and $\projector_1$.
+        From their matrix representations, we can see that effect of applying
+        $\projector_b$ to a single-qubit superposition state would single out the
         $\ket b$-part of the state from the superposition. For example, applying
-        $\projector_0$ to a general qubit state yields:
+        $\projector_0$ to the qubit state $\ket \psi = \alpha \ket 0 +
+        \beta \ket 1$ yields:
       \[
         \projector_0 \ket{\psi} = \projector_0(\alpha \ket{0} + \beta \ket{1})
-        = \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix} \begin{bmatrix} \alpha_0 \\ \alpha_1 \end{bmatrix} 
-        = \alpha_0 \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \alpha_0 \ket{0}\, .
+        = \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix} \begin{bmatrix} \alpha \\ \beta \end{bmatrix} 
+        = \alpha \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \alpha \ket{0}\, .
       \]
       Applying $\projector_0$ a second time, then, has no effect:
       \[
-        \projector_0^2 \ket{\psi} = \projector_0 (\alpha_0 \ket{0})
-        = \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix} \begin{bmatrix} \alpha_0 \\ 0 \end{bmatrix} 
+        \projector_0 \projector_0 \ket{\psi} = 
+        \projector_0 (\alpha \ket{0})
+        = \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix} \begin{bmatrix} \alpha \\ 0 \end{bmatrix} 
           %= \alpha_0 \begin{bmatrix} 1 \\ 0 \end{bmatrix} 
-          = \alpha_0 \ket{0} = \projector_0 \ket{\psi}\, .
+          = \alpha \ket{0} = \projector_0 \ket{\psi}\, .
       \]
       If we instead apply $\projector_1$ as the second projector, we get the zero vector:
       \[
-        \projector_1 \projector_0 \ket{\psi} = \projector_1 (\alpha_0 \ket{0})
+        \projector_1 \projector_0 \ket{\psi} = \projector_1 (\alpha \ket{0})
         = \begin{sqmatrix} 0 & 0 \\ 0 & 1 \end{sqmatrix} \begin{bmatrix} \alpha_0 \\ 0 \end{bmatrix} 
-          = \begin{bmatrix} 0 \\ 0 \end{bmatrix}\, .
+          = \begin{bmatrix} 0 \\ 0 \end{bmatrix}\, ,
       \]
-      Hence, these projectors are \emph{orthogonal} in the sense that they
-        satisfy $\projector_i \projector_j = \delta_{ij} \projector_i$.
-        What's more, the set $\{ \projector_0, \projector_1 \}$ is \emph{complete}
-        in the sense that it sums to identity:
+      and similarly for $\projector_0 \projector_1$.
+      Hence, the set $\{\projector_0, \projector_1\}$ is \emph{orthogonal} in
+        the sense that it satisfies $\projector_i \projector_j = \delta_{ij} \projector_i$.
+        It is also \emph{complete}, in the sense that its members sum to identity:
       \[
         \projector_0 + \projector_1 = 
         \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix}
         + \begin{sqmatrix} 0 & 0 \\ 0 & 1 \end{sqmatrix}
         = \begin{sqmatrix} 1 & 0 \\ 0 & 1 \end{sqmatrix} = \idmatrix\, .
       \]
-      On the other hand, these matrices are manifestly \emph{not} unitary, as
-        can be seen from the fact that they are not norm-preserving (cf.\
+      On the other hand, $\projector_0$ and $\projector_1$ are manifestly
+        \emph{not} unitary, as
+        can be seen from the fact that they are not norm-preserving (see
         \cref{ex:unitarity}): If $\ket\psi$ starts out as a
-        superposition state, then $\projector_0 \ket\psi$ will not be
-        unit-length and therefore not a valid quantum state. 
-        Alternatively, you may have noticed that the projector
-        matrices are not even \emph{invertible}, 
-        reflecting the information loss incurred by measurements.
-        %after measuring a state, there is no way to recover the full pre-collapse
-        %state, other than to re-create it from scratch!
+        superposition state, with non-zero amplitudes $\alpha$ and $\beta$ whose
+        squares sum to one, then the vector $\projector_0 \ket\psi$ will have
+        length $\abs{\alpha} < 1$, and will therefore not be a valid quantum
+        state: Trying to interpret it as such would lead to probabilities that
+        do not sum to one. 
+        You can also see this from the fact that projectors
+        are not even invertible matrices, which is just a different way
+        of saying that they lose information.
 
-      \hhnote{
-        We also need Hermiticity if we want our probabilities to end up
-        positive; make counterexample an exercise?
-      }
+      As you have probably already guessed, we would like to define
+        measurements in terms of projectors such that each measurement outcome corresponds to
+        one projector, with the probability of the outcome given by the length
+        of the resulting vector, i.e.\ something like:
+      \[
+         \prob{\text{outcome } x} = \norm{\projector_x \ket \psi}^2 
+         = \bra\psi \projector_x^\dagger \projector_x \ket\psi 
+         \overset{?}{=} \abs{\alpha_x}^2\, .
+      \]
+      We don't have any a priori notion of how $\projector_x^\dagger$ might act
+        on the state, so we can't conclude that the final equation holds just
+        yet. Notice, however, that if we restrict to projectors that satisfy 
+        $\projector^\dagger = \projector$, then we would get what we need:
+      \[
+         %\prob{\text{outcome } x} =
+         %\norm{\projector_x \ket \psi}^2 =
+         \bra\psi \projector_x^\dagger \projector_x \ket\psi 
+         = \bra\psi \projector^2_x \ket\psi 
+         = \bra\psi \projector_x \ket\psi 
+         = \bra\psi \alpha_x \ket x 
+         = \braket{\psi|x} \alpha_x
+         = \alpha_x^* \alpha_x
+         = \abs{\alpha_x}^2\, .
+      \]
+      Such matrices are called \emph{Hermitian}, and Hermitian projectors turn
+        out to be exactly what we need to make our measurement operators well-defined.
+        %, and are easily recognized by their anti-symmetric shape
+
+      \hhnote{cont}
+
+      \begin{exercise}
+        Let $\ket\psi = \alpha \ket 0 + \beta \ket 1$ be an arbitrary single-qubit state,
+        and let $\projector$ be the non-Hermitian matrix
+        \[
+          \projector = \begin{sqmatrix} 0 & -1 \\ 0 & 1 \end{sqmatrix}\, .
+        \]
+        \begin{subex}
+          \item Show that $\projector$ is a projector by showing that it is idempotent 
+            (repeated applications yield the same result).
+          \item Find values for $\alpha$ and $\beta$ for which the ``probability'' 
+            $\norm{\projector \ket\psi}^2 = \bra\psi \projector_x^\dagger \projector_x \ket\psi$ 
+            exceeds one.
+        \end{subex}
+      \end{exercise}
 
       \begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
         Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
