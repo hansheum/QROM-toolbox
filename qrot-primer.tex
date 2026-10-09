@@ -1417,30 +1417,40 @@
         one projector, with the probability of the outcome given by the length
         of the resulting vector, i.e.\ something like:
       \[
-         \prob{\text{outcome } x} = \norm{\projector_x \ket \psi}^2 
-         = \bra\psi \projector_x^\dagger \projector_x \ket\psi 
-         \overset{?}{=} \abs{\alpha_x}^2\, .
-      \]
-      We don't have any a priori notion of how $\projector_x^\dagger$ might act
-        on the state, so we can't conclude that the final equation holds just
-        yet. Notice, however, that if we restrict to projectors that satisfy 
-        $\projector^\dagger = \projector$, then we would get what we need:
-      \[
-         %\prob{\text{outcome } x} =
-         %\norm{\projector_x \ket \psi}^2 =
-         \bra\psi \projector_x^\dagger \projector_x \ket\psi 
-         = \bra\psi \projector^2_x \ket\psi 
-         = \bra\psi \projector_x \ket\psi 
-         = \bra\psi \alpha_x \ket x 
-         = \braket{\psi|x} \alpha_x
-         = \alpha_x^* \alpha_x
+         \prob{\, \text{outcome } x\, } = \norm{\projector_x \ket \psi}^2 
+         %= \bra\psi \projector_x^\dagger \projector_x \ket\psi 
+         %\overset{?}{=} 
          = \abs{\alpha_x}^2\, .
       \]
-      Such matrices are called \emph{Hermitian}, and Hermitian projectors turn
-        out to be exactly what we need to make our measurement operators well-defined.
-        %, and are easily recognized by their anti-symmetric shape
+      %
+      In particular, we would want a complete set of projectors to map out
+        all the possible outcomes of the measurement in such a way that the
+        probabilities sum to one:
+      \[
+        \sum_i \prob{\, \text{outcome } i\, } 
+        = \sum_i \norm{\projector_i \ket \psi}^2 
+        = \sum_i \bra\psi \projector_i^\dagger \projector_i \ket\psi 
+        = 1\, .
+      \]
+
+
+      As it turns out, 
 
       \hhnote{cont}
+      \hhnote{
+        rather start with an ``obviously we want something like
+        $\ketbra{x}$'', and then generalize from there?
+      }
+      \hhnote{
+        also in the ``use projectors for if--else logic'' subsection, show how
+        the XYZ and H gates can be written using projectors.
+      }
+
+      Matrices that satisfy $\projector^\dagger = \projector$ are called
+        \emph{Hermitian}, and Herimiticity turns out to be both sufficient and
+        necessary for projectors to correspond to probabilities via
+        $\norm{\projector \ket\psi}^2$.
+
 
       \begin{exercise}
         Let $\ket\psi = \alpha \ket 0 + \beta \ket 1$ be an arbitrary single-qubit state,
