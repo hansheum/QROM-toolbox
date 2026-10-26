@@ -155,9 +155,9 @@
     %  and we may denote an oracle implementing the function $f$ as $\Oracle_f$.
 
     %% MORE FROM SOA SOK
-    %We use code-based experiments, where by convention all sets, lists,
+    %We use code-based games, where by convention all sets, lists,
       %and lazily sampled functions are initialized empty.
-      %In our experiments, we will assume that no oracle calls are made (by the adversary)
+      %In our games, we will assume that no oracle calls are made (by the adversary)
       %with evidently out-of-bounds inputs (e.g.~list indices or key handles).
 
     %We use the shorthand $\Xset \setapp x$ for
@@ -182,6 +182,7 @@
     \hhnote{
       Let's just skip using the word ``experiment'' entirely. 
     }
+    \khnote{Replaced everywhere except in the primer section}
     
     \subsubsection{Security Games.}
     	Security is defined in terms of a \emph{security game}.
@@ -195,22 +196,22 @@
         }
       	%\khnote{I'd usually use $\mathcal{A}$, but that's a matter of taste.}
         %% Done. --H
-        A security game $\examplegame$ is a program, usually written in pseudocode, %$\experiment{}{}[]$ 
+        A security game $\examplegame$ is a program, usually written in pseudocode, %$\game{}{}[]$ 
         that interacts with $\adv$ by running it as a black-box subroutine; see
         \cref{fig:example-game} for an example.
         $\examplegame$ will use  $\adv$ as a \emph{black-box}, meaning it can
         only provide inputs to and receive outputs from $\adv$,
       	because we do not want to make any assumptions about $\adv$'s potential
-        attack strategies. This way, we can confidently say that our security experiment considered
+        attack strategies. This way, we can confidently say that our security game considered
       	\emph{any} kind of attack that aimed to break the formalized security goal.
       	At the end, $\examplegame$  will finish by outputting a bit
       	that depends on the interaction with $\adv$, to indicate if $\adv$ managed to break security.
 
       Any security game is defined to express security of some primitive
         $\primitive$, for example a particular public-key encryption (PKE) scheme.
-      	Thus, part of the experiment's code uses the algorithms of the primitive
+      	Thus, part of the game's code uses the algorithms of the primitive
         $\primitive$ whose security we want to express.
-      	E.g., we might want to write an experiment to express that encryptions of a PKE scheme \PKE
+      	E.g., we might want to write an game to express that encryptions of a PKE scheme \PKE
       	are ``one-way'' in the sense that they are hard to invert without the secret key.
       	To express this, the ``\textbf{\underline{O}}ne-\textbf{\underline{W}}ayness under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' game
         \owcpa would encrypt a random plaintext message \chalmssg into a ciphertext \chalctxt,
@@ -227,13 +228,13 @@
       	If we want to express security of, say, ElGamal encryption, we would
         fill in the specifics of ElGamal at the respective places.
       	For any security game filled in with the specific algorithms of a concrete primitive $\primitive$,
-      	we will write $\experiment{Game}{\primitive}$.
-      	We will say that adversary $\adv$ wins the game $\experiment{Game}{}[]$
+      	we will write $\game{Game}{\primitive}$.
+      	We will say that adversary $\adv$ wins the game $\game{Game}{}[]$
         for a specific construction of primitive $\pcalgostyle{P}$
-        if $\experiment{Game}{\primitive}$ outputs $1$.
-        We will denote this event by $\experiment{Game}{\primitive} \Rightarrow 1$.
+        if $\game{Game}{\primitive}$ outputs $1$.
+        We will denote this event by $\game{Game}{\primitive} \Rightarrow 1$.
         In that case, we will also say that adversary $\adv$ broke the
-        $\experiment{Game}{}[]$ security of primitive $\primitive$.
+        $\game{Game}{}[]$ security of primitive $\primitive$.
         
       Security games are typically named by the convention that the letters
 	      preceding the hyphen defines a security \emph{goal} that we would like our 
@@ -304,7 +305,7 @@
         			\small
         			\nicoresetlinenr
         			\begin{minipage}[t]{3.5cm}	
-        				\underline{{\bf Game} $\experiment{\owcpa}{\pkescheme}$}
+        				\underline{{\bf Game} $\game{\owcpa}{\pkescheme}$}
                 \smallskip
         				\begin{nicodemus}
         					\item $(\pk, \sk) \gets \KG$
@@ -324,7 +325,7 @@
         	}
         \end{figure}
         
-        \khnote{I noted that we're mixing "Game" and $\experiment{}{}[]$ a lot.
+        \khnote{I noted that we're mixing "Game" and $\game{}{}[]$ a lot.
         	I would pick either/or and commit to that.
         	Personally, I prefer the notation "{\bf Game} $\OWCPA_{\pkescheme}^\mathcal{A}$",
         	but I won't mope as long as everything is consistent.
@@ -409,7 +410,7 @@
         		advantages will usually be taken to simply be the win probability:
         		\[
 	        		\advantage{\findnotion}{\primitive} \coloneqq
-	        		\prob{\experiment{\findnotion}{\primitive} \Rightarrow 1}\, .
+	        		\prob{\game{\findnotion}{\primitive} \Rightarrow 1}\, .
         		\]
         	\item \emph{Distinguishing},
 	        	in which case the adversary is tasked with distinguishing between two scenarios.
@@ -432,7 +433,7 @@
         One standard way of defining distinguishing advantages is the following:
           \[
           	\advantage{\distnotion}{\primitive} \coloneqq \abs{
-          		2 \cdot \prob{\experiment{\distnotion}{\primitive} \Rightarrow 1} - 1
+          		2 \cdot \prob{\game{\distnotion}{\primitive} \Rightarrow 1} - 1
           	}\, .
           \]
           Here, the game internally tosses a coin to determine which of the
@@ -443,20 +444,20 @@
           better than guessing) to $1$ (for strategies that always win),
           matching the ``finding'' case.
 
-        Alternatively yet equivalently, you could split the experiment into the two
+        Alternatively yet equivalently, you could split the game into the two
           to-be-distinguished scenarios
           and quantify how much more (un)likely it is that $\adv$ outputs $1$
           in the one setting than the other.
           To do so, you can capture the outcome of the coin toss as a
-          ``challenge bit'' $b$, condition the experiment on $b$,
+          ``challenge bit'' $b$, condition the game on $b$,
           and set
           \[
           	\advantage{\distnotion}{\primitive} \coloneqq \abs{
           		\condprobsample{
-          			\experiment{\distnotion}{\primitive}
+          			\game{\distnotion}{\primitive}
           		}{1 \gets \adv}{\chalbit = 0}
           		- \condprobsample{
-          			\experiment{\distnotion}{\primitive}
+          			\game{\distnotion}{\primitive}
           		}{1 \gets \adv}{\chalbit = 1}
           	}\, .
           \]
@@ -482,10 +483,10 @@
         while if it always guesses correctly, then one of the two probabilities is
         $0$ and the other one is $1$, making for an advantage of $1$.
       
-      \khnote{I noticed that you abbreviated the prob by writing $\prob{\experiment{X}{\primitive}}$,
-      	but $\experiment{X}{\primitive}$ is not really an event.
-      	I'm more used to denoting the prob of the event that the experiment \emph{outputs 1},
-      	by writing $\prob{\experiment{X}{\primitive}} \Rightarrow 1$.
+      \khnote{I noticed that you abbreviated the prob by writing $\prob{\game{X}{\primitive}}$,
+      	but $\game{X}{\primitive}$ is not really an event.
+      	I'm more used to denoting the prob of the event that the game \emph{outputs 1},
+      	by writing $\prob{\game{X}{\primitive}} \Rightarrow 1$.
       	I changed it above, but not in the remainder of the file.
       }
       \hhnote{
@@ -725,7 +726,7 @@
         have to be provided via an encryption oracle.)
 
       On the left of \cref{fig:ind-ow} \khnote{missing ref}
-      is the experiment
+      is the game
         defining our (single-user) $\indcpa$ security notion. The game starts by sampling
         parameters $\params$,
         \khnote{why suddenly parameters?}
@@ -763,7 +764,7 @@
       %\begin{figure}[t]
       %  \centering
       %  \begin{pchstack}[center]
-      %    \procedure{$\experiment{\indcpa}{\pkescheme}$}{
+      %    \procedure{$\game{\indcpa}{\pkescheme}$}{
       %      \params \sample \pkpm(\secparam) \\
       %      (\pk, \sk) \sample \pkkg(\params) \\
       %      \chalbit \sample \bin \\
@@ -783,7 +784,7 @@
       %
       %    \pchspace
       %
-      %    \procedure{$\experiment{\owcpa}{\kemscheme}[(\adv)]$}{
+      %    \procedure{$\game{\owcpa}{\kemscheme}[(\adv)]$}{
       %      \params \sample \kempm(\secparam) \\
       %      (\pk, \sk) \sample \kemkg(\params) \\
       %      i \gets 0 \\
@@ -801,7 +802,7 @@
       %  \end{pchstack}
       %\caption{
       %  \label{fig:ind-ow}
-      %  The experiments defining (multi-challenge) $\indcpa$ for PKE (left), and
+      %  The games defining (multi-challenge) $\indcpa$ for PKE (left), and
       %  $\owcpa$ for KEM (right). If a random oracle $\RO$ is present, then the
       %  adversary gets access to this in addition to the challenge oracle $\Oenc$.
       %}
@@ -813,7 +814,7 @@
 	  	  			\small
 	  	  			\nicoresetlinenr
 	  	  			\begin{minipage}[t]{3.5cm}	
-                \underline{{\bf Game} $\experiment{\owcpa}{\pkescheme}$}
+                \underline{{\bf Game} $\game{\owcpa}{\pkescheme}$}
 	  	  				\begin{nicodemus}
 	  	  					\item $(\pk, \sk) \gets \KG$
                   \item $\chalmssg \sample \Mspace$
@@ -826,7 +827,7 @@
 	  	  			\pchspace
 
 	  	  			\begin{minipage}[t]{3.5cm}	
-                \underline{{\bf Game} $\experiment{\indcca}{\pkescheme}$}
+                \underline{{\bf Game} $\game{\indcca}{\pkescheme}$}
 	  	  				\begin{nicodemus}
 	  	  					\item $(\pk, \sk) \gets \KG$
 	  	  					\item $\chalbit \sample \bin$
