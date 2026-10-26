@@ -399,9 +399,12 @@
         %
         Intuitively, a primitive $\primitive$ is considered ``broken'' if there exists an
           ``efficient'' adversary 
-	        that wins the game with a ``significant'' probability.
+	        that achieves a ``significant'' advantage in the security game.
 	        Conversely, $\primitive$ is ``secure'' if no such adversary exists.
-	        But what does it mean to be ``efficient'' or ``significant''?
+	        The precise definition of ``advantage'' depends on the security game at hand,
+	        as we will explain in more detail below.
+	        
+	    But first, what does it mean to be ``efficient'' or ``significant''?
 	        Intuitively, you can think of ``efficient'' attacks as attacks whose running time doesn't blow up catastrophically
 	    	if we increase the construction's parameters, like, e.g., the key length.
 	    	Similarly, you can think of ``significant'' probabilities as probabilities that do not speed-run towards 0
