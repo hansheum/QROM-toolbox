@@ -219,6 +219,32 @@
       	have $\adv$ output a guess \advmssg,
         and return 1 if $\adv$ guessed the correct encrypted message (so if $\advmssg =
         \chalmssg$). This is the example formalized in \cref{fig:example-game}.
+        
+        \begin{figure}[t]
+        	\begin{center}
+        		\fbox{
+        			\small
+        			\nicoresetlinenr
+        			\begin{minipage}[t]{3.5cm}	
+        				\underline{{\bf Game} $\game{\owcpa}{\pkescheme}$}
+        				\smallskip
+        				\begin{nicodemus}
+        					\item $(\pk, \sk) \gets \KG$
+        					\item $\chalmssg \sample \Mspace$
+        					\item $\chalctxt \gets \Enc_\pk(\chalmssg)$
+        					\item $\advmssg \gets \adv(\pk, \chalctxt)$
+        					\item $\pcreturn \bool{\advmssg = \chalmssg}$
+        				\end{nicodemus}
+        			\end{minipage}
+        		}
+        	\end{center}
+        	\caption{\label{fig:example-game}
+        		Example for a security game:
+        		``\textbf{\underline{O}}ne-\textbf{\underline{W}}ayness under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' (\owcpa) game for
+        		a PKE scheme with key generation $\KG$,
+        		encryption algorithm $\Enc$, and supported message space $\Mspace$.
+        	}
+        \end{figure}
 
       Like all common definitions of security, the $\owcpa$ definition is intended to be \emph{generic},
       	meaning it can capture this type of security for \emph{any} kind of PKE scheme.
