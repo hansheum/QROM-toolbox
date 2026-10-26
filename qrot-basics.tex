@@ -335,24 +335,27 @@
         		\fbox{
         			\small
         			\nicoresetlinenr
-        			\begin{minipage}[t]{3.5cm}	
-        				\underline{{\bf Game} $\game{\owcpa}{\pkescheme}$}
-                \smallskip
+        			\begin{minipage}[t]{4cm}	
+        				\underline{{\bf Game} $\game{\indcpa}{\pkescheme}$}
+        				\smallskip
         				\begin{nicodemus}
         					\item $(\pk, \sk) \gets \KG$
-        					\item $\chalmssg \sample \Mspace$
-        					\item $\chalctxt \gets \Enc_\pk(\chalmssg)$
-        					\item $\advmssg \gets \adv(\pk, \chalctxt)$
-        					\item $\pcreturn \bool{\advmssg = \chalmssg}$
+        					\item $m_0^*, m_1^*, st \sample \adv_1(pk)$
+        					\item $\chalbit \sample \bin$
+        					\item $\chalctxt \gets \Enc_\pk(m^*_\chalbit)$
+        					\item $\advbit \gets \adv(\pk, \chalctxt)$
+        					\item $\pcreturn \bool{\advbit = \chalbit}$
         				\end{nicodemus}
         			\end{minipage}
         		}
         	\end{center}
         	\caption{\label{fig:example-game}
-        		Example for a security game:
-        		``\textbf{\underline{O}}ne-\textbf{\underline{W}}ayness under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' (\owcpa) game for
-            a PKE scheme with key generation $\KG$,
-        		encryption algorithm $\Enc$, and supported message space $\Mspace$.
+        		Example for a distinguishing-type security game:
+        		``\textbf{\underline{IND}}istinguishability under \textbf{\underline{C}}hosen-\textbf{\underline{P}}laintext \textbf{\underline{A}}ttacks'' (\indcpa) game for
+        		a PKE scheme with key generation $\KG$ and encryption algorithm $\Enc$.
+        		Here, the adversary consists of two stages: the first stage, $\adv_1$, gets two pick two messages of its own choosing after seeing the public key.
+        		The second stage, $\adv_2$, receives the encryption of one of those two messages, together with the internal state $st$ with which  $\adv_1$ finished,
+        		and has to determine which message was encrypted.
         	}
         \end{figure}
         
