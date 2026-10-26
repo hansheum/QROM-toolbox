@@ -449,6 +449,44 @@
 	        		\advantage{\findnotion}{\primitive} \coloneqq
 	        		\prob{\game{\findnotion}{\primitive} \Rightarrow 1}\, .
         		\]
+        		
+        		As an example, let's study
+        		\[
+	        		\advantage{\owcpa}{\pkescheme} = \prob{\game{\owcpa}{\pkescheme} \Rightarrow 1} \, ,
+        		\]
+        		for the attacker $\adv$ that blindly guesses a random message \advmssg.
+        		If your gut tells you that guessing a random message \advmssg should hit the challenge message \chalmssg
+        		with probability $\nicefrac{1}{|\Mspace|}$, you're right.
+        		How do we argue the advantage mathematically?
+        		We use the law of total probability, meaning we split the probability along all the possible cases for \chalmssg:
+        		\begin{align*}
+        			\advantage{\owcpa}{\pkescheme}
+        			&= \sum_{m\in \MSpace} \underbrace{
+        										\prob{\chalmssg = m}
+        									}_{=\,1/|\mathcal M|}
+        			 			\cdot \underbrace{
+        			 				\prob{ \game{\findnotion}{\primitive} \Rightarrow 1 | \chalmssg = m}
+        		 					}_{\game{\findnotion}{\primitive} \Rightarrow 1 \,\Leftrightarrow \,\advmssg = \chalmssg}\\
+        			&= \sum_{m\in \MSpace} \frac{1}{|\Mspace|} \cdot \prob{\advmssg = \chalmssg | \chalmssg = m} \, .
+        		\end{align*}
+        		Conditioning on $\chalmssg = m$ fixes the target message.
+        		The attacker still independently chooses uniformly among all $|\mathcal M|$ many messages.
+        		Exactly one of those choices equals the fixed target $m$.
+        		Formally:
+        		\[
+	        		\Pr[\advmssg = \chalmssg | \chalmssg = m]
+	        		= \Pr[\advmssg = m | \chalmssg = m]
+	        		= \Pr[\advmssg = m]
+	        		= \frac{1}{|\Mspace|} \, .
+        		\]
+        		where step 2 used the independence of $\adv$'s choice and step 3 used that the guess is uniform.
+        		Thus,
+        		\[
+	        		\advantage{\owcpa}{\pkescheme} =
+	        		\sum_{m\in \MSpace} \frac{1}{|\Mspace|} \cdot \frac{1}{|\Mspace|}
+	        		= \frac{1}{|\Mspace|} \, .
+        		\]
+        		
         	\item \emph{Distinguishing},
 	        	in which case the adversary is tasked with distinguishing between two scenarios.
         		(E.g., the adversary might need to distinguish a real encryption
