@@ -489,10 +489,10 @@
         		
         	\item \emph{Distinguishing},
 	        	in which case the adversary is tasked with distinguishing between two scenarios.
-        		(E.g., the adversary might need to distinguish a real encryption
-            from a ciphertext that was chosen uniformly at random.)
+        		(As an example, consider the \indcpa game in which the adversary needs to distinguish an encryption of $m_0^*$ from one of $m_1^*$.)
         		Here, the expected output of $\adv$ is a bit, to indicate its guess
             about which scenario (or ``world'') it interacted with.
+            	
         \end{itemize}
         
         \noindent
@@ -524,7 +524,7 @@
           and quantify how much more (un)likely it is that $\adv$ outputs $1$
           in the one setting than the other.
           To do so, you can capture the outcome of the coin toss as a
-          ``challenge bit'' $b$, condition the game on $b$,
+          ``challenge'' or ``scenario'' bit $b$, condition the game on $b$,
           and set
           \[
           	\advantage{\distnotion}{\primitive} \coloneqq \abs{
@@ -537,20 +537,71 @@
           	}\, .
           \]
 
-
-      \hhnote{
-        Instead define 
-        $
-          \advantage{\distnotion}{\primitive} \coloneqq \abs{
-        		\probsample{
-              \distnotion_\primitive^0(\adv)
-        		}{1 \gets \adv}
-        		- \probsample{
-              \distnotion_\primitive^1(\adv)
-        		}{1 \gets \adv}
-        	}
-        $?
-      }
+		Writing out conditioned probabilities is quite lengthy.
+		Instead, we could define the two respective ``conditioned'' games, that is,
+		two new games that are exactly like the old game,
+		just that we assume that the scenario already has happened to be determined.
+		As an example, look at the ``conditioned'' \indcpa games in \cref{fig:example-indcpa-conditioned}.
+		In that way, instead of writing
+		\[
+			\advantage{\indcpa}{\pkescheme} \coloneqq \abs{
+				\condprobsample{
+					\game{\indcpa}{\pkescheme}
+				}{1 \gets \adv}{\chalbit = 0}
+				- \condprobsample{
+					\game{\indcpa}{\pkescheme}
+				}{1 \gets \adv}{\chalbit = 1}
+			}\, ,
+		\]
+		we can write
+		\[
+		\advantage{\indcpa}{\pkescheme} \coloneqq \abs{
+			\prob{
+				\game{\indcpa_0}{\pkescheme} \Rightarrow 1}
+			- \prob{
+				\game{\indcpa_1}{\pkescheme} \Rightarrow 1}
+		}\, .
+		\]
+	      \hhnote{
+	        Instead define 
+	        $
+	          \advantage{\distnotion}{\primitive} \coloneqq \abs{
+	        		\probsample{
+	              \distnotion_\primitive^0(\adv)
+	        		}{1 \gets \adv}
+	        		- \probsample{
+	              \distnotion_\primitive^1(\adv)
+	        		}{1 \gets \adv}
+	        	}
+	        $?
+	      }
+	      \khnote{Tried to work something like this in above.}
+      
+	      \begin{figure}[t]
+	      	\begin{center}
+	      		\fbox{
+	      			\small
+	      			\nicoresetlinenr
+	      			\begin{minipage}[t]{4cm}	
+	      				\underline{{\bf Game} $\game{\indcpa_b}{\pkescheme}$}
+	      				\smallskip
+	      				\begin{nicodemus}
+	      					\item $(\pk, \sk) \gets \KG$
+	      					\item $m_0^*, m_1^*, st \sample \adv_1(pk)$
+	      					\item $\chalctxt \gets \Enc_\pk(m^*_\chalbit)$
+	      					\item $\advbit \gets \adv(\pk, \chalctxt)$
+	      					\item $\pcreturn \bool{\advbit = \chalbit}$
+	      				\end{nicodemus}
+	      			\end{minipage}
+	      		}
+	      	\end{center}
+	      	\caption{\label{fig:example-indcpa-conditioned}
+	      		Example for a distinguishing-type security game that got conditioned on a concrete scenario:
+	      		This is exactly the \indcpa game,
+	      		just that we no longer pick the scenario at random by flipping the pre-determined ``scenario bit'' $b \in \bin$.
+	      		Instead, the scenario gets indicated by a pre-determined $b$.
+	      	}
+	      \end{figure}
 
       \noindent
       We again get a formula that scales from $0$ to $1$: If $\adv$ always
