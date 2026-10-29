@@ -1097,6 +1097,9 @@
   	We want to establish and show how to use it as a subroutine in an attack against the property we assume.
   	In our example, we will show how to use $\adv$ as a subroutine in an algorithm $\bdv$ that tries to break the \indcpa property.
   	The algorithm that performs this conversion, $\bdv$, is called a security reduction.
+  	We will denote the resulting new attack by $\bdv^\adv$.
+  	Writing ${}^\adv$ indicates that $\bdv$ uses $\adv$ as a \emph{black-box subroutine}:
+  	it supplies $\adv$’s inputs, answers its oracle queries, and uses its output, without inspecting or modifying its internal workings.
   	
   	Although the implication from indistinguishability to one-wayness may already seem intuitive,
   	proving it explicitly will show us how to build such an argument.
