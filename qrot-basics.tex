@@ -1100,16 +1100,11 @@
   	
   	Although the implication from indistinguishability to one-wayness may already seem intuitive,
   	proving it explicitly will show us how to build such an argument.
-
-    \hhnote{TRIVIAL REDUCTION EXAMPLE TO SHOW THE FRAMEWORK: IND $\to$ OW}
-
+  	%
     When talking about reductions between security
       notions, we usually state the contrapositive: that
       ``\emph{indistinguishability} (the inability to distinguish) implies
       \emph{one-wayness} (the inability to recover plaintexts)''. 
-
-    Let us prove this simple fact as a demonstration of how
-      we usually construct security reductions.
 
     \begin{theorem}[IND $\To$ OW]\label{thm:ind-ow-red}
       Let $\pkescheme$ be any public-key encryption scheme. Then there exists a
