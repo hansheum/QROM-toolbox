@@ -1078,9 +1078,11 @@
   
   	While looking at security notions for PKE, we saw that some notions can be related in a way.
   	As one example, we argued that $\owcpa$ \emph{implies} $\skucpa$ -- if one-wayness is satisfied, then 
-  	secret-key unrecoverability must also be satisfied.
-  	As another example, we argued that $\owcpa$ \emph{implies} $\indcpa$ -- if indistinguishability is satisfied, then 
-  	one-wayness must also be satisfied.
+  	secret-key unrecoverability must also be satisfied,
+  	because anyone who can recover the secret key can also invert encryptions.
+  	As another example, we argued that $\indcpa$ \emph{implies} $\owcpa$ -- if indistinguishability is satisfied, then 
+  	one-wayness must also be satisfied,
+  	because anyone who can invert encryptions can tell which of two messages got encrypted.
   	
   	Proving implications like the above is one of the core activities of provable security.
   	\khnote{I still wanna add motivation here}
@@ -1120,9 +1122,7 @@
 
     \hhnote{TRIVIAL REDUCTION EXAMPLE TO SHOW THE FRAMEWORK: IND $\to$ OW}
 
-    If, given a ciphertext, you have the ability to break encryption and recover the
-      underlying plaintext, then you can also distinguish which of two
-      ciphertexts were encrypted. When talking about reductions between security
+    When talking about reductions between security
       notions, we usually state the contrapositive: that
       ``\emph{indistinguishability} (the inability to distinguish) implies
       \emph{one-wayness} (the inability to recover plaintexts)''. 
