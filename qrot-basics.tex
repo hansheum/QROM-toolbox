@@ -1223,6 +1223,10 @@
 	    In contrast, $\bdv$ might for example \emph{rewind} $\adv$,
 	    running it several times to figure out how $\adv$ \emph{would} behave given
 	    different inputs; such a reduction would not be considered simple.
+	    Also in contrast, $\bdv$ might run $\adv$ up to a certain point
+	    and then access $\adv$'s internal memory to read out a specific part of its state;
+	    such a reduction would not be considered black-box.
+	    
 	    Generally speaking, simple, fully black-box reductions are preferred, as
 	    they are more general and easier to work with, but such reductions are not
 	    always possible to construct.
