@@ -1173,13 +1173,22 @@
     			\small
     			\nicoresetlinenr
     			\begin{minipage}[t]{4.5cm}	
-    				\underline{{\bf Reduction} $\bdv^{\Oenc, \adv}(\pk)$}
+    				\underline{{\bf Reduction} $\bdv_1^{\adv}(\pk)$}
     				\smallskip
     				\begin{nicodemus}
-    					\item $\mssg_0, \mssg_1 \gets \bin^n$
-    					\item $c^* \leftarrow \Oenc(\mssg_0, \mssg_1)$
-    					\item $\advmssg \leftarrow \adv(\pk, c^*)$ 
-    					\item $\pcif \advmssg \not\in \{\mssg_0, \mssg_1\} : \pcreturn 0$
+    					\item $\mssg_0^*, \mssg_1^* \gets \bin^n$
+    					\item $st := (\mssg_0^*, \mssg_1^*)$
+    					\item $\pcreturn (\mssg_0^*, \mssg_1^*, st)$
+    				\end{nicodemus}
+    			\end{minipage}
+    			\quad
+    			\begin{minipage}[t]{4.5cm}	
+    				\underline{{\bf Reduction} $\bdv_2^{\adv}(\pk, \chalctxt, st)$}
+    				\smallskip
+    				\begin{nicodemus}
+    					\item Parse $(\mssg_0^*, \mssg_1^*) := st$
+    					\item $\advmssg \leftarrow \adv(\pk, \chalctxt)$ 
+    					\item $\pcif \advmssg \not\in \{\mssg_0^*, \mssg_1^*\} : \pcreturn \bot$
     					\item $\pcelse \pcreturn \bool{\advmssg = \mssg_1}$
     				\end{nicodemus}
     			\end{minipage}
@@ -1187,18 +1196,15 @@
     	\end{center}
     	\caption{
     		\label{fig:ind-ow-red}
-    		The reduction $\bdv$, simulating the $\owcpa$ game for $\adv$ in such a
-    		way that if $\adv$ wins, then $\bdv$ wins.
+    		Reduction $\bdv$, converting an $\owcpa$ solver $\adv$ into an \indcpa solver $\bdv^{\adv}$.
+    		Remember that \indcpa solvers consist of two stages --
+    		the first one, $\bdv_1$, picks two messages,
+    		and the second, $\bdv_2$, tries to determine which one got encrypted.
+    		For $\bdv_2$ to know the relevant messages under consideration,
+    		$\bdv_1$ forwards them to $\bdv_2$ as a state $st$.
+    		After that, $\bdv_2$ uses its own input to simulate the $\owcpa$ input for $\adv$.
     	}
     \end{figure}
-
-    \hhnote{
-      the way I wrote the reduction now, it has $50\%$ chance of winning
-      in the event that $\adv$ failed to recover the correct message (by
-      returning $0$ rather than $\bot$),  
-      so that the inequality, which is useful to keep around for a sense of
-      ``direction'', is actually warranted.
-    }
 
     \begin{proof}
       The reduction is given in \cref{fig:ind-ow-red}. It simulates \ldots
