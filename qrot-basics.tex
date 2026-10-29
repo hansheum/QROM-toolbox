@@ -351,7 +351,7 @@
         					\item $m_0^*, m_1^*, st \sample \adv_1(pk)$
         					\item $\chalbit \sample \bin$
         					\item $\chalctxt \gets \Enc_\pk(m^*_\chalbit)$
-        					\item $\advbit \gets \adv(\pk, \chalctxt)$
+        					\item $\advbit \gets \adv_2(\pk, \chalctxt)$
         					\item $\pcreturn \bool{\advbit = \chalbit}$
         				\end{nicodemus}
         			\end{minipage}
@@ -597,7 +597,7 @@
 	      					\item $(\pk, \sk) \gets \KG$
 	      					\item $m_0^*, m_1^*, st \sample \adv_1(pk)$
 	      					\item $\chalctxt \gets \Enc_\pk(m^*_\chalbit)$
-	      					\item $\advbit \gets \adv(\pk, \chalctxt)$
+	      					\item $\advbit \gets \adv_2(\pk, \chalctxt)$
 	      					\item $\pcreturn \bool{\advbit = \chalbit}$
 	      				\end{nicodemus}
 	      			\end{minipage}
