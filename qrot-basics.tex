@@ -1215,9 +1215,11 @@
 	    We say that a reduction $\bdv$ is \emph{simple} if it only runs the adversary $\adv$ once.
 	    We say that $\bdv$ is \emph{fully black-box} if it only accesses $\adv$ and
 	    cryptographic primitives in black-box ways,
-	    running the adversary from start to finish without tampering with its
-	    internal workings, answering oracle queries along the way, and otherwise
-	    only providing its input and reading its output.
+	    meaning $\bdv$ runs $\adv$ from start to finish,
+	    providing $\adv$'s input and reading $\adv$'s output,
+	    %answering oracle queries along the way,
+	    and without tampering with $\adv$'s internal workings.
+	    
 	    %; if, as is typically the case, the reduction is both simple and fully
 	    %black-box, we call it an SFBB reduction.
 	    In contrast, $\bdv$ might for example \emph{rewind} $\adv$,
