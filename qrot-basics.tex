@@ -1085,9 +1085,21 @@
   	because anyone who can invert encryptions can tell which of two messages got encrypted.
   	
   	Proving implications like the above is one of the core activities of provable security.
-  	\khnote{I still wanna add motivation here}
-  	So though the statement may seem trivial, let's try our hand
-  	at proving it.
+  	Such implications let us reuse security guarantees: once we know that a scheme achieves indistinguishability,
+  	for instance, we also can rest assured about one-wayness and secret-key unrecoverability.
+  	In general, we use this approach to justify the security of a new construction,
+  	based on assumptions about its building blocks or on the hardness of some mathematical problem.
+  	This reduces the complexity of cryptanalysis by concentrating it on simpler, well-studied primitives and problems.
+  	
+  	
+  	To prove such an implication, we take a hypothetical adversary against the to-be-shown security goal.
+  	As an example, we take a hypothetical adversary $\adv$ against \owcpa of a PKE scheme \pkescheme.
+  	We want to establish and show how to use it as a subroutine in an attack against the property we assume.
+  	In our example, we will show how to use $\adv$ as a subroutine in an algorithm $\bdv$ that tries to break the \indcpa property.
+  	The algorithm that performs this conversion, $\bdv$, is called a security reduction.
+  	
+  	Although the implication from indistinguishability to one-wayness may already seem intuitive,
+  	proving it explicitly will show us how to build such an argument.
   	
     The main tool we have in proving security is that of a \emph{security
       reduction} (\ldots)
