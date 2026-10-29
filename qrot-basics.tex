@@ -1166,31 +1166,31 @@
     \khnote{
     	Feels overly complicated, I propose sticking with the pattern-matching I did in the SFBB paragraph.
     }
-
-	  \begin{figure}[t]
-	  	\begin{center}
-	  		\fbox{
-	  			\small
-	  			\nicoresetlinenr
-	  			\begin{minipage}[t]{4.5cm}	
-            \underline{{\bf Reduction} $\bdv^{\Oenc, \adv}(\pk)$}
-            \smallskip
-	  				\begin{nicodemus}
-              \item $\mssg_0, \mssg_1 \gets \bin^n$
-              \item $c^* \leftarrow \Oenc(\mssg_0, \mssg_1)$
-	  					\item $\advmssg \leftarrow \adv(\pk, c^*)$ 
-              \item $\pcif \advmssg \not\in \{\mssg_0, \mssg_1\} : \pcreturn 0$
-              \item $\pcelse \pcreturn \bool{\advmssg = \mssg_1}$
-	  				\end{nicodemus}
-	  			\end{minipage}
-	  		}
-	  	\end{center}
-	  	\caption{
-	  	  \label{fig:ind-ow-red}
-        The reduction $\bdv$, simulating the $\owcpa$ game for $\adv$ in such a
-        way that if $\adv$ wins, then $\bdv$ wins.
-      }
-	  \end{figure}
+    
+    \begin{figure}[t]
+    	\begin{center}
+    		\fbox{
+    			\small
+    			\nicoresetlinenr
+    			\begin{minipage}[t]{4.5cm}	
+    				\underline{{\bf Reduction} $\bdv^{\Oenc, \adv}(\pk)$}
+    				\smallskip
+    				\begin{nicodemus}
+    					\item $\mssg_0, \mssg_1 \gets \bin^n$
+    					\item $c^* \leftarrow \Oenc(\mssg_0, \mssg_1)$
+    					\item $\advmssg \leftarrow \adv(\pk, c^*)$ 
+    					\item $\pcif \advmssg \not\in \{\mssg_0, \mssg_1\} : \pcreturn 0$
+    					\item $\pcelse \pcreturn \bool{\advmssg = \mssg_1}$
+    				\end{nicodemus}
+    			\end{minipage}
+    		}
+    	\end{center}
+    	\caption{
+    		\label{fig:ind-ow-red}
+    		The reduction $\bdv$, simulating the $\owcpa$ game for $\adv$ in such a
+    		way that if $\adv$ wins, then $\bdv$ wins.
+    	}
+    \end{figure}
 
     \hhnote{
       the way I wrote the reduction now, it has $50\%$ chance of winning
