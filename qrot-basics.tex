@@ -1285,6 +1285,21 @@
 			tightness losses
 		}
 		
+		\paragraph{Assessing the quality of a security reduction: Tightness.}
+			Say we are willing to trust in some underlying hardness assumption,
+			and say a reduction showed that any efficient, successful attack $\adv$ against our construction
+			would yield an efficient, successful attack $\bdv^\adv$ against that assumption.
+			It is true that we then can rule out any efficient, successful attack against our construction.
+			There is a specific part in this argument, however, that we shouldn't neglect:
+			what if $\bdv^\adv$, the attack we obtained via the reduction,
+			turned out much much less efficient or successful than the original attack $\adv$?
+			Then $\bdv^\adv$ might not live in the bucket that can be ruled out by our hardness assumption.
+			In other words, there might be no legitimate reason for us to safely assume
+			that $\bdv^\adv$ cannot exist.
+			In that case, the whole argument might fall flat.
+			We therefore need to track if and how the conversion changes the adversary's running time and advantage.
+			
+	
   %\subsection{Common Proof Techniques}
     \subsubsection{Game Hopping.}
       \hhnote{
