@@ -1136,7 +1136,10 @@
         one-way advantage against $\pkescheme$ must also be small. This is
         just a different way of saying that $\pkescheme$ is one-way.
         The term on the right-hand side is the \indcpa advantage of our
-        \emph{constructed} adversary $\bdv^\adv$, plus some additional term that we explain a bit later.
+        \emph{constructed} adversary $\bdv^\adv$,
+        plus some additional term $\nicefrac{1}{|\MSpace|}$ that we will explain during the proof.
+        For the sake of exposition, we imagine $\nicefrac{1}{|\MSpace|}$ to be so small
+        that it has no significant impact.
 
       Here is another way of looking at how this theorem ``proves security''.
       	Here, the trick is to think contra-positively.
@@ -1148,7 +1151,8 @@
         best-possible $\adv$ advantage as a \emph{lower-bound} on the
         advantage an adversary $\bdv^\adv$ could achieve against $\pkescheme$'s \indcpa security: If the
         former is large (one-wayness is broken),
-        then the latter must also be large (\indcpa is broken).
+        then the latter must also be large (\indcpa is broken),
+        assuming that $\nicefrac{1}{|\MSpace|}$ isn't too big to mess with that reasoning.
         Since we started out assuming that $\pkescheme$ is \indcpa secure, 
         %which is to say that the one-way advantage of \emph{any} $\bdv$ must be small, 
         this gives us a proof-by-contradiction.
