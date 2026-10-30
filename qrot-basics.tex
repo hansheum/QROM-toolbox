@@ -1193,8 +1193,9 @@
     				\begin{nicodemus}
     					\item Parse $(\mssg_0^*, \mssg_1^*) := st$
     					\item $\advmssg \leftarrow \adv(\pk, \chalctxt)$ 
-    					\item $\pcif \advmssg \not\in \{\mssg_0^*, \mssg_1^*\} : \pcreturn \bot$
-    					\item $\pcelse \pcreturn \bool{\advmssg = \mssg_1}$
+%    					\item $\pcif \advmssg \not\in \{\mssg_0^*, \mssg_1^*\} : \pcreturn \bot$
+%    					\item $\pcelse \pcreturn \bool{\advmssg = \mssg_1}$
+    					\item $\pcreturn \bool{\advmssg = \mssg_1}$
     				\end{nicodemus}
     			\end{minipage}
     		}
