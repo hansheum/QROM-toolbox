@@ -1080,6 +1080,11 @@
   	As one example, we argued that $\owcpa$ \emph{implies} $\skucpa$ -- if one-wayness is satisfied, then 
   	secret-key unrecoverability must also be satisfied,
   	because anyone who can recover the secret key can also invert encryptions.
+  	\khnote{
+  		We should make sure that the $\skucpa$ result is more findable.
+  		Currently it's a bit hidden below \cref{def:owcpa} in the PKE definitions section.
+  		And even worse, we were considering dissolving that section.
+  	}
   	As another example, we argued that $\indcpa$ \emph{implies} $\owcpa$ -- if indistinguishability is satisfied, then 
   	one-wayness must also be satisfied,
   	because anyone who can invert encryptions can tell which of two messages got encrypted.
@@ -1283,7 +1288,9 @@
 	\subsubsection{Your turn.}
 	
 	\
-		
+	\khnote{
+		Same $\skucpa$ issue as mentioned at beginning of subsec.
+	}
     \begin{exercise}
       In this exercise, you will prove that $\owcpa$ is at least as strong a
       as $\skucpa$ by showing the implication $\owcpa \implies \skucpa$.
