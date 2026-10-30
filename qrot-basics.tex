@@ -1128,58 +1128,58 @@
 		
 		\textbf{Parsing the Statement.}\par
 		
-      If you are new to security reductions, it may be hard to see at a glance
-        how the theorem statement connects to the intuition that ``$\indcpa$ implies $\owcpa$'',
-        %``if $\dPKE$ achieves one-wayness security, then $\KEM$ achieves distinguishing security''
-        so let us take a moment to parse the different parts of the
-        statement.
-
-      On the left-hand side of the inequality, we have the one-wayness
-        advantage of our to-be-studied, hypothetical adversary $\adv$.
-        The theorem quantifies over all possible $\adv$, so you may
-        think of this as the maximum possible one-way advantage against
-        $\pkescheme$. On the right-hand side, we have an upper-bound on this
-        largest-possible one-way advantage. Hence,
-        if the right-hand side is small, then the largest-possible
-        one-way advantage against $\pkescheme$ must also be small. This is
-        just a different way of saying that $\pkescheme$ is one-way.
-        The term on the right-hand side is the \indcpa advantage of our
-        \emph{constructed} adversary $\bdv^\adv$,
-        plus some additional term $\nicefrac{1}{|\MSpace|}$ that we will explain during the proof.
-        For the sake of exposition, we imagine $\nicefrac{1}{|\MSpace|}$ to be so small
-        that it has no significant impact.
-
-      Here is another way of looking at how this theorem ``proves security''.
-      	Here, the trick is to think contra-positively.
-      	Recall that what we want to prove is that ``if $\pkescheme$ is \indcpa, then it is also one-way''.
-        We could also say that we are proving the contra-positive statement:
-        ``if $\pkescheme$ is \emph{not} one-way, then it also can \emph{not} be \indcpa''.
-%        Instead of thinking of the advantage of $\bdv^\adv$ as
-%        an upper-bound on the best-possible $\adv$ advantage, you could also think of this
-%        best-possible $\adv$ advantage as a \emph{lower-bound} on the
-%        advantage an adversary $\bdv^\adv$ could achieve against $\pkescheme$'s \indcpa security: If the
-%        former is large (one-wayness is broken),
-%        then the latter must also be large (\indcpa is broken),
-%        assuming that $\nicefrac{1}{|\MSpace|}$ isn't too big to mess with that reasoning.
-        So, suppose $\pkescheme$ is \emph{not} one-way.
-        That means there exists an efficient adversary $\adv$ with a significant one-wayness advantage.
-        Assuming that $\nicefrac{1}{|\MSpace|}$ is insignificant,
-        that advantage also significantly exceeded $\nicefrac{1}{|\MSpace|}$.
-        Then the inequality tells us that $\bdv^{\adv}$ must have a significant \indcpa advantage.
-        Given that we assume $\adv$ to be efficient, so is $\bdv^{\adv}$,
-        since $\bdv^{\adv}$ runs in about the same time as $\adv$.
-        In conclusion, $\bdv^{\adv}$ both is efficient and has a significant \indcpa advantage.
-        Such an adversary would contradict \indcpa security.        
-        Since we started out assuming that $\pkescheme$ is \indcpa secure, 
-        %which is to say that the one-way advantage of \emph{any} $\bdv$ must be small, 
-        this gives us a proof-by-contradiction.
-      
-      We also note the quantifiers: the theorem statement says that
-%      ``for every (given) $\adv$, there exists a (constructed) $\bdv^\adv$''.
-      ``there exists a conversion $\bdv$ such that, for every (given) adversary $\adv$, the resulting attack $\bdv^\adv$ satisfies the bound''.
-      While we have no way of knowing the inner workings of the given adversary $\adv$,
-      ``there exists'' means that we are free to construct the conversion $\bdv$ to our
-      liking. 
+	      If you are new to security reductions, it may be hard to see at a glance
+	        how the theorem statement connects to the intuition that ``$\indcpa$ implies $\owcpa$'',
+	        %``if $\dPKE$ achieves one-wayness security, then $\KEM$ achieves distinguishing security''
+	        so let us take a moment to parse the different parts of the
+	        statement.
+	
+	      On the left-hand side of the inequality, we have the one-wayness
+	        advantage of our to-be-studied, hypothetical adversary $\adv$.
+	        The theorem quantifies over all possible $\adv$, so you may
+	        think of this as the maximum possible one-way advantage against
+	        $\pkescheme$. On the right-hand side, we have an upper-bound on this
+	        largest-possible one-way advantage. Hence,
+	        if the right-hand side is small, then the largest-possible
+	        one-way advantage against $\pkescheme$ must also be small. This is
+	        just a different way of saying that $\pkescheme$ is one-way.
+	        The term on the right-hand side is the \indcpa advantage of our
+	        \emph{constructed} adversary $\bdv^\adv$,
+	        plus some additional term $\nicefrac{1}{|\MSpace|}$ that we will explain during the proof.
+	        For the sake of exposition, we imagine $\nicefrac{1}{|\MSpace|}$ to be so small
+	        that it has no significant impact.
+	
+	      Here is another way of looking at how this theorem ``proves security''.
+	      	Here, the trick is to think contra-positively.
+	      	Recall that what we want to prove is that ``if $\pkescheme$ is \indcpa, then it is also one-way''.
+	        We could also say that we are proving the contra-positive statement:
+	        ``if $\pkescheme$ is \emph{not} one-way, then it also can \emph{not} be \indcpa''.
+%        	Instead of thinking of the advantage of $\bdv^\adv$ as
+%        	an upper-bound on the best-possible $\adv$ advantage, you could also think of this
+%        	best-possible $\adv$ advantage as a \emph{lower-bound} on the
+%        	advantage an adversary $\bdv^\adv$ could achieve against $\pkescheme$'s \indcpa security: If the
+%        	former is large (one-wayness is broken),
+%        	then the latter must also be large (\indcpa is broken),
+%        	assuming that $\nicefrac{1}{|\MSpace|}$ isn't too big to mess with that reasoning.
+	        So, suppose $\pkescheme$ is \emph{not} one-way.
+	        That means there exists an efficient adversary $\adv$ with a significant one-wayness advantage.
+	        Assuming that $\nicefrac{1}{|\MSpace|}$ is insignificant,
+	        that advantage also significantly exceeded $\nicefrac{1}{|\MSpace|}$.
+	        Then the inequality tells us that $\bdv^{\adv}$ must have a significant \indcpa advantage.
+	        Given that we assume $\adv$ to be efficient, so is $\bdv^{\adv}$,
+	        since $\bdv^{\adv}$ runs in about the same time as $\adv$.
+	        In conclusion, $\bdv^{\adv}$ both is efficient and has a significant \indcpa advantage.
+	        Such an adversary would contradict \indcpa security.        
+	        Since we started out assuming that $\pkescheme$ is \indcpa secure, 
+	        %which is to say that the one-way advantage of \emph{any} $\bdv$ must be small, 
+	        this gives us a proof-by-contradiction.
+	        
+	        We also note the quantifiers: the theorem statement says that
+%	        ``for every (given) $\adv$, there exists a (constructed) $\bdv^\adv$''.
+			``there exists a conversion $\bdv$ such that, for every (given) adversary $\adv$, 
+			the resulting attack $\bdv^\adv$ satisfies the bound''.
+			While we have no way of knowing the inner workings of the given adversary $\adv$,
+			``there exists'' means that we are free to construct the conversion $\bdv$ to our liking. 
 	}
 
 
