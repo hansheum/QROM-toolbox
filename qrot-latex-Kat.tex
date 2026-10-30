@@ -41,6 +41,21 @@
 \newcommand{\bool}[1]{\ensuremath{\llbracket #1\rrbracket}\xspace}
 %\newcommand{\sample}{{\:\leftarrow\hspace*{-3pt}\raisebox{.5pt}{$\scriptscriptstyle\$$}\:}}
 
+\newcommand{\explainbox}[1]{
+	\begin{mdframed}[
+		topline=true, rightline=true, bottomline=true, leftline=true,
+		linewidth=0.7pt, linecolor=black!45,
+		backgroundcolor=black!4,
+		innerleftmargin=9pt, innerrightmargin=9pt, innertopmargin=7pt, innerbottommargin=7pt,
+		skipabove=0.7\baselineskip, skipbelow=0.7\baselineskip
+		]
+		\setlength{\parindent}{0pt}
+		\setlength{\parskip}{0.4\baselineskip}
+		
+		#1
+	\end{mdframed}
+}
+
 % most of the commands are still in nicodemus.sty. However, e.g. texstudio will not allow for autocompletion of commands in nicodemus.sty :-/
 \newenvironment{nicodemus}[1][\thenicolinenr]{%  % parameter controls initial line number
 	\begin{enumerate}[
