@@ -1232,9 +1232,131 @@
     \end{figure}
 
     \begin{proof}
-    	The reduction is given in \cref{fig:ind-ow-red}. It simulates \ldots
+    	Consider an \owcpa adversary $\adv$.
+    	We want to use $\adv$'s ability, recovering messages, to answer an $\indcpa$ challenge.
+    	The natural approach is to give $\adv$ the challenge ciphertext
+    	and compare its answer with the messages we submitted to the $\indcpa$ game.
+    	We formalize this natural approach via the reduction $\bdv$ given in \cref{fig:ind-ow-red}.
+    	We now quantify how useful $\adv$'s answer is for $\bdv$'s attempt
+    	at solving the \indcpa challenge.
+    	While doing that, we will also want to check that $\bdv$'s simulation follows the input distribution
+    	that $\adv$ expects from its $\owcpa$ game --
+    	otherwise, $\adv$ might succeed in its own $\owcpa$ game,
+    	and yet fail on the input it gets from $\bdv$.
+    	
+    	To check how useful $\adv$'s answer is, let $\chalbit$ be the $\indcpa$ challenge bit
+    	and $\advmssg$ the message returned by $\adv$.
+    	Since $\bdv_2^\adv$ returns $\bool{\advmssg=\mssg_1^*}$,
+    	we can write its conditional probabilities of outputting $1$ as
+    	\[
+	    	p_i := \prob{ \advmssg = \mssg_1^* \mid \chalbit = i } \, ,
+	    	\qquad i \in \bin \, .
+    	\]
+    	
+    	The $\indcpa$ game returns 1 if $\bdv^\adv$ returns the challenge bit \chalbit,
+    	so if $ \bool{\advmssg=\mssg_1^*} = \chalbit$.
+    	%
+    	Thus, by the distinguishing-advantage definition,
+    	%
+    	\begin{align*}
+	    	\advantage{\indcpa}{\pkescheme}[(\bdv^\adv)]
+	    	&=	\abs{
+	    			2 \cdot \prob{\game{\indcpa}{\pkescheme} \Rightarrow 1} - 1
+	    		}
+	    	\\
+	    	&=	\abs{
+		    		2 \cdot	\left(
+		    			\sum_{i \in \bin} \frac{1}{2} \cdot \prob{ \bool{\advmssg=\mssg_1^*} = i \mid \chalbit = i }
+		    		\right)
+		    		- 1
+	    		}
+	    	\\
+	    	&=	\abs{
+		    		\sum_{i \in \bin} \prob{ \bool{\advmssg=\mssg_1^*} = i \mid \chalbit = i }
+		    		- 1
+	    		}
+	    	\\
+	    	&=	\abs{
+		    		\prob{ \bool{\advmssg=\mssg_1^*} = 1 \mid \chalbit = 1 }
+		    		+
+		    		\prob{ \bool{\advmssg=\mssg_1^*} = 0 \mid \chalbit = 0 }
+		    		- 1
+	    		}
+	    	\\
+	    	&=	\abs{
+		    		\underbrace{\prob{ \advmssg=\mssg_1^* \mid \chalbit = 1 }}_{p_1}
+		    		+
+		    		\underbrace{\prob{ \advmssg \neq \mssg_1^* \mid \chalbit = 0 }}_{1-p_0}		    		
+		    		- 1
+		    	}
+	    	\\
+	    	&=	\abs{
+		    		p_1
+		    		+
+		    		(1-p_0)
+		    		- 1
+		    	}
+	    	\\
+	    	&=	|p_1-p_0| \, ,
+    	\end{align*}
+    	
+    	where the second step used the law of total probability.
+    	
+    	If $\chalbit=1$, the challenge ciphertext encrypts $\mssg_1^*$.
+    	This message is uniform in $\MSpace$, and $\adv$ receives precisely
+    	the public key and ciphertext it would receive in the $\owcpa$ game.
+    	Moreover, $\bdv_2$ outputs $1$ exactly when $\adv$ recovers that
+    	message. Consequently, $p_1=\advantage{\owcpa}{\pkescheme}$.
+    	
+    	If $\chalbit=0$, the ciphertext instead encrypts $\mssg_0^*$.
+    	The other message $\mssg_1^*$ is sampled independently and is never
+    	provided to $\adv$, so it is independent of $\adv$'s output $\advmssg$.
+    	$\adv$'s output $\advmssg$ can therefore match the message $\mssg_1^*$ only by chance.
+    	More explicitly, we can split $p_0$ according to the value of $\mssg_1^*$,
+    	using the law of total probability:
+    	To have $\advmssg = \mssg_1^*$, the messages must match at some message $m \in \Mspace$.
+    	For each possible $m$, we need to multiply:
+    	\begin{itemize}
+    		\item the probability that $\mssg_1^* = m$, which independently of $\chalbit = 0$ is $\nicefrac{1}{|\MSpace|}$; and
+    		\item the probability that $\adv$ outputs $m$, given $\mssg_1^* = m$ and $\chalbit = 0$.
+    	\end{itemize}
+    	
+    	More formally,
+    	
+    	\begin{align*}
+    		p_0
+    		&= \sum_{ m \in \MSpace }
+	    		\Pr[ \mssg_1^* = m \mid \chalbit=0 ]\,
+	    		\Pr[ \advmssg = m  \mid \mssg_1^*=m, \chalbit=0 ]\\
+    		&= \frac{1}{|\MSpace|}
+    			\sum_{ m \in \MSpace } \Pr[ \advmssg = m\mid \chalbit=0 ]\\
+    		&\leq \frac{1}{|\MSpace|} \, ,
+    	\end{align*}
+    	
+    	where the last inequality stems from the fact that
+    	$\adv$ might also return a value outside $\MSpace$,
+    	which could never match any message $m$.
+    	
+    	Combining these observations,
+    	\[
+    	\begin{aligned}
+    		\advantage{\owcpa}{\pkescheme}
+    		&= p_1
+    		\\
+    		&= \underbrace{p_1 - p_0}_{\leq |p_1 - p_0|}
+    		 + \underbrace{p_0}_{\leq \nicefrac{1}{|\MSpace|}}
+    		\\
+    		&\leq |p_1-p_0| + \frac{1}{|\MSpace|} \\
+    		&= \advantage{\indcpa}{\pkescheme}[(\bdv^\adv)]
+    			+ \frac{1}{|\MSpace|} \, .
+    	\end{aligned}
+    	\]
+    	
+    	Finally, $\bdv$ runs in about the runtime of $\adv$:
+    	it runs $\adv$ exactly once,
+    	plus the overhead of sampling and storing two messages
+    	and comparing $\adv$'s output with $\mssg_1^*$.
       
-      If $\adv$ wins, then $\bdv$ wins.
       \qed
     \end{proof}
 
