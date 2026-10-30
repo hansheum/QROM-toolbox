@@ -1146,13 +1146,22 @@
       	Recall that what we want to prove is that ``if $\pkescheme$ is \indcpa, then it is also one-way''.
         We could also say that we are proving the contra-positive statement:
         ``if $\pkescheme$ is \emph{not} one-way, then it also can \emph{not} be \indcpa''.
-        Instead of thinking of the advantage of $\bdv^\adv$ as
-        an upper-bound on the best-possible $\adv$ advantage, you could also think of this
-        best-possible $\adv$ advantage as a \emph{lower-bound} on the
-        advantage an adversary $\bdv^\adv$ could achieve against $\pkescheme$'s \indcpa security: If the
-        former is large (one-wayness is broken),
-        then the latter must also be large (\indcpa is broken),
-        assuming that $\nicefrac{1}{|\MSpace|}$ isn't too big to mess with that reasoning.
+%        Instead of thinking of the advantage of $\bdv^\adv$ as
+%        an upper-bound on the best-possible $\adv$ advantage, you could also think of this
+%        best-possible $\adv$ advantage as a \emph{lower-bound} on the
+%        advantage an adversary $\bdv^\adv$ could achieve against $\pkescheme$'s \indcpa security: If the
+%        former is large (one-wayness is broken),
+%        then the latter must also be large (\indcpa is broken),
+%        assuming that $\nicefrac{1}{|\MSpace|}$ isn't too big to mess with that reasoning.
+        So, suppose $\pkescheme$ is \emph{not} one-way.
+        That means there exists an efficient adversary $\adv$ with a significant one-wayness advantage.
+        Assuming that $\nicefrac{1}{|\MSpace|}$ is insignificant,
+        that advantage also significantly exceeded $\nicefrac{1}{|\MSpace|}$.
+        Then the inequality tells us that $\bdv^{\adv}$ must have a significant \indcpa advantage.
+        Given that we assume $\adv$ to be efficient, so is $\bdv^{\adv}$,
+        since $\bdv^{\adv}$ runs in about the same time as $\adv$.
+        In conclusion, $\bdv^{\adv}$ both is efficient and has a significant \indcpa advantage.
+        Such an adversary would contradict \indcpa security.        
         Since we started out assuming that $\pkescheme$ is \indcpa secure, 
         %which is to say that the one-way advantage of \emph{any} $\bdv$ must be small, 
         this gives us a proof-by-contradiction.
