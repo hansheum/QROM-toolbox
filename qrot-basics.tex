@@ -1300,7 +1300,7 @@
           game with some advantage.
           Write down the pseudocode for a new adversary $\bdv$ (called a
           \emph{reduction}), which, given black-box access to $\adv$,
-          is able to win the OW-CPA game with the same advantage.
+          is able to win the \owcpa game with the same advantage.
         \item Use the above to prove the following statement\footnote{
             You will actually get an equality here rather than an inequality.
             However, since reductions have to be proven one direction
@@ -1318,8 +1318,8 @@
           not hold, i.e.\ that $\skucpa \nimplies \owcpa$?
       \end{enumerate}
       \emph{Hint:} In the reduction, it is imperative that $\adv$ does not \emph{notice} that
-        they are not in the real SKU-CPA game. In other words,
         $\bdv$ should \emph{perfectly simulate} the $\owcpa$ environment for
+        they are not in the real $\skucpa$. In other words,
         $\adv$, lest $\adv$ notices that something is off and refuses to play, ruining
         both advantages in the process.
         (We will later see how to relax this.)
