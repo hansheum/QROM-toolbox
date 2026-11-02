@@ -106,6 +106,8 @@
 \newcommand{\guessext}{\extractor_{\text{guess}}}
 
 %%% Quantum objects
+% Fallback for collaborators on an older cryptocodeh; no-op once it defines it.
+\providecommand{\ketbraket}[2]{\ensuremath{\mathinner{|{#1}\rangle\mkern-4mu\langle{#2}\rangle}}}
 \newcommand{\qcomp}{{\register[Q]}}
 
 %%% Registers

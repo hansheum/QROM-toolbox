@@ -1280,20 +1280,49 @@
     \subsubsection{State Collapse.}
       If you perform a standard, computational-basis measurement on a state 
         $\ket \psi = \sum_x \alpha_x \ket x$, then you will observe a specific value $x$ with
-        probability $\abs{\alpha_x}^2 = \alpha_x^* \alpha_x$. After observation,
+        probability given by the amplitude squared, $\abs{\alpha_x}^2 = \alpha_x^* \alpha_x$. After observation,
         if you continue to perform the same measurement on the state, you will continue to
         see the same value $x$: we say that the superposition state $\ket \psi$
-        has \emph{collapsed} to the basis state $\ket x$. In other words, this
-        post-collapse state has $\alpha_x = 1$, with all the other $\alpha$ set to
-        $0$.
+        has \emph{collapsed} to the basis state corresponding to the observed
+        value, $\ket x$. In other words, this
+        post-collapse state has $\alpha_x = 1$, with every
+        $\alpha_{x'}$ such that $x' \neq x$ becoming $0$.
+        Using the eye symbol $\observe$ to indicate the operation of measuring
+        the state (in the computational basis, unless otherwise indicated), we
+        can write the effect on the state as:
       \[
-        \ket{\psi} = \sum_x \alpha_x \ket x\ \apply{\observe}\ \ket{\psi^\prime} =
-        \ket x\, .
+        \ket{\psi_{\mathrm{init}}} = \sum_x \alpha_x \ket x\ \apply{\observe}\ 
+        \ket{\psi_{\mathrm{final}}} = \ket x\, ,
       \]
-      Note the irreversibility: Once the state
+      where, again, $x$ is whatever value was observed in the measurement.
+        Note the irreversibility: Once the state
         collapses, any information about the starting state is \emph{gone},
         except for the single bit of information
-        that $\alpha_x$ had non-zero magnitude. 
+        that $\alpha_x$ had non-zero magnitude.\footnote{
+          If you have an \emph{ensemble} of identical but unknown quantum states, so that you can
+          repeat the measurement multiple times, you can get a better
+          approximation of the starting state. This is known as
+          \emph{quantum state tomography}, and is beyond the scope of this
+          tutorial.
+        }
+
+      \hhnote{
+        Considering: Introduce some standard notation for ``classical information'' and
+        ``quantum information'', like $(x\ :\ \ket{\psi})$ (I've seen authors
+        use something like this before).
+        Then $\observe$ could be a well-defined stochastic process
+        (technically an ensemble of functions $\{\observe_x\}$ with a corresponding
+        distribution given by $\ket \psi$), with the effect
+        \[
+          (\emptystring\ :\ \sum_x \alpha_x \ket x)\ 
+          \apply{\observe}\ 
+          (x\ :\ \ket x)\, ,
+        \]
+        or, in analogy to $x \sample \Xspace$,
+        \[
+          (x\ :\ \ket x) \obstore (\emptystring\ :\ \sum_x \alpha_x \ket x)\, .
+        \]
+      }
 
       That is really all that you need to know about measurements to get started with
         quantum computing.
@@ -1346,7 +1375,8 @@
       \noindent
       Operators like $\projector$ are known as \emph{projectors}, so named because they 
         effectively \emph{project} higher-dimensional objects onto some lower-dimensional
-        hyperplane, much like how 3D objects cast 2D shadows.
+        hyperplane, much like how 3D objects \emph{project} 2D shadows when
+        illuminated.
         For single-qubit states, it is easy to verify that the outer product 
         of a basis state with itself will satisfy the definition: 
         %Let $\projector_0$ and $\projector_1$ be given by
@@ -1390,53 +1420,101 @@
           = \begin{bmatrix} 0 \\ 0 \end{bmatrix}\, ,
       \]
       and similarly for $\projector_0 \projector_1$.
-      Hence, the set $\{\projector_0, \projector_1\}$ is \emph{orthogonal} in
+      Or in Dirac notation:
+      \begin{align*}
+        \projector_0 \ket{\psi} = \ketbra{0}(\alpha \ket{0} + \beta \ket{1})
+        &= \alpha \ketbraket{0}{0|0} + \beta \ketbraket{0}{0|1} = \alpha \ket 0\, ,
+        \\
+        \projector_0 \projector_0 \ket{\psi} = \ketbra{0}(\alpha \ket{0})
+        &= \alpha \ketbraket{0}{0|0} = \alpha \ket 0 = \projector_0 \ket 0\, ,
+        \\
+        \projector_1 \projector_0 \ket{\psi} = \ketbra{1}(\alpha \ket{0})
+        &= \alpha \ketbraket{1}{1|0} = 0 \ket 1\, ,
+      \end{align*}
+      and so on.
+
+      The above tells us that the set $\{\projector_0, \projector_1\}$ 
+        is \emph{orthogonal}, in 
         the sense that it satisfies $\projector_i \projector_j = \delta_{ij} \projector_i$.
-        It is also \emph{complete}, in the sense that its members sum to identity:
+        It is also \emph{complete} because the members of the set sum to identity:
       \[
         \projector_0 + \projector_1 = 
         \begin{sqmatrix} 1 & 0 \\ 0 & 0 \end{sqmatrix}
         + \begin{sqmatrix} 0 & 0 \\ 0 & 1 \end{sqmatrix}
         = \begin{sqmatrix} 1 & 0 \\ 0 & 1 \end{sqmatrix} = \idmatrix\, .
       \]
+      We will see shortly that the set of projectors being orthogonal corresponds to
+        the possible measurement outcomes all being mutually exclusive, while completeness
+        will mean that all cases are covered so that the probabilities sum to one.
+
       On the other hand, $\projector_0$ and $\projector_1$ are manifestly
         \emph{not} unitary, as
         can be seen from the fact that they are not norm-preserving (see
         \cref{ex:unitarity}): If $\ket\psi$ starts out as a
-        superposition state, with non-zero amplitudes $\alpha$ and $\beta$ whose
-        squares sum to one, then the vector $\projector_0 \ket\psi$ will have
-        length $\abs{\alpha} < 1$, and will therefore not be a valid quantum
+        superposition state with non-zero amplitudes $\alpha$ and $\beta$ whose
+        squares sum to one, then the vector 
+        $\projector_0 \ket\psi = \alpha \ket 0$ will have
+        length $\abs{\alpha} < 1$, and will therefore not be valid as a quantum
         state: Trying to interpret it as such would lead to probabilities that
         do not sum to one. 
         You can also see this from the fact that projectors
         are not even invertible matrices, which is just a different way
-        of saying that they lose information.
+        of saying that they lose information when applied to a state.
 
-      As you have probably already guessed, we would like to define
-        measurements in terms of projectors such that each measurement outcome corresponds to
+      We would like to define
+        measurements in terms of projectors, such that each measurement outcome
+        corresponds to
         one projector, with the probability of the outcome given by the length
         of the resulting vector, i.e.\ something like:
       \[
          \prob{\, \text{outcome } x\, } = \norm{\projector_x \ket \psi}^2 
-         %= \bra\psi \projector_x^\dagger \projector_x \ket\psi 
-         %\overset{?}{=} 
          = \abs{\alpha_x}^2\, .
       \]
-      %
-      In particular, we would want a complete set of projectors to map out
-        all the possible outcomes of the measurement in such a way that the
-        probabilities sum to one:
+      The post-measurement state will be the basis state that corresponds to the
+      measurement, which can be written in terms of projectors by
+      \emph{renormalizing} the projected state to ensure that it remains unit-length:
+      \[
+        \ket\psi \apply{\observe[x]} 
+        \frac{
+          \projector_x \ket \psi
+        }{
+          \norm{\projector_x \ket \psi}^2 
+        }
+        = \frac{
+          \alpha_x \ket x
+        }{
+          \abs{\alpha_x}
+        }
+        \cong \ket x\, ,
+      \]
+      where the last step congruated away the global phase
+      $\alpha_x/\abs{\alpha_x}$.
+
+      For this to be well-defined, we want a complete set of projectors to map out
+        all the possible outcomes of the measurement. Then, 
+        the probabilities sum to one:
       \[
         \sum_i \prob{\, \text{outcome } i\, } 
         = \sum_i \norm{\projector_i \ket \psi}^2 
-        = \sum_i \bra\psi \projector_i^\dagger \projector_i \ket\psi 
-        = 1\, .
+        = \norm{\idmatrix \ket \psi}^2 
+        = 1\, ,
       \]
+      and orthogonality ensures that the outcomes are
+      mutually exclusive:
+      \[
+        \sum_{i} \condprob{\, \text{outcome } i\, }{\, \text{measured } j\, }
+        = \sum_{i} \norm{\projector_i \projector_j \ket \psi}^2 
+        = \sum_{i} \norm{\delta_{ij} \ket \psi}^2 
+        = \delta_{ij}\, ,
+      \]
+      that is, given that the $j$th outcome was already observed, the
+      probability of thereafter observing the $i$th outcome is nonzero if and only
+      if $i=j$, in which case it is $1$.
 
-
-      As it turns out, 
-
-      \hhnote{cont}
+    The examples we have seen so far were all computational-basis
+      measurements, i.e.\ a complete set of projectors of the form 
+      $\projector_x = \ketbra{x}$, one for each bitstring $x \in \bin^n$.
+      \hhnote{cont 1}
       \hhnote{
         rather start with an ``obviously we want something like
         $\ketbra{x}$'', and then generalize from there?
@@ -1446,10 +1524,48 @@
         the XYZ and H gates can be written using projectors.
       }
 
+    \subsubsection{Measurements are Hermitian.}
       Matrices that satisfy $\projector^\dagger = \projector$ are called
         \emph{Hermitian}, and Herimiticity turns out to be both sufficient and
         necessary for projectors to correspond to probabilities via
         $\norm{\projector \ket\psi}^2$.
+        To see that Hermiticity is \emph{sufficient}, recall that for each
+        outcome $i$, we need that
+        \[
+          \prob{\, \text{outcome } i\, } 
+          = \norm{\projector_i \ket \psi}^2 = \abs{\alpha_i}^2\, ,
+        \]
+        which holds since $\norm{\projector_i \ket \psi}^2 
+        = \norm{\alpha_i \ket \psi}^2
+        = \abs{\alpha_i}^2$. 
+      %% The following is a misunderstanding that I've repeatedly stepped into;
+      %% these arguments are only necessary if the Born rule is *defined* as
+      %% Pr[observe i] = <psi|P_i|psi>, which I don't want to do.
+        %However, consistency requires that 
+        %this holds if we \emph{first} expand the norm, \emph{then}
+        %apply the projectors: 
+        %$\norm{\projector_i \ket \psi}^2 = \bra{\psi} \projector_i^\dagger
+        %\projector_i \ket{\psi} \overset{?}{=} \alpha_x^* \alpha$.
+        %It is tempting to conclude that this is consistent via the intuition
+        %that daggered operators operate ``backwards'' onto the bra $\bra{\psi}$.
+        %However, this does not hold, as projectors are not unitary, which is
+        %what allowed us to use this intuition: 
+        %$(\unitary \ket\psi)^\dagger = \bra\psi \unitary^\dagger$.
+        %
+        %If $\projector_x$ is Hermitian, expanding the left-hand side gives us
+        %\begin{align*}
+        %  \norm{\projector_i \ket \psi}^2
+        %  &= \bra\psi \projector_i^\dagger \projector_i \ket\psi
+        %  = \bra\psi \projector_i \projector_i \ket\psi
+        %  = \bra\psi \projector_i \ket\psi
+        %  = \bra\psi \alpha_i \ket{\phi_i}
+        %  = \alpha_i \braket{\psi | \phi_i}
+        %  = \alpha_i \alpha_i^* = \abs{\alpha_i}^2\, .
+        %\end{align*}
+        %Here, we use $\ket{\phi_i}$ to denote the post-measurement state given that we
+        %observed the $i$th outcome. For example, if this were a
+        %computational-basis measurement on the full state (leaving no qubit
+        %unmeasured), we would have that $\ket{\phi_i} = \ket{i}$.
 
 
       \begin{exercise}
@@ -1461,47 +1577,87 @@
         \begin{subex}
           \item Show that $\projector$ is a projector by showing that it is idempotent 
             (repeated applications yield the same result).
-          \item Find values for $\alpha$ and $\beta$ for which the ``probability'' 
-            $\norm{\projector \ket\psi}^2 = \bra\psi \projector_x^\dagger \projector_x \ket\psi$ 
+          \item Find values for $\alpha$ and $\beta$ such that the ``probability'' 
+            $\norm{\projector \ket\psi}^2 
+              = \bra\psi \projector^\dagger \projector \ket\psi$ 
             exceeds one.
         \end{subex}
       \end{exercise}
 
-      \begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
-        Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
-        operator on $\Hspace$ ($\unitary[A]^\dagger = \unitary[A]$).
-        Then $\unitary[A]$ is \emph{positive semi-definite}, written
-        $\unitary[A] \succeq 0$, if for every pure state $\ket\psi \in \Hspace$,
-        \[
-          \braket{\psi|\unitary[A]|\psi} \geq 0\, .
-        \]
-        If the inequality is strict, then $\unitary[A]$ is
-        \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
-      \end{definition}
+      \hhnote{Add illustration of sun overhead vs sun at an angle.}
 
-      \begin{definition}[Complete, Orthogonal Projectors]
-        A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
-          Hilbert space $\Hspace$ is said to be
-          \emph{complete} if the projectors sum to identity:
-          \[
-            \sum_{i \in [k]} \projector_i = \idmatrix\, ,
-          \]
-          and \emph{orthogonal} if the projectors are
-          \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
-          \[
-            \projector_i^\dagger = \projector_i\, ,\qquad
-            \projector_i \projector_j = \delta_{ij}\projector_i\, .
-          \]
-          Then the projectors $\projector_i$ are PSD operators with eigenvalues in $\bin$ (as follows
-          from $\projector_i = \projector_i^\dagger$ and $\projector_i^2 =
-          \projector_i$) which project $\Hspace$ onto mutually orthogonal
-          subspaces $\Sspace_i \coloneqq \projector_i \Hspace$ that together compose the full Hilbert space
-          (as follows from orthogonality and completeness): 
-          \[
-            \bigoplus_{i\in[k]} \Sspace_i = \Hspace\, .
-          \]
-      \end{definition}
+      \begin{exercise}
+        Let $\vec{u}$ be an arbitrary complex-valued vector 
+        in an inner-product space 
+        with %$\norm{\vec u}^2 = 
+        $\vec u \cdot \vec v \coloneqq \vec{u}^\dagger \vec{v}$,
+        and let $\projector$ be an arbitrary projector on the space, i.e.\ a matrix
+        satisfying $\projector^2 \vec{u} = \projector \vec{u}$.
 
+        Let $\vec{u}_t = \projector \vec u$ denote the part of $\vec u$ that
+        lies in the ``target'' direction of $\projector$,
+        i.e.\ the part that $\projector$ keeps, and let 
+        $\vec{u}_s = (\idmatrix - P) \vec u$ 
+        denote the part of $\vec u$ that lies in the ``squashed'' direction of
+        $\projector$, i.e.\ the part discarded by $\projector$, illustrated in
+        \cref{fig:shadow}. Then, $\vec u = \vec{u}_t + \vec{u}_s$.
+        \begin{subex}
+          \item Show that $\norm{\projector \vec u} \leq \norm{\vec u}$ for
+            every vector $\vec u$ if and only if its target direction is
+            perpendicular to its squashed direction, i.e., 
+            $\vec{u}_t \perp \vec{u}_s$ for every $\vec u$.
+          \item Show that if $\projector$ is Hermitian, then its target
+            direction is perpendicular to its squashed direction.
+          \item Show that if 
+            $\vec{u}_t \perp \vec{u}_s$ for every $\vec u$,
+            %$\projector$'s target and squashed directions are perpendicular, 
+            then $\projector$ is Hermitian. 
+        \end{subex}
+        \emph{
+          Hint: Show that if $A$ is a Hermitian matrix, then it satisfies the symmetry
+          $\vec u \cdot (A \vec v) = (A \vec u) \cdot \vec v$.
+        }
+      \end{exercise}
+      \hhnote{
+        this one deserves a solution in the appendix
+      }
+
+      %\begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
+      %  Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
+      %  operator on $\Hspace$ ($\unitary[A]^\dagger = \unitary[A]$).
+      %  Then $\unitary[A]$ is \emph{positive semi-definite}, written
+      %  $\unitary[A] \succeq 0$, if for every pure state $\ket\psi \in \Hspace$,
+      %  \[
+      %    \braket{\psi|\unitary[A]|\psi} \geq 0\, .
+      %  \]
+      %  If the inequality is strict, then $\unitary[A]$ is
+      %  \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
+      %\end{definition}
+
+      %\begin{definition}[Complete, Orthogonal Projectors]
+      %  A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
+      %    Hilbert space $\Hspace$ is said to be
+      %    \emph{complete} if the projectors sum to identity:
+      %    \[
+      %      \sum_{i \in [k]} \projector_i = \idmatrix\, ,
+      %    \]
+      %    and \emph{orthogonal} if the projectors are
+      %    \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
+      %    \[
+      %      \projector_i^\dagger = \projector_i\, ,\qquad
+      %      \projector_i \projector_j = \delta_{ij}\projector_i\, .
+      %    \]
+      %    Then the projectors $\projector_i$ are PSD operators with eigenvalues in $\bin$ (as follows
+      %    from $\projector_i = \projector_i^\dagger$ and $\projector_i^2 =
+      %    \projector_i$) which project $\Hspace$ onto mutually orthogonal
+      %    subspaces $\Sspace_i \coloneqq \projector_i \Hspace$ that together compose the full Hilbert space
+      %    (as follows from orthogonality and completeness): 
+      %    \[
+      %      \bigoplus_{i\in[k]} \Sspace_i = \Hspace\, .
+      %    \]
+      %\end{definition}
+
+      \hhnote{cont 2}
 
     \subsubsection{Projective Measurements.}
       We already mentioned the Born rule, which says that the probability of
