@@ -1352,7 +1352,7 @@
         \emph{Hint: Recall \cref{ex:global-phase}.}
       \end{exercise}
      
-    \subsubsection{Projectors.} 
+    \subsubsection{Projective Measurements.} 
       To see what kind of non-unitary matrix is needed to represent the act of
         measuring a state, recall that after state collapse, further
         observations is guaranteed to give back the same result:
@@ -1478,7 +1478,7 @@
         \frac{
           \projector_x \ket \psi
         }{
-          \norm{\projector_x \ket \psi}^2 
+          \norm{\projector_x \ket \psi}
         }
         = \frac{
           \alpha_x \ket x
@@ -1511,6 +1511,7 @@
       probability of thereafter observing the $i$th outcome is nonzero if and only
       if $i=j$, in which case it is $1$.
 
+  \subsubsection{Measurements Beyond the Computational Basis.}
     The examples we have seen so far were all computational-basis
       measurements, i.e.\ a complete set of projectors of the form 
       $\projector_x = \ketbra{x}$, one for each bitstring $x \in \bin^n$.
