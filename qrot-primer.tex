@@ -1511,7 +1511,7 @@
       probability of thereafter observing the $i$th outcome is nonzero if and only
       if $i=j$, in which case it is $1$.
 
-  \subsubsection{Measurements Beyond the Computational Basis.}
+  \subsubsection{Going Beyond the Computational Basis.}
     The examples we have seen so far were all computational-basis
       measurements, i.e.\ a complete set of projectors of the form 
       $\projector_x = \ketbra{x}$, one for each bitstring $x \in \bin^n$.
@@ -1569,15 +1569,15 @@
         %unmeasured), we would have that $\ket{\phi_i} = \ket{i}$.
 
 
-      \begin{exercise}
+      \begin{exercise}\label{exercise:non-Hermitian}
         Let $\ket\psi = \alpha \ket 0 + \beta \ket 1$ be an arbitrary single-qubit state,
         and let $\projector$ be the non-Hermitian matrix
         \[
           \projector = \begin{sqmatrix} 0 & -1 \\ 0 & 1 \end{sqmatrix}\, .
         \]
         \begin{subex}
-          \item Show that $\projector$ is a projector by showing that it is idempotent 
-            (repeated applications yield the same result).
+          \item Show that $\projector$ is a projector.
+          \item Show that $\projector$ is not Hermitian.
           \item Find values for $\alpha$ and $\beta$ such that the ``probability'' 
             $\norm{\projector \ket\psi}^2 
               = \bra\psi \projector^\dagger \projector \ket\psi$ 
@@ -1585,34 +1585,45 @@
         \end{subex}
       \end{exercise}
 
-      \hhnote{Add illustration of sun overhead vs sun at an angle.}
+      \crakzfigcode{shadow}{
+        A stick of length $\ell$ is planted in the ground at an 
+        angle. When the sun is directly overhead so that its rays hit the
+        ground perpendicularly, there is no orientation of the
+        stick that gives a shadow longer than the stick itself. 
+        When the sun is low in the sky, you can always find an orientation of
+        the stick so that its shadow is longer than the stick.
+        (Here, the stick represents the vector $\vec u$ of
+        \cref{exercise:Hermitian}, the ground represents the target space of the
+        projector $\projector$, and the sunrays represents the squashed direction of
+        $\projector$.)
+      }
 
-      \begin{exercise}
+      \begin{exercise}\label{exercise:Hermitian}
         Let $\vec{u}$ be an arbitrary complex-valued vector 
         in an inner-product space 
         with %$\norm{\vec u}^2 = 
         $\vec u \cdot \vec v \coloneqq \vec{u}^\dagger \vec{v}$,
-        and let $\projector$ be an arbitrary projector on the space, i.e.\ a matrix
+        and let $\projector$ be an arbitrary projector on the space, i.e.\ any matrix
         satisfying $\projector^2 \vec{u} = \projector \vec{u}$.
 
         Let $\vec{u}_t = \projector \vec u$ denote the part of $\vec u$ that
-        lies in the ``target'' direction of $\projector$,
+        lies in the ``target space'' of $\projector$,
         i.e.\ the part that $\projector$ keeps, and let 
         $\vec{u}_s = (\idmatrix - P) \vec u$ 
-        denote the part of $\vec u$ that lies in the ``squashed'' direction of
-        $\projector$, i.e.\ the part discarded by $\projector$, illustrated in
-        \cref{fig:shadow}. Then, $\vec u = \vec{u}_t + \vec{u}_s$.
+        denote the part of $\vec u$ that lies in the ``squashed direction'' of
+        $\projector$, i.e.\ the part that $\projector$ discards (see 
+        \cref{fig:shadow} for an illustration). Then $\vec u = \vec{u}_t + \vec{u}_s$.
         \begin{subex}
           \item Show that $\norm{\projector \vec u} \leq \norm{\vec u}$ for
-            every vector $\vec u$ if and only if its target direction is
-            perpendicular to its squashed direction, i.e., 
+            every vector $\vec u$ if and only if its squashed direction is
+            perpendicular to its target space, i.e.\ 
             $\vec{u}_t \perp \vec{u}_s$ for every $\vec u$.
-          \item Show that if $\projector$ is Hermitian, then its target
-            direction is perpendicular to its squashed direction.
-          \item Show that if 
-            $\vec{u}_t \perp \vec{u}_s$ for every $\vec u$,
-            %$\projector$'s target and squashed directions are perpendicular, 
-            then $\projector$ is Hermitian. 
+          \item Show that 
+            $\vec{u}_t \perp \vec{u}_s$ for every $\vec u$
+            if and only if $\projector$ is Hermitian. 
+          \item Verify that the squashed direction of the projector $\projector$
+            from \cref{exercise:non-Hermitian} is not perpendicular to its
+            target space.
         \end{subex}
         \emph{
           Hint: Show that if $A$ is a Hermitian matrix, then it satisfies the symmetry
@@ -1623,345 +1634,9 @@
         this one deserves a solution in the appendix
       }
 
-      %\begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
-      %  Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
-      %  operator on $\Hspace$ ($\unitary[A]^\dagger = \unitary[A]$).
-      %  Then $\unitary[A]$ is \emph{positive semi-definite}, written
-      %  $\unitary[A] \succeq 0$, if for every pure state $\ket\psi \in \Hspace$,
-      %  \[
-      %    \braket{\psi|\unitary[A]|\psi} \geq 0\, .
-      %  \]
-      %  If the inequality is strict, then $\unitary[A]$ is
-      %  \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
-      %\end{definition}
-
-      %\begin{definition}[Complete, Orthogonal Projectors]
-      %  A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
-      %    Hilbert space $\Hspace$ is said to be
-      %    \emph{complete} if the projectors sum to identity:
-      %    \[
-      %      \sum_{i \in [k]} \projector_i = \idmatrix\, ,
-      %    \]
-      %    and \emph{orthogonal} if the projectors are
-      %    \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
-      %    \[
-      %      \projector_i^\dagger = \projector_i\, ,\qquad
-      %      \projector_i \projector_j = \delta_{ij}\projector_i\, .
-      %    \]
-      %    Then the projectors $\projector_i$ are PSD operators with eigenvalues in $\bin$ (as follows
-      %    from $\projector_i = \projector_i^\dagger$ and $\projector_i^2 =
-      %    \projector_i$) which project $\Hspace$ onto mutually orthogonal
-      %    subspaces $\Sspace_i \coloneqq \projector_i \Hspace$ that together compose the full Hilbert space
-      %    (as follows from orthogonality and completeness): 
-      %    \[
-      %      \bigoplus_{i\in[k]} \Sspace_i = \Hspace\, .
-      %    \]
-      %\end{definition}
-
       \hhnote{cont 2}
 
-    \subsubsection{Projective Measurements.}
-      We already mentioned the Born rule, which says that the probability of
-        observing an outcome is equal to the norm-squared of the corresponding
-        amplitude; hence, quantum states (which are vectors of amplitudes) are the quantum
-        equivalent of probability distributions (lists of probabilities). 
-        For example, performing a computational-basis measurement on a qubit in
-        the state $\ket\psi = \alpha_0 \ket0 + \alpha_1 \ket1$ induces the
-        distribution
-        \[
-          \distribution_\psi^{\computational} 
-          = \left(\abs{\alpha_0}^2, \abs{\alpha_1}^2\right)
-          \quad\Longleftrightarrow\quad \distribution_\psi^{\computational}(b) 
-          = \abs{\alpha_b}^2 = \norm{\projector_b \ket\psi}^2 
-          = \braket{\psi|\projector_b|\psi}\, ,
-        \]
-      \hhnote{
-        kinda feels like we have no choice but to count list
-        elements from $0$ instead of $1$
-      }
-      where we used the properties of the projectors $\projector_0,
-      \projector_1$ to rewrite the probability of observing outcome $b$.
-      This suggests a natural $n$-qubit generalization: 
-      Let $\ket\psi = \sum_x \alpha_x \ket{x}$. Then performing a
-      computational-basis measurement on all $n$ qubits induces the distribution
-      \[
-        \distribution_\psi^{\computational}(x) 
-        = \abs{\alpha_x}^2 = \braket{\psi|\projector_x|\psi}\, .
-      \]
-
-      What about other measurements that you might want to perform? 
-        Say, for example, you only want to measure whether the first bit $x_0$ of
-        the string $x$ is equal to $0$ or $1$. To express this as a measurement on
-        $\ket\psi$, you might define the projectors
-      \[
-        \projector_{x_0 = 0} \coloneqq \projector_0 \otimes \idmatrix_{2^{n-1}}\, ,
-        \quad
-        \projector_{x_0 = 1} \coloneqq \projector_1 \otimes \idmatrix_{2^{n-1}}\, .
-      \]
-      Then $\{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$ is a complete set of
-        orthogonal projectors, as they must be, since they each correspond to
-        mutually-exclusive outcomes whose probabilities sum to one. 
-        Call the set of these two projectors $\measurement_{x_0}$. 
-        Performing the corresponding measurement then induces the distribution
-      \[
-        \distribution_\psi^{\measurement_{x_0}}(b) 
-        = \braket{\psi|\projector_{x_0 = b}|\psi}
-        = \sum_{x\, :\, x_0 = b} \abs{\alpha_x}^2\, .
-      \]
-
-      The set $\measurement_{x_0}$ is an example of a \emph{Projector-Valued
-        Measure} (PVM). Any set of complete, orthogonal projectors defines a
-        PVM; conversely, for any \emph{sharp} measurement (meaning measurements
-        such that repeating them yields the same outcome) such that there are $k$
-        possible, mutually exclusive outcomes, there is a corresponding
-        PVM.\footnote{
-          The more general class of measurements are the POVMs, or ``Positive
-          Operator-Valued Measures'', which capture the class of measurements
-          with $k$ possible, mutually exclusive outcomes (like above), but
-          which may be \emph{non-sharp}, meaning that repeating the measurement
-          may yield a different results. 
-          (Intuitively, you may think of POVMs as being to PVMs what mixed
-          states are to pure states.)
-        } We call such measurements \emph{projective}.
-
-      \begin{definition}[Projective Measurement]\label{def:pvm}
-        Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
-          orthogonal set of projectors on a Hilbert space $\Hspace$.
-          Then $\measurement = \{\projector_{i} \}_{i \in [k]}$ is a 
-          \emph{Projection-Valued Measure (PVM)}, under which measuring a
-          state $\ket{\psi} \in \Hspace$
-          %yields outcome $i$ with probability
-          induces a probability distribution
-          $\distribution_{\psi}^{\measurement}$ over outcomes 
-          $i \in [k]$, given by
-          \[
-            \distribution_\psi^{\measurement}(i) 
-            \coloneqq \norm{\projector_i \ket\psi}^2
-            = \braket{\psi|\projector_i|\psi}\, .
-          \]
-          %and, conditioned on outcome $i$, the post-measurement state will be
-          %\[
-          %  \ket{\psi^\prime} = 
-          %  \frac{\projector_{i}\ket{\psi}}{\norm{\projector_{i} \ket{\psi}}}\, .
-          %\]
-          We will use $X \gets \measurement(\ket\psi)$
-          as shorthand for sampling a random variable $X$ from the distribution
-          $\distribution_\psi^{\measurement}$.
-      \end{definition}
-
-      The projected state $\projector_i \ket{\psi}$ will not (usually) be
-        unit-norm, and hence not a valid quantum state, so we still need to
-        define an update procedure for the post-measurement state, given that a
-        particular outcome $i$ was observed: If we observed outcome $i$, 
-        then the projected state vector $\projector_i \ket{\psi}$ will be
-        pointing in the right direction in Hilbert space, but its magnitude will be 
-        $\norm{\projector_i \ket{\psi}} = \abs{\alpha_i} \leq 1$. 
-        Physically speaking, observing a quantum state has the
-        effect of ``snapping'' the vector from the old direction in Hilbert
-        space, to a new direction consistent with the observed outcome -- the
-        magnitude never shifts away from $1$. Mathematically, we can recover this 
-        behaviour by defining the post-measurement state to be the projected state vector
-        $\projector_i \ket{\psi}$ (giving the direction), \emph{renormalized}
-        to $1$ by dividing away the factor $\abs{\alpha_i}$.
-
-      \begin{definition}[Post-Measurement State]
-        Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
-        Upon observing a state $\ket\psi$, if outcome $i$ is observed,
-        the state will immediately\footnote{
-          Whether the state update upon measuring is truly
-          instantaneous, or if there is a continuous, dynamical
-          process underlying it (or if the question is ill-posed), 
-          remains a hotly debated question in the foundations of physics.
-        }
-        update (or ``collapse'') to the state 
-        \[
-          \ket{\psi} \apply{\measurement \to i} 
-          \mathsf{Collapse}^{\measurement}_i(\ket{\psi}) 
-          \coloneqq \frac{\projector_i \ket\psi}{\norm{\projector_i \ket{\psi}}}
-          = \frac{\projector_i \ket\psi}{\sqrt{\braket{\psi|\projector_i|\psi}}}\, ,
-        \]
-        where conditioning on outcome $i$ guarantees $\prob{\text{observe } i\, } > 0 \To \norm{\projector_i \ket{\psi}} > 0$.
-      \end{definition}
-      Note how $\mathsf{Collapse}^{\measurement}_i(\ket{\psi})$ is 
-        a \emph{non-linear} map on the Hilbert space, in stark contrast to the
-        unitary operations we have encountered so far.
-        In fact, $\mathsf{Collapse}^{\measurement}_i(\ket{\psi})$ is 
-        not even injective -- there is an infinite continuity of
-        pre-measurement states that could have yielded the
-        post-measurement state -- which shows how measurements
-        are fundamentally \emph{irreversible operations}.
-
-      \begin{exercise}
-        %Let $\ket\psi = \sum_x \alpha_x \ket x$.
-        \begin{subex}
-          \item Show that the matrix $\projector_{x_0=b} = \projector_b \otimes \idmatrix_{2^{n-1}}$ is a projector.
-          \item Show that the set $\measurement_{x_0} = \{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$
-            is complete and orthogonal.
-          %\item Show that if $\ket\psi = \sum_x \alpha_x \ket x$, then
-          %  $\distribution_\psi^{\measurement_{x_0}}(b) = \sum_{x\, :\, x_0 = b}
-          %  \abs{\alpha_x}^2$.
-          \item Show that the projector $\projector_{x_0=b}$ is equal to the sum
-            $\sum_{x\, :\, x_0=b} \projector_x$.
-        \end{subex}
-        \emph{
-          %Hint: You may use that $\projector = \projector^\dagger \projector$.
-          Hint: Consider the effect of applying $\projector_{x_0=b}$ to 
-          $\ket\psi = \sum_x \alpha_x \ket x$.
-        }
-      \end{exercise}
-
-      \hhnote{
-        Exercise idea: find the projectors $\projector_+$, $\projector_-$,
-        expressed in the computational basis, and
-        verify that transforming them to the Hadamard basis makes them take the
-        form $\projector_0$, $\projector_1$.
-      }
-
-      %%% X and Z measurements
-         %Instead, the canonical choice\footnote{
-         %   Historically, this choice corresponds to the possible outcomes of
-         %   the \emph{spin} observable for fermionic particles such as
-         %   electrons, with the value $+1$ corresponding to
-         %   ``spin-up'' (the spin vector points in the positive direction of
-         %   the $z$-coordinate) and the value $-1$ meaning ``spin-down'' (the
-         %   spin vector points in the negative $z$-direction).
-         % } is to let $m_0 = 1$ and $m_1 = -1$. Then, 
-
-        %\[
-        %  \measurement = m_0 \projector_0 + m_1 \projector_1
-        %  = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, .
-        %\]
-        %You may recognize this matrix from earlier: It's the $\Zgate$ gate! In
-        %  fact, computational-basis measurements are often referred to as
-        %  ``$\Zgate$ measurements'' for this reason. As you can see, this
-        %  choice also has the useful property that the measurement operator is
-        %  unitary, with the possible
-        %  outcomes represented by the eigenvalues and eigenstates of that operator.
-
-        %This mapping, from a unitary to a measurement, is possible to do for any
-        %  operator that is both unitary and Hermitian, meaning that 
-        %  $\unitary^{-1} = \unitary^\dagger = \unitary$. Such unitaries are
-        %  easy to recognize: They are the ones
-        %  with real values along the diagonal, and complex-conjugate symmetry
-        %  over the off-diagonals: $\unitary{[i,j]} = \unitary{[j,i]}^*$. 
-
-        %Just like we can perform a $\Zgate$ measurement, we can also perform an
-        %  $\Xgate$ measurement. This is sometimes called measuring in the Hadamard
-        %  basis, since it is equivalent to first applying a Hadamard gate to the
-        %  qubit, and then performing a $\Zgate$ measurement.
-        %
-        %There is also a $\Ygate$ gate, equal to $i\Xgate\Zgate$. As
-        %  it turns, every possible single-qubit
-        %  measurement can be written as a linear combination of these three
-        %  unitaries, known as the \emph{Pauli matrices} after their
-        %  discoverer.
-        %% Is this statement true? Isn't the T gate outside that set?
-
-        %\begin{exercise}
-        %  Show that interpreting the $\Xgate$ (a.k.a. ``NOT'') gate as a
-        %  measurement operator leads to
-        %  the possible outcomes $\ket{+}$ and $\ket{-}$ (where these are as
-        %  defined in \cref{ex:HadamardBasis}). 
-        %  What are the values of $m_+$ and $m_-$?
-        %\end{exercise}
-
-        %\begin{exercise}
-        %  Write out the matrix representation of $\Ygate$ in the computational
-        %  basis, and find the possible measurement outcomes it gives rise to
-        %  when used as a measurement operator by identifying its
-        %  eigenstates and eigenvalues.
-        %\end{exercise}
-
-    %\subsubsection{Measuring Subspaces.}
-      %Let us next define the projector $\projector_\Sspace$ onto some
-      %  subspace $\Sspace$ of the full $N$-dimensional Hilbert space
-
-      %  \hhnote{\ldots}
-
-      %specified by a subset of the computational basis states
-      %  $\{\ket{x_i}\}_{i \in [k]}$ (where $k \leq N$). This will
-      %  simply be the sum of the relevant basis projectors:
-
-      %\[
-      %  \projector_\Sspace = \sum_{i = 0}^{k-1} \ket{x_i} \bra{x_i} = 
-      %  \sum_{i = 0}^{k-1} \projector_{x_i}\, .
-      %\]
-
-      %\noindent
-      %The larger the sum, the ``gentler'' the measurement, in the sense that
-      %  you learn less from performing it and hence also disturb the state less.
-
-      %\begin{example}\label{ex:projector}
-      %  Let $\ket\psi = \sum_{i \in [8]} \alpha_i \ket{i}$ be a
-      %  three-qubit state. Then the projector $\projector_{00b}$, given
-      %  by 
-      %  \[
-      %    \projector_{00b} = \ket{000}\bra{000} + \ket{001}\bra{001}
-      %  \] 
-      %  ``selects'' the states 
-      %  in the superposition in which the first and second qubits are zero:
-      %  \begin{align*}
-      %    \projector_{00b} \ket\psi &= 
-      %    \ket{000}\bra{000} \sum_{i \in [8]} \alpha_i \ket{i}
-      %    + \ket{001}\bra{001} \sum_{i \in [8]} \alpha_i \ket{i} \\
-      %    &= \ket{000} \sum_{i \in [8]} \alpha_i \braket{000|i}
-      %    + \ket{001} \sum_{i \in [8]} \alpha_i \braket{001|i} \\
-      %    &= \ket{000} \sum_{i \in [8]} \alpha_i \cdot \delta_{000, i}
-      %    + \ket{001} \sum_{i \in [8]} \alpha_i \cdot \delta_{001, i} 
-      %    = %\ket{000}\alpha_0  + \ket{001}\alpha_1  = 
-      %    \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
-      %  \end{align*}
-      %  %as follows from the orthonormality of basis states.
-      %  We see that $\ket\psi$ has been \emph{projected} from 
-      %  $8$-dimensional Hilbert space down to the $2$-dimensional subspace
-      %  spanned by $\ket{000}$ and $\ket{001}$. Note, however, that
-      %  $\projector_{00b} \ket\psi$ will not itself be a valid quantum
-      %  \emph{state}, since (unless all the other $\alpha_i$ were already zero) we will have
-      %  $\abs{\alpha_0} + \abs{\alpha_1} < 1$, meaning $\projector_{00b}
-      %  \ket\psi$ will not satisfy the requirement of quantum states being unit length.
-      %\end{example}
-
-      %  In particular, the set of computational-basis projectors
-      %  $\{\projector_i \}_{i \in [N]} = \{ \ket{i}\bra{i} \}_{i \in [N]}$
-      %  is easily seen to be complete: Each element in the sum will simply add one $1$ to
-      %  a previously-zero spot on the diagonal, and zeroes everywhere else; and
-      %  the sum has $N$ elements, so the full diagonal must be covered.
-      %  In the context of measurements, completeness reflects that outcome
-      %  probabilities should sum to one.
-
-      %\begin{exercise}
-      %  Provide a set of projectors such that, when taken
-      %  together with $\projector_{00b}$ from \cref{ex:projector}, the set
-      %  is orthogonal and complete.
-      %\end{exercise}
-
-      %\hhnote{\ldots}
-
-      %We can also make it more general, by making a measurement
-      %  which determines which of several
-      %  subspaces $\Sspace_i$ $\ket\psi$ belongs to:
-      %  \[
-      %    \ket\psi \apply{M} m_{\Sspace_i} \ket{\psi_{\Sspace_i}}\, ,
-      %  \]
-      %  where $\ket{\psi_{\Sspace_i}}$ is the state that results from projecting
-      %  $\ket\psi$ onto subspace $\Sspace_i$.
-
-      %\hhnote{\ldots}
-
-    %% Spectral decomposition -- skipping, since I'm moving away from measurements-as-operators
-      %However, provided that the measurement
-      %  outcomes are all \emph{orthogonal}, meaning that the set of possible outcomes
-      %  are mutually exclusive, we are guaranteed that there exists a complete set of orthogonal
-      %  projectors $\{\projector_{\Sspace_i}\}_{i \in [k]}$ such that 
-      %  \[
-      %    \measurement = \sum_{i \in [k]} m_{\Sspace_i} \projector_{\Sspace_i}\, .
-      %  \]
-      %  In linear algebra terms, this defines the \emph{spectral decomposition} of the
-      %    operator $\measurement$, with $m_{\Sspace_i}$ being the eigenvalues
-      %    of $\measurement$.
-
-
-    \subsubsection{Distinguishing Between Quantum States.}
+    \subsubsection{Distinguishing Quantum States.}
       \newcommand{\unknown}{\ket{\emph{?}\, }} % local macro
       Say that you are given qubit register $\register$ in some unknown state $\unknown$,
         but you are promised that $\unknown$ is equal to one of two known states (which
@@ -2861,4 +2536,347 @@
         Scott Aaronson's book ``Quantum Computing Since Democritus'' comes
         highly recommended.
       \end{comment}
+
+    \subsubsection{Projector-Valued Measures.}
+      \hhnote{Too much formalism; moved down to the end of the section for now.
+      Keep any of this, or discard?}
+      We already mentioned the Born rule, which says that the probability of
+        observing an outcome is equal to the norm-squared of the corresponding
+        amplitude; hence, quantum states (which are vectors of amplitudes) are the quantum
+        equivalent of probability distributions (lists of probabilities). 
+        For example, performing a computational-basis measurement on a qubit in
+        the state $\ket\psi = \alpha_0 \ket0 + \alpha_1 \ket1$ induces the
+        distribution
+        \[
+          \distribution_\psi^{\computational} 
+          = \left(\abs{\alpha_0}^2, \abs{\alpha_1}^2\right)
+          \quad\Longleftrightarrow\quad \distribution_\psi^{\computational}(b) 
+          = \abs{\alpha_b}^2 = \norm{\projector_b \ket\psi}^2 
+          = \braket{\psi|\projector_b|\psi}\, ,
+        \]
+      \hhnote{
+        kinda feels like we have no choice but to count list
+        elements from $0$ instead of $1$
+      }
+      where we used the properties of the projectors $\projector_0,
+      \projector_1$ to rewrite the probability of observing outcome $b$.
+      This suggests a natural $n$-qubit generalization: 
+      Let $\ket\psi = \sum_x \alpha_x \ket{x}$. Then performing a
+      computational-basis measurement on all $n$ qubits induces the distribution
+      \[
+        \distribution_\psi^{\computational}(x) 
+        = \abs{\alpha_x}^2 = \braket{\psi|\projector_x|\psi}\, .
+      \]
+
+      What about other measurements that you might want to perform? 
+        Say, for example, you only want to measure whether the first bit $x_0$ of
+        the string $x$ is equal to $0$ or $1$. To express this as a measurement on
+        $\ket\psi$, you might define the projectors
+      \[
+        \projector_{x_0 = 0} \coloneqq \projector_0 \otimes \idmatrix_{2^{n-1}}\, ,
+        \quad
+        \projector_{x_0 = 1} \coloneqq \projector_1 \otimes \idmatrix_{2^{n-1}}\, .
+      \]
+      Then $\{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$ is a complete set of
+        orthogonal projectors, as they must be, since they each correspond to
+        mutually-exclusive outcomes whose probabilities sum to one. 
+        Call the set of these two projectors $\measurement_{x_0}$. 
+        Performing the corresponding measurement then induces the distribution
+      \[
+        \distribution_\psi^{\measurement_{x_0}}(b) 
+        = \braket{\psi|\projector_{x_0 = b}|\psi}
+        = \sum_{x\, :\, x_0 = b} \abs{\alpha_x}^2\, .
+      \]
+
+      The set $\measurement_{x_0}$ is an example of a \emph{Projector-Valued
+        Measure} (PVM). Any set of complete, orthogonal projectors defines a
+        PVM; conversely, for any \emph{sharp} measurement (meaning measurements
+        such that repeating them yields the same outcome) such that there are $k$
+        possible, mutually exclusive outcomes, there is a corresponding
+        PVM.\footnote{
+          The more general class of measurements are the POVMs, or ``Positive
+          Operator-Valued Measures'', which capture the class of measurements
+          with $k$ possible, mutually exclusive outcomes (like above), but
+          which may be \emph{non-sharp}, meaning that repeating the measurement
+          may yield a different results. 
+          (Intuitively, you may think of POVMs as being to PVMs what mixed
+          states are to pure states.)
+        } We call such measurements \emph{projective}.
+
+      \begin{definition}[Projective Measurement]\label{def:pvm}
+        Let $\{ \projector_{i} \}_{i \in [k]}$ be a complete,
+          orthogonal set of projectors on a Hilbert space $\Hspace$.
+          Then $\measurement = \{\projector_{i} \}_{i \in [k]}$ is a 
+          \emph{Projection-Valued Measure (PVM)}, under which measuring a
+          state $\ket{\psi} \in \Hspace$
+          %yields outcome $i$ with probability
+          induces a probability distribution
+          $\distribution_{\psi}^{\measurement}$ over outcomes 
+          $i \in [k]$, given by
+          \[
+            \distribution_\psi^{\measurement}(i) 
+            \coloneqq \norm{\projector_i \ket\psi}^2
+            = \braket{\psi|\projector_i|\psi}\, .
+          \]
+          %and, conditioned on outcome $i$, the post-measurement state will be
+          %\[
+          %  \ket{\psi^\prime} = 
+          %  \frac{\projector_{i}\ket{\psi}}{\norm{\projector_{i} \ket{\psi}}}\, .
+          %\]
+          We will use $X \gets \measurement(\ket\psi)$
+          as shorthand for sampling a random variable $X$ from the distribution
+          $\distribution_\psi^{\measurement}$.
+      \end{definition}
+
+      The projected state $\projector_i \ket{\psi}$ will not (usually) be
+        unit-norm, and hence not a valid quantum state, so we still need to
+        define an update procedure for the post-measurement state, given that a
+        particular outcome $i$ was observed: If we observed outcome $i$, 
+        then the projected state vector $\projector_i \ket{\psi}$ will be
+        pointing in the right direction in Hilbert space, but its magnitude will be 
+        $\norm{\projector_i \ket{\psi}} = \abs{\alpha_i} \leq 1$. 
+        Physically speaking, observing a quantum state has the
+        effect of ``snapping'' the vector from the old direction in Hilbert
+        space, to a new direction consistent with the observed outcome -- the
+        magnitude never shifts away from $1$. Mathematically, we can recover this 
+        behaviour by defining the post-measurement state to be the projected state vector
+        $\projector_i \ket{\psi}$ (giving the direction), \emph{renormalized}
+        to $1$ by dividing away the factor $\abs{\alpha_i}$.
+
+      \begin{definition}[Post-Measurement State]
+        Let $\measurement = \{\projector_{i} \}_{i \in [k]}$ be a PVM.
+        Upon observing a state $\ket\psi$, if outcome $i$ is observed,
+        the state will immediately\footnote{
+          Whether the state update upon measuring is truly
+          instantaneous, or if there is a continuous, dynamical
+          process underlying it (or if the question is ill-posed), 
+          remains a hotly debated question in the foundations of physics.
+        }
+        update (or ``collapse'') to the state 
+        \[
+          \ket{\psi} \apply{\measurement \to i} 
+          \mathsf{Collapse}^{\measurement}_i(\ket{\psi}) 
+          \coloneqq \frac{\projector_i \ket\psi}{\norm{\projector_i \ket{\psi}}}
+          = \frac{\projector_i \ket\psi}{\sqrt{\braket{\psi|\projector_i|\psi}}}\, ,
+        \]
+        where conditioning on outcome $i$ guarantees $\prob{\text{observe } i\, } > 0 \To \norm{\projector_i \ket{\psi}} > 0$.
+      \end{definition}
+      Note how $\mathsf{Collapse}^{\measurement}_i(\ket{\psi})$ is 
+        a \emph{non-linear} map on the Hilbert space, in stark contrast to the
+        unitary operations we have encountered so far.
+        In fact, $\mathsf{Collapse}^{\measurement}_i(\ket{\psi})$ is 
+        not even injective -- there is an infinite continuity of
+        pre-measurement states that could have yielded the
+        post-measurement state -- which shows how measurements
+        are fundamentally \emph{irreversible operations}.
+
+      \begin{exercise}
+        %Let $\ket\psi = \sum_x \alpha_x \ket x$.
+        \begin{subex}
+          \item Show that the matrix $\projector_{x_0=b} = \projector_b \otimes \idmatrix_{2^{n-1}}$ is a projector.
+          \item Show that the set $\measurement_{x_0} = \{\projector_{x_0 = 0}, \projector_{x_0 = 1}\}$
+            is complete and orthogonal.
+          %\item Show that if $\ket\psi = \sum_x \alpha_x \ket x$, then
+          %  $\distribution_\psi^{\measurement_{x_0}}(b) = \sum_{x\, :\, x_0 = b}
+          %  \abs{\alpha_x}^2$.
+          \item Show that the projector $\projector_{x_0=b}$ is equal to the sum
+            $\sum_{x\, :\, x_0=b} \projector_x$.
+        \end{subex}
+        \emph{
+          %Hint: You may use that $\projector = \projector^\dagger \projector$.
+          Hint: Consider the effect of applying $\projector_{x_0=b}$ to 
+          $\ket\psi = \sum_x \alpha_x \ket x$.
+        }
+      \end{exercise}
+
+      \hhnote{
+        Exercise idea: find the projectors $\projector_+$, $\projector_-$,
+        expressed in the computational basis, and
+        verify that transforming them to the Hadamard basis makes them take the
+        form $\projector_0$, $\projector_1$.
+      }
+
+    \hhnote{
+      Still considering an appendix that develops measurements in more detail,
+      including with projectors as operators and POVMs, since this is so common.
+      Not a priority however.
+    }
+
+    %\subsubsection{Measuring Subspaces.}
+      %Let us next define the projector $\projector_\Sspace$ onto some
+      %  subspace $\Sspace$ of the full $N$-dimensional Hilbert space
+
+      %  \hhnote{\ldots}
+
+      %specified by a subset of the computational basis states
+      %  $\{\ket{x_i}\}_{i \in [k]}$ (where $k \leq N$). This will
+      %  simply be the sum of the relevant basis projectors:
+
+      %\[
+      %  \projector_\Sspace = \sum_{i = 0}^{k-1} \ket{x_i} \bra{x_i} = 
+      %  \sum_{i = 0}^{k-1} \projector_{x_i}\, .
+      %\]
+
+      %\noindent
+      %The larger the sum, the ``gentler'' the measurement, in the sense that
+      %  you learn less from performing it and hence also disturb the state less.
+
+      %\begin{example}\label{ex:projector}
+      %  Let $\ket\psi = \sum_{i \in [8]} \alpha_i \ket{i}$ be a
+      %  three-qubit state. Then the projector $\projector_{00b}$, given
+      %  by 
+      %  \[
+      %    \projector_{00b} = \ket{000}\bra{000} + \ket{001}\bra{001}
+      %  \] 
+      %  ``selects'' the states 
+      %  in the superposition in which the first and second qubits are zero:
+      %  \begin{align*}
+      %    \projector_{00b} \ket\psi &= 
+      %    \ket{000}\bra{000} \sum_{i \in [8]} \alpha_i \ket{i}
+      %    + \ket{001}\bra{001} \sum_{i \in [8]} \alpha_i \ket{i} \\
+      %    &= \ket{000} \sum_{i \in [8]} \alpha_i \braket{000|i}
+      %    + \ket{001} \sum_{i \in [8]} \alpha_i \braket{001|i} \\
+      %    &= \ket{000} \sum_{i \in [8]} \alpha_i \cdot \delta_{000, i}
+      %    + \ket{001} \sum_{i \in [8]} \alpha_i \cdot \delta_{001, i} 
+      %    = %\ket{000}\alpha_0  + \ket{001}\alpha_1  = 
+      %    \alpha_0 \ket{000} + \alpha_1 \ket{001}\, .
+      %  \end{align*}
+      %  %as follows from the orthonormality of basis states.
+      %  We see that $\ket\psi$ has been \emph{projected} from 
+      %  $8$-dimensional Hilbert space down to the $2$-dimensional subspace
+      %  spanned by $\ket{000}$ and $\ket{001}$. Note, however, that
+      %  $\projector_{00b} \ket\psi$ will not itself be a valid quantum
+      %  \emph{state}, since (unless all the other $\alpha_i$ were already zero) we will have
+      %  $\abs{\alpha_0} + \abs{\alpha_1} < 1$, meaning $\projector_{00b}
+      %  \ket\psi$ will not satisfy the requirement of quantum states being unit length.
+      %\end{example}
+
+      %  In particular, the set of computational-basis projectors
+      %  $\{\projector_i \}_{i \in [N]} = \{ \ket{i}\bra{i} \}_{i \in [N]}$
+      %  is easily seen to be complete: Each element in the sum will simply add one $1$ to
+      %  a previously-zero spot on the diagonal, and zeroes everywhere else; and
+      %  the sum has $N$ elements, so the full diagonal must be covered.
+      %  In the context of measurements, completeness reflects that outcome
+      %  probabilities should sum to one.
+
+      %\begin{exercise}
+      %  Provide a set of projectors such that, when taken
+      %  together with $\projector_{00b}$ from \cref{ex:projector}, the set
+      %  is orthogonal and complete.
+      %\end{exercise}
+
+      %\hhnote{\ldots}
+
+      %We can also make it more general, by making a measurement
+      %  which determines which of several
+      %  subspaces $\Sspace_i$ $\ket\psi$ belongs to:
+      %  \[
+      %    \ket\psi \apply{M} m_{\Sspace_i} \ket{\psi_{\Sspace_i}}\, ,
+      %  \]
+      %  where $\ket{\psi_{\Sspace_i}}$ is the state that results from projecting
+      %  $\ket\psi$ onto subspace $\Sspace_i$.
+
+      %\hhnote{\ldots}
+
+    %% Spectral decomposition -- skipping, since I'm moving away from measurements-as-operators
+      %However, provided that the measurement
+      %  outcomes are all \emph{orthogonal}, meaning that the set of possible outcomes
+      %  are mutually exclusive, we are guaranteed that there exists a complete set of orthogonal
+      %  projectors $\{\projector_{\Sspace_i}\}_{i \in [k]}$ such that 
+      %  \[
+      %    \measurement = \sum_{i \in [k]} m_{\Sspace_i} \projector_{\Sspace_i}\, .
+      %  \]
+      %  In linear algebra terms, this defines the \emph{spectral decomposition} of the
+      %    operator $\measurement$, with $m_{\Sspace_i}$ being the eigenvalues
+      %    of $\measurement$.
+
+      %\begin{definition}[Positive Semi-Definite (PSD), Positive Definite (PD)]
+      %  Let $\Hspace$ be a Hilbert space, and let $\unitary[A]$ be a Hermitian
+      %  operator on $\Hspace$ ($\unitary[A]^\dagger = \unitary[A]$).
+      %  Then $\unitary[A]$ is \emph{positive semi-definite}, written
+      %  $\unitary[A] \succeq 0$, if for every pure state $\ket\psi \in \Hspace$,
+      %  \[
+      %    \braket{\psi|\unitary[A]|\psi} \geq 0\, .
+      %  \]
+      %  If the inequality is strict, then $\unitary[A]$ is
+      %  \emph{positive definite} (PD), written $\unitary[A] \succ 0$.
+      %\end{definition}
+
+      %\begin{definition}[Complete, Orthogonal Projectors]
+      %  A set of $k$ projectors $\{ \projector_{i} \}_{i \in [k]}$ on a
+      %    Hilbert space $\Hspace$ is said to be
+      %    \emph{complete} if the projectors sum to identity:
+      %    \[
+      %      \sum_{i \in [k]} \projector_i = \idmatrix\, ,
+      %    \]
+      %    and \emph{orthogonal} if the projectors are
+      %    \emph{Hermitian}, \emph{idempotent}, and \emph{mutually orthogonal}:
+      %    \[
+      %      \projector_i^\dagger = \projector_i\, ,\qquad
+      %      \projector_i \projector_j = \delta_{ij}\projector_i\, .
+      %    \]
+      %    Then the projectors $\projector_i$ are PSD operators with eigenvalues in $\bin$ (as follows
+      %    from $\projector_i = \projector_i^\dagger$ and $\projector_i^2 =
+      %    \projector_i$) which project $\Hspace$ onto mutually orthogonal
+      %    subspaces $\Sspace_i \coloneqq \projector_i \Hspace$ that together compose the full Hilbert space
+      %    (as follows from orthogonality and completeness): 
+      %    \[
+      %      \bigoplus_{i\in[k]} \Sspace_i = \Hspace\, .
+      %    \]
+      %\end{definition}
+
+      %%% X and Z measurements (requires talking about eigenvalues of measurement operators)
+         %Instead, the canonical choice\footnote{
+         %   Historically, this choice corresponds to the possible outcomes of
+         %   the \emph{spin} observable for fermionic particles such as
+         %   electrons, with the value $+1$ corresponding to
+         %   ``spin-up'' (the spin vector points in the positive direction of
+         %   the $z$-coordinate) and the value $-1$ meaning ``spin-down'' (the
+         %   spin vector points in the negative $z$-direction).
+         % } is to let $m_0 = 1$ and $m_1 = -1$. Then, 
+
+        %\[
+        %  \measurement = m_0 \projector_0 + m_1 \projector_1
+        %  = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}\, .
+        %\]
+        %You may recognize this matrix from earlier: It's the $\Zgate$ gate! In
+        %  fact, computational-basis measurements are often referred to as
+        %  ``$\Zgate$ measurements'' for this reason. As you can see, this
+        %  choice also has the useful property that the measurement operator is
+        %  unitary, with the possible
+        %  outcomes represented by the eigenvalues and eigenstates of that operator.
+
+        %This mapping, from a unitary to a measurement, is possible to do for any
+        %  operator that is both unitary and Hermitian, meaning that 
+        %  $\unitary^{-1} = \unitary^\dagger = \unitary$. Such unitaries are
+        %  easy to recognize: They are the ones
+        %  with real values along the diagonal, and complex-conjugate symmetry
+        %  over the off-diagonals: $\unitary{[i,j]} = \unitary{[j,i]}^*$. 
+
+        %Just like we can perform a $\Zgate$ measurement, we can also perform an
+        %  $\Xgate$ measurement. This is sometimes called measuring in the Hadamard
+        %  basis, since it is equivalent to first applying a Hadamard gate to the
+        %  qubit, and then performing a $\Zgate$ measurement.
+        %
+        %There is also a $\Ygate$ gate, equal to $i\Xgate\Zgate$. As
+        %  it turns, every possible single-qubit
+        %  measurement can be written as a linear combination of these three
+        %  unitaries, known as the \emph{Pauli matrices} after their
+        %  discoverer.
+        %% Is this statement true? Isn't the T gate outside that set?
+
+        %\begin{exercise}
+        %  Show that interpreting the $\Xgate$ (a.k.a. ``NOT'') gate as a
+        %  measurement operator leads to
+        %  the possible outcomes $\ket{+}$ and $\ket{-}$ (where these are as
+        %  defined in \cref{ex:HadamardBasis}). 
+        %  What are the values of $m_+$ and $m_-$?
+        %\end{exercise}
+
+        %\begin{exercise}
+        %  Write out the matrix representation of $\Ygate$ in the computational
+        %  basis, and find the possible measurement outcomes it gives rise to
+        %  when used as a measurement operator by identifying its
+        %  eigenstates and eigenvalues.
+        %\end{exercise}
 

@@ -1,0 +1,73 @@
+% needs \usetikzlibrary{calc,arrows.meta,decorations.pathreplacing}
+% A stick of length L planted at 45 degrees, and its shadow (a projection onto
+% the ground) under two suns:
+%   left:  sun overhead      -> orthogonal projection, shadow L/sqrt2 < L
+%   right: sun at 45 degrees -> oblique projection,    shadow sqrt2 L > L
+% Each sun has eight short rays; the one aimed at the stick is drawn longer
+% instead, as an arrow pointing at the tip, and a dashed line runs from the
+% stick's tip to the shadow's tip.
+% A small legend at each panel's top left shows the projector's two
+% directions from a common origin: "target space" (the ground, kept) and
+% "squashed direction" (the light's direction, discarded). The legends are drawn
+% outside the mirrored scopes, in plain page coordinates.
+\begin{tikzpicture}[line cap=round,
+    ground/.style={thick},
+    stick/.style={ultra thick},
+    shadow/.style={line width=3pt, black!45},
+    beam/.style={thin},
+    brace/.style={decorate, decoration={brace, amplitude=4pt}},
+    % sun disc with short rays every 45 degrees, omitting the ray at angle #1
+    sun/.pic={
+      \draw[thick] (0,0) circle[radius=0.22];
+      \foreach \a in {0,45,...,315}
+        {\ifnum\a=#1\else \draw[beam] (\a:0.30) -- (\a:0.58); \fi}
+    },
+    % legend: target arrow to the left, squash arrow at angle #1 (labels at tips)
+    axes/.pic={
+      \draw[legend] (0,0) -- (180:0.65) node[anchor=east, align=center] {target\\space};
+      \draw[legend] (0,0) -- (#1:0.65) node[anchor=#1-180, align=center] {squashed\\direction};
+    },
+    legend/.style={thin, -{Stealth}, font=\fontsize{6}{7}\selectfont},
+  ]
+  \def\L{2.5}
+
+  % ---------------- sun directly overhead ----------------
+  \begin{scope}[xscale=-1]
+    \coordinate (O) at (0,0);
+    \coordinate (T) at (45:\L);
+    \coordinate (S) at (T |- O);                          % straight down
+    \coordinate (Sun) at ($(T)+(0,1.8)$);
+
+    \draw[ground] (-0.8,0) -- (4.3,0);
+    \draw[shadow] (O) -- (S);
+    \draw[stick] (O) -- node[above right] {$\ell$} (T);
+    \draw[brace] ($(O)+(0,-0.2)$) -- node[below=4pt]
+      {$<\ell$} ($(S)+(0,-0.2)$);
+    \pic at (Sun) {sun=270};
+    \draw[beam, -{Stealth}] ($(Sun)+(270:0.30)$) -- ($(T)!0.4cm!(Sun)$);
+    \draw[beam, dashed] (T) -- (S);
+  \end{scope}
+
+  % ---------------- sun at 45 degrees ----------------
+  \begin{scope}[xshift=6.5cm, xscale=-1]
+    \coordinate (O) at (0,0);
+    \coordinate (T) at (45:\L);
+    \coordinate (S) at ($(T)+(\L*0.7071,-\L*0.7071)$);   % along (1,-1)
+    \coordinate (Sun) at ($(T)+(-1.3,1.3)$);
+
+    \draw[ground] (-0.8,0) -- (4.3,0);
+    \draw[shadow] (O) -- (S);
+    \draw[stick] (O) -- node[above right] {$\ell$} (T);
+    \draw[brace] ($(O)+(0,-0.2)$) -- node[below=4pt]
+      {$>\ell$} ($(S)+(0,-0.2)$);
+    % the pic is not reflected by the scope's xscale=-1, so the ray to omit
+    % is given in unmirrored angles: 225 = towards the stick's tip as drawn
+    \pic at (Sun) {sun=225};
+    \draw[beam, -{Stealth}] ($(Sun)+(315:0.30)$) -- ($(T)!0.4cm!(Sun)$);
+    \draw[beam, dashed] (T) -- (S);
+  \end{scope}
+
+  % ---------------- legends ----------------
+  \pic at (-3.4,3.4) {axes=270};
+  \pic at (3.4,3.4) {axes=225};
+\end{tikzpicture}
