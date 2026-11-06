@@ -1491,10 +1491,13 @@
       %  \item Maybe write something about asymptotic vs.\ concrete security.
       %}
       For our security proofs, we will be working in the game-hopping
-        paradigm of Shoup~\cite{EPRINT:Shoup04}.
+        paradigm of Shoup~\cite{EPRINT:Shoup04},
+        in which a security game is altered in step-wise fashion (game ``hops'') until it becomes 
+        effectively unwinnable to the adversary.
         The fundamental lemma of game hopping states that the distinguishing advantage
-        of an adversary can be bounded in terms of their distinguishing advantage
-        over several intermediary game ``hops''.
+        of an adversary between the original game and the unwinnable game
+        can be bounded in terms of how well the intermediary games
+        can be distinguished from another.
 
       \begin{lemma}\label{lemma:game-hopping}
         For any adversary $\adv$ tasked with distinguishing $\game{0}$ from
@@ -1512,7 +1515,7 @@
       \end{lemma}
 
       \noindent
-      The lemma states that, if $\adv$ were able to distinguish, then
+      The lemma states that, if $\adv$ were able to distinguish $\game{0}$ from $\game{n}$, then
         at least one of $\adv_1, \ldots, \adv_n$ must be able to
         distinguish too---and vice versa, that if none of the $\adv_i$ are able to
         distinguish, then neither is $\adv$.
